@@ -5,7 +5,7 @@ const TwitchAvatar = ({ tid, avatar, className }: any) => {
   if (avatar) {
     return <img className={className} src={avatar} onError={({ currentTarget }) => {
       currentTarget.onerror = null;
-      currentTarget.src = '/BlindTesTwitch/avatar.png';
+      currentTarget.src = '/TrivialPurTwitch/avatar.png';
     }} style={{ backgroundColor: colors[(+tid) % colors.length] }}>
     </img>;
   } else {

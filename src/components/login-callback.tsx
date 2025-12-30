@@ -1,7 +1,6 @@
-import { getHashParam, getQueryParam } from 'helpers';
+import { getHashParam } from 'helpers';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import instance, { getUserProfile, retrieveAccessToken } from 'services/spotify-api';
 import { useAuthStore } from './store/auth-store';
 
 const LoginCallback = () => {
@@ -11,21 +10,12 @@ const LoginCallback = () => {
 
   useEffect(() => {
     const twitchToken = getHashParam('access_token');
-    const spotifyCode = getQueryParam('code');
 
-    if (twitchToken) { // Twitch logging callback
+    if (twitchToken) { 
+      // Twitch logging callback
       authStore.setTwitchOAuthToken(twitchToken);
-    } else if (spotifyCode) { // Spotify logging callback
-      retrieveAccessToken(spotifyCode).then(response => {
-        authStore.setSpotifyRefreshToken(response.data.refresh_token);
-        const accessToken = response.data.access_token;
-        authStore.setSpotifyAccessToken(accessToken);
-        instance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-        getUserProfile().then(response => {
-          authStore.setSpotifyUserCountry(response.data.country);
-        });
-      });
     }
+    
     navigate('/');
   }, [navigate]);
 

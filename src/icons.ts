@@ -1,13 +1,18 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { faCheckCircle, faComment, faTimesCircle } from '@fortawesome/free-regular-svg-icons';
-import { faAdjust, faArrowRight, faBars, faBook, faCheck, faChevronLeft, faChevronRight, faCircleInfo, faCog, faCrown, faEllipsis, faExclamationTriangle, faEye, faEyeSlash, faHeart, faList, faLock, faMinus, faMusic, faPause, faPlay, faPlayCircle, faPlus, faQuestion, faQuestionCircle, faSearch, faShuffle, faSignOutAlt, faStepForward, faTimes, faTrash, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
+import { faAdjust, faArrowRight, faBars, faBook, faCheck, faChevronLeft, faChevronRight, faCircleInfo, faCog, faCrown, faEllipsis, faExclamationTriangle, faEye, faEyeSlash, faHeart, faList, faLock, faMinus, faMusic, faPause, faPlay, faPlayCircle, faPlus, faQuestion, faQuestionCircle, faSearch, faShuffle, faSignOutAlt, faStepForward, faTimes, faTrash, faVolumeMute, faEdit, faBox, faScroll, faArrowLeft, faDice, faDownload, faUpload, faTrophy, faListOl } from '@fortawesome/free-solid-svg-icons';
+
 
 library.add(
   faAdjust,
   fab,
   faBars,
   faArrowRight,
+  faArrowLeft,
+  faDice,
+  faDownload,
+  faUpload,
   faBook,
   faCheck,
   faCheckCircle,
@@ -41,4 +46,9 @@ library.add(
   faTimesCircle,
   faTrash,
   faVolumeMute,
+  faEdit,
+  faBox,
+  faScroll,
+  faTrophy,
+  faListOl,
 );

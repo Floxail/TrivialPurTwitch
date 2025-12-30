@@ -47,7 +47,7 @@ export const useSettingsStore = create<SettingsData & ExtraSettingsData & Action
   persist(
     (set, get) => ({
       ...initialState,
-      isInitialized: () => { return get().deviceId !== ''; },
+      isInitialized: () => { return true; },
       reset: () => set(initialState),
       update: (data: SettingsData) => set(data),
       toggleTheme: () => {

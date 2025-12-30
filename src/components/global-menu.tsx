@@ -10,9 +10,9 @@ import { usePlayerStore } from './store/player-store';
 import { useSettingsStore } from './store/settings-store';
 
 const GlobalMenu = () => {
-
-  const twitchAvatar = useAuthStore((state) => state.twitchAvatar);
   const navigate = useNavigate();
+  const twitchAvatar = useAuthStore((state) => state.twitchAvatar);
+  
 
   const settingsStore = useSettingsStore();
   const authStore = useAuthStore();
@@ -67,7 +67,7 @@ const GlobalMenu = () => {
       <Dropdown style={{ display: 'inline-block' }} className="mx-2">
         <Dropdown.Toggle as={CustomToggle} />
         <Dropdown.Menu>
-          <Dropdown.Item as="button" onClick={onPlaylistClick}><FontAwesomeIcon icon={['fas', 'list']} size="lg" /> Playlist</Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() => navigate('/questions')}><FontAwesomeIcon icon={['fas', 'question']} size="lg" /> Questions</Dropdown.Item>
           <Dropdown.Item as="button" onClick={onSettingsClick}><FontAwesomeIcon icon={['fas', 'cog']} size="lg" /> Settings</Dropdown.Item>
           <Dropdown.Item as="button" onClick={(e) => {
             e.stopPropagation();

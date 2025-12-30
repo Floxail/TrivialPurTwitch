@@ -1,0 +1,1478 @@
+{
+  "version": "1.0",
+  "exportDate": "2025-12-20T18:15:10.284Z",
+  "trivialBoxes": [
+    "Classique",
+    "France",
+    "20ans",
+    "Famille",
+    "Vieweurs"
+  ],
+  "questions": [
+    {
+      "id": "1766225057432fgrtvspys",
+      "question": "De ces trois villes, laquelle est la moins éloignée de Paris :\n- Hong Kong\n- Mexico\n- Los Angeles",
+      "answer": "Los Angeles",
+      "category": 0,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662251985611g6on9lil",
+      "question": "Qui incarne Rosa Luxembourg dans le film de Margareth Von Trotta?",
+      "answer": "Barbara Sukowa",
+      "alternativeAnswers": [
+        "Sukowa"
+      ],
+      "category": 1,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766225257658drt9jr5ad",
+      "question": "Quel Ville était \"la porte de Dieu\" ?",
+      "answer": "Babylone",
+      "category": 2,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766225369719b9czknvxx",
+      "question": "Quel compositeur Cosima Von Bülow épousa-t-elle?",
+      "answer": "Wagner",
+      "category": 3,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766225709176dfom3m86v",
+      "question": "De quoi sont victimes la moitié des forêts allemandes ?",
+      "answer": "Pluies acides",
+      "category": 4,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766225791242gh2tey4as",
+      "question": "Combien de temps dure un match de rugby (en minutes)",
+      "answer": "80",
+      "category": 5,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766226245875o9ehs5qv4",
+      "question": "Quelle rivière, affluent du Rhône, possède une\nzone d'inondation de 800 km2?",
+      "answer": "La Saône",
+      "alternativeAnswers": [
+        "Saone"
+      ],
+      "category": 0,
+      "trivialBox": "France",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766226361549tss9btgwk",
+      "question": "Pour quelle raison le film de Louis Malle \"Le\nsouffle au cœur\" fit-il scandale?",
+      "answer": "Inceste",
+      "alternativeAnswers": [
+        "theme de l'inceste"
+      ],
+      "category": 1,
+      "trivialBox": "France",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662264372896iyhb2w8y",
+      "question": "Qui a publié une longue lettre aux français dans\nplusieurs journaux en 1988?",
+      "answer": "François Mitterrand",
+      "alternativeAnswers": [
+        "Mitterrand"
+      ],
+      "category": 2,
+      "trivialBox": "France",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766226473377skfcitd0z",
+      "question": "A part la France, dans quel pays Les aventures\nd'Asterix connaissent-elles le plus grand succès?",
+      "answer": "Allemagne",
+      "category": 3,
+      "trivialBox": "France",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766226547596f9nncug0p",
+      "question": "Dans quel restaurant parisien sont décernés\nchaque année deux grands prix littéraires?",
+      "answer": "Chez Drouant",
+      "alternativeAnswers": [
+        "Drouant"
+      ],
+      "category": 4,
+      "trivialBox": "France",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766226639512dm6m2ka3e",
+      "question": "Qui a repris la direction du Paris-Dakar après la\nmort de Thierry Sabine?",
+      "answer": "Gilbert Sabine",
+      "alternativeAnswers": [
+        "son père"
+      ],
+      "category": 5,
+      "trivialBox": "France",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176622675902459ii1svnk",
+      "question": "A la tête de quel Etat, Bill Clinton fut-il gouverneur\navant de devenir président?",
+      "answer": "Arkansas",
+      "category": 0,
+      "trivialBox": "20ans",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766226798715fw0uzgthq",
+      "question": "Quel est l'interprète du personnage de Fabio\nMontale sur TF1?",
+      "answer": "Alain Delon",
+      "alternativeAnswers": [
+        "Delon"
+      ],
+      "category": 1,
+      "trivialBox": "20ans",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766226898630nbjhrp2fu",
+      "question": "Qui chantait The World is stone dans la version\nanglo-saxonne de Starmania :\n- Annie Lennox\n- Cher\n- Cindy Lauper\n- Shania Twain?",
+      "answer": "Cindy Lauper",
+      "alternativeAnswers": [
+        "Lauper"
+      ],
+      "category": 3,
+      "trivialBox": "20ans",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176622692982372l8x7kz7",
+      "question": "Quel prix a remporté Claude Simon en 1985?",
+      "answer": "Le prix Nobel de littérature",
+      "alternativeAnswers": [
+        "Nobel de littérature"
+      ],
+      "category": 2,
+      "trivialBox": "20ans",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662272436849ove4d8ha",
+      "question": "Quel était l'ancien nom de Veolia Environnement\navant",
+      "answer": "Vivendi Environnement",
+      "alternativeAnswers": [
+        "Vivendi"
+      ],
+      "category": 4,
+      "trivialBox": "20ans",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176622727206488i2nxuhj",
+      "question": "Aux J.O. de Sydney, la France avait remporté 38\nmédailles, dont combien en or (à 1 près)?",
+      "answer": "13",
+      "alternativeAnswers": [
+        "12",
+        "14"
+      ],
+      "category": 5,
+      "trivialBox": "20ans",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766227924434rwk6c6hxr",
+      "question": "Qu'appelle-t-on \"cotton candy\" aux Etats-Unis?",
+      "answer": "Barbe à papa",
+      "alternativeAnswers": [
+        "barbe a papa"
+      ],
+      "category": 0,
+      "trivialBox": "Famille",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766227968534qk4g1jocn",
+      "question": "Quel événement évoquait la série américaine \"L'Enfer\ndu devoir\" ?",
+      "answer": "Guerre du Vietnam",
+      "alternativeAnswers": [
+        "Vietnam"
+      ],
+      "category": 1,
+      "trivialBox": "Famille",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766228050101b0q2jlhl6",
+      "question": "Quel homme politique Isabelle Adjani est-elle allée\nsoutenir sur le plateau de \"L'Heure de vérité\" ?",
+      "answer": "Jacques Chirac",
+      "alternativeAnswers": [
+        "Chirac"
+      ],
+      "category": 2,
+      "trivialBox": "Famille",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766228137756motx9159u",
+      "question": "A quel célèbre écrivain anglais, Bram Stroker,\nl'auteur de \"Dracula\" a-t-il soufflé sa fiancée?",
+      "answer": "Oscar Wilde",
+      "alternativeAnswers": [
+        "Wilde"
+      ],
+      "category": 3,
+      "trivialBox": "Famille",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662282032904pj2rnbha",
+      "question": "Quel objet de la vie quotidienne a pour ancêtre\nl'étuve humide conçue par Ambroise Paré?",
+      "answer": "Baignoire",
+      "category": 4,
+      "trivialBox": "Famille",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766228231004j1v5jyvek",
+      "question": "Quelle équipe allemande avait infligé un 6 à 0 à\nMarseille en coupe d'Europe?",
+      "answer": "FC Cologne",
+      "alternativeAnswers": [
+        "Cologne"
+      ],
+      "category": 5,
+      "trivialBox": "Famille",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766228510487dtwgjtbx5",
+      "question": "En Polynésie, une femme qui porte une fleur sur son oreille droite indique ainsi qu'elle est célibataire et qu'on peut l'aborder. Vrai ou faux ?",
+      "answer": "Vrai",
+      "category": 0,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766228571886yhpx9qdua",
+      "question": "Quelle est la race du chien de Jay Pritchett dans la série Modem Family\" ?",
+      "answer": "Bouldogue",
+      "alternativeAnswers": [
+        "bulldog"
+      ],
+      "category": 1,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662286209958grk7uvf0",
+      "question": "Qui a été la première femme secrétaire d'État des États-Unis ?",
+      "answer": "Madeleine Albright",
+      "alternativeAnswers": [
+        "Albright"
+      ],
+      "category": 2,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766228696421vc0290tua",
+      "question": "Quelle comédie musicale de 1978 s'inspire de poèmes de T.S. Eliot, et notamment de son \"Old Possum's Book of Practical Cats\" ?",
+      "answer": "Cats",
+      "category": 3,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766228749419myo60q7n9",
+      "question": "Quel système de fixation George de Mestral a-t-il inventé en 1948, après avoir observé les crochets des chardons accrochés aux poils de son chien ?",
+      "answer": "Velcro",
+      "category": 4,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766228791760cl94ymzap",
+      "question": "Quel est le surnom du tueur dans le jeu vidéo Heavy Rain, écrit et dirigé par David Cage en 2010 ?",
+      "answer": "Le Tueur aux origamis",
+      "category": 5,
+      "trivialBox": "Classique",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469p2z349o8p",
+      "category": 0,
+      "question": "Quelle est la capitale de la France ?",
+      "answer": "Paris",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469ehz6f527e",
+      "category": 0,
+      "question": "Quel est le plus grand désert du monde ?",
+      "answer": "Le désert du Sahara",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469ufzefuokf",
+      "category": 0,
+      "question": "Quel est le plus grand pays du monde en superficie ?",
+      "answer": "Russie",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469ef5o8jz8g",
+      "category": 0,
+      "question": "Quelle rivière traverse la ville de Londres ?",
+      "answer": "La Tamise",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469rgpz528bq",
+      "category": 0,
+      "question": "Quelle est la capitale de l'Australie ?",
+      "answer": "Canberra",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469h3ojbxi9v",
+      "category": 0,
+      "question": "Quelle mer borde la côte sud de la France ?",
+      "answer": "mer Méditerranée",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469i957evej4",
+      "category": 0,
+      "question": "Quelle est la plus grande île du monde ?",
+      "answer": "Groenland",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625480846919ze0450x",
+      "category": 0,
+      "question": "Quel est le plus petit pays du monde en superficie ?",
+      "answer": "Vatican",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662548084692bh0xmi1k",
+      "category": 0,
+      "question": "Quelle chaîne de montagnes sépare l'Europe de l'Asie ?",
+      "answer": "Oural",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469y9yvpla9v",
+      "category": 0,
+      "question": "Dans quel pays se trouve le Machu Picchu ?",
+      "answer": "Perou",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469ljfvzay44",
+      "category": 0,
+      "question": "Quelle est la capitale de l'Espagne ?",
+      "answer": "Madrid",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469k5dmvwo8q",
+      "category": 0,
+      "question": "Quelle mer borde l'est de la Grèce ?",
+      "answer": "La mer Égée",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469s3gwnoecx",
+      "category": 0,
+      "question": "Quelle ville est la capitale de l'Égypte ?",
+      "answer": "Le Caire",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662548084691nyupjudc",
+      "category": 0,
+      "question": "Quel pays est surnommé « l'Hexagone » ?",
+      "answer": "France",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469egoy1mf54",
+      "category": 0,
+      "question": "Quel pays a pour capitale Reykjavik ?",
+      "answer": "Islande",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766254808469d1q997bmj",
+      "category": 0,
+      "question": "Quelle est la capitale de la Russie ?",
+      "answer": "Moscou",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662548084696vax3jxij",
+      "category": 0,
+      "question": "Quel pays est le plus peuplé du monde ?",
+      "answer": "Chine",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605bfgm3ccp2",
+      "category": 1,
+      "question": "Quel réalisateur est connu pour ses films « Pulp Fiction » et « Kill Bill » ?",
+      "answer": "Quentin Tarantino",
+      "alternativeAnswers": [
+        "Tarantino"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605cqg86cwza",
+      "category": 1,
+      "question": "Qui est le créateur de Mickey Mouse ?",
+      "answer": "Walt Disney",
+      "alternativeAnswers": [
+        "Disney"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625502460537qr7he51",
+      "category": 1,
+      "question": "Quel acteur joue le rôle principal dans le film « Forrest Gump » ?",
+      "answer": "Tom Hanks",
+      "alternativeAnswers": [
+        "Hanks"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605nrlg87doy",
+      "category": 1,
+      "question": "Quel film a remporté l'Oscar du meilleur film en 2020 ?",
+      "answer": "Parasite",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605wgaq04upk",
+      "category": 1,
+      "question": "Qui est la chanteuse du hit « Hello » sorti en 2015 ?",
+      "answer": "Adele",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625502460589txn1r8e",
+      "category": 1,
+      "question": "Quel est le groupe de musique célèbre pour la chanson « Bohemian Rhapsody » ?",
+      "answer": "Queen",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550246050yaxwwk51",
+      "category": 1,
+      "question": "Quelle série télévisée met en scène la famille Stark et les Lannister ?",
+      "answer": "Game of Thrones",
+      "alternativeAnswers": [
+        "GOT"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605h6og71my6",
+      "category": 1,
+      "question": "Quel acteur joue le personnage de Jack Sparrow dans « Pirates des Caralbes » ?",
+      "answer": "Johnny Depp",
+      "alternativeAnswers": [
+        "Depp"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605y7p7x9hdi",
+      "category": 1,
+      "question": "Quel film d'animation met en scène des jouets prenant vie ?",
+      "answer": "Toy Story",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605lguowx4bi",
+      "category": 1,
+      "question": "Qui est le réalisateur de la trilogie « Le Seigneur des Anneaux » ?",
+      "answer": "Peter Jackson",
+      "alternativeAnswers": [
+        "Jackson"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550246055n658eed4",
+      "category": 1,
+      "question": "Quelle chanteuse est connue pour ses titres « Poker Face » et « Bad Romance » ?",
+      "answer": "Lady Gaga",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605ita3n3v35",
+      "category": 1,
+      "question": "Quel film raconte l'histoire de la vie de Freddie Mercury ?",
+      "answer": "Bohemian Rhapsody",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605dafwcb26k",
+      "category": 1,
+      "question": "Qui a réalisé le film « Inception » ?",
+      "answer": "Christopher Nolan",
+      "alternativeAnswers": [
+        "Nolan"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550246053szr73esz",
+      "category": 1,
+      "question": "Quel acteur incarne James Bond dans le film « Skyfall » ?",
+      "answer": "Daniel Craig",
+      "alternativeAnswers": [
+        "Craig"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605inytzglxi",
+      "category": 1,
+      "question": "Quel groupe britannique est célèbre pour la chanson « Yellow » ?",
+      "answer": "Coldplay",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605rf7wbhgpy",
+      "category": 1,
+      "question": "Quel film de 1997 raconte l'histoire du naufrage du Titanic ?",
+      "answer": "Titanic",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625502460566uhpzuo5",
+      "category": 1,
+      "question": "Quel film de Disney met en scène une princesse nommée Elsa ?",
+      "answer": "La Reine des Neiges",
+      "alternativeAnswers": [
+        "Frozen"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550246051zw9q6nm1",
+      "category": 1,
+      "question": "Quelle série télévisée suit les aventures des enfants de la famille Tanner à San Francisco ?",
+      "answer": "La Fête à la maison",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605zk1c1gqtm",
+      "category": 1,
+      "question": "Quel acteur joue le rôle principal dans le film « The Revenant » ?",
+      "answer": "Leonardo DiCaprio",
+      "alternativeAnswers": [
+        "DiCaprio"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605946z2hvau",
+      "category": 1,
+      "question": "Qui est le chanteur principal des Rolling Stones ?",
+      "answer": "Mick Jagger",
+      "alternativeAnswers": [
+        "Jagger"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605ajfsfg6cf",
+      "category": 1,
+      "question": "Quel film de science-fiction de 1982 est réalisé par Ridley Scott ?",
+      "answer": "Blade Runner",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625502460579ev5qw6w",
+      "category": 1,
+      "question": "Quel est le nom du premier film de la saga Star Wars sorti en 1977 ?",
+      "answer": "La Guerre des étoiles",
+      "alternativeAnswers": [
+        "Star Wars: Episode IV", "Un nouvel espoir"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255024605epr1rlk6c",
+      "category": 1,
+      "question": "Qui interprète le rôle de Hermione Granger dans les films « Harry Potter » ?",
+      "answer": "Emma Watson",
+      "alternativeAnswers": [
+        "Watson"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625502460591fpbjlki",
+      "category": 1,
+      "question": "Quel est le titre de la chanson thème de « Titanic » chantée par Céline Dion ?",
+      "answer": "My Heart Will Go On",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841019lolofm",
+      "category": 2,
+      "question": "En quelle année Christophe Colomb a-t-il découvert l'Amérique ?",
+      "answer": "1492",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625509284115edkjzxu",
+      "category": 2,
+      "question": "Qui était le président des États-Unis pendant la Guerre de Sécession ?",
+      "answer": "Abraham Lincoln",
+      "alternativeAnswers": [
+        "Lincoln"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841110pxaxc5",
+      "category": 2,
+      "question": "Quel événement historique a eu lieu le 14 juillet 1789 en France ?",
+      "answer": "La prise de la Bastille",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841tet3gp17r",
+      "category": 2,
+      "question": "Qui était le premier empereur de Rome ?",
+      "answer": "Auguste",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841e93bca98j",
+      "category": 2,
+      "question": "En quelle année la Seconde Guerre mondiale a-t-elle commencé ?",
+      "answer": "1939",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550928411eglwpw8a",
+      "category": 2,
+      "question": "Quel pharaon égyptien est connu pour son masque funéraire en or ?",
+      "answer": "Toutânkhamon",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841ywd7s7g0n",
+      "category": 2,
+      "question": "Quel mur a été démoli en 1989, marquant la fin de la Guerre froide ?",
+      "answer": "mur de Berlin",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550928412n2jceo1e",
+      "category": 2,
+      "question": "Qui a prononcé le discours « I Have a Dream » en 1963 ?",
+      "answer": "Martin Luther King Jr.",
+      "alternativeAnswers": [
+        "Luther King"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841q3o1lrd39",
+      "category": 2,
+      "question": "En quelle année la Révolution française a-t-elle commencé ?",
+      "answer": "1789",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550928412xk6nf9sn",
+      "category": 2,
+      "question": "Qui était le chef des forces alliées en Europe pendant la Seconde Guerre mondiale ?",
+      "answer": "Dwight D. Eisenhower",
+      "alternativeAnswers": [
+        "Eisenhower"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550928415dlavy74d",
+      "category": 2,
+      "question": "Quel explorateur a été le premier à atteindre le pôle Sud en 1911 ?",
+      "answer": "Roald Amundsen",
+      "alternativeAnswers": [
+        "Amundsen"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841h4ic87jxp",
+      "category": 2,
+      "question": "Quelle guerre a opposé les États-Unis à l'Irak en 1991 ?",
+      "answer": "guerre du Golfe",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841jfblzipeh",
+      "category": 2,
+      "question": "Qui a été le premier président de la Cinquième République française ?",
+      "answer": "Charles de Gaulle",
+      "alternativeAnswers": [
+        "de Gaulle"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841d2h3udfad",
+      "category": 2,
+      "question": "En quelle année l'homme a-t-il marché sur la Lune pour la première fois ?",
+      "answer": "1969",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841p61ev0luj",
+      "category": 2,
+      "question": "Qui a écrit la Déclaration d'indépendance des États-Unis ?",
+      "answer": "Thomas Jefferson",
+      "alternativeAnswers": [
+        "Jefferson"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841znlzazq4r",
+      "category": 2,
+      "question": "Quel traité a mis fin à la Première Guerre mondiale ?",
+      "answer": "traité de Versailles",
+      "alternativeAnswers": [
+        "de Versailles"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841oo3k4u70k",
+      "category": 2,
+      "question": "Qui était le dernier tsar de Russie avant la révolution de 1917 ?",
+      "answer": "Nicolas II",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550928417fkv7idcu",
+      "category": 2,
+      "question": "Quel empire a construit la Grande Muraille de Chine ?",
+      "answer": "empire Qin",
+      "alternativeAnswers": [
+        "Qin"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841rve2ramo5",
+      "category": 2,
+      "question": "Quel pays était dirigé par Adolf Hitler pendant la Seconde Guerre mondiale ?",
+      "answer": "Allemagne",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550928415od2akw6r",
+      "category": 2,
+      "question": "En quelle année la bataille de Waterloo a-t-elle eu lieu ?",
+      "answer": "1815",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841vz1xxse9u",
+      "category": 2,
+      "question": "Quel événement a déclenché la Première Guerre mondiale ?",
+      "answer": "L'assassinat de l'archiduc François-Ferdinand",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255092841azmn7f817",
+      "category": 2,
+      "question": "Qui a découvert l'Amérique avant Christophe Colomb, mais n'a pas établi de colonie durable ?",
+      "answer": "Leif Erikson",
+      "alternativeAnswers": [
+        "Erikson"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662550928417s922t0yr",
+      "category": 2,
+      "question": "En quelle année Nelson Mandela a-t-il été libéré de prison ?",
+      "answer": "1990",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255157594c6iwi88qz",
+      "category": 3,
+      "question": "• Quelle est l'œuvre la plus célèbre de Léonard de Vinci ?",
+      "answer": "La Joconde",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662551575946tszrieg7",
+      "category": 3,
+      "question": "• Qui a peint « La Nuit étoilée » ?",
+      "answer": "Vincent van Gogh",
+      "alternativeAnswers": [
+        "van Gogh"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255157594gija9j96a",
+      "category": 3,
+      "question": "• Qui est l'auteur de « Guerre et Paix » ?",
+      "answer": "Léon Tolstoï",
+      "alternativeAnswers": [
+        "Tolstoï"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255157594j255wnu1w",
+      "category": 3,
+      "question": "Qui a écrit « Don Quichotte » ?",
+      "answer": "Miguel de Cervantes",
+      "alternativeAnswers": [
+        "de Cervantes"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255157594kqr282qsc",
+      "category": 3,
+      "question": "Quel est le nom de l'auteur de « Moby Dick » ?",
+      "answer": "Herman Melville",
+      "alternativeAnswers": [
+        "Melville"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625515759468wdzi9a1",
+      "category": 3,
+      "question": "Quelle est la nationalité de l'écrivain Gabriel Garcia Mérquez ?",
+      "answer": "Colombienne",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625515759488hbogeny",
+      "category": 3,
+      "question": "Qui a peint « Guernica » ?",
+      "answer": "Pablo Picasso",
+      "alternativeAnswers": [
+        "Picasso"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625515759430h5rl0pr",
+      "category": 3,
+      "question": "Quel auteur est connu pour ses pièces de théâtre comme « Hamlet » et « Roméo et Juliette » ?",
+      "answer": "Alexandre Dumas",
+      "alternativeAnswers": [
+        "Dumas"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255157594orhbmm9pq",
+      "category": 3,
+      "question": "déjeunant avec des hommes habillés ?",
+      "answer": "Le Déjeuner sur l'herbe",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662551575941agxv15id",
+      "category": 3,
+      "question": "Quel roman de George Orwell décrit une société dystopique sous surveillance constante ?",
+      "answer": "1984",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662551575942y72kdov7",
+      "category": 3,
+      "question": "Quel écrivain américain est connu pour son roman « À l'est d'Éden » ?",
+      "answer": "John Steinbeck",
+      "alternativeAnswers": [
+        "Steinbeck"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255157594eu599mg0t",
+      "category": 3,
+      "question": "Qui est l'auteur de « L'Étranger » ?",
+      "answer": "Albert Camus",
+      "alternativeAnswers": [
+        "Camus"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255157594s9ftrft8f",
+      "category": 3,
+      "question": "Quel poète anglais est l'auteur de « La Chanson de Roland » ?",
+      "answer": "Anonyme",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662551575941w9rj0tgl",
+      "category": 3,
+      "question": "Quel artiste est connu pour ses toiles de nénuphars et ses jardins à Giverny ?",
+      "answer": "Claude Monet",
+      "alternativeAnswers": [
+        "Monet"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255157594nvyiwswsv",
+      "category": 3,
+      "question": "Quel roman de Mary Shelley met en scène un scientifique créant un monstre ?",
+      "answer": "Frankenstein",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662551575947rwcunnzk",
+      "category": 3,
+      "question": "Quel peintre est célèbre pour ses œuvres représentant des danseuses de ballet ?",
+      "answer": "Edgar Degas",
+      "alternativeAnswers": [
+        "Degas"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494rd6gqj028",
+      "category": 4,
+      "question": "Quel est l'élément chimique dont le symbole est O ?",
+      "answer": "oxygène",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494i20tg5fd3",
+      "category": 4,
+      "question": "Quelle est la planète la plus proche du Soleil ?",
+      "answer": "Mercure",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662552244946sx1hqreb",
+      "category": 4,
+      "question": "Quel est l'organe le plus grand du corps humain ?",
+      "answer": "peau",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662552244943xarh3o3l",
+      "category": 4,
+      "question": "Quel est l'élément chimique dont le symbole est Au ?",
+      "answer": "or",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494a2zfo329r",
+      "category": 4,
+      "question": "Quelle est la principale source d'énergie de la Terre ?",
+      "answer": "soleil",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494qeotfi0d9",
+      "category": 4,
+      "question": "Quel scientifique est connu pour sa théorie de la relativité ?",
+      "answer": "Albert Einstein",
+      "alternativeAnswers": [
+        "Einstein"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494f1qazc06i",
+      "category": 4,
+      "question": "Quelle est la distance approximative entre la Terre et la Lune ?",
+      "answer": "384 400 km",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494n7qj41upy",
+      "category": 4,
+      "question": "Quel est le plus grand océan du monde ?",
+      "answer": "Pacifique",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662552244941z37go3dr",
+      "category": 4,
+      "question": "Quelle est la planète la plus grande du système solaire ?",
+      "answer": "Jupiter",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494l3zmcg7gp",
+      "category": 4,
+      "question": "Quelle force nous maintient sur Terre ?",
+      "answer": "gravité",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625522449410tgqr0ui",
+      "category": 4,
+      "question": "Quel est le nom de l'élément chimique dont le symbole est Na ?",
+      "answer": "sodium",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662552244941l20pyck0",
+      "category": 4,
+      "question": "Quelle est environ la vitesse de la lumière dans le vide ?",
+      "answer": "300 000 km/s",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662552244949zjxmmj9s",
+      "category": 4,
+      "question": "Quel est le nom scientifique de l'eau ?",
+      "answer": "H20",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494uz0mkcdyb",
+      "category": 4,
+      "question": "Qui a formulé la loi de la gravitation universelle ?",
+      "answer": "Isaac Newton",
+      "alternativeAnswers": [
+        "Newton"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494l6k62ekus",
+      "category": 4,
+      "question": "Quelle est la plus petite unité de matière ?",
+      "answer": "atome",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494s4d9489wy",
+      "category": 4,
+      "question": "Quelle planète est surnommée « la planète rouge » ?",
+      "answer": "Mars",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494xjf5o69o1",
+      "category": 4,
+      "question": "Quel est l'élément chimique dont le symbole est He ?",
+      "answer": "hélium",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662552244948xs1yzjxk",
+      "category": 4,
+      "question": "Quelle est la principale composante de l'atmosphère terrestre ?",
+      "answer": "azote",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662552244945tn5u359i",
+      "category": 4,
+      "question": "Quel est le nom du plus grand dinosaure connu ?",
+      "answer": "Argentinosaurus",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662552244946hpagccu5",
+      "category": 4,
+      "question": "Qui a découvert la pénicilline ?",
+      "answer": "Alexander Fleming",
+      "alternativeAnswers": [
+        "Fleming"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494qxuae06mg",
+      "category": 4,
+      "question": "Quelle est la température normale du corps humain en degrés Celsius ?",
+      "answer": "37",
+      "alternativeAnswers": [
+        "37,5"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494laugbq6aq",
+      "category": 4,
+      "question": "Quel est le plus grand mammifère terrestre ?",
+      "answer": "éléphant d'Afrique",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494rfbkdob8p",
+      "category": 4,
+      "question": "Quelle est la molécule responsable de la photosynthèse chez les plantes ?",
+      "answer": "chlorophylle",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494mk9wbdj9s",
+      "category": 4,
+      "question": "Quel est le plus petit os du corps humain ?",
+      "answer": "étrier",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494x8qrtqi9d",
+      "category": 4,
+      "question": "Quel est l'élément chimique dont le symbole est Fe ?",
+      "answer": "fer",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494msn2jfuqq",
+      "category": 4,
+      "question": "Quelle est la durée de la période de révolution de la Terre autour du Soleil ?",
+      "answer": "365,25",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494kv9obkdhs",
+      "category": 4,
+      "question": "Quel est le nom de la science qui étudie les insectes ?",
+      "answer": "entomologie",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "176625522449423vbqugs8",
+      "category": 4,
+      "question": "Quel est le gaz le plus abondant dans l'atmosphère terrestre ?",
+      "answer": "azote",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255224494mumsplapz",
+      "category": 4,
+      "question": "Quel est le nom de l'élément chimique dont le symbole est C ?",
+      "answer": "carbone",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633qntnb67bf",
+      "category": 5,
+      "question": "Quel pays a remporté la Coupe du Monde de football en 2018 ?",
+      "answer": "France",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633qa3ph2zh6",
+      "category": 5,
+      "question": "Qui est considéré comme le meilleur joueur de basket de tous les temps ?",
+      "answer": "Michael Jordan",
+      "alternativeAnswers": [
+        "Jordan"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633ylkkh4g0q",
+      "category": 5,
+      "question": "Quelle ville accueille le tournoi de tennis de Wimbledon ?",
+      "answer": "Londres",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662553036333s8r7u8vf",
+      "category": 5,
+      "question": "Quel est le sport national du Japon ?",
+      "answer": "sumo",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633r2fkl9e78",
+      "category": 5,
+      "question": "Quel joueur de football a remporté le Ballon d'Or six fois ?",
+      "answer": "Lionel Messi",
+      "alternativeAnswers": [
+        "Messi"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633536u685ty",
+      "category": 5,
+      "question": "Quelle est la distance d'un marathon en kilomètres ?",
+      "answer": "42,195",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662553036337tp3qasne",
+      "category": 5,
+      "question": "Quel pays a accueilli les Jeux Olympiques d'été en 2008 ?",
+      "answer": "Chine",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633tqwxc3umc",
+      "category": 5,
+      "question": "Quelle équipe de football américain a remporté le plus de Super Bowls ?",
+      "answer": "Les Patriots de la Nouvelle-Angleterre",
+      "alternativeAnswers": [
+        "New England Patriots"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633778xinraw",
+      "category": 5,
+      "question": "Quelle est la surface de jeu d'un terrain de football en mètres ?",
+      "answer": "105 x 68",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633iogn1a3d2",
+      "category": 5,
+      "question": "Qui détient le record du monde du 100 mètres en athlétisme ?",
+      "answer": "Usain Bolt",
+      "alternativeAnswers": [
+        "Bolt"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633lo7lhqc3v",
+      "category": 5,
+      "question": "Quelle est la couleur du maillot porté par le leader du Tour de France ?",
+      "answer": "Jaune",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633r2v25p62d",
+      "category": 5,
+      "question": "Quelle équipe nationale de rugby est surnommée les « All Blacks » ?",
+      "answer": "Nouvelle-Zélande",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633b9vp3fjb2",
+      "category": 5,
+      "question": "Quelle est la hauteur du filet dans un match de volleyball pour hommes ?",
+      "answer": "2,43 mètres",
+      "alternativeAnswers": [
+        "2.43", "2,43"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662553036331kf9sqssk",
+      "category": 5,
+      "question": "Qui a remporté le plus de titres du Grand Chelem en tennis ?",
+      "answer": "Roger Federer",
+      "alternativeAnswers": [
+        "Rafael Nadal", "Novak Djokovic", "Federer", "Nadal", "Djokovic"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633qf33lse04",
+      "category": 5,
+      "question": "Quel sport est pratiqué avec une balle et une batte et se joue principalement aux États-Unis ?",
+      "answer": "baseball",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633d0pbwh505",
+      "category": 5,
+      "question": "Quelle est la taille d'un terrain de basket-ball en mètres ?",
+      "answer": "28 x 15",
+      "alternativeAnswers": [
+        "28 x 15"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633zoyiojefc",
+      "category": 5,
+      "question": "Quel joueur de tennis est surnommé « le Roi de la terre battue » ?",
+      "answer": "Rafael Nadal",
+      "alternativeAnswers": [
+        "Nadal"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633i86kxpkri",
+      "category": 5,
+      "question": "Quel est le nom du stade où se joue la finale de la Ligue des champions ?",
+      "answer": "La réponse varie car la finale est jouée dans un stade différent chaque année.",
+      "alternativeAnswers": [
+        "auccun","variable", "ca depend de l'annee"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1766255303633q3pvk24cw",
+      "category": 5,
+      "question": "Quel pays a remporté la première Coupe du Monde de football en 1930 ?",
+      "answer": "Uruguay",
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17662553036338rym96l5q",
+      "category": 5,
+      "question": "Quel joueur de golf est surnommé « le Tigre » ?",
+      "answer": "Tiger Woods",
+      "alternativeAnswers": [
+        "Woods"
+      ],
+      "trivialBox": "Vieweurs",
+      "difficulty": "medium"
+    }
+  ]
+}

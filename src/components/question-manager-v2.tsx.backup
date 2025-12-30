@@ -1,0 +1,563 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect, useRef, useState } from 'react';
+import { Button, Form, Modal, Table, Badge, Tabs, Tab, Alert } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { categoryColors, categoryNames, Question, TrivialCategory, useQuizStore } from './store/quiz-store';
+import { useGlobalStore } from './store/global-store';
+
+const QuestionManager = () => {
+  const navigate = useNavigate();
+  const globalStore = useGlobalStore();
+  const quizStore = useQuizStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [showModal, setShowModal] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
+  const [selectedBox, setSelectedBox] = useState<string>('');
+  const [filterCategory, setFilterCategory] = useState<TrivialCategory | 'all'>('all');
+  const [importSuccess, setImportSuccess] = useState<string>('');
+  const [importError, setImportError] = useState<string>('');
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    question: '',
+    answer: '',
+    alternativeAnswers: '',
+    category: TrivialCategory.Geography,
+    trivialBox: '',
+    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
+  });
+
+  // Gestion des boîtes
+  const [showBoxModal, setShowBoxModal] = useState(false);
+  const [newBoxName, setNewBoxName] = useState('');
+
+  useEffect(() => {
+    globalStore.setSubtitle('Gestion des questions');
+  }, []);
+
+  const trivialBoxes = quizStore.getTrivialBoxes();
+  const allQuestions = selectedBox 
+    ? quizStore.getQuestionsByBox(selectedBox)
+    : quizStore.questions;
+
+  const filteredQuestions = filterCategory === 'all' 
+    ? allQuestions 
+    : allQuestions.filter(q => q.category === filterCategory);
+
+  // Export JSON
+  const handleExport = () => {
+    const exportData = {
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      trivialBoxes: quizStore.trivialBoxes,
+      questions: quizStore.questions,
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `quiz-questions-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // Import JSON
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const data = JSON.parse(content);
+
+        // Validation basique
+        if (!data.questions || !Array.isArray(data.questions)) {
+          setImportError('Fichier invalide : format non reconnu');
+          return;
+        }
+
+        // Import des boîtes
+        if (data.trivialBoxes && Array.isArray(data.trivialBoxes)) {
+          data.trivialBoxes.forEach((box: string) => {
+            if (!quizStore.trivialBoxes.includes(box)) {
+              quizStore.addTrivialBox(box);
+            }
+          });
+        }
+
+        // Import des questions
+        let importedCount = 0;
+        data.questions.forEach((q: Question) => {
+          // Vérifier que la question n'existe pas déjà
+          const exists = quizStore.questions.find(existing => 
+            existing.question === q.question && existing.trivialBox === q.trivialBox
+          );
+          
+          if (!exists) {
+            quizStore.addQuestion(q);
+            importedCount++;
+          }
+        });
+
+        setImportSuccess(`✅ ${importedCount} question(s) importée(s) avec succès !`);
+        setTimeout(() => setImportSuccess(''), 5000);
+
+        // Reset file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      } catch (error) {
+        setImportError(`❌ Erreur lors de l'import : ${error}`);
+        setTimeout(() => setImportError(''), 5000);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleOpenModal = (question?: Question) => {
+    if (question) {
+      setEditingQuestion(question);
+      setFormData({
+        question: question.question,
+        answer: question.answer,
+        alternativeAnswers: question.alternativeAnswers?.join(', ') || '',
+        category: question.category,
+        trivialBox: question.trivialBox,
+        difficulty: question.difficulty || 'medium',
+      });
+    } else {
+      setEditingQuestion(null);
+      setFormData({
+        question: '',
+        answer: '',
+        alternativeAnswers: '',
+        category: TrivialCategory.Geography,
+        trivialBox: selectedBox || trivialBoxes[0] || '',
+        difficulty: 'medium',
+      });
+    }
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingQuestion(null);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const alternativeAnswers = formData.alternativeAnswers
+      .split(',')
+      .map(a => a.trim())
+      .filter(a => a.length > 0);
+
+    if (editingQuestion) {
+      // Modification
+      quizStore.updateQuestion(editingQuestion.id, {
+        question: formData.question,
+        answer: formData.answer,
+        alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
+        category: formData.category,
+        trivialBox: formData.trivialBox,
+        difficulty: formData.difficulty,
+      });
+    } else {
+      // Création
+      const newQuestion: Question = {
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        question: formData.question,
+        answer: formData.answer,
+        alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
+        category: formData.category,
+        trivialBox: formData.trivialBox,
+        difficulty: formData.difficulty,
+      };
+      quizStore.addQuestion(newQuestion);
+    }
+
+    handleCloseModal();
+  };
+
+  const handleDeleteQuestion = (questionId: string) => {
+    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette question ?')) {
+      quizStore.deleteQuestion(questionId);
+    }
+  };
+
+  const handleAddBox = () => {
+    if (newBoxName.trim()) {
+      quizStore.addTrivialBox(newBoxName.trim());
+      setNewBoxName('');
+      setShowBoxModal(false);
+    }
+  };
+
+  const handleDeleteBox = (boxName: string) => {
+    const questionsInBox = quizStore.getQuestionsByBox(boxName);
+    if (questionsInBox.length > 0) {
+      if (!window.confirm(`Cette boîte contient ${questionsInBox.length} questions. Voulez-vous vraiment la supprimer ? Les questions seront conservées.`)) {
+        return;
+      }
+    }
+    quizStore.removeTrivialBox(boxName);
+    if (selectedBox === boxName) {
+      setSelectedBox('');
+    }
+  };
+
+  const getQuestionCountByCategory = (box: string) => {
+    const questions = quizStore.getQuestionsByBox(box);
+    const counts: Record<TrivialCategory, number> = {
+      [TrivialCategory.Geography]: 0,
+      [TrivialCategory.Entertainment]: 0,
+      [TrivialCategory.History]: 0,
+      [TrivialCategory.Arts]: 0,
+      [TrivialCategory.Science]: 0,
+      [TrivialCategory.Sports]: 0,
+    };
+    questions.forEach(q => counts[q.category]++);
+    return counts;
+  };
+
+  return (
+    <>
+      {/* Alerts pour import */}
+      {importSuccess && (
+        <Alert variant="success" className="mb-3" dismissible onClose={() => setImportSuccess('')}>
+          {importSuccess}
+        </Alert>
+      )}
+      {importError && (
+        <Alert variant="danger" className="mb-3" dismissible onClose={() => setImportError('')}>
+          {importError}
+        </Alert>
+      )}
+
+      {/* Input caché pour import */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        style={{ display: 'none' }}
+        onChange={handleImport}
+      />
+
+      {/* Modal de gestion des boîtes */}
+      <Modal show={showBoxModal} onHide={() => setShowBoxModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Ajouter une boîte Trivial Pursuit</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Nom de la boîte</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ex: Édition Classique, Années 90..."
+              value={newBoxName}
+              onChange={(e) => setNewBoxName(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowBoxModal(false)}>
+            Annuler
+          </Button>
+          <Button variant="primary" onClick={handleAddBox}>
+            Ajouter
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal d'édition de question */}
+      <Modal show={showModal} onHide={handleCloseModal} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{editingQuestion ? 'Modifier la question' : 'Nouvelle question'}</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSubmit}>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>Boîte Trivial Pursuit *</Form.Label>
+              <Form.Select
+                required
+                value={formData.trivialBox}
+                onChange={(e) => setFormData({ ...formData, trivialBox: e.target.value })}
+              >
+                <option value="">Sélectionner une boîte...</option>
+                {trivialBoxes.map(box => (
+                  <option key={box} value={box}>{box}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Catégorie *</Form.Label>
+              <Form.Select
+                required
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: parseInt(e.target.value) as TrivialCategory })}
+              >
+                {Object.entries(categoryNames).map(([key, name]) => (
+                  <option key={key} value={key}>
+                    {name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Question *</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                required
+                placeholder="Entrez votre question..."
+                value={formData.question}
+                onChange={(e) => setFormData({ ...formData, question: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Réponse *</Form.Label>
+              <Form.Control
+                type="text"
+                required
+                placeholder="Réponse correcte"
+                value={formData.answer}
+                onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Réponses alternatives (optionnel)</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Séparez par des virgules : réponse1, réponse2"
+                value={formData.alternativeAnswers}
+                onChange={(e) => setFormData({ ...formData, alternativeAnswers: e.target.value })}
+              />
+              <Form.Text className="text-muted">
+                Accepte aussi les variantes orthographiques grâce à la tolérance aux fautes
+              </Form.Text>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Difficulté</Form.Label>
+              <Form.Select
+                value={formData.difficulty}
+                onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as 'easy' | 'medium' | 'hard' })}
+              >
+                <option value="easy">Facile</option>
+                <option value="medium">Moyen</option>
+                <option value="hard">Difficile</option>
+              </Form.Select>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Annuler
+            </Button>
+            <Button variant="primary" type="submit">
+              {editingQuestion ? 'Modifier' : 'Ajouter'}
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+
+      {/* Interface principale */}
+      <div className="mb-3 d-flex justify-content-between">
+        <Button onClick={() => navigate('/quiz')}>
+          <FontAwesomeIcon icon={['fas', 'arrow-left']} /> Retour au quiz
+        </Button>
+        <div>
+          <Button variant="success" className="me-2" onClick={handleExport}>
+            <FontAwesomeIcon icon={['fas', 'download']} /> Exporter JSON
+          </Button>
+          <Button variant="info" onClick={() => fileInputRef.current?.click()}>
+            <FontAwesomeIcon icon={['fas', 'upload']} /> Importer JSON
+          </Button>
+        </div>
+      </div>
+
+      <Tabs defaultActiveKey="questions" className="mb-3">
+        <Tab eventKey="questions" title="Questions">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <Form.Select
+                style={{ width: '250px', display: 'inline-block' }}
+                value={selectedBox}
+                onChange={(e) => setSelectedBox(e.target.value)}
+              >
+                <option value="">Toutes les boîtes</option>
+                {trivialBoxes.map(box => (
+                  <option key={box} value={box}>
+                    {box} ({quizStore.getQuestionsByBox(box).length} questions)
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Select
+                className="ms-2"
+                style={{ width: '200px', display: 'inline-block' }}
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value === 'all' ? 'all' : parseInt(e.target.value) as TrivialCategory)}
+              >
+                <option value="all">Toutes les catégories</option>
+                {Object.entries(categoryNames).map(([key, name]) => (
+                  <option key={key} value={key}>{name}</option>
+                ))}
+              </Form.Select>
+            </div>
+            <Button onClick={() => handleOpenModal()}>
+              <FontAwesomeIcon icon={['fas', 'plus']} /> Nouvelle question
+            </Button>
+          </div>
+
+          {filteredQuestions.length === 0 ? (
+            <div className="text-center p-5">
+              <FontAwesomeIcon icon={['fas', 'question']} size="3x" color="var(--alt-text-color)" />
+              <p className="mt-3 text-muted">Aucune question. Commencez par ajouter une boîte Trivial Pursuit et des questions.</p>
+            </div>
+          ) : (
+            <Table hover responsive>
+              <thead>
+                <tr>
+                  <th style={{ width: '15%' }}>Boîte</th>
+                  <th style={{ width: '15%' }}>Catégorie</th>
+                  <th style={{ width: '40%' }}>Question</th>
+                  <th style={{ width: '20%' }}>Réponse</th>
+                  <th style={{ width: '10%' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredQuestions.map(question => (
+                  <tr key={question.id}>
+                    <td><Badge bg="secondary">{question.trivialBox}</Badge></td>
+                    <td>
+                      <Badge 
+                        bg=""
+                        style={{ 
+                          backgroundColor: categoryColors[question.category],
+                          color: 'white',
+                          fontWeight: 'bold',
+                          border: '2px solid rgba(0,0,0,0.2)'
+                        }}
+                      >
+                        {categoryNames[question.category]}
+                      </Badge>
+                    </td>
+                    <td>{question.question}</td>
+                    <td>
+                      <strong>{question.answer}</strong>
+                      {question.alternativeAnswers && question.alternativeAnswers.length > 0 && (
+                        <div className="text-muted small">
+                          Alternatives: {question.alternativeAnswers.join(', ')}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <Button
+                        size="sm"
+                        variant="outline-primary"
+                        className="me-1"
+                        onClick={() => handleOpenModal(question)}
+                      >
+                        <FontAwesomeIcon icon={['fas', 'edit']} />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline-danger"
+                        onClick={() => handleDeleteQuestion(question.id)}
+                      >
+                        <FontAwesomeIcon icon={['fas', 'trash']} />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </Tab>
+
+        <Tab eventKey="boxes" title="Boîtes Trivial Pursuit">
+          <div className="mb-3">
+            <Button onClick={() => setShowBoxModal(true)}>
+              <FontAwesomeIcon icon={['fas', 'plus']} /> Ajouter une boîte
+            </Button>
+          </div>
+
+          {trivialBoxes.length === 0 ? (
+            <div className="text-center p-5">
+              <FontAwesomeIcon icon={['fas', 'box']} size="3x" color="var(--alt-text-color)" />
+              <p className="mt-3 text-muted">Aucune boîte. Ajoutez votre première boîte Trivial Pursuit.</p>
+            </div>
+          ) : (
+            <div className="row">
+              {trivialBoxes.map(box => {
+                const counts = getQuestionCountByCategory(box);
+                const total = Object.values(counts).reduce((a, b) => a + b, 0);
+                const canGenerateQuiz = Object.values(counts).every(c => c > 0);
+
+                return (
+                  <div key={box} className="col-md-6 mb-3">
+                    <div className="card">
+                      <div className="card-body">
+                        <div className="d-flex justify-content-between align-items-start">
+                          <h5 className="card-title">{box}</h5>
+                          <Button
+                            size="sm"
+                            variant="outline-danger"
+                            onClick={() => handleDeleteBox(box)}
+                          >
+                            <FontAwesomeIcon icon={['fas', 'trash']} />
+                          </Button>
+                        </div>
+                        <p className="card-text">
+                          <strong>{total}</strong> questions totales
+                        </p>
+                        <div className="mb-2">
+                          {Object.entries(categoryNames).map(([key, name]) => {
+                            const count = counts[parseInt(key) as TrivialCategory];
+                            return (
+                              <Badge
+                                key={key}
+                                className="me-1 mb-1"
+                                bg=""
+                                style={{
+                                  backgroundColor: categoryColors[parseInt(key) as TrivialCategory],
+                                  color: 'white',
+                                  fontWeight: 'bold',
+                                  border: '2px solid rgba(0,0,0,0.2)'
+                                }}
+                              >
+                                {name}: {count}
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                        {canGenerateQuiz ? (
+                          <Badge bg="success">✓ Prêt pour quiz</Badge>
+                        ) : (
+                          <Badge bg="warning">⚠ Catégories manquantes</Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Tab>
+      </Tabs>
+    </>
+  );
+};
+
+export default QuestionManager;

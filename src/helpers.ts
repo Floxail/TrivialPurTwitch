@@ -50,10 +50,26 @@ export const cleanValueLight = (value: string) => {
     .replaceAll(/^[!?]+/g, '')
     .replaceAll(/ [!?]+/g, ' ')
     .replaceAll(/[!?]+ /g, ' ')
-    .replaceAll(/[¿¡*,.’':_\/-]/g, '')
+    .replaceAll(/[¿¡*,.'':_\/-]/g, '')
     .replaceAll('œ', 'oe')
     .replaceAll(/[$]/g, 's')
     .replaceAll(/[ø]/g, 'o')
+    .trim();
+};
+
+// Remove articles (le, la, les, un, une, des, l', the, a, an) for more permissive matching
+export const removeArticles = (value: string) => {
+  return value
+    .replace(/^le /i, '')
+    .replace(/^la /i, '')
+    .replace(/^les /i, '')
+    .replace(/^un /i, '')
+    .replace(/^une /i, '')
+    .replace(/^des /i, '')
+    .replace(/^l'/i, '')
+    .replace(/^the /i, '')
+    .replace(/^a /i, '')
+    .replace(/^an /i, '')
     .trim();
 };
 

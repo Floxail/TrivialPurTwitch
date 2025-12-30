@@ -1,8 +1,8 @@
 {
   "name": "blindtestwitch",
   "packageManager": "yarn@4.12.0",
-  "version": "0.1.0",
-  "homepage": "https://s-vivien.github.io/BlindTesTwitch/",
+  "version": "0.4.2",
+  "homepage": "https://floxail.github.io/TrivialPurTwitch",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
@@ -29,10 +29,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:https": "host=127.0.0.1 https=true react-scripts start",
+   "start:https": "host=127.0.0.1 https=true react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+   "test": "react-scripts test",
+   "eject": "react-scripts eject",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build"
   },
@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "eslint": "^8.6.0",
-    "gh-pages": "^6.1.1",
+    "gh-pages": "^6.3.0",
     "sass": "^1.58.3"
   }
 }
