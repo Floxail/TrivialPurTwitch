@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/TrivialPurTwitch/static/css/main.f20e3bb7.css",
+    "main.js": "/TrivialPurTwitch/static/js/main.3c9c95dc.js",
+    "index.html": "/TrivialPurTwitch/index.html",
+    "main.f20e3bb7.css.map": "/TrivialPurTwitch/static/css/main.f20e3bb7.css.map",
+    "main.3c9c95dc.js.map": "/TrivialPurTwitch/static/js/main.3c9c95dc.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f20e3bb7.css",
+    "static/js/main.3c9c95dc.js"
+  ]
+}

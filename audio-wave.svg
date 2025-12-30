@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+<g transform="scale(.5) translate(150 150)">
+<rect x="50" width="20" height="50" fill="#18191a">
+<animate attributeName="height" dur="1.0s" keyTimes="0;0.33;0.66;1.0" repeatCount="indefinite" values="30;60;190;30"/>
+<animate attributeName="y" dur="1.0s" keyTimes="0;0.33;0.66;1.0" repeatCount="indefinite" values="220;190;60;220"/>
+</rect>
+<rect x="80" width="20" height="50" fill="#18191a">
+<animate attributeName="height" dur="1.0s" keyTimes="0;0.2;0.4;1.0" repeatCount="indefinite" values="20;140;180;20"/>
+<animate attributeName="y" dur="1.0s" keyTimes="0;0.2;0.4;1.0" repeatCount="indefinite" values="230;110;70;230"/>
+</rect>
+<rect x="110" width="20" height="50" fill="#18191a">
+<animate attributeName="height" dur="1.0s" keyTimes="0;0.25;0.76;1.0" repeatCount="indefinite" values="60;20;140;60"/>
+<animate attributeName="y" dur="1.0s" keyTimes="0;0.25;0.76;1.0" repeatCount="indefinite" values="190;230;110;190"/>
+</rect>
+<rect x="140" width="20" height="50" fill="#18191a">
+<animate attributeName="height" dur="1.0s" keyTimes="0;0.23;0.66;1.0" repeatCount="indefinite" values="30;40;220;30"/>
+<animate attributeName="y" dur="1.0s" keyTimes="0;0.23;0.66;1.0" repeatCount="indefinite" values="220;210;30;220"/>
+</rect>
+<rect x="170" width="20" height="50" fill="#18191a">
+<animate attributeName="height" dur="0.5s" keyTimes="0;0.5;1" repeatCount="indefinite" values="90;180;90"/>
+<animate attributeName="y" dur="0.5s" keyTimes="0;0.5;1" repeatCount="indefinite" values="160;70;160"/>
+</rect>
+<rect x="200" width="20" height="50" fill="#18191a">
+<animate attributeName="height" dur="0.5s" keyTimes="0;0.5;1" repeatCount="indefinite" values="200;70;200"/>
+<animate attributeName="y" dur="0.5s" keyTimes="0;0.5;1" repeatCount="indefinite" values="50;180;50"/>
+</rect>
+<rect x="230" width="20" height="50" fill="#18191a">
+<animate attributeName="height" dur="1.0s" keyTimes="0;0.33;0.66;1.0" repeatCount="indefinite" values="60;90;190;60"/>
+<animate attributeName="y" dur="1.0s" keyTimes="0;0.33;0.66;1.0" repeatCount="indefinite" values="190;160;60;190"/>
+</rect>
+</g>
+</svg>
