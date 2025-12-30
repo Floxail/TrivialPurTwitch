@@ -1,8 +1,26 @@
-import { Guessable, GuessableState, GuessableType } from './store/blind-test-tracks-store';
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const DISPLAYED_GUESS_NICK_LIMIT = 5;
+
+// Types locaux pour éviter la dépendance au blind-test
+export enum GuessableType {
+  Title = 0,
+  Artist = 1,
+  Misc = 2
+}
+
+export enum GuessableState {
+  Disabled = 0,
+  Enabled = 1,
+  Locked = 2
+}
+
+export type Guessable = {
+  toGuess: string[];
+  original: string;
+  state: GuessableState;
+}
 
 type Guesser = {
   nick: string,

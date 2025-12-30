@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GlobalMenu from 'components/global-menu';
 import { useAuthStore } from 'components/store/auth-store';
-import { useBTTracksStore } from 'components/store/blind-test-tracks-store';
 import { useGlobalStore } from 'components/store/global-store';
 import { useSettingsStore } from 'components/store/settings-store';
 import { useQuizStore } from 'components/store/quiz-store-v2';
@@ -22,7 +21,6 @@ function App() {
 	const authStore = useAuthStore();
 	const globalStore = useGlobalStore();
 	const quizStore = useQuizStore();
-	const btTotalTracks = useBTTracksStore((state) => state.totalTracks);
 
 	const [view, setView] = useState(<div />);
 	const [errorMessage, setErrorMessage] = useState('');
@@ -34,14 +32,30 @@ function App() {
 	}, []);
 
 	// Migration automatique au premier chargement
-	useEffect(() => {
-		const migrated = localStorage.getItem('quiz_migration_v2_done');
-		if (!migrated) {
-			console.log('🔄 Migration v1 → v2 détectée...');
-			quizStore.migrateFromV1();
-			localStorage.setItem('quiz_migration_v2_done', 'true');
-		}
-	}, []);
+	// Migration automatique au premier chargement
+useEffect(() => {
+  const migrated = localStorage.getItem('quiz_migration_v2_done');
+  if (!migrated) {
+    console.log('🔄 Migration v1 → v2 détectée...');
+    quizStore.migrateFromV1();
+    localStorage.setItem('quiz_migration_v2_done', 'true');
+  }
+  
+  // AJOUTER ICI : Charger depuis GitHub
+  const lastSync = localStorage.getItem('quiz_last_github_sync');
+  const now = Date.now();
+  const oneDay = 24 * 60 * 60 * 1000;
+  
+  // Charger depuis GitHub si :
+  // - Jamais synchronisé
+  // - Dernière sync > 24h
+  if (!lastSync || (now - parseInt(lastSync)) > oneDay) {
+    console.log('🔄 Chargement des questions depuis GitHub...');
+    quizStore.loadFromGitHub().then(() => {
+      localStorage.setItem('quiz_last_github_sync', now.toString());
+    });
+  }
+}, []);
 
 	useEffect(() => {
 		if (!authStore.isLoggedIn()) {

@@ -45,7 +45,7 @@ export const cleanValueLight = (value: string) => {
   return value
     .toLowerCase()
     .normalize('NFD')
-    .replaceAll(/\p{Diacritic}/gu, '')
+    .replaceAll(/[\u0300-\u036f]/g, '')
     .replaceAll(/[!?]+$/g, '')
     .replaceAll(/^[!?]+/g, '')
     .replaceAll(/ [!?]+/g, ' ')

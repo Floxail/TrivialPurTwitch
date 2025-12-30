@@ -122,6 +122,25 @@ const QuestionManager = () => {
     setTimeout(() => setImportSuccess(''), 5000);
   };
 
+  // Synchronisation depuis GitHub
+  const handleSyncFromGitHub = async () => {
+    try {
+      setImportSuccess('🔄 Synchronisation avec GitHub en cours...');
+      await quizStore.loadFromGitHub();
+
+      if (quizStore.syncStatus === 'success') {
+        setImportSuccess('✅ Synchronisation GitHub réussie !');
+        setTimeout(() => setImportSuccess(''), 5000);
+      } else {
+        setImportError('❌ Erreur lors de la synchronisation GitHub');
+        setTimeout(() => setImportError(''), 5000);
+      }
+    } catch (error) {
+      setImportError('❌ Erreur lors de la synchronisation GitHub');
+      setTimeout(() => setImportError(''), 5000);
+    }
+  };
+
   const allQuestions = selectedBox
     ? quizStore.getQuestionsByBox(selectedBox)
     : quizStore.questions;
@@ -651,6 +670,9 @@ const QuestionManager = () => {
           <FontAwesomeIcon icon={['fas', 'arrow-left']} /> Retour au quiz
         </Button>
         <div>
+          <Button variant="primary" className="me-2" onClick={handleSyncFromGitHub}>
+            <FontAwesomeIcon icon={['fas', 'sync']} /> Sync GitHub
+          </Button>
           <Button variant="warning" className="me-2" onClick={handleCheckDuplicates}>
             <FontAwesomeIcon icon={['fas', 'search']} /> Vérifier doublons
           </Button>

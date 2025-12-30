@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
+import { loadQuestionsFromGitHub, mergeQuestionsFromGitHub } from '../../services/github-data-service';
 const localStorageKey: string = 'quiz_questions_storage_v2';
 
 // Catégories Trivial Pursuit standard
@@ -80,6 +80,8 @@ export class QuizData {
   boxes: TrivialBox[] = []; // Liste des boîtes avec leurs cartes
   activeQuiz: ActiveQuiz | null = null;
   completedQuizzes: number = 0;
+  syncStatus: 'idle' | 'loading' | 'success' | 'error' = 'idle';
+  lastGitHubSync?: string;
 
   // Settings
   cumulativeScoresInCardMode: boolean = false; // Cumuler les scores entre cartes
@@ -125,6 +127,9 @@ type Actions = {
 
   // Migration
   migrateFromV1: () => void;
+
+  // Fusionner les questions depuis GitHub
+  loadFromGitHub: () => Promise<void>;
 };
 
 // Restore persisted state
@@ -134,6 +139,8 @@ const restoredState: QuizData = {
   boxes: plain.boxes || [],
   activeQuiz: null, // On ne restore pas le quiz actif
   completedQuizzes: plain.completedQuizzes || 0,
+  syncStatus: 'idle',
+  lastGitHubSync: plain.lastGitHubSync,
   cumulativeScoresInCardMode: plain.cumulativeScoresInCardMode || false,
   cumulativeScoresInQuizMode: plain.cumulativeScoresInQuizMode || false,
   defaultQuizQuestions: plain.defaultQuizQuestions || 10,
@@ -146,6 +153,8 @@ export const useQuizStore = create<QuizData & Actions>()(
       boxes: restoredState.boxes,
       activeQuiz: restoredState.activeQuiz,
       completedQuizzes: restoredState.completedQuizzes,
+      syncStatus: restoredState.syncStatus,
+      lastGitHubSync: restoredState.lastGitHubSync,
       cumulativeScoresInCardMode: restoredState.cumulativeScoresInCardMode,
       cumulativeScoresInQuizMode: restoredState.cumulativeScoresInQuizMode,
       defaultQuizQuestions: restoredState.defaultQuizQuestions,
@@ -476,6 +485,45 @@ export const useQuizStore = create<QuizData & Actions>()(
           console.log(`✅ Migration terminée : ${boxes.length} boîtes créées`);
         } catch (error) {
           console.error('❌ Erreur lors de la migration :', error);
+        }
+      },
+
+      // Synchronisation depuis GitHub
+      loadFromGitHub: async () => {
+        set({ syncStatus: 'loading' });
+
+        try {
+          const githubData = await loadQuestionsFromGitHub();
+
+          if (!githubData) {
+            set({ syncStatus: 'error' });
+            return;
+          }
+
+          const current = get();
+
+          // Fusionner avec les questions locales
+          const mergedQuestions = mergeQuestionsFromGitHub(
+            githubData,
+            current.questions
+          );
+
+          // Reconstruire les boîtes
+          const boxes = get().rebuildBoxes(mergedQuestions);
+
+          set({
+            questions: mergedQuestions,
+            boxes,
+            syncStatus: 'success',
+            lastGitHubSync: new Date().toISOString(),
+          });
+
+          get().backup();
+
+          console.log(`✅ ${mergedQuestions.length} questions chargées depuis GitHub`);
+        } catch (error) {
+          console.error('❌ Erreur lors du chargement GitHub:', error);
+          set({ syncStatus: 'error' });
         }
       },
     }),

@@ -5,26 +5,20 @@ import { useNavigate } from 'react-router-dom';
 import Changelog from './changelog';
 import Help from './help';
 import { useAuthStore } from './store/auth-store';
-import { useBTTracksStore } from './store/blind-test-tracks-store';
 import { usePlayerStore } from './store/player-store';
 import { useSettingsStore } from './store/settings-store';
 
 const GlobalMenu = () => {
   const navigate = useNavigate();
   const twitchAvatar = useAuthStore((state) => state.twitchAvatar);
-  
+
 
   const settingsStore = useSettingsStore();
   const authStore = useAuthStore();
-  const btClear = useBTTracksStore((state) => state.clear);
   const clearPlayers = usePlayerStore((state) => state.clear);
 
   const [helpDisplayed, setHelpDisplayed] = useState(false);
   const [changelogDisplayed, setChangelogDisplayed] = useState(false);
-
-  const onPlaylistClick = () => {
-    navigate('/playlist');
-  };
 
   const onSettingsClick = () => {
     navigate('/settings');
@@ -43,7 +37,6 @@ const GlobalMenu = () => {
   };
 
   const onLogoutClick = () => {
-    btClear();
     clearPlayers();
     authStore.clear();
     settingsStore.reset();
