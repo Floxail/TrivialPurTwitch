@@ -16,7 +16,7 @@
     "axios": "^1.13.2",
     "bootstrap": "^5.3.3",
     "class-transformer": "^0.5.1",
-    "framer-motion": "^11.9.0",
+    "framer-motion": "^10.16.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.6",
     "react-dom": "^18.2.0",
@@ -29,10 +29,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-   "start:https": "host=127.0.0.1 https=true react-scripts start",
+    "start:https": "host=127.0.0.1 https=true react-scripts start",
     "build": "react-scripts build",
-   "test": "react-scripts test",
-   "eject": "react-scripts eject",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build"
   },
