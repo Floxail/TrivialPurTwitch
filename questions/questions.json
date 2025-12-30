@@ -1,0 +1,70 @@
+{
+  "version": "2.0",
+  "lastUpdate": "2025-12-30T12:00:00.000Z",
+  "boxes": [
+    {
+      "name": "Exemple",
+      "cardNumbers": [1],
+      "totalQuestions": 6
+    }
+  ],
+  "questions": [
+    {
+      "id": "example_1",
+      "category": 0,
+      "question": "Quelle est la capitale de la France ?",
+      "answer": "Paris",
+      "boxName": "Exemple",
+      "cardNumber": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "example_2",
+      "category": 1,
+      "question": "Qui a réalisé le film Titanic ?",
+      "answer": "James Cameron",
+      "alternativeAnswers": ["Cameron"],
+      "boxName": "Exemple",
+      "cardNumber": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "example_3",
+      "category": 2,
+      "question": "En quelle année a eu lieu la Révolution française ?",
+      "answer": "1789",
+      "boxName": "Exemple",
+      "cardNumber": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "example_4",
+      "category": 3,
+      "question": "Qui a peint La Joconde ?",
+      "answer": "Léonard de Vinci",
+      "alternativeAnswers": ["Leonardo da Vinci", "De Vinci"],
+      "boxName": "Exemple",
+      "cardNumber": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "example_5",
+      "category": 4,
+      "question": "Quelle est la formule chimique de l'eau ?",
+      "answer": "H2O",
+      "boxName": "Exemple",
+      "cardNumber": 1,
+      "difficulty": "easy"
+    },
+    {
+      "id": "example_6",
+      "category": 5,
+      "question": "Combien de joueurs y a-t-il dans une équipe de football ?",
+      "answer": "11",
+      "alternativeAnswers": ["onze"],
+      "boxName": "Exemple",
+      "cardNumber": 1,
+      "difficulty": "easy"
+    }
+  ]
+}
