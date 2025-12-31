@@ -157,7 +157,7 @@ export const usePlayerStore = create<Players & Actions>()(
       });
     },
 
-    // <--- C'EST ICI QUE TOUT CHANGE
+    // COMBO PLAFONNÉ À +5
     recordAnswers: (answers: Answer[]) => {
       set((state) => {
         const updated = state.players;
@@ -180,8 +180,8 @@ export const usePlayerStore = create<Players & Actions>()(
           // Augmenter la série
           player.currentStreak = (player.currentStreak || 0) + 1;
 
-          // Calcul des points
-          let scoreToAdd = 1; // Point de base pour la bonne réponse
+          // Point de base pour la bonne réponse
+          let scoreToAdd = 1;
 
           // Bonus First
           if (answer.isFirst) {
@@ -189,14 +189,19 @@ export const usePlayerStore = create<Players & Actions>()(
               scoreToAdd += 1;
           }
 
-          // Bonus Combo Progressif
-          // Si streak = 2 (2ème bonne réponse d'affilée), bonus = +1
-          // Si streak = 5 (5ème bonne réponse d'affilée), bonus = +4
+          // --- BONUS COMBO PLAFONNÉ À +5 ---
           if (player.currentStreak > 1) {
-              player.stats.combos++; // Incrémente le compteur total de combos
-              const comboBonus = player.currentStreak - 1; // Le bonus progressif
+              player.stats.combos++; 
+              
+              const maxBonus = 5; // Le plafond demandé
+              const rawBonus = player.currentStreak - 1;
+              
+              // On prend le plus petit des deux (le calcul ou le plafond)
+              const comboBonus = Math.min(rawBonus, maxBonus);
+              
               scoreToAdd += comboBonus;
           }
+          // ---------------------------------
 
           // Mise à jour des stats et du score
           player.stats.answers++;

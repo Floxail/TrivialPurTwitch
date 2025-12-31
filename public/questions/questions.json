@@ -3369,7 +3369,7 @@
     {
       "id": "1766850183966enuv5gvud",
       "category": 0,
-      "question": "Dans laquelle villes se dresse le Palais de la Culture et de la Science ?",
+      "question": "Dans quelle villes se dresse le Palais de la Culture et de la Science ?",
       "answer": "Varsovie",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -3759,54 +3759,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766850183966cc4w72deg",
-      "category": 0,
-      "question": "Laquelle de ces gares ne se trouve pas à Lyon ?",
-      "answer": "Matabiau",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966x3srcv5y4",
-      "category": 0,
-      "question": "Laquelle de ces langues est officiellement parlée en Papouasie-Nouvelle-Guinée ?",
-      "answer": "L'anglais",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "176685018396688wg3dyya",
-      "category": 0,
-      "question": "Laquelle de ces plages ne se trouve pas à Rio de Janeiro ?",
-      "answer": "Jericoacoara",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966tbfjr7xz0",
-      "category": 0,
-      "question": "Laquelle de ces régions ne fait pas partie des Émirats arabes unis ?",
-      "answer": "La Jordanie",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966azmgtnq0h",
-      "category": 0,
-      "question": "Laquelle de ces villes est la plus méridionale ?",
-      "answer": "Marseille",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "176685018396692y42z3jr",
-      "category": 0,
-      "question": "Laquelle de ces villes se trouve dans l'hémisphère nord ?",
-      "answer": "New Delhi",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766850183966wd96guknn",
       "category": 0,
       "question": "Le désert de Gobi couvre une partie de la Mongolie et de quel autre pays ?",
@@ -3931,14 +3883,6 @@
       "category": 0,
       "question": "Parmi ces monuments parisiens, quel est le seul se trouvant sur la rive gauche ?",
       "answer": "La Tour Eiffel",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966nkt3z5i9a",
-      "category": 0,
-      "question": "Parmi les villes suivantes, laquelle n'est pas la capitale de sa région ?",
-      "answer": "Grenoble",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -6845,14 +6789,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766852766367v979f4ysf",
-      "category": 2,
-      "question": "Parmi ces villes européennes, laquelle fut la première au monde à atteindre 1 million d'habitants ?",
-      "answer": "Rome",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766852766367a18siqd5s",
       "category": 2,
       "question": "Pour quelle base militaire insulaire le Japon et les États-Unis se sont-ils affrontés pendant plus de 6 mois en 1942 ?",
@@ -7001,7 +6937,7 @@
       "question": "Quel conflit européen dura 116 ans ?",
       "answer": "La guerre de Cent Ans",
       "alternativeAnswers": [
-        "Guerre de Cent Ans"
+        "Guerre de 100 Ans"
       ],
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -8796,22 +8732,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "176685367709573jcs3fm9",
-      "category": 3,
-      "question": "Laquelle de ces femmes n'est pas l'une des Trois femmes puissantes du roman de Marie Ndiaye ?",
-      "answer": "Maria",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766853677095btpu6ev1i",
-      "category": 3,
-      "question": "Laquelle n'est pas une sœur Brontë ?",
-      "answer": "Mary",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766853677095qdrpa0vxe",
       "category": 3,
       "question": "Le peintre Georges Seurat est à l'origine de quel courant artistique ?",
@@ -10252,54 +10172,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766854112853m0q0pgmkl",
-      "category": 4,
-      "question": "Laquelle de ces couleurs ne fait pas partie du processus d'impression en quadrichromie ?",
-      "answer": "Vert",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854112853qaqig86yu",
-      "category": 4,
-      "question": "Laquelle de ces créatures n'a pas de cerveau ?",
-      "answer": "L'étoile de mer",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668541128530j7xbmoz9",
-      "category": 4,
-      "question": "Laquelle de ces inventions n'a pas été nommée d'après son inventeur ?",
-      "answer": "Le tiroir",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854112853mpxm0lkvt",
-      "category": 4,
-      "question": "Laquelle de ces plantes ne fait pas partie des Solanacées ?",
-      "answer": "Le panais",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854112853xe5uwau57",
-      "category": 4,
-      "question": "Laquelle de ces planètes n'a pas de lune ?",
-      "answer": "Vénus",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668541128535k9dlz1ps",
-      "category": 4,
-      "question": "Laquelle de ces substances n'est pas un métal dans le tableau périodique des éléments ?",
-      "answer": "Le bronze",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "17668541128533opyyronp",
       "category": 4,
       "question": "Le Grand collisionneur de hadrons du CERN a été conçu pour recréer les conditions de quelle théorie scientifique ?",
@@ -11559,82 +11431,13 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766854440296svkoqhof1",
-      "category": 5,
-      "question": "Laquelle de ces couleurs ne figure pas sur un Rubik's Cube traditionnel ?",
-      "answer": "Le violet",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296fk34vbsus",
-      "category": 5,
-      "question": "Laquelle de ces nages n'est pas représentée aux Jeux olympiques ?",
-      "answer": "La nage indienne",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668544402962vdx9lsui",
-      "category": 5,
-      "question": "Laquelle de ces propositions n'est pas un sport motocycliste ?",
-      "answer": "Championnat du monde des rallyes",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668544402961ng0s4cr6",
-      "category": 5,
-      "question": "Laquelle de ces propositions n'est pas un type de pâtes ?",
-      "answer": "Mascarpone",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "176685444029682cz9atkg",
-      "category": 5,
-      "question": "Laquelle de ces propositions n'est pas une gare au Monopoly ?",
-      "answer": "La gare de l'Est",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296wdkp4bvaf",
-      "category": 5,
-      "question": "Laquelle de ces réponse n'est pas la couleur de l'un des anneaux du logo des Jeux olympiques ?",
-      "answer": "Violet",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296v4qq0t2k2",
-      "category": 5,
-      "question": "Laquelle de ces villes n'a pas pour spécialité une saucisse ?",
-      "answer": "Montauban",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296s2k1k1tyf",
-      "category": 5,
-      "question": "Laquelle de ces émissions sportives est la plus ancienne ?",
-      "answer": "Stade 2",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296dkzenn5ek",
-      "category": 5,
-      "question": "Laquelle n'est pas une des mascottes des Coupes du monde de football ?",
-      "answer": "Mandeville",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766854440296mkyeuqxn7",
       "category": 5,
       "question": "Lequel de ces terrains est le plus grand : handball, basket ou volley ?",
-      "answer": "Le terrain de handball",
+      "answer": "handball",
+      "alternativeAnswers": [
+        "Handball"
+      ],
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
