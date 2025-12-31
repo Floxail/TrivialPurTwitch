@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convertisseur Trivial Pursuit → JSON</title>
+    <title>Convertisseur Trivial Pursuit → JSON (avec OCR)</title>
+    <script src='https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'></script>
     <style>
         * {
             margin: 0;
@@ -430,7 +431,6 @@
         </div>
 
         <div class="content">
-            <!-- MODE CARTE -->
             <div class="mode-content active" id="mode-carte">
                 <div class="info-box">
                     <h3>📝 Instructions - Mode Carte</h3>
@@ -448,7 +448,18 @@
                         <label for="boxNameCarte">📦 Nom de la boîte Trivial Pursuit *</label>
                         <input type="text" id="boxNameCarte" placeholder="Ex: Édition Classique" value="Édition Classique">
                     </div>
-                </div>
+                    
+                    <div class="form-group" style="grid-column: span 2; background: var(--info-bg); padding: 15px; border-radius: 10px; border: 2px dashed var(--info-border);">
+                        <label style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;">
+                            <span style="font-size: 1.5em;">📸</span> 
+                            <span style="font-weight: bold; color: var(--info-text);">Scanner une carte (Questions)</span>
+                            <input type="file" id="ocrInput" accept="image/*" style="display: none;" onchange="processImage(this)">
+                        </label>
+                        <div id="ocrStatus" style="text-align: center; margin-top: 10px; color: var(--text-secondary); display: none;">
+                            Analyse en cours... <span id="ocrProgress">0%</span>
+                        </div>
+                    </div>
+                    </div>
 
                 <div class="questions-grid">
                     <div class="question-card geo">
@@ -564,7 +575,6 @@
                 </div>
             </div>
 
-            <!-- MODE QUIZ -->
             <div class="mode-content" id="mode-quiz">
                 <div class="quiz-mode-grid">
                     <div class="quiz-panel">
@@ -889,7 +899,7 @@
             document.execCommand('copy');
 
             alert('✅ JSON copié dans le presse-papier !');
-            return false; // Empêcher tout comportement par défaut
+            return false;
         }
 
         function downloadJSON(mode) {
@@ -925,13 +935,70 @@
                 alert('Erreur lors du téléchargement du fichier');
             }
 
-            return false; // Empêcher tout comportement par défaut
+            return false;
         }
 
         // Auto-focus au chargement
         window.onload = function() {
             document.getElementById('cardNumber').focus();
         };
+
+        // --- FONCTIONS OCR AJOUTÉES ---
+
+        function processImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const statusDiv = document.getElementById('ocrStatus');
+            const progressSpan = document.getElementById('ocrProgress');
+            
+            statusDiv.style.display = 'block';
+            progressSpan.textContent = "Démarrage...";
+
+            Tesseract.recognize(
+                file,
+                'fra', // Langue française
+                {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            progressSpan.textContent = `${Math.round(m.progress * 100)}%`;
+                        }
+                    }
+                }
+            ).then(({ data: { text } }) => {
+                statusDiv.style.display = 'none';
+                distributeTextToFields(text);
+                alert('✅ Analyse terminée ! Vérifiez et corrigez le texte.');
+            }).catch(err => {
+                console.error(err);
+                statusDiv.textContent = "❌ Erreur lors de l'analyse.";
+                alert('Erreur lors de la lecture de l\'image.');
+            });
+        }
+
+        function distributeTextToFields(text) {
+            let lines = text.split('\n')
+                .map(l => l.trim())
+                .filter(l => l.length > 3); 
+
+            let currentField = 0;
+            
+            lines.forEach((line) => {
+                if (currentField > 5) return; 
+
+                if (line.toUpperCase().includes("ÉDITION") || line.length < 5) return;
+
+                const field = document.getElementById(`q${currentField}`);
+                if (field) {
+                    if (field.value === '') {
+                        field.value = line.replace(/^[\d\-\.\)]+\s*/, '');
+                        currentField++;
+                    } else {
+                        field.value += " " + line;
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
