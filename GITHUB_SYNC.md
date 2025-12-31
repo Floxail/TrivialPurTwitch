@@ -1,43 +1,65 @@
-# 📦 Utiliser GitHub comme Base de Données
+# 🔄 Synchronisation GitHub
 
-Ce projet utilise GitHub comme système de stockage pour les questions du quiz. Cela permet de :
-- Centraliser les questions dans un repository
-- Synchroniser automatiquement les nouvelles questions
-- Partager facilement les questions entre différents utilisateurs
-- Versionner les modifications des questions
+Guide pour utiliser GitHub comme base de données centralisée pour vos questions.
 
-## 🔧 Configuration
+---
 
-### 1. Structure des fichiers
+## 🎯 Concept
 
-Les questions sont stockées dans le fichier :
+Au lieu de stocker vos questions uniquement dans le navigateur (localStorage), elles sont **centralisées dans GitHub**.
+
+**Avantages :**
+- ✅ **Versionné** : Historique complet avec Git
+- ✅ **Synchronisé** : Mêmes questions en local et sur GitHub Pages
+- ✅ **Backup automatique** : GitHub = sauvegarde gratuite
+- ✅ **Collaboration** : Plusieurs personnes peuvent ajouter des questions
+- ✅ **Multi-fichiers** : Organisation claire par thème/boîte
+
+---
+
+## 📁 Structure des fichiers
+
 ```
-public/questions/questions.json
+public/data/
+├── index.json          ← Liste des fichiers à charger
+├── geographie.json     ← Questions de géographie
+├── histoire.json       ← Questions d'histoire
+├── cinema.json         ← Questions de cinéma
+└── sports.json         ← Questions de sports
 ```
 
-### 2. Format du fichier JSON
+### index.json (obligatoire)
 
-Le fichier `questions.json` doit respecter le format suivant :
+Liste tous les fichiers de questions à charger :
 
 ```json
 {
   "version": "2.0",
-  "exportDate": "2025-12-30T12:00:00.000Z",
-  "boxes": [
-    {
-      "name": "Cinéma 91",
-      "cardNumbers": [1, 2, 3],
-      "totalQuestions": 18
-    }
-  ],
+  "lastUpdate": "2025-12-30T12:00:00.000Z",
+  "files": [
+    "geographie.json",
+    "histoire.json",
+    "cinema.json",
+    "sports.json"
+  ]
+}
+```
+
+### geographie.json (exemple)
+
+Contient les questions d'une boîte :
+
+```json
+{
+  "boxName": "Géographie",
+  "description": "Questions de géographie mondiale",
   "questions": [
     {
-      "id": "unique-id-123",
+      "id": "geo_1_1",
       "category": 0,
       "question": "Quelle est la capitale de la France ?",
       "answer": "Paris",
-      "alternativeAnswers": ["paris"],
-      "boxName": "Cinéma 91",
+      "boxName": "Géographie",
       "cardNumber": 1,
       "difficulty": "easy"
     }
@@ -45,105 +67,329 @@ Le fichier `questions.json` doit respecter le format suivant :
 }
 ```
 
-### 3. Catégories disponibles
+---
 
-Les catégories correspondent au Trivial Pursuit standard :
-- `0` : Géographie (Bleu)
-- `1` : Divertissement (Rose)
-- `2` : Histoire (Jaune)
-- `3` : Arts (Marron)
-- `4` : Science (Vert)
-- `5` : Sports (Orange)
+## 🚀 Installation
 
-## 📥 Utilisation
+Le système est **déjà configuré** dans l'application ! Il charge automatiquement les questions depuis `public/data/`.
 
-### Synchroniser depuis GitHub
+### Vérification
 
-1. Ouvrez le **Gestionnaire de Questions** dans l'application
-2. Cliquez sur le bouton **"Sync GitHub"** dans la barre d'actions
-3. L'application va :
-   - Charger le fichier `questions.json` depuis le repository
-   - Fusionner les questions avec celles déjà présentes en local
-   - Éviter les doublons (basé sur l'ID de la question)
-   - Afficher un message de succès ou d'erreur
+Au démarrage de l'app, la console affiche :
 
-### Comportement de la synchronisation
+```
+🔄 Chargement depuis GitHub...
+📋 Index chargé : 4 fichiers trouvés
+  ✅ geographie.json : 6 questions
+  ✅ histoire.json : 6 questions
+  ✅ cinema.json : 6 questions
+  ✅ sports.json : 6 questions
+✅ Total : 24 questions chargées depuis 4 fichiers
+```
 
-- **Fusion intelligente** : Les questions GitHub sont fusionnées avec les questions locales
-- **Pas de doublons** : Si une question existe déjà (même ID), elle n'est pas ajoutée
-- **Conservation des données locales** : Vos questions locales ne sont jamais écrasées
-- **Mise à jour automatique** : Un paramètre `?t=timestamp` évite le cache du navigateur
+---
 
-## 🚀 Workflow recommandé
+## ➕ Ajouter un nouveau thème
 
-### Pour les administrateurs
+### Méthode 1 : Via l'interface (recommandé)
 
-1. **Créer/Modifier des questions** dans le gestionnaire
-2. **Exporter en JSON** via le bouton "Exporter JSON"
-3. **Remplacer** le contenu de `public/questions/questions.json`
-4. **Commit & Push** sur GitHub
-5. Les utilisateurs peuvent maintenant **synchroniser** pour récupérer les nouvelles questions
+```
+1. Créez vos questions dans l'interface de gestion
+   ↓
+2. Exportez le JSON
+   ↓
+3. Copiez les questions dans un nouveau fichier (ex: sciences.json)
+   ↓
+4. Ajoutez "sciences.json" dans index.json
+   ↓
+5. Commit + Push
+   ↓
+6. npm run deploy
+```
 
-### Pour les utilisateurs
+### Méthode 2 : Directement dans les fichiers
 
-1. **Ouvrir** l'application
-2. **Cliquer** sur "Sync GitHub" régulièrement
-3. Les nouvelles questions sont automatiquement ajoutées
+**1. Créer le fichier sciences.json :**
 
-## 🔄 Déploiement avec GitHub Pages
+```json
+{
+  "boxName": "Sciences",
+  "description": "Questions de sciences",
+  "questions": [
+    {
+      "id": "sci_1_1",
+      "category": 4,
+      "question": "Quelle est la formule chimique de l'eau ?",
+      "answer": "H2O",
+      "boxName": "Sciences",
+      "cardNumber": 1,
+      "difficulty": "easy"
+    }
+  ]
+}
+```
 
-Lorsque vous déployez l'application sur GitHub Pages :
+**2. Ajouter dans index.json :**
 
-1. Le fichier `questions.json` est accessible à l'URL :
+```json
+{
+  "version": "2.0",
+  "lastUpdate": "2025-12-30T12:00:00.000Z",
+  "files": [
+    "geographie.json",
+    "histoire.json",
+    "cinema.json",
+    "sports.json",
+    "sciences.json"  ← AJOUTER ICI
+  ]
+}
+```
+
+**3. Déployer :**
+
+```bash
+git add public/data/
+git commit -m "Add sciences questions"
+git push origin main
+npm run deploy
+```
+
+**C'est tout ! Les nouvelles questions seront chargées automatiquement ! 🎉**
+
+---
+
+## 🔄 Workflow de mise à jour
+
+### Option A : Interface → GitHub
+
+```
+1. Ajoutez des questions dans l'interface locale
+   ↓
+2. Exportez le JSON (bouton "Exporter JSON")
+   ↓
+3. Séparez les questions par thème
+   ↓
+4. Copiez dans les fichiers correspondants dans public/data/
+   ↓
+5. git add public/data/
+6. git commit -m "Update questions"
+7. git push && npm run deploy
+```
+
+### Option B : GitHub → Interface
+
+```
+1. Modifiez directement les fichiers dans public/data/
+   ↓
+2. git commit -m "Update questions"
+3. git push && npm run deploy
+   ↓
+4. L'app charge automatiquement les nouvelles questions
+   ↓
+5. (Optionnel) Cliquez "Sync GitHub" dans l'interface
+```
+
+### Option C : OCR → GitHub
+
+```
+1. Utilisez gemini-ocr-trivial.html pour scanner une carte
+   ↓
+2. Téléchargez le JSON généré
+   ↓
+3. Copiez les questions dans le bon fichier (ex: cinema.json)
+   ↓
+4. git commit -m "Add scanned questions"
+5. git push && npm run deploy
+```
+
+---
+
+## 📊 Synchronisation automatique
+
+L'app vérifie GitHub **toutes les 24 heures**.
+
+Si de nouvelles questions sont disponibles, elles sont **automatiquement chargées** et fusionnées avec les questions locales.
+
+### Synchronisation manuelle
+
+Cliquez sur le bouton **"Sync GitHub"** dans l'interface de gestion des questions.
+
+---
+
+## 🔍 Gestion des conflits
+
+**Si une question existe en local ET sur GitHub (même ID) :**
+→ La version **locale** est prioritaire
+
+**Si vous voulez écraser avec GitHub :**
+1. Supprimez localStorage : `localStorage.removeItem('quiz_questions_storage_v2')`
+2. Rechargez la page
+3. Les questions GitHub seront rechargées
+
+---
+
+## 📋 Organisation recommandée
+
+### Par boîte physique
+
+```
+public/data/
+├── index.json
+├── boite-classique.json     ← Boîte Trivial Pursuit classique
+├── boite-genius.json         ← Boîte Genius
+├── boite-famille.json        ← Boîte Famille
+└── boite-custom.json         ← Vos propres questions
+```
+
+### Par thème
+
+```
+public/data/
+├── index.json
+├── geographie.json
+├── histoire.json
+├── sciences.json
+├── cinema.json
+├── musique.json
+├── sports.json
+└── culture-generale.json
+```
+
+### Par difficulté
+
+```
+public/data/
+├── index.json
+├── facile.json
+├── moyen.json
+└── difficile.json
+```
+
+**Choisissez l'organisation qui vous convient le mieux !**
+
+---
+
+## 🎨 Format des fichiers
+
+### Structure minimale
+
+```json
+{
+  "boxName": "NomDeLaBoite",
+  "questions": [
+    {
+      "id": "unique_id",
+      "category": 0,
+      "question": "Votre question ?",
+      "answer": "La réponse",
+      "boxName": "NomDeLaBoite",
+      "cardNumber": 1
+    }
+  ]
+}
+```
+
+### Champs optionnels
+
+```json
+{
+  "boxName": "NomDeLaBoite",
+  "description": "Description de la boîte",
+  "questions": [
+    {
+      "id": "unique_id",
+      "category": 0,
+      "question": "Votre question ?",
+      "answer": "La réponse",
+      "alternativeAnswers": ["autre réponse"],  ← Optionnel
+      "difficulty": "easy",                      ← Optionnel
+      "boxName": "NomDeLaBoite",
+      "cardNumber": 1
+    }
+  ]
+}
+```
+
+---
+
+## 🐛 Dépannage
+
+### Les questions ne se chargent pas
+
+**Vérifications :**
+
+1. **Fichiers présents ?**
+   ```bash
+   ls public/data/
+   # Vous devriez voir index.json et vos fichiers
    ```
-   https://votre-username.github.io/votre-repo/questions/questions.json
+
+2. **index.json valide ?**
+   - Allez sur https://jsonlint.com/
+   - Copiez/collez votre index.json
+   - Vérifiez qu'il n'y a pas d'erreurs
+
+3. **Console navigateur (F12) :**
+   ```
+   🔄 Chargement depuis GitHub...
+   ❌ Erreur lors du chargement de l'index
    ```
 
-2. L'application charge automatiquement depuis cette URL
+4. **Fichiers déployés ?**
+   - Vérifiez que vous avez bien fait `npm run deploy`
+   - Vérifiez sur GitHub que les fichiers sont dans la branche `gh-pages`
 
-3. Chaque fois que vous modifiez `questions.json` et que vous pushez :
-   - GitHub Pages se met à jour automatiquement
-   - Les utilisateurs peuvent synchroniser pour récupérer les changements
+### Erreur "Aucun fichier dans l'index"
 
-## 🛠️ Dépannage
+**Cause :** `index.json` manquant ou mal formaté
 
-### La synchronisation échoue
+**Solution :**
+```bash
+# Vérifier que index.json existe
+ls public/data/index.json
 
-**Vérifiez que :**
-- Le fichier `public/questions/questions.json` existe
-- Le JSON est valide (utilisez un validateur JSON)
-- Le serveur web est démarré correctement
-- Pas de problème CORS (Cross-Origin Resource Sharing)
+# Vérifier le contenu
+cat public/data/index.json
+```
 
-### Questions en doublon
+### Erreur "❌ Erreur geographie.json"
 
-Utilisez le bouton **"Vérifier doublons"** pour détecter et supprimer les questions dupliquées.
+**Cause :** Fichier JSON invalide (virgule manquante, etc.)
 
-### Format incompatible
+**Solution :**
+1. Copiez le contenu du fichier
+2. Allez sur https://jsonlint.com/
+3. Validez le JSON
+4. Corrigez les erreurs
 
-Si vous avez des questions au format v1.0 (ancien format avec `trivialBox`), elles seront automatiquement converties au format v2.0 lors de l'import.
+---
 
-## 💡 Conseils
+## 🎯 Commandes Git utiles
 
-- **Sauvegardez régulièrement** : Utilisez "Exporter JSON" pour créer des backups
-- **Testez localement** : Avant de pousser sur GitHub, testez la synchronisation en local
-- **Versionnez** : Gardez un historique des modifications dans Git
-- **Documentez** : Ajoutez des commentaires dans vos exports pour tracer les changements
+```bash
+# Ajouter tous les fichiers de data/
+git add public/data/
 
-## 📝 API Reference
+# Commit
+git commit -m "Update questions: Add cinema theme"
 
-### `loadQuestionsFromGitHub()`
+# Push + Deploy
+git push origin main && npm run deploy
 
-Charge les questions depuis le fichier hébergé.
+# Voir l'historique
+git log --oneline public/data/
 
-**Retourne :** `Promise<any>` - Les données JSON ou `null` en cas d'erreur
+# Revenir à une version précédente
+git checkout <commit-hash> public/data/geographie.json
+```
 
-### `mergeQuestionsFromGitHub(githubData, localQuestions)`
+---
 
-Fusionne les questions GitHub avec les questions locales.
+## 🎉 C'est configuré !
 
-**Paramètres :**
-- `githubData` : Données chargées depuis GitHub
-- `localQuestions` : Questions déjà présentes en localStorage
+Vos questions sont maintenant centralisées sur GitHub ! 🔄
 
-**Retourne :** `Question[]` - Liste fusionnée sans doublons
+**Pour ajouter des questions :**
+1. Modifiez les fichiers dans `public/data/`
+2. `git commit && git push && npm run deploy`
+3. Les questions sont automatiquement chargées !

@@ -23,6 +23,8 @@ export class Answer {
     this.timer = timer;
   }
 
+  // <--- MODIF : Cette fonction devient obsolète car le calcul se fait dans le store maintenant
+  // Mais on la garde pour éviter de casser d'autres fichiers si besoin
   getPoints = () => {
     return 1 + (this.isFirst ? 1 : 0) + (this.isCombo ? 1 : 0);
   };
@@ -40,6 +42,7 @@ export type Player = {
   nick: string;
   score: number;
   rank: number;
+  currentStreak: number; // <--- MODIF : Ajout du suivi de la série
   stats: PlayerStats;
   avatar?: string;
 }
@@ -74,9 +77,6 @@ const recomputeRanks = (players: Record<string, Player>) => {
 let avatarFetchTimeout: NodeJS.Timeout | undefined = undefined;
 const avatarFetchTimeoutDuration: number = 2500;
 
-// storage is triggered manually because the store might be large and we want to avoid writing it everytime it changes (i.e. very often)
-
-// restore persisted state for initialization
 const restoredState: Players = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
 
 export const usePlayerStore = create<Players & Actions>()(
@@ -100,16 +100,17 @@ export const usePlayerStore = create<Players & Actions>()(
           if (players[nick]) {
             updated[nick].score = players[nick].score;
             updated[nick].stats = players[nick].stats;
+            updated[nick].currentStreak = players[nick].currentStreak || 0; // <--- MODIF
           } else {
             updated[nick].score = 0;
             updated[nick].stats = { ...EMPTY_PLAYER_STATS };
+            updated[nick].currentStreak = 0; // <--- MODIF
           }
         }
         return ({ players: updated });
       });
     },
     initPlayer: (nick: string, tid: string) => {
-
       const downloadAvatar = (current: Record<string, Player>) => {
         const ids = Object.entries(current).filter(([_, value]) => value.tid && !value.avatar).map(([_, value]) => value.tid).slice(0, 100);
         if (ids.length > 0) {
@@ -118,10 +119,7 @@ export const usePlayerStore = create<Players & Actions>()(
               const updated = state.players;
               for (let u of response.data.data) {
                 const nick = u.display_name;
-                // if (!updated[nick]) {
-                //   debugger; // TODO remove
-                // }
-                updated[nick].avatar = u.profile_image_url;
+                if(updated[nick]) updated[nick].avatar = u.profile_image_url;
               }
               return ({ players: updated });
             });
@@ -132,10 +130,8 @@ export const usePlayerStore = create<Players & Actions>()(
       if (!get().players[nick]) {
         set((state) => {
           const updated = state.players;
-          // if (updated[nick]) {
-          //   debugger; // TODO remove
-          // }
-          updated[nick] = { tid: tid, rank: -1, score: 0, nick: nick, stats: { ...EMPTY_PLAYER_STATS } };
+          // <--- MODIF : Initialisation de currentStreak à 0
+          updated[nick] = { tid: tid, rank: -1, score: 0, nick: nick, currentStreak: 0, stats: { ...EMPTY_PLAYER_STATS } };
 
           if (avatarFetchTimeout === undefined) {
             downloadAvatar(updated);
@@ -153,37 +149,61 @@ export const usePlayerStore = create<Players & Actions>()(
     addPoints: (nick: string, points: number) => {
       set((state) => {
         const updated = state.players;
-        // if (!updated[nick]) {
-        //   debugger; // TODO remove
-        // }
-        updated[nick].score += points;
-        recomputeRanks(updated);
+        if(updated[nick]) {
+            updated[nick].score += points;
+            recomputeRanks(updated);
+        }
         return ({ players: updated });
       });
     },
+
+    // <--- C'EST ICI QUE TOUT CHANGE
     recordAnswers: (answers: Answer[]) => {
       set((state) => {
         const updated = state.players;
 
-        // var nicks: Record<string, string> = {}; // TODO remove
-        // for (const answer of answers) {
-        //   if (nicks[answer.nick]) {
-        //     debugger;
-        //   }
-        //   nicks[answer.nick] = '';
-        // }
+        // 1. Liste des pseudos qui ont répondu juste à ce tour
+        const winnerNicks = new Set(answers.map(a => a.nick));
 
+        // 2. On remet à zéro le streak de TOUS ceux qui ne sont pas dans la liste des gagnants
+        Object.values(updated).forEach(player => {
+            if (!winnerNicks.has(player.nick)) {
+                player.currentStreak = 0;
+            }
+        });
+
+        // 3. On traite les gagnants
         for (const answer of answers) {
-          // if (!updated[answer.nick]) {
-          //   debugger; // TODO remove
-          // }
-          const score = answer.getPoints();
-          updated[answer.nick].stats.answers++;
-          updated[answer.nick].stats.fastestAnswer = Math.min(updated[answer.nick].stats.fastestAnswer, answer.timer);
-          if (answer.isCombo) { updated[answer.nick].stats.combos++; }
-          if (answer.isFirst) { updated[answer.nick].stats.firsts++; }
-          updated[answer.nick].score += score;
+          const player = updated[answer.nick];
+          if (!player) continue;
+
+          // Augmenter la série
+          player.currentStreak = (player.currentStreak || 0) + 1;
+
+          // Calcul des points
+          let scoreToAdd = 1; // Point de base pour la bonne réponse
+
+          // Bonus First
+          if (answer.isFirst) {
+              player.stats.firsts++;
+              scoreToAdd += 1;
+          }
+
+          // Bonus Combo Progressif
+          // Si streak = 2 (2ème bonne réponse d'affilée), bonus = +1
+          // Si streak = 5 (5ème bonne réponse d'affilée), bonus = +4
+          if (player.currentStreak > 1) {
+              player.stats.combos++; // Incrémente le compteur total de combos
+              const comboBonus = player.currentStreak - 1; // Le bonus progressif
+              scoreToAdd += comboBonus;
+          }
+
+          // Mise à jour des stats et du score
+          player.stats.answers++;
+          player.stats.fastestAnswer = Math.min(player.stats.fastestAnswer, answer.timer);
+          player.score += scoreToAdd;
         }
+
         recomputeRanks(updated);
         return ({ players: updated });
       });
