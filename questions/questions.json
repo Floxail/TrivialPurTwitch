@@ -1467,6 +1467,9 @@
       "category": 5,
       "question": "Qui détient le record du monde du 100 mètres en athlétisme ?",
       "answer": "Usain Bolt",
+      "alternativeAnswers": [
+        "Bolt"
+      ],
       "trivialBox": "Vieweurs",
       "difficulty": "medium",
       "boxName": "Vieweurs"
