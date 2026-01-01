@@ -30,7 +30,6 @@ const Podium = ({ onClose }: any) => {
       {renderStatsLine('Answers', `${player.stats.answers}`)}
       {settings.acceptanceDelay > 0 && renderStatsLine('Firsts', `${player.stats.firsts}`)}
       {renderStatsLine('Combos', `${player.stats.combos}`)}
-      {renderStatsLine('Fastest', `${(player.stats.fastestAnswer / 1000).toFixed(1)} s`)}
     </div>;
   };
 
@@ -168,7 +167,7 @@ const Podium = ({ onClose }: any) => {
             paddingTop: '15px',
           }}
         >
-          {loser && renderPodiumStep([loser], 0, false, '#656565', 46, 'crown', 'Loser')}
+          {loser && renderPodiumStep([loser], 0, false, '#656565', 46, 'crown', ' mention honorable')}
           {podiumContent.map((step) => {
             return renderPodiumStep(
               step.players,

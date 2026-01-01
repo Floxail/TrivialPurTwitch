@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Modal } from 'react-bootstrap';
 
 const Changelog = ({ show, onClose }: any) => {
@@ -6,60 +5,49 @@ const Changelog = ({ show, onClose }: any) => {
   return (
     <Modal scrollable={true} show={show} centered size="lg" dialogClassName="changelog-modal">
       <Modal.Body>
-        <h3><u>10/03/2025</u></h3>
+        <h3><u>01/01/2026</u></h3>
         <br />
-        <h5 className="h5-with-line">End-game podium</h5>
-        <br />
-        <img src="/BlindTesTwitch/chglg_3.png" className="border" style={{ width: '70%' }} />
+        <h5 className="h5-with-line">Podium & Trophées</h5>
         <br />
         <ul>
-          <li>Podium display at the end of the game, with stats</li>
+          <li>Affichage du podium de fin de partie avec statistiques des joueurs</li>
+          <li>Système de trophées et récompenses</li>
+          <li>Couronne pour le vainqueur</li>
         </ul>
         <br />
-        <h3><u>16/12/2024</u></h3>
-        <br />
-        <h5 className="h5-with-line">UI rework</h5>
-        <br />
-        <img src="/BlindTesTwitch/chglg_1.png" className="border" />
+        <h5 className="h5-with-line">Système de points</h5>
         <br />
         <ul>
-          <li>Twitch avatars are now displayed in the leaderboard</li>
-          <li>The Pause button has been removed</li>
-          <li>The UI is now wider</li>
-          <li>A new menu in the top-right corner replaces the old buttons</li>
-          <li>Lots of small tweaks</li>
+          <li>Convertisseur de thèmes pour gérer différentes catégories</li>
+          <li>Système de combo pour récompenser les bonnes réponses consécutives</li>
+          <li>Points de chaîne pour encourager la participation</li>
+          <li>Commande !score optimisée pour éviter le spam</li>
         </ul>
         <br />
-        <h5 className="h5-with-line">New available actions during the game</h5>
-        <br />
-        <img src="/BlindTesTwitch/chglg_0.png" className="border" />
+        <h5 className="h5-with-line">Base de données & Synchronisation</h5>
         <br />
         <ul>
-          <li><i><b>Shuffle</b></i> : the next track will be chosen randomly</li>
-          <li><i><b>Cancel last track points</b></i> : removes the points awarded by the last track</li>
+          <li>Ajout de questions personnalisées</li>
+          <li>Synchronisation avec GitHub pour la base de données</li>
+          <li>Sauvegarde automatique des scores et statistiques</li>
         </ul>
         <br />
-        <h5 className="h5-with-line">Playlist edition rework</h5>
+        <h5 className="h5-with-line">Leaderboard & Affichage</h5>
         <br />
-        <img src="/BlindTesTwitch/chglg_2.gif" className="border" />
-        <div className={'img-caption'}><span>Quick-edit the visibility of each guessable value</span></div>
-        <br />
-        <br />
-        <img src="/BlindTesTwitch/chglg_2.png" className="border" />
-        <div className={'img-caption'}><span>Edition modal revamp</span></div>
-        <br />
-        <br />
-        <h5 className="h5-with-line">New valid alternative answers</h5>
-        <br />
-        <span>A few examples :</span>
         <ul>
-          <li><code>the police</code> <FontAwesomeIcon icon={['fas', 'arrow-right']} size="xs" /> <code>police</code> and <code>the police</code> are both considered valid answers</li>
-          <li><code>earth wind & fire</code> <FontAwesomeIcon icon={['fas', 'arrow-right']} size="xs" /> <code>earth wind & fire</code> and <code>earth wind and fire</code> are valid</li>
-          <li><code>bigflo & oli</code> <FontAwesomeIcon icon={['fas', 'arrow-right']} size="xs" /> <code>bigflo & oli</code> and <code>bigflo et oli</code> are valid</li>
-          <li><code>florence + the machine</code> <FontAwesomeIcon icon={['fas', 'arrow-right']} size="xs" /> <code>florence + the machine</code> and <code>florence and the machine</code> are valid</li>
+          <li>Classement des joueurs avec avatars Twitch</li>
+          <li>Optimisations du rendu pour de meilleures performances</li>
+          <li>Statistiques détaillées des joueurs</li>
         </ul>
         <br />
-        <h5 className="h5-with-line">Various bug fixes</h5>
+        <h5 className="h5-with-line">Corrections & Optimisations</h5>
+        <br />
+        <ul>
+          <li>Correction des conditions de course entre stats et scores</li>
+          <li>Sauvegarde des scores pour annulation de questions</li>
+          <li>Migration vers Yarn et mise à jour des dépendances</li>
+          <li>Nettoyage et optimisations diverses du code</li>
+        </ul>
       </Modal.Body>
       <Modal.Footer>
         <Button size="sm" style={{ color: 'white', width: '60px' }} onClick={() => onClose()}>

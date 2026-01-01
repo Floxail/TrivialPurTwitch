@@ -10,7 +10,6 @@ export enum TwitchMode {
 }
 
 type SettingsData = {
-  deviceId: string;
   addEveryUser: boolean;
   chatNotifications: boolean;
   previewGuessNumber: boolean;
@@ -30,7 +29,6 @@ type Actions = {
 }
 
 const initialState: SettingsData & ExtraSettingsData = {
-  deviceId: '',
   addEveryUser: true,
   chatNotifications: true,
   previewGuessNumber: false,
