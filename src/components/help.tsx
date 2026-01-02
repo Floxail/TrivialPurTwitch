@@ -9,37 +9,24 @@ const Help = ({ show, onClose }: any) => {
   return (
     <Modal show={show} centered size="lg" dialogClassName="help-modal">
       <Modal.Body>
-        <strong>BlindTesTwitch</strong> is made by <strong>Neumann</strong> (<a href="https://bsky.app/profile/neum4nn.bsky.social" target="_blank">@neum4nn.bsky.social</a>) and is <strong><a href="https://github.com/s-vivien/BlindTesTwitch" target="_blank">open-source</a></strong>
+        <strong>TrivialPurTwitch</strong> is made by <strong>Floxail</strong> (<a href="https://bsky.app/profile/floxail.bsky.social" target="_blank">@floxail.bsky.social</a>) and is <strong><a href="https://github.com/Floxail/TrivialPurTwitch" target="_blank">open-source</a></strong>
         <br />
+        is base on <strong><a href="https://github.com/s-vivien/BlindTesTwitch" target="_blank">BlindTesTwitch</a></strong> From <strong>Neumann</strong>
         <br />
-        <h2>How to play</h2>
+        <h2>Comment Joué </h2>
         <ul>
-          <li><b>No registration/prerequisite needed </b> : just type in the chat to play ! You'll be added automatically to the leaderboard</li>
-          <li>There is a (small) <b>typo tolerance</b>, don't be afraid to type fast 😃</li>
-          <li>Artists/titles and propositions are <b>cleaned before comparison</b> :
-            <ul>
-              <li>Accents and special characters are removed</li>
-              <li>Lower-cased (i.e. propositions are case-insensitive)</li>
+          <li><b>Aucune inscription/condition préalable requise</b> : il suffit de taper dans le chat pour jouer ! Vous serez automatiquement ajouté au classement.</li>
+          <li>Il existe une (petite) <b>tolérance aux fautes de frappe</b>, n'hésitez pas à taper rapidement 😃</li>
             </ul>
-          </li>
-        </ul>
-        <p style={{ border: 'dashed black', padding: '10px' }}>
-          <FontAwesomeIcon icon={['fas', 'exclamation-triangle']} size="lg" /> <i><b>Each proposition must contain a single artist/title</b></i> <FontAwesomeIcon icon={['fas', 'exclamation-triangle']} size="lg" />
-          <br />
-          <i>i.e. if your message contains both the artist and the title, or two artists, it won't be acknowledged...</i>
-        </p>
         <h2>Scoring</h2>
         <ul>
-          {settings.acceptanceDelay === 0 &&
-            <li><b>1 point</b> is awarded each time someone is <i>the first</i> to find the title or one of the artists</li>
-          }
-          {settings.acceptanceDelay > 0 &&
+          {
             <>
-              <li><b>2 points</b> are awarded each time someone is <i>the first</i> to find the title or one of the artists</li>
-              <li>Every other player who finds the same answer within {settings.acceptanceDelay} second(s) will be rewarded with <b>1 point</b></li>
+              <li><b>2 points</b> est attribué chaque fois qu'une personne est <i>la première</i> à trouver la bonne reponse</li>
+              <li>Tous les autres joueurs qui trouvent la même réponse dans les {settings.acceptanceDelay} secondes recevront <b>1 point</b></li>
             </>
           }
-          <li>Each player who answers correctly more than once on a track will receive <b>1 extra point</b> per<br />answer in addition to the points mentioned above</li>
+          <li>Chaque joueur qui répond correctement plus d'une fois recevera <b>+1 point bonus</b> par<br/>reponse consecutive <i>avec une limite a 5points bonus</i></li>
         </ul>
       </Modal.Body>
       <Modal.Footer>

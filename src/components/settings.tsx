@@ -49,7 +49,7 @@ const Settings = () => {
         <Form.Group className="mb-3" controlId="formGroupAcceptance">
           <Form.Label>Délai d'acceptation de la réponse</Form.Label>
           <Form.Range onChange={(e) => setAcceptanceDelay(e.target.valueAsNumber)} value={acceptanceDelay} style={{ width: '100%' }} min={0} max={20} />
-          <Form.Label style={{ width: '100%', textAlign: 'center', marginTop: '-10px' }}><i>{acceptanceDelay} secondes{acceptanceDelay > 1 ? 's' : ''}</i></Form.Label>
+          <Form.Label style={{ width: '100%', textAlign: 'center', marginTop: '-10px' }}><i>{acceptanceDelay} seconde{acceptanceDelay > 1 ? 's' : ''}</i></Form.Label>
         </Form.Group>
         <Form.Group className="mb-3" controlId="formPreviewGuessNumber">
           <Form.Check disabled={acceptanceDelay === 0} type="checkbox" checked={previewGuessNumber && acceptanceDelay > 0} label="Prévisualiser le nombre de tentatives pendant le délai d'acceptation" onChange={(e) => { setPreviewGuessNumber(e.target.checked); }} />

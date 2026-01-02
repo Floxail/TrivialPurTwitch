@@ -783,7 +783,7 @@ const Quiz = () => {
 											<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
 												{quizStore.getBoxes().map(b => (
 													<span key={b.name} style={{
-														backgroundColor: 'var(--spot-color)',
+														backgroundColor: '#ff60b7',
 														color: 'white',
 														padding: '4px 12px',
 														borderRadius: '12px',
@@ -894,7 +894,7 @@ const Quiz = () => {
 										size="sm"
 										onClick={handleNextQuestion}
 									>
-										<FontAwesomeIcon icon={['fas', 'step-forward']} color="var(--spot-color)" size="lg" />
+										<FontAwesomeIcon icon={['fas', 'step-forward']} color="#ff60b7" size="lg" />
 										<b>SUIVANT</b>
 									</Button>
 									&nbsp;
@@ -906,7 +906,7 @@ const Quiz = () => {
 										size="sm"
 										onClick={handleRevealAnswer}
 									>
-										<FontAwesomeIcon icon={['fas', 'eye']} color="var(--spot-color)" size="lg" />
+										<FontAwesomeIcon icon={['fas', 'eye']} color="#ff60b7" size="lg" />
 										<b>RÉVÉLER</b>
 									</Button>
 									&nbsp;
