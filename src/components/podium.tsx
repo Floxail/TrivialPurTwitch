@@ -27,7 +27,7 @@ const Podium = ({ onClose }: any) => {
 
   const renderPlayerStats = (player: Player) => {
     return <div style={{ border: '3px dashed #4A4A4AFF', padding: '10px 15px', borderRadius: '.5rem', margin: '5px 5px 14px 0' }}>
-      {renderStatsLine('Answers', `${player.stats.answers}`)}
+      {renderStatsLine('Reponses', `${player.stats.answers}`)}
       {settings.acceptanceDelay > 0 && renderStatsLine('Firsts', `${player.stats.firsts}`)}
       {renderStatsLine('Combos', `${player.stats.combos}`)}
     </div>;
@@ -167,7 +167,7 @@ const Podium = ({ onClose }: any) => {
             paddingTop: '15px',
           }}
         >
-          {loser && renderPodiumStep([loser], 0, false, '#656565', 46, 'crown', ' mention honorable')}
+          {loser && renderPodiumStep([loser], 0, false, '#656565', 46, 'crown', 'Mention honorable')}
           {podiumContent.map((step) => {
             return renderPodiumStep(
               step.players,
@@ -184,7 +184,7 @@ const Podium = ({ onClose }: any) => {
       <Modal.Footer>
         {losers.length > 0 &&
           <Button size="sm" className="mr-2 edition-form-left-buttons" variant="secondary" onClick={pickLoser}>
-            <b>Pick random loser</b>
+            <b>Mention honorable</b>
           </Button>
         }
         <Button size="sm" style={{ color: 'white', width: '60px' }} onClick={() => onClose()}>
