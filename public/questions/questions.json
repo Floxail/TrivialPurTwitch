@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-01-01T15:34:20.332Z",
+  "exportDate": "2026-01-03T13:23:50.775Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -58,7 +58,7 @@
     {
       "name": "Vieweurs",
       "cardNumbers": [],
-      "totalQuestions": 1365
+      "totalQuestions": 1400
     }
   ],
   "questions": [
@@ -14384,180 +14384,144 @@
       "category": 0,
       "question": "Combien de rayures y a-t-il sur le drapeau américain ?",
       "answer": "13",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 1
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767443864673ft8yw62x6",
       "category": 0,
       "question": "Quel pays possède le plus grand nombre d’îles dans le monde ?",
       "answer": "La Suède",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 1
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767443864673diesmtkta",
       "category": 0,
       "question": "Quel est le plus petit pays du monde ?",
       "answer": "Le Vatican",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 1
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767443864673yx1t1pcob",
       "category": 0,
       "question": "Quelle est la capitale du Canada ?",
       "answer": "Ottawa",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 1
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "176744386467311v3o5rqh",
       "category": 0,
       "question": "Citez le nom de la plus vaste chaîne de montagnes du monde ?",
       "answer": "Les Andes",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 1
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "176744386467398pwp09xn",
       "category": 0,
       "question": "Quel est le site naturel le plus bas de la planète Terre ?",
       "answer": "La fosse des Mariannes",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 1
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "176744386467383u8hn9wb",
       "category": 0,
       "question": "Citez le nom du plus long fleuve du monde ?",
       "answer": "Le Nil",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 1
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445015193cau37p5t9",
       "category": 1,
       "question": "De quelle ville Billie Eilish est-elle originaire ?",
       "answer": "Los Angeles",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445015193uvm7a3gmj",
       "category": 1,
       "question": "De quelle ville les Beatles sont-ils originaires ?",
       "answer": "Liverpool",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "176744501519331guqdfz7",
       "category": 1,
       "question": "Quel est l’album le plus diffusé sur Spotify en 2019 ?",
       "answer": "When We All Fall Asleep, Where Do We Go?",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445015193erempa4vj",
       "category": 1,
       "question": "De combien de touches un piano classique est-il doté ?",
       "answer": "88",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445015193y4xj9y5t0",
       "category": 1,
       "question": "Quel groupe de pop américain célèbre s’appelait-il « Kara’s Flowers » à l’origine ?",
       "answer": "Maroon 5",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "176744501519334flgfatj",
       "category": 1,
       "question": "En quelle année Netflix a-t-il été créé : 1997, 2001, 2009, 2015 ?",
       "answer": "En 1997",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "17674450151938cf840f3m",
       "category": 1,
       "question": "Quelle a été la série la plus regardée sur Netflix en 2019 ?",
       "answer": "Stranger Things",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445015193yxinpsqw4",
       "category": 1,
       "question": "Citez le nom du premier long métrage de Pixar ?",
       "answer": "Toy Story (1995)",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445015193o170d1nak",
       "category": 1,
       "question": "Quel est le nom du café dans la sitcom Friends ?",
       "answer": "Central Perk",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "17674450151932708rbva5",
       "category": 1,
       "question": "Citez le nom du premier film de Disney ?",
       "answer": "Blanche-Neige et les Sept Nains",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 2
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767444685101u7vfmxa8i",
       "category": 2,
       "question": "En quelle année le métro de Londres a-t-il été ouvert ?",
       "answer": "1863",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 3
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "17674446851019bznq5n7i",
@@ -14567,130 +14531,104 @@
       "alternativeAnswers": [
         "Berners-Lee 1990"
       ],
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 3
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "17674446851013fpt5f4ma",
       "category": 2,
       "question": "Qui a inventé l’emblématique petite robe noire ?",
       "answer": "Coco Chanel",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 3
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767444685101huk0o5ugk",
       "category": 2,
       "question": "Que s’est-il passé le 20 juillet 1969 ?",
       "answer": "Apollo 11 a atterri sur la Lune",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 3
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767444685101z6h8rqvhn",
       "category": 2,
       "question": "En quelle année le premier numéro de Vogue a-t-il été publié : 1892, 1960, 2000 ?",
       "answer": "En 1892",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 3
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "17674446851012q9jr797x",
       "category": 2,
       "question": "Lequel des empires suivants n’avait pas de langue écrite : l’inca, l’aztèque, l’égyptien, le romain ?",
       "answer": "L'inca",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 3
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "17674446851019yamv8k5r",
       "category": 2,
       "question": "Jusqu’en 1923, comment s’appelait la ville turque d’Istanbul ?",
       "answer": "Constantinople",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 3
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767444027704kyby7oxns",
       "category": 3,
       "question": "Quel mot désignant New York est-il utilisé par la population locale ?",
       "answer": "Gotham",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 4
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "176744402770430yi0fq60",
       "category": 3,
       "question": "Citez le nom de la série de livres la plus vendue du 21e siècle",
       "answer": "Harry Potter",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 4
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767444027704j57snjs0e",
       "category": 3,
       "question": "Quelle langue comprend le plus grand nombre de mots (selon les entrées du dictionnaire) ?",
       "answer": "L’anglais",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 4
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767444027704r6lmpyrid",
       "category": 3,
       "question": "Quel graffeur célèbre est originaire de Bristol ?",
       "answer": "Banksy",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 4
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767444027704lvjpjmruk",
       "category": 3,
       "question": "Quelle peinture emblématique a fait la renommée de l’artiste norvégien Edvard Munch ?",
       "answer": "Le Cri",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 4
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767444027704bts7zpnx0",
       "category": 3,
       "question": "Quel artiste a peint le plafond de la chapelle Sixtine à Rome ?",
       "answer": "Michel-Ange",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 4
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "17674452714532us02yom1",
       "category": 5,
       "question": "Dans quelle ville les premiers Jeux olympiques modernes se sont-ils tenus ?",
       "answer": "Athènes",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 5
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445271453w128pwh67",
@@ -14700,10 +14638,8 @@
       "alternativeAnswers": [
         "Belgique"
       ],
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 5
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445271453sz9ceno77",
@@ -14714,10 +14650,8 @@
         "Schumacher",
         "Hamilton"
       ],
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 5
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445271453ybfr1lft9",
@@ -14727,20 +14661,16 @@
       "alternativeAnswers": [
         "Graf"
       ],
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 5
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     },
     {
       "id": "1767445271453lz4j52x5g",
       "category": 5,
       "question": "Comment la société de vêtements Nike s’appelait-elle à l’origine ?",
       "answer": "|R: Blue Ribbon Sports",
-      "trivialBox": "Vieweurs",
-      "difficulty": "",
-      "boxName": "Vieweurs",
-      "cardNumber": 5
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
     }
   ]
 }
