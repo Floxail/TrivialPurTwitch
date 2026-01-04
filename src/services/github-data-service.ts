@@ -1,6 +1,21 @@
 // Service pour charger les questions depuis GitHub
 export const loadQuestionsFromGitHub = async (): Promise<any> => {
   try {
+    // Essayer d'abord depuis GitHub raw (toujours à jour)
+    const githubRawUrl = 'https://raw.githubusercontent.com/Floxail/TrivialPurTwitch/master/public/questions/questions.json';
+
+    try {
+      const response = await fetch(`${githubRawUrl}?t=${Date.now()}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Questions chargées depuis GitHub raw');
+        return data;
+      }
+    } catch (githubError) {
+      console.warn('⚠️ Impossible de charger depuis GitHub raw, fallback vers build local', githubError);
+    }
+
+    // Fallback : charger depuis le build local
     const response = await fetch(
       `${process.env.PUBLIC_URL}/questions/questions.json?t=${Date.now()}`
     );
@@ -10,6 +25,7 @@ export const loadQuestionsFromGitHub = async (): Promise<any> => {
     }
 
     const data = await response.json();
+    console.log('✅ Questions chargées depuis build local');
     return data;
   } catch (error) {
     console.error('❌ Erreur lors du chargement depuis GitHub:', error);

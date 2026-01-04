@@ -44,17 +44,33 @@ useEffect(() => {
   // AJOUTER ICI : Charger depuis GitHub
   const lastSync = localStorage.getItem('quiz_last_github_sync');
   const now = Date.now();
-  const oneDay = 24 * 60 * 60 * 1000;
-  
+  const oneHour = 60 * 60 * 1000; // 1 heure au lieu de 24h
+
   // Charger depuis GitHub si :
   // - Jamais synchronisé
-  // - Dernière sync > 24h
-  if (!lastSync || (now - parseInt(lastSync)) > oneDay) {
+  // - Dernière sync > 1h
+  if (!lastSync || (now - parseInt(lastSync)) > oneHour) {
     console.log('🔄 Chargement des questions depuis GitHub...');
     quizStore.loadFromGitHub().then(() => {
       localStorage.setItem('quiz_last_github_sync', now.toString());
     });
   }
+
+  // Sync périodique en arrière-plan toutes les heures
+  const syncInterval = setInterval(() => {
+    const lastSyncTime = localStorage.getItem('quiz_last_github_sync');
+    const currentTime = Date.now();
+
+    if (!lastSyncTime || (currentTime - parseInt(lastSyncTime)) > oneHour) {
+      console.log('🔄 Synchronisation automatique en arrière-plan...');
+      quizStore.loadFromGitHub().then(() => {
+        localStorage.setItem('quiz_last_github_sync', currentTime.toString());
+      });
+    }
+  }, oneHour); // Vérifier toutes les heures
+
+  // Nettoyer l'intervalle quand le composant est démonté
+  return () => clearInterval(syncInterval);
 }, []);
 
 	useEffect(() => {
