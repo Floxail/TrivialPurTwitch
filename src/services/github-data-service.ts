@@ -27,12 +27,14 @@ export const mergeQuestionsFromGitHub = (
   }
 
   const githubQuestions = githubData.questions;
-  
-  // Créer un Set des IDs locaux pour éviter les doublons
-  const localIds = new Set(localQuestions.map(q => q.id));
-  
-  // Ajouter seulement les questions GitHub qui n'existent pas en local
-  const newQuestions = githubQuestions.filter((q: any) => !localIds.has(q.id));
-  
-  return [...localQuestions, ...newQuestions];
+
+  // Créer un Set des IDs GitHub
+  const githubIds = new Set(githubQuestions.map((q: any) => q.id));
+
+  // Garder uniquement les questions locales qui ne sont PAS dans GitHub
+  // (ce sont les questions créées manuellement en local)
+  const localOnlyQuestions = localQuestions.filter(q => !githubIds.has(q.id));
+
+  // Retourner : toutes les questions GitHub + questions locales uniquement
+  return [...githubQuestions, ...localOnlyQuestions];
 };
