@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-01-03T13:23:50.775Z",
+  "exportDate": "2026-01-04T00:20:07.863Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -58,7 +58,7 @@
     {
       "name": "Vieweurs",
       "cardNumbers": [],
-      "totalQuestions": 1400
+      "totalQuestions": 1427
     }
   ],
   "questions": [
@@ -954,7 +954,7 @@
     {
       "id": "1766255157594c6iwi88qz",
       "category": 3,
-      "question": "• Quelle est l'œuvre la plus célèbre de Léonard de Vinci ?",
+      "question": "Quelle est l'œuvre la plus célèbre de Léonard de Vinci ?",
       "answer": "La Joconde",
       "trivialBox": "Vieweurs",
       "difficulty": "medium",
@@ -1357,7 +1357,11 @@
       "answer": "Un météore brûle en entrant dans l'atmosphère, une météorite atteint la surface de la Terre.",
       "trivialBox": "Vieweurs",
       "difficulty": "hard",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "Un météore brûle en entrant dans l'atmosphère",
+        "une météorite atteint la surface de la Terre."
+      ]
     },
     {
       "id": "1766255224494mumsplapz",
@@ -3752,54 +3756,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766850183966cc4w72deg",
-      "category": 0,
-      "question": "Laquelle de ces gares ne se trouve pas à Lyon ?",
-      "answer": "Matabiau",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966x3srcv5y4",
-      "category": 0,
-      "question": "Laquelle de ces langues est officiellement parlée en Papouasie-Nouvelle-Guinée ?",
-      "answer": "L'anglais",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "176685018396688wg3dyya",
-      "category": 0,
-      "question": "Laquelle de ces plages ne se trouve pas à Rio de Janeiro ?",
-      "answer": "Jericoacoara",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966tbfjr7xz0",
-      "category": 0,
-      "question": "Laquelle de ces régions ne fait pas partie des Émirats arabes unis ?",
-      "answer": "La Jordanie",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966azmgtnq0h",
-      "category": 0,
-      "question": "Laquelle de ces villes est la plus méridionale ?",
-      "answer": "Marseille",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "176685018396692y42z3jr",
-      "category": 0,
-      "question": "Laquelle de ces villes se trouve dans l'hémisphère nord ?",
-      "answer": "New Delhi",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766850183966wd96guknn",
       "category": 0,
       "question": "Le désert de Gobi couvre une partie de la Mongolie et de quel autre pays ?",
@@ -3812,14 +3768,6 @@
       "category": 0,
       "question": "quel animal orne les armoiries de l'Australie ?",
       "answer": "Le kangourou",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966jciwzv0bo",
-      "category": 0,
-      "question": "Lors des traversées de la Manche à la nage, quelles sont généralement les villes de départ et d'arrivée ?",
-      "answer": "Calais (France) et Douvres (Angleterre)",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -3916,22 +3864,6 @@
       "category": 0,
       "question": "Où viennent se reproduire tous les ans les deux tiers de la population mondiale d'otaries à fourrure ?",
       "answer": "Îles au large de l'Alaska",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668501839664v3t2u0jx",
-      "category": 0,
-      "question": "Parmi ces monuments parisiens, quel est le seul se trouvant sur la rive gauche ?",
-      "answer": "La Tour Eiffel",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966nkt3z5i9a",
-      "category": 0,
-      "question": "Parmi les villes suivantes, laquelle n'est pas la capitale de sa région ?",
-      "answer": "Grenoble",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -4108,14 +4040,6 @@
       "category": 0,
       "question": "Quel est le premier pays que rencontrerait un navigateur faisant voile plein sud depuis le Portugal ?",
       "answer": "Le Maroc",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668501839666vw4valiv",
-      "category": 0,
-      "question": "Quel est le principal ingrédient du plat de fruits de mer représenté ici ?",
-      "answer": "Les calamars",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -5491,17 +5415,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766852112906t8b7f1c02",
-      "category": 1,
-      "question": "Quel artiste ne travaille pas pour Les Guignols de l'info ?",
-      "answer": "Laurent Gerra",
-      "alternativeAnswers": [
-        "Gerra"
-      ],
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766852112906i4vri0eab",
       "category": 1,
       "question": "Quel auteur-compositeur a écrit Là-Bas et la bande originale du film Astérix et Obélix contre César ?",
@@ -6683,7 +6596,11 @@
       "question": "En quoi étaient généralement fabriqués les parchemins ?",
       "answer": "De la peau d'animal",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "Vélain",
+        "Peau"
+      ]
     },
     {
       "id": "17668527663671but18pzf",
@@ -6834,14 +6751,6 @@
       "category": 2,
       "question": "Parmi ces sigles, lequel ne désigne pas une agence de renseignement : la CIA, le MI6 ou la DGesCO ?",
       "answer": "DGesCO",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766852766367v979f4ysf",
-      "category": 2,
-      "question": "Parmi ces villes européennes, laquelle fut la première au monde à atteindre 1 million d'habitants ?",
-      "answer": "Rome",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -8789,22 +8698,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "176685367709573jcs3fm9",
-      "category": 3,
-      "question": "Laquelle de ces femmes n'est pas l'une des Trois femmes puissantes du roman de Marie Ndiaye ?",
-      "answer": "Maria",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766853677095btpu6ev1i",
-      "category": 3,
-      "question": "Laquelle n'est pas une sœur Brontë ?",
-      "answer": "Mary",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766853677095qdrpa0vxe",
       "category": 3,
       "question": "Le peintre Georges Seurat est à l'origine de quel courant artistique ?",
@@ -10245,54 +10138,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766854112853m0q0pgmkl",
-      "category": 4,
-      "question": "Laquelle de ces couleurs ne fait pas partie du processus d'impression en quadrichromie ?",
-      "answer": "Vert",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854112853qaqig86yu",
-      "category": 4,
-      "question": "Laquelle de ces créatures n'a pas de cerveau ?",
-      "answer": "L'étoile de mer",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668541128530j7xbmoz9",
-      "category": 4,
-      "question": "Laquelle de ces inventions n'a pas été nommée d'après son inventeur ?",
-      "answer": "Le tiroir",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854112853mpxm0lkvt",
-      "category": 4,
-      "question": "Laquelle de ces plantes ne fait pas partie des Solanacées ?",
-      "answer": "Le panais",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854112853xe5uwau57",
-      "category": 4,
-      "question": "Laquelle de ces planètes n'a pas de lune ?",
-      "answer": "Vénus",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668541128535k9dlz1ps",
-      "category": 4,
-      "question": "Laquelle de ces substances n'est pas un métal dans le tableau périodique des éléments ?",
-      "answer": "Le bronze",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "17668541128533opyyronp",
       "category": 4,
       "question": "Le Grand collisionneur de hadrons du CERN a été conçu pour recréer les conditions de quelle théorie scientifique ?",
@@ -10316,14 +10161,6 @@
       "category": 4,
       "question": "Par quel type d'organismes la plupart des récifs de corail sont-ils constitués ?",
       "answer": "Des polypes",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854112853l92bbs6q2",
-      "category": 4,
-      "question": "Parmi les termes suivants, qu'est-ce qui ne désigne pas un corps céleste ?",
-      "answer": "Étoile rose",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -10429,7 +10266,7 @@
     {
       "id": "1766854112853gnkrpgue8",
       "category": 4,
-      "question": "Quel est l'autre nom de l'orque, représentée ici ?",
+      "question": "Quel est l'autre nom de l'orque",
       "answer": "L'épaulard",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -10748,7 +10585,10 @@
       "question": "Quelle est la structure moléculaire de l'ozone ?",
       "answer": "O³",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "o3"
+      ]
     },
     {
       "id": "1766854112853df8gl2ryd",
@@ -11552,86 +11392,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766854440296svkoqhof1",
-      "category": 5,
-      "question": "Laquelle de ces couleurs ne figure pas sur un Rubik's Cube traditionnel ?",
-      "answer": "Le violet",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296fk34vbsus",
-      "category": 5,
-      "question": "Laquelle de ces nages n'est pas représentée aux Jeux olympiques ?",
-      "answer": "La nage indienne",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668544402962vdx9lsui",
-      "category": 5,
-      "question": "Laquelle de ces propositions n'est pas un sport motocycliste ?",
-      "answer": "Championnat du monde des rallyes",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668544402961ng0s4cr6",
-      "category": 5,
-      "question": "Laquelle de ces propositions n'est pas un type de pâtes ?",
-      "answer": "Mascarpone",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "176685444029682cz9atkg",
-      "category": 5,
-      "question": "Laquelle de ces propositions n'est pas une gare au Monopoly ?",
-      "answer": "La gare de l'Est",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296wdkp4bvaf",
-      "category": 5,
-      "question": "Laquelle de ces réponse n'est pas la couleur de l'un des anneaux du logo des Jeux olympiques ?",
-      "answer": "Violet",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296v4qq0t2k2",
-      "category": 5,
-      "question": "Laquelle de ces villes n'a pas pour spécialité une saucisse ?",
-      "answer": "Montauban",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296s2k1k1tyf",
-      "category": 5,
-      "question": "Laquelle de ces émissions sportives est la plus ancienne ?",
-      "answer": "Stade 2",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296dkzenn5ek",
-      "category": 5,
-      "question": "Laquelle n'est pas une des mascottes des Coupes du monde de football ?",
-      "answer": "Mandeville",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296mkyeuqxn7",
-      "category": 5,
-      "question": "Lequel de ces terrains est le plus grand : handball, basket ou volley ?",
-      "answer": "Le terrain de handball",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766854440296m6pt7uoww",
       "category": 5,
       "question": "Les jokers exclus, combien de cartes y a-t-il dans un jeu standard ?",
@@ -11667,29 +11427,10 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766854440296aqny309mh",
-      "category": 5,
-      "question": "Parmi ces personnalités, qui a présenté l'émission Stade 2 ?",
-      "answer": "Gérard Holtz",
-      "alternativeAnswers": [
-        "Holtz"
-      ],
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766854440296ay5mvo4lr",
       "category": 5,
       "question": "Pour améliorer quelle caractéristique de leur planche les surfeurs les cirent-ils ?",
       "answer": "L'adhérence",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766854440296gejux1708",
-      "category": 5,
-      "question": "Pour quelle équipe de football David Beckham n'a-t-il pas joué ?",
-      "answer": "Les Rapids du Colorado",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -11879,7 +11620,7 @@
     {
       "id": "17668544402960gsi6vj0k",
       "category": 5,
-      "question": "Quel est l'ingrédient principal du tarama, la spécialité grecque ci-dessous ?",
+      "question": "Quel est l'ingrédient principal du tarama ?",
       "answer": "Des œufs de poisson",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -12309,9 +12050,12 @@
       "id": "1766854440296vopulzrib",
       "category": 5,
       "question": "Quelle est l'étonnante signification du nom de famille de l'inventeur des chips ?",
-      "answer": "Miette (Crumb)",
+      "answer": "Miette ",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "Crumb"
+      ]
     },
     {
       "id": "1766854440296z3ner9tuj",
@@ -14404,14 +14148,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1767443864673yx1t1pcob",
-      "category": 0,
-      "question": "Quelle est la capitale du Canada ?",
-      "answer": "Ottawa",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "176744386467311v3o5rqh",
       "category": 0,
       "question": "Citez le nom de la plus vaste chaîne de montagnes du monde ?",
@@ -14670,6 +14406,556 @@
       "question": "Comment la société de vêtements Nike s’appelait-elle à l’origine ?",
       "answer": "|R: Blue Ribbon Sports",
       "difficulty": "medium",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1766854440296mkyeuqxn7",
+      "category": 5,
+      "question": "Lequel de ces terrains est le plus grand : handball, basket ou volley ?",
+      "answer": "Le terrain de handball",
+      "difficulty": "medium",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869vdctxt0lx",
+      "category": 0,
+      "question": "Quelle est la capitale de l'Inde ?",
+      "answer": "New Delhi",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869kllffdnp3",
+      "category": 0,
+      "question": "Quels sont les deux États américains qui partagent le plus de frontières avec d'autres États ?",
+      "answer": "Le Tennessee, le Missouri",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869fs7g7my9d",
+      "category": 0,
+      "question": "Selon l'Organisation météorologique mondiale, où a-t-on enregistré la température la plus élevée jamais enregistrée sur Terre ?",
+      "answer": "La Vallée de la Mort, en Californie",
+      "alternativeAnswers": [
+        "Californie",
+        "Vallée de la mort"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869l13prtmwe",
+      "category": 0,
+      "question": "Quels sont les deux pays qui ont la plus longue frontière internationale commune ?",
+      "answer": "Le Canada et les États-Unis",
+      "alternativeAnswers": [
+        "Canada et USA"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674489328696w1vr27k7",
+      "category": 0,
+      "question": "Quelle est la capitale de Singapour ?",
+      "answer": "Singapour",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869rebr80dqb",
+      "category": 0,
+      "question": "Quelle est la capitale de l'Iowa ?",
+      "answer": "Des Moines",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869uwo620lb4",
+      "category": 0,
+      "question": "Quelle est la langue la plus parlée au Brésil ?",
+      "answer": "Le portugais",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869a3t72epj9",
+      "category": 0,
+      "question": "Le Japon est le pays qui compte le plus grand nombre de citoyens de quelle tranche d'âge ?",
+      "answer": "Les plus de 65 ans",
+      "alternativeAnswers": [
+        "65+",
+        "+ de 65"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869mf3456n0b",
+      "category": 0,
+      "question": "La zone 51 est située dans quel État américain ?",
+      "answer": "Le Nevada",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869rkzr3wqnn",
+      "category": 0,
+      "question": "Dans quelle ville et quel état se trouve l'université de Harvard ?",
+      "answer": "Cambridge, Massachusetts",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869i8ip82igo",
+      "category": 0,
+      "question": "Quelle est la capitale du Canada ?",
+      "answer": "Ottawa",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869d3wnti687",
+      "category": 0,
+      "question": "Quelle ville est construite sur les ruines de la cité aztèque de Tenochtitlan ?",
+      "answer": "Mexico City",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767448932869p8lotffjp",
+      "category": 0,
+      "question": "Quel pays est connu sous le nom de \"pays du soleil levant\" ?",
+      "answer": "Le Japon",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674489328699eznnafm3",
+      "category": 0,
+      "question": "Quelle est la langue maternelle la plus parlée au monde ?",
+      "answer": "Le chinois mandarin",
+      "alternativeAnswers": [
+        "Mandarin"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176744893286932hkhcjkk",
+      "category": 0,
+      "question": "Quelle est la plus grande île de la mer Méditerranée ?",
+      "answer": "La Sicile",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449135799d6n27ck8c",
+      "category": 1,
+      "question": "Quel est le spectacle de Broadway qui a été le plus lucratif de tous les temps ?",
+      "answer": "Le Roi Lion",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674491357999p58kdhkx",
+      "category": 1,
+      "question": "Quel est le nom de l'hôtel dans le roman et le film The Shining ?",
+      "answer": "L'hôtel Overlook",
+      "alternativeAnswers": [
+        "Overlook"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674491357993mbwpie90",
+      "category": 1,
+      "question": "Qui détient le record du plus grand nombre de victoires aux Emmy Awards pour \"Meilleur animateur de téléréalité\" ?",
+      "answer": "RuPaul",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674491357991j705bqxz",
+      "category": 1,
+      "question": "Quel est le spectacle le plus ancien de Broadway (fermé en 2023) ?",
+      "answer": "Le Fantôme de l'Opéra",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449135799ysbm4t9w0",
+      "category": 1,
+      "question": "En quelle année Netflix a-t-il lancé ses services de streaming ?",
+      "answer": "2007",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449135799qznejgbyd",
+      "category": 1,
+      "question": "Quels sont les prénoms des quatre personnages principaux de la série \"H\" ?",
+      "answer": "Jamel, Brahim, Aymé et Kader",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449135799mm9g0fien",
+      "category": 1,
+      "question": "Quelle actrice française a eu l'une des carrières les plus longues à la télévision?",
+      "answer": "Jacqueline Maillan",
+      "alternativeAnswers": [
+        "Maillan"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674491357992dquy704p",
+      "category": 1,
+      "question": "Quelle est la plus longue série télévisée d'animation américaine ?",
+      "answer": "Les Simpson",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674491357999yethrfhc",
+      "category": 1,
+      "question": "Qui a été la première femme à remporter l'Oscar du meilleur réalisateur (pour Démineurs) ?",
+      "answer": "Kathryn Bigelow",
+      "alternativeAnswers": [
+        "Bigelow"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176744913579921j45gj0p",
+      "category": 1,
+      "question": "Quel est le premier long métrage de Spike Lee, adapté plus tard en série sur Netflix ?",
+      "answer": "Nola Darling n'en fait qu'à sa tête",
+      "alternativeAnswers": [
+        "She's Gotta Have It"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449135799eapl03wsv",
+      "category": 1,
+      "question": "Quelle célèbre chanteuse texane était appelée la “Reine du Tejano” ?",
+      "answer": "Selena Quintanilla-Pérez",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449135799o612wc8di",
+      "category": 1,
+      "question": "Sous quel nom l'actrice Norma Jeane Mortenson est-elle devenue célèbre ?",
+      "answer": "Marilyn Monroe",
+      "alternativeAnswers": [
+        "Monroe"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674494331135vqzwgsh7",
+      "category": 2,
+      "question": "Qui a été la première femme à recevoir un prix Nobel en 1903 ?",
+      "answer": "Marie Curie",
+      "alternativeAnswers": [
+        "Curie"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176744943311372z6ufx8r",
+      "category": 2,
+      "question": "En quelle année le mur de Berlin est-il tombé ?",
+      "answer": "1989",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113dwbqfoctj",
+      "category": 2,
+      "question": "Qui a tiré le coup de feu en 1914 qui a déclenché la Première Guerre mondiale ?",
+      "answer": "Gavrilo Princip",
+      "alternativeAnswers": [
+        "Princip"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113a5ranpefg",
+      "category": 2,
+      "question": "Dans quel bar de New York s'est déroulé le soulèvement de 1969, début du mouvement LGBTQ+ ?",
+      "answer": "Le Stonewall Inn",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113a634e9v0a",
+      "category": 2,
+      "question": "En quelle année le premier iPhone a-t-il été commercialisé ?",
+      "answer": "2007",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113trzzc5d21",
+      "category": 2,
+      "question": "Dans quel pays est né le révolutionnaire Che Guevara ?",
+      "answer": "L'Argentine",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674494331137hukkzehj",
+      "category": 2,
+      "question": "Quel a été le premier pays à accorder le droit de vote aux femmes (1893) ?",
+      "answer": "La Nouvelle-Zélande",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674494331133c77osly3",
+      "category": 2,
+      "question": "En quelle année le mariage pour tous (Obergefell v. Hodges) a-t-il été légalisé aux USA ?",
+      "answer": "2015",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674494331131vp56zf2c",
+      "category": 2,
+      "question": "Quel était le nom de jeune fille d'Eleanor Roosevelt avant son mariage avec Franklin D. Roosevelt ?",
+      "answer": "Roosevelt",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113n15gc79qj",
+      "category": 2,
+      "question": "Dans quelle ville les premières infections par le COVID-19 ont-elles été découvertes ?",
+      "answer": "Wuhan",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113ecs35d1k7",
+      "category": 2,
+      "question": "Quel pays a offert la statue de la Liberté aux États-Unis ?",
+      "answer": "La France",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113qeesca3d5",
+      "category": 2,
+      "question": "Combien de femmes Henry VIII a-t-il eues ?",
+      "answer": "Six",
+      "alternativeAnswers": [
+        "6"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674494331130awbpcz26",
+      "category": 2,
+      "question": "Quel président américain figure sur le billet de 2 dollars ?",
+      "answer": "Thomas Jefferson",
+      "alternativeAnswers": [
+        "Jefferson"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113md1es1bpp",
+      "category": 2,
+      "question": "Quelle organisation Malcolm X a-t-il rejointe en 1952 avant de la quitter en 1964 ?",
+      "answer": "Nation of Islam",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176744943311332rcent0a",
+      "category": 2,
+      "question": "En quelle année la première pilule contraceptive a-t-elle été autorisée à la vente en France ?",
+      "answer": "1967",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176744943311357m7dre9i",
+      "category": 2,
+      "question": "En quelle année le Titanic a-t-il coulé ?",
+      "answer": "1912",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113l5tz4eudp",
+      "category": 2,
+      "question": "Quel était le nom de jeune fille de la princesse Diana ?",
+      "answer": "Spencer",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113v8q84sdlq",
+      "category": 2,
+      "question": "Quel amendement à la Constitution américaine a aboli l'esclavage ?",
+      "answer": "Le 13e amendement",
+      "alternativeAnswers": [
+        "13eme"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113e1wqc3h8a",
+      "category": 2,
+      "question": "Quel était le nom des sœurs dominicaines assassinées en 1960 par la dictature de Trujillo ?",
+      "answer": "Les sœurs Mirabal",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449433113hboaljv7x",
+      "category": 2,
+      "question": "Quel activiste a été sur la liste des personnes les plus recherchées par le FBI en 1970 ?",
+      "answer": "Angela Davis",
+      "alternativeAnswers": [
+        "Davis"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282hqkvb6hhj",
+      "category": 3,
+      "question": "Qui a écrit le roman classique Their Eyes Were Watching God ?",
+      "answer": "Zora Neale Hurston",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282cv6v4s1o8",
+      "category": 3,
+      "question": "Quel est le nom le plus populaire du portrait officiellement intitulé “La Gioconda” ?",
+      "answer": "La Joconde",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674495872824qbfk889e",
+      "category": 3,
+      "question": "Sous quel pseudonyme l'auteur de L'Amie prodigieuse publie-t-il ses œuvres ?",
+      "answer": "Elena Ferrante",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282x8exy96bn",
+      "category": 3,
+      "question": "Quel a été le premier livre publié par Honoré de Balzac ?",
+      "answer": "Les Chouans",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282vqm2tp186",
+      "category": 3,
+      "question": "Quels sont les noms des quatre sœurs March dans Les filles du Dr March ?",
+      "answer": "Meg, Jo, Beth et Amy",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282bovy3hvsq",
+      "category": 3,
+      "question": "Dans la mythologie grecque, qui était le messager des dieux ?",
+      "answer": "Hermès",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282a52f83ktl",
+      "category": 3,
+      "question": "À quel artiste attribue-t-on la citation : “Je suis ma propre muse...” ?",
+      "answer": "Frida Kahlo",
+      "alternativeAnswers": [
+        "Kahlo"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282k8zk3jd8w",
+      "category": 3,
+      "question": "Qui a écrit Les aventures de Sherlock Holmes ?",
+      "answer": "Arthur Conan Doyle",
+      "alternativeAnswers": [
+        "Conan Doyle"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282btvrfu180",
+      "category": 3,
+      "question": "Qui a composé la “Sonate au clair de lune” ?",
+      "answer": "Ludwig van Beethoven",
+      "alternativeAnswers": [
+        "Beethoven"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17674495872828rqsb7rzh",
+      "category": 3,
+      "question": "Dans Narnia, pour quelle friandise Edmond trahit-il sa famille ?",
+      "answer": "Des loukoums",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282rqchg5tm1",
+      "category": 3,
+      "question": "Quel poète grec de l'Antiquité a inspiré le terme \"lesbianisme\" ?",
+      "answer": "Sappho",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767449587282s7if1jdxe",
+      "category": 3,
+      "question": "Quelle franchise célèbre a débuté comme une fanfiction de Twilight ?",
+      "answer": "50 Nuances de Grey",
+      "alternativeAnswers": [
+        "Fifty Shades of Grey"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176744958728233a4ok40h",
+      "category": 3,
+      "question": "Où vivaient Winnie l'Ourson et sa bande ?",
+      "answer": "La Forêt des Rêves Bleus",
+      "alternativeAnswers": [
+        "Bois des Cent Acres"
+      ],
+      "difficulty": "",
       "boxName": "Vieweurs"
     }
   ]
