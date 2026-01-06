@@ -25,9 +25,9 @@ TrivialQuiz est une application de quiz interactive pour Twitch qui permet à vo
 
 ---
 
-## 🎮 Modes de jeu
+## Modes de jeu
 
-### 🎲 Mode Carte (1000 points de chaîne)
+### Mode Carte (1000 points de chaîne)
 
 - **6 questions** : 1 par catégorie (Géographie, Divertissement, Histoire, Arts & Littérature, Sciences & Nature, Sports & Loisirs)
 - Le spectateur **choisit la boîte** de questions (ex: "Géographie", "Cinéma", etc.)
@@ -75,7 +75,7 @@ Créez deux récompenses personnalisées dans votre dashboard Twitch (EXEMPLE):
 - **Saisie de texte :** OUI
 - **Description :** "Lance un quiz avec le nombre de questions de votre choix (1-100). Entrez un nombre (ex: 10)"
 
-📖 **Guide complet :** Voir [CHANNEL_POINT_SETUP.md](./docs/CHANNEL_POINT_SETUP.md)
+**Guide complet :** Voir [CHANNEL_POINT_SETUP.md](./docs/CHANNEL_POINT_SETUP.md)
 
 ---
 
@@ -198,7 +198,7 @@ L'application utilise [spa-github-pages](https://github.com/rafgraph/spa-github-
 
 ---
 
-## 📦 Documentation
+## Documentation
 
 | Fichier | Description |
 |---------|-------------|
