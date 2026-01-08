@@ -75,7 +75,7 @@ Créez deux récompenses personnalisées dans votre dashboard Twitch (EXEMPLE):
 - **Saisie de texte :** OUI
 - **Description :** "Lance un quiz avec le nombre de questions de votre choix (1-100). Entrez un nombre (ex: 10)"
 
-**Guide complet :** Voir [CHANNEL_POINT_SETUP.md](./docs/CHANNEL_POINT_SETUP.md)
+**Guide complet :** Voir [CHANNEL_POINT_SETUP.md](./CHANNEL_POINT_SETUP.md)
 
 ---
 
@@ -115,8 +115,7 @@ public/data/
 └── ...
 ```
 
-📖 **Guide complet :** Voir [GITHUB_SYNC.md](./docs/GITHUB_SYNC.md)
-
+**Guide complet :**
 ---
 
 ## Utilisation
@@ -132,7 +131,7 @@ public/data/
 ### Pour les spectateurs
 
 1. **Regardez le stream** du streamer
-2. **Rachetez** "Quiz Carte" ou "Quiz Personnalisé" avec vos points de chaîne
+2. **Achetez** "Quiz Carte" ou "Quiz Personnalisé" avec vos points de chaîne
 3. **Entrez** le nom de la boîte ou le nombre de questions
 4. **Jouez** en répondant dans le chat Twitch !
 
@@ -164,7 +163,7 @@ Le quiz utilise les **6 catégories** classiques du Trivial Pursuit :
 
 ---
 
-## 🔧 Configuration (si vous voulez déployer votre propre version)
+## Configuration (si vous voulez déployer votre propre version)
 
 ### Variables d'environnement
 
