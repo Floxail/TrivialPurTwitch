@@ -130,6 +130,10 @@ type Actions = {
 
   // Fusionner les questions depuis GitHub
   loadFromGitHub: () => Promise<void>;
+
+  // Backup complet
+  exportFullBackup: () => any;
+  importFullBackup: (backupData: any) => boolean;
 };
 
 // Restore persisted state
@@ -524,6 +528,99 @@ export const useQuizStore = create<QuizData & Actions>()(
         } catch (error) {
           console.error('❌ Erreur lors du chargement GitHub:', error);
           set({ syncStatus: 'error' });
+        }
+      },
+
+      // Export complet de toutes les données
+      exportFullBackup: () => {
+        const current = get();
+
+        // Récupérer les données des autres stores
+        let playerData = null;
+        let settingsData = null;
+
+        try {
+          const playerStorage = localStorage.getItem('player_storage');
+          if (playerStorage) {
+            playerData = JSON.parse(playerStorage);
+          }
+        } catch (e) {
+          console.warn('Impossible de charger player_storage', e);
+        }
+
+        try {
+          const settingsStorage = localStorage.getItem('settings_storage');
+          if (settingsStorage) {
+            settingsData = JSON.parse(settingsStorage);
+          }
+        } catch (e) {
+          console.warn('Impossible de charger settings_storage', e);
+        }
+
+        return {
+          version: '2.0',
+          exportDate: new Date().toISOString(),
+          quiz: {
+            questions: current.questions,
+            boxes: current.boxes,
+            completedQuizzes: current.completedQuizzes,
+            cumulativeScoresInCardMode: current.cumulativeScoresInCardMode,
+            cumulativeScoresInQuizMode: current.cumulativeScoresInQuizMode,
+            defaultQuizQuestions: current.defaultQuizQuestions,
+          },
+          players: playerData,
+          settings: settingsData,
+        };
+      },
+
+      // Import complet de toutes les données
+      importFullBackup: (backupData: any): boolean => {
+        try {
+          // Validation basique
+          if (!backupData || !backupData.version) {
+            console.error('Format de backup invalide');
+            return false;
+          }
+
+          // Restaurer les données du quiz
+          if (backupData.quiz) {
+            const boxes = get().rebuildBoxes(backupData.quiz.questions || []);
+
+            set({
+              questions: backupData.quiz.questions || [],
+              boxes: boxes,
+              completedQuizzes: backupData.quiz.completedQuizzes || 0,
+              cumulativeScoresInCardMode: backupData.quiz.cumulativeScoresInCardMode || false,
+              cumulativeScoresInQuizMode: backupData.quiz.cumulativeScoresInQuizMode || false,
+              defaultQuizQuestions: backupData.quiz.defaultQuizQuestions || 10,
+            });
+
+            get().backup();
+          }
+
+          // Restaurer les données des joueurs
+          if (backupData.players) {
+            try {
+              localStorage.setItem('player_storage', JSON.stringify(backupData.players));
+            } catch (e) {
+              console.warn('Impossible de restaurer player_storage', e);
+            }
+          }
+
+          // Restaurer les settings
+          if (backupData.settings) {
+            try {
+              localStorage.setItem('settings_storage', JSON.stringify(backupData.settings));
+            } catch (e) {
+              console.warn('Impossible de restaurer settings_storage', e);
+            }
+          }
+
+          console.log('✅ Backup restauré avec succès');
+          return true;
+        } catch (error) {
+          console.error('❌ Erreur lors de la restauration du backup:', error);
+          return false;
         }
       },
     }),

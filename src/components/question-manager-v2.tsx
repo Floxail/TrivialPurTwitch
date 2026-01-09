@@ -10,6 +10,7 @@ const QuestionManager = () => {
   const globalStore = useGlobalStore();
   const quizStore = useQuizStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const backupFileInputRef = useRef<HTMLInputElement>(null);
 
   const [showModal, setShowModal] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
@@ -120,6 +121,74 @@ const QuestionManager = () => {
 
     setImportSuccess(`✅ ${removedCount} doublon(s) supprimé(s) !`);
     setTimeout(() => setImportSuccess(''), 5000);
+  };
+
+  // Export backup complet
+  const handleExportFullBackup = () => {
+    const backupData = quizStore.exportFullBackup();
+
+    const dataStr = JSON.stringify(backupData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `trivialpurtwitch-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setImportSuccess('✅ Backup complet exporté !');
+    setTimeout(() => setImportSuccess(''), 3000);
+  };
+
+  // Import backup complet
+  const handleImportFullBackup = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const content = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.onerror = reject;
+        reader.readAsText(file);
+      });
+
+      const backupData = JSON.parse(content);
+
+      const message = `⚠️ ATTENTION : Cette opération va remplacer TOUTES vos données actuelles :\n\n` +
+                      `- Questions (${quizStore.questions.length} actuelles → ${backupData.quiz?.questions?.length || 0} dans le backup)\n` +
+                      `- Boîtes (${quizStore.boxes.length} actuelles)\n` +
+                      `- Scores des joueurs\n` +
+                      `- Paramètres\n\n` +
+                      `Voulez-vous continuer ?`;
+
+      if (!window.confirm(message)) {
+        return;
+      }
+
+      const success = quizStore.importFullBackup(backupData);
+
+      if (success) {
+        setImportSuccess('✅ Backup complet restauré ! Rechargement recommandé.');
+        setTimeout(() => {
+          if (window.confirm('Voulez-vous recharger la page pour appliquer tous les changements ?')) {
+            window.location.reload();
+          }
+        }, 1000);
+      } else {
+        setImportError('❌ Erreur lors de la restauration du backup');
+        setTimeout(() => setImportError(''), 5000);
+      }
+    } catch (error) {
+      setImportError('❌ Fichier de backup invalide');
+      setTimeout(() => setImportError(''), 5000);
+    }
+
+    // Reset input
+    event.target.value = '';
   };
 
   // Synchronisation depuis GitHub
@@ -486,6 +555,15 @@ const QuestionManager = () => {
         onChange={handleImport}
       />
 
+      {/* Input caché pour import backup complet */}
+      <input
+        ref={backupFileInputRef}
+        type="file"
+        accept=".json"
+        style={{ display: 'none' }}
+        onChange={handleImportFullBackup}
+      />
+
       {/* Modal de gestion des boîtes */}
       <Modal show={showBoxModal} onHide={() => setShowBoxModal(false)} centered>
         <Modal.Header closeButton>
@@ -677,10 +755,25 @@ const QuestionManager = () => {
             <FontAwesomeIcon icon={['fas', 'search']} /> Vérifier doublons
           </Button>
           <Button variant="success" className="me-2" onClick={handleExport}>
-            <FontAwesomeIcon icon={['fas', 'download']} /> Exporter JSON
+            <FontAwesomeIcon icon={['fas', 'download']} /> Exporter Questions
           </Button>
-          <Button variant="info" onClick={() => fileInputRef.current?.click()}>
-            <FontAwesomeIcon icon={['fas', 'upload']} /> Importer JSON(s)
+          <Button variant="info" className="me-2" onClick={() => fileInputRef.current?.click()}>
+            <FontAwesomeIcon icon={['fas', 'upload']} /> Importer Questions
+          </Button>
+        </div>
+      </div>
+
+      {/* Backup complet */}
+      <div className="mb-3 alert alert-info d-flex justify-content-between align-items-center">
+        <div>
+          <strong>💾 Sauvegarde complète</strong> - Questions + Scores + Paramètres
+        </div>
+        <div>
+          <Button variant="outline-primary" size="sm" className="me-2" onClick={handleExportFullBackup}>
+            <FontAwesomeIcon icon={['fas', 'save']} /> Sauvegarder tout
+          </Button>
+          <Button variant="outline-secondary" size="sm" onClick={() => backupFileInputRef.current?.click()}>
+            <FontAwesomeIcon icon={['fas', 'file-import']} /> Restaurer tout
           </Button>
         </div>
       </div>
