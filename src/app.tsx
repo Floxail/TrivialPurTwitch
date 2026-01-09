@@ -3,7 +3,7 @@ import GlobalMenu from 'components/global-menu';
 import { useAuthStore } from 'components/store/auth-store';
 import { useGlobalStore } from 'components/store/global-store';
 import { useSettingsStore } from 'components/store/settings-store';
-import { useQuizStore } from 'components/store/quiz-store-v2';
+import { useQuestionsStore } from 'components/store/questions-store';
 import { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
@@ -20,7 +20,7 @@ function App() {
 	const settingsStore = useSettingsStore();
 	const authStore = useAuthStore();
 	const globalStore = useGlobalStore();
-	const quizStore = useQuizStore();
+	const questionsStore = useQuestionsStore();
 
 	const [view, setView] = useState(<div />);
 	const [errorMessage, setErrorMessage] = useState('');
@@ -37,7 +37,7 @@ useEffect(() => {
   const migrated = localStorage.getItem('quiz_migration_v2_done');
   if (!migrated) {
     console.log('🔄 Migration v1 → v2 détectée...');
-    quizStore.migrateFromV1();
+    questionsStore.migrateFromV1();
     localStorage.setItem('quiz_migration_v2_done', 'true');
   }
   
@@ -51,7 +51,7 @@ useEffect(() => {
   // - Dernière sync > 1h
   if (!lastSync || (now - parseInt(lastSync)) > oneHour) {
     console.log('🔄 Chargement des questions depuis GitHub...');
-    quizStore.loadFromGitHub().then(() => {
+    questionsStore.loadFromGitHub().then(() => {
       localStorage.setItem('quiz_last_github_sync', now.toString());
     });
   }
@@ -63,7 +63,7 @@ useEffect(() => {
 
     if (!lastSyncTime || (currentTime - parseInt(lastSyncTime)) > oneHour) {
       console.log('🔄 Synchronisation automatique en arrière-plan...');
-      quizStore.loadFromGitHub().then(() => {
+      questionsStore.loadFromGitHub().then(() => {
         localStorage.setItem('quiz_last_github_sync', currentTime.toString());
       });
     }

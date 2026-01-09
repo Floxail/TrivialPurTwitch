@@ -7,7 +7,8 @@ import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
 import { Answer, Player, usePlayerStore } from './store/player-store';
 import { TwitchMode, useSettingsStore } from './store/settings-store';
-import { categoryColors, categoryNames, Question, TrivialCategory, QuizMode, useQuizStore } from './store/quiz-store-v2';
+import { categoryColors, categoryNames, Question, useQuestionsStore } from './store/questions-store';
+import { QuizMode, useGameStore } from './store/game-store';
 import Podium from './podium';
 import Leaderboard from './leaderboard';
 
@@ -24,7 +25,8 @@ const Quiz = () => {
 	const delayedScoreCommands = useRef<string[]>([]);
 
 	const settingsStore = useSettingsStore();
-	const quizStore = useQuizStore();
+	const questionsStore = useQuestionsStore();
+	const gameStore = useGameStore();
 	const setSubtitle = useGlobalStore((state) => state.setSubtitle);
 
 	const initPlayer = usePlayerStore((state) => state.initPlayer);
@@ -53,7 +55,7 @@ const Quiz = () => {
 	const [quizQuestionCount, setQuizQuestionCount] = useState<number>(10);
 	const [modeError, setModeError] = useState<string>('');
 
-	const activeQuiz = quizStore.activeQuiz;
+	const activeQuiz = gameStore.activeQuiz;
 	const currentQuestion = activeQuiz?.questions[activeQuiz.currentQuestionIndex];
 
 	useEffect(() => {
@@ -188,7 +190,7 @@ const Quiz = () => {
 		questionRevealedRef.current = true;
 
 		// Récupérer l'état frais du store pour être sûr de l'index
-		const currentQuizState = useQuizStore.getState().activeQuiz;
+		const currentQuizState = useGameStore.getState().activeQuiz;
 
 		if (finalAnswerers.length > 0 && currentQuizState) {
 			// Calculer les combos
@@ -204,7 +206,7 @@ const Quiz = () => {
 
 			// Enregistrer les points
 			recordAnswers(answers);
-			quizStore.recordAnswer(currentQuizState.currentQuestionIndex, finalAnswerers[0].nick);
+			gameStore.recordAnswer(currentQuizState.currentQuestionIndex, finalAnswerers[0].nick);
 			usePlayerStore.getState().backup();
 		}
 
@@ -350,7 +352,7 @@ const Quiz = () => {
 		// Vérification des réponses
 		// IMPORTANT: Récupérer activeQuiz et currentQuestion directement du store
 		// pour éviter les problèmes de closure avec les anciennes valeurs
-		const currentActiveQuiz = quizStore.activeQuiz;
+		const currentActiveQuiz = gameStore.activeQuiz;
 		const currentActiveQuestion = currentActiveQuiz?.questions[currentActiveQuiz.currentQuestionIndex];
 
 		// Utiliser les refs pour avoir les valeurs à jour
@@ -449,7 +451,7 @@ const Quiz = () => {
 			return;
 		}
 
-		const box = quizStore.getBoxByName(selectedBoxName);
+		const box = questionsStore.getBoxByName(selectedBoxName);
 		if (!box) {
 			setModeError(`❌ La boîte "${selectedBoxName}" n'existe pas`);
 			return;
@@ -471,7 +473,7 @@ const Quiz = () => {
 				return;
 			}
 
-			const card = quizStore.generateQuizCard(selectedBoxName, num);
+			const card = questionsStore.generateQuizCard(selectedBoxName, num);
 			if (!card) {
 				setModeError(`❌ Impossible de générer la carte #${num}`);
 				return;
@@ -482,7 +484,7 @@ const Quiz = () => {
 
 		} else {
 			// Mode QUIZ
-			questions = quizStore.generateRandomQuiz(selectedBoxName, quizQuestionCount);
+			questions = questionsStore.generateRandomQuiz(selectedBoxName, quizQuestionCount);
 			if (!questions) {
 				setModeError(`❌ Impossible de générer le quiz`);
 				return;
@@ -493,13 +495,13 @@ const Quiz = () => {
 		const requester = pendingQuizRequester;
 
 		// Démarrer le quiz dans le store
-		quizStore.startQuiz(selectedMode, selectedBoxName, questions, cardNum);
+		gameStore.startQuiz(selectedMode, selectedBoxName, questions, cardNum);
 
 		// Gérer les scores cumulatifs
-		if (selectedMode === QuizMode.CARD && !quizStore.cumulativeScoresInCardMode) {
+		if (selectedMode === QuizMode.CARD && !questionsStore.cumulativeScoresInCardMode) {
 			// Réinitialiser les scores en mode CARTE si pas cumulatif
 			usePlayerStore.getState().clear();
-		} else if (selectedMode === QuizMode.QUIZ && !quizStore.cumulativeScoresInQuizMode) {
+		} else if (selectedMode === QuizMode.QUIZ && !questionsStore.cumulativeScoresInQuizMode) {
 			// Réinitialiser les scores en mode QUIZ si pas cumulatif
 			usePlayerStore.getState().clear();
 		}
@@ -521,7 +523,7 @@ const Quiz = () => {
 
 			// Envoyer la première question après 1 seconde
 			setTimeout(() => {
-				const currentActiveQuiz = useQuizStore.getState().activeQuiz;
+				const currentActiveQuiz = useGameStore.getState().activeQuiz;
 				if (currentActiveQuiz && currentActiveQuiz.questions.length > 0) {
 					const firstQuestion = currentActiveQuiz.questions[0];
 					const catText = selectedMode === QuizMode.CARD
@@ -547,7 +549,7 @@ const Quiz = () => {
 
 		// 2. Vérifier s'il reste des questions SANS changer l'état tout de suite
 		// On accède directement à l'état frais du store pour éviter les closures périmées
-		const storeState = useQuizStore.getState();
+		const storeState = useGameStore.getState();
 		const currentQuiz = storeState.activeQuiz;
 
 		if (!currentQuiz) return;
@@ -557,7 +559,7 @@ const Quiz = () => {
 
 		if (nextIndex >= totalQuestions) {
 			// C'est fini
-			quizStore.endQuiz();
+			gameStore.endQuiz();
 			setPodiumDisplayed(true);
 			if (twitchNick) {
 				twitchClient.current?.say(twitchNick, '🎉 Quiz terminé ! Bravo à tous les participants !');
@@ -569,10 +571,10 @@ const Quiz = () => {
 		// L'interface reste sur la question précédente révélée pendant ce temps
 		setTimeout(() => {
 			// 4. MAINTENANT on change la question dans le store (L'UI se met à jour ici)
-			quizStore.nextQuestion();
+			gameStore.nextQuestion();
 
 			// 5. On récupère la NOUVELLE question fraîchement active
-			const updatedStore = useQuizStore.getState(); // Important : reprendre l'état à jour
+			const updatedStore = useGameStore.getState(); // Important : reprendre l'état à jour
 			const newQuiz = updatedStore.activeQuiz;
 
 			if (newQuiz) {
@@ -676,7 +678,7 @@ const Quiz = () => {
 							}}
 						>
 							<option value="">Sélectionner une boîte...</option>
-							{quizStore.getBoxes().map(box => (
+							{questionsStore.getBoxes().map(box => (
 								<option key={box.name} value={box.name}>
 									{box.name} ({box.totalQuestions} questions)
 								</option>
@@ -697,11 +699,11 @@ const Quiz = () => {
 								}}
 							>
 								<option value="">Sélectionner une carte...</option>
-								{quizStore.getCardNumbersForBox(selectedBoxName).map(num => (
+								{questionsStore.getCardNumbersForBox(selectedBoxName).map(num => (
 									<option key={num} value={num}>Carte #{num}</option>
 								))}
 							</Form.Select>
-							{quizStore.getCardNumbersForBox(selectedBoxName).length === 0 && (
+							{questionsStore.getCardNumbersForBox(selectedBoxName).length === 0 && (
 								<Form.Text className="text-danger d-block mt-2">
 									⚠️ Aucune carte disponible dans cette boîte
 								</Form.Text>
@@ -775,13 +777,13 @@ const Quiz = () => {
 											<strong>🎮 Pour le streamer :</strong> Commande <code>!quiz</code>
 										</p>
 									</div>
-									{quizStore.getBoxes().length > 0 && (
+									{questionsStore.getBoxes().length > 0 && (
 										<div className="mt-4 p-3" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '10px', display: 'inline-block' }}>
 											<p className="text-muted mb-2">
 												<strong>📦 Boîtes disponibles :</strong>
 											</p>
 											<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-												{quizStore.getBoxes().map(b => (
+												{questionsStore.getBoxes().map(b => (
 													<span key={b.name} style={{
 														backgroundColor: '#ff60b7',
 														color: 'white',

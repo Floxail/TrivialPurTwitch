@@ -2,15 +2,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
 import { Button, Form, Modal, Table, Badge, Tabs, Tab, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { categoryColors, categoryNames, Question, TrivialCategory, useQuizStore } from './store/quiz-store-v2';
+import { categoryColors, categoryNames, Question, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
 
 const QuestionManager = () => {
   const navigate = useNavigate();
   const globalStore = useGlobalStore();
-  const quizStore = useQuizStore();
+  const questionsStore = useQuestionsStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const backupFileInputRef = useRef<HTMLInputElement>(null);
 
   const [showModal, setShowModal] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
@@ -51,7 +50,7 @@ const QuestionManager = () => {
     const questionMap = new Map<string, { count: number; ids: string[]; questions: Question[] }>();
 
     // Grouper par question (insensible à la casse et aux espaces)
-    quizStore.questions.forEach(q => {
+    questionsStore.questions.forEach(q => {
       const normalizedQuestion = q.question.toLowerCase().trim();
       const key = `${normalizedQuestion}|${q.boxName}`; // Inclure la boîte dans la clé
 
@@ -114,7 +113,7 @@ const QuestionManager = () => {
     duplicates.forEach(dup => {
       // Garder le premier, supprimer les autres
       for (let i = 1; i < dup.ids.length; i++) {
-        quizStore.deleteQuestion(dup.ids[i]);
+        questionsStore.deleteQuestion(dup.ids[i]);
         removedCount++;
       }
     });
@@ -123,81 +122,13 @@ const QuestionManager = () => {
     setTimeout(() => setImportSuccess(''), 5000);
   };
 
-  // Export backup complet
-  const handleExportFullBackup = () => {
-    const backupData = quizStore.exportFullBackup();
-
-    const dataStr = JSON.stringify(backupData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `trivialpurtwitch-backup-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    setImportSuccess('✅ Backup complet exporté !');
-    setTimeout(() => setImportSuccess(''), 3000);
-  };
-
-  // Import backup complet
-  const handleImportFullBackup = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const content = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target?.result as string);
-        reader.onerror = reject;
-        reader.readAsText(file);
-      });
-
-      const backupData = JSON.parse(content);
-
-      const message = `⚠️ ATTENTION : Cette opération va remplacer TOUTES vos données actuelles :\n\n` +
-                      `- Questions (${quizStore.questions.length} actuelles → ${backupData.quiz?.questions?.length || 0} dans le backup)\n` +
-                      `- Boîtes (${quizStore.boxes.length} actuelles)\n` +
-                      `- Scores des joueurs\n` +
-                      `- Paramètres\n\n` +
-                      `Voulez-vous continuer ?`;
-
-      if (!window.confirm(message)) {
-        return;
-      }
-
-      const success = quizStore.importFullBackup(backupData);
-
-      if (success) {
-        setImportSuccess('✅ Backup complet restauré ! Rechargement recommandé.');
-        setTimeout(() => {
-          if (window.confirm('Voulez-vous recharger la page pour appliquer tous les changements ?')) {
-            window.location.reload();
-          }
-        }, 1000);
-      } else {
-        setImportError('❌ Erreur lors de la restauration du backup');
-        setTimeout(() => setImportError(''), 5000);
-      }
-    } catch (error) {
-      setImportError('❌ Fichier de backup invalide');
-      setTimeout(() => setImportError(''), 5000);
-    }
-
-    // Reset input
-    event.target.value = '';
-  };
-
   // Synchronisation depuis GitHub
   const handleSyncFromGitHub = async () => {
     try {
       setImportSuccess('🔄 Synchronisation avec GitHub en cours...');
-      await quizStore.loadFromGitHub();
+      await questionsStore.loadFromGitHub();
 
-      if (quizStore.syncStatus === 'success') {
+      if (questionsStore.syncStatus === 'success') {
         setImportSuccess('✅ Synchronisation GitHub réussie !');
         setTimeout(() => setImportSuccess(''), 5000);
       } else {
@@ -211,8 +142,8 @@ const QuestionManager = () => {
   };
 
   const allQuestions = selectedBox
-    ? quizStore.getQuestionsByBox(selectedBox)
-    : quizStore.questions;
+    ? questionsStore.getQuestionsByBox(selectedBox)
+    : questionsStore.questions;
 
   const filteredQuestions = filterCategory === 'all'
     ? allQuestions
@@ -223,8 +154,8 @@ const QuestionManager = () => {
     const exportData = {
       version: '2.0',
       exportDate: new Date().toISOString(),
-      boxes: quizStore.boxes,
-      questions: quizStore.questions,
+      boxes: questionsStore.boxes,
+      questions: questionsStore.questions,
     };
 
     const dataStr = JSON.stringify(exportData, null, 2);
@@ -273,8 +204,8 @@ const QuestionManager = () => {
         // Import des boîtes si présentes (v2)
         if (data.boxes && Array.isArray(data.boxes)) {
           data.boxes.forEach((box: any) => {
-            if (!quizStore.boxes.find(b => b.name === box.name)) {
-              quizStore.addBox(box.name);
+            if (!questionsStore.boxes.find(b => b.name === box.name)) {
+              questionsStore.addBox(box.name);
               totalBoxesAdded++;
             }
           });
@@ -283,8 +214,8 @@ const QuestionManager = () => {
         // Import des boîtes depuis trivialBoxes (v1.0)
         if (data.trivialBoxes && Array.isArray(data.trivialBoxes)) {
           data.trivialBoxes.forEach((boxName: string) => {
-            if (!quizStore.boxes.find(b => b.name === boxName)) {
-              quizStore.addBox(boxName);
+            if (!questionsStore.boxes.find(b => b.name === boxName)) {
+              questionsStore.addBox(boxName);
               totalBoxesAdded++;
             }
           });
@@ -305,12 +236,12 @@ const QuestionManager = () => {
           }
 
           // Vérifier que la question n'existe pas déjà
-          const exists = quizStore.questions.find(existing =>
+          const exists = questionsStore.questions.find(existing =>
             existing.question === normalizedQuestion.question && existing.boxName === normalizedQuestion.boxName
           );
 
           if (!exists) {
-            quizStore.addQuestion(normalizedQuestion);
+            questionsStore.addQuestion(normalizedQuestion);
             fileImportedCount++;
             totalImported++;
           } else {
@@ -373,7 +304,7 @@ const QuestionManager = () => {
         answer: '',
         alternativeAnswers: '',
         category: TrivialCategory.Geography,
-        boxName: selectedBox || quizStore.getBoxes()[0]?.name || '',
+        boxName: selectedBox || questionsStore.getBoxes()[0]?.name || '',
         cardNumber: undefined,
         difficulty: 'medium',
       });
@@ -396,7 +327,7 @@ const QuestionManager = () => {
 
     if (editingQuestion) {
       // Modification
-      quizStore.updateQuestion(editingQuestion.id, {
+      questionsStore.updateQuestion(editingQuestion.id, {
         question: formData.question,
         answer: formData.answer,
         alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
@@ -417,7 +348,7 @@ const QuestionManager = () => {
         cardNumber: formData.cardNumber,
         difficulty: formData.difficulty,
       };
-      quizStore.addQuestion(newQuestion);
+      questionsStore.addQuestion(newQuestion);
     }
 
     handleCloseModal();
@@ -425,38 +356,38 @@ const QuestionManager = () => {
 
   const handleDeleteQuestion = (questionId: string) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette question ?')) {
-      quizStore.deleteQuestion(questionId);
+      questionsStore.deleteQuestion(questionId);
     }
   };
 
   const handleAddBox = () => {
     if (newBoxName.trim()) {
-      quizStore.addBox(newBoxName.trim());
+      questionsStore.addBox(newBoxName.trim());
       setNewBoxName('');
       setShowBoxModal(false);
     }
   };
 
   const handleDeleteBox = (boxName: string) => {
-    const box = quizStore.getBoxByName(boxName);
+    const box = questionsStore.getBoxByName(boxName);
     if (!box) return;
 
     if (!window.confirm(`Supprimer la boîte "${boxName}" et toutes ses ${box.totalQuestions} questions ?`)) {
       return;
     }
 
-    quizStore.removeBox(boxName);
+    questionsStore.removeBox(boxName);
   };
 
   const handleDeleteCard = (boxName: string, cardNumber: number) => {
-    const cardQuestions = quizStore.getQuestionsByCard(boxName, cardNumber);
+    const cardQuestions = questionsStore.getQuestionsByCard(boxName, cardNumber);
 
     if (!window.confirm(`Supprimer la carte #${cardNumber} (${cardQuestions.length} questions) ?`)) {
       return;
     }
 
     cardQuestions.forEach(q => {
-      quizStore.deleteQuestion(q.id);
+      questionsStore.deleteQuestion(q.id);
     });
   };
 
@@ -504,7 +435,7 @@ const QuestionManager = () => {
     }
 
     selectedQuestions.forEach(id => {
-      quizStore.deleteQuestion(id);
+      questionsStore.deleteQuestion(id);
     });
 
     setSelectedQuestions(new Set());
@@ -518,7 +449,7 @@ const QuestionManager = () => {
     }
 
     selectedQuestions.forEach(id => {
-      quizStore.updateQuestion(id, { boxName: bulkMoveTargetBox });
+      questionsStore.updateQuestion(id, { boxName: bulkMoveTargetBox });
     });
 
     setSelectedQuestions(new Set());
@@ -553,15 +484,6 @@ const QuestionManager = () => {
         multiple
         style={{ display: 'none' }}
         onChange={handleImport}
-      />
-
-      {/* Input caché pour import backup complet */}
-      <input
-        ref={backupFileInputRef}
-        type="file"
-        accept=".json"
-        style={{ display: 'none' }}
-        onChange={handleImportFullBackup}
       />
 
       {/* Modal de gestion des boîtes */}
@@ -605,7 +527,7 @@ const QuestionManager = () => {
                 onChange={(e) => setFormData({ ...formData, boxName: e.target.value })}
               >
                 <option value="">Sélectionner une boîte...</option>
-                {quizStore.getBoxes().map(box => (
+                {questionsStore.getBoxes().map(box => (
                   <option key={box.name} value={box.name}>{box.name}</option>
                 ))}
               </Form.Select>
@@ -722,7 +644,7 @@ const QuestionManager = () => {
                 onChange={(e) => setBulkMoveTargetBox(e.target.value)}
               >
                 <option value="">Sélectionner une boîte...</option>
-                {quizStore.getBoxes().map(box => (
+                {questionsStore.getBoxes().map(box => (
                   <option key={box.name} value={box.name}>{box.name}</option>
                 ))}
               </Form.Select>
@@ -763,21 +685,6 @@ const QuestionManager = () => {
         </div>
       </div>
 
-      {/* Backup complet */}
-      <div className="mb-3 alert alert-info d-flex justify-content-between align-items-center">
-        <div>
-          <strong>💾 Sauvegarde complète</strong> - Questions + Scores + Paramètres
-        </div>
-        <div>
-          <Button variant="outline-primary" size="sm" className="me-2" onClick={handleExportFullBackup}>
-            <FontAwesomeIcon icon={['fas', 'save']} /> Sauvegarder tout
-          </Button>
-          <Button variant="outline-secondary" size="sm" onClick={() => backupFileInputRef.current?.click()}>
-            <FontAwesomeIcon icon={['fas', 'file-import']} /> Restaurer tout
-          </Button>
-        </div>
-      </div>
-
       <Tabs defaultActiveKey="boxes" className="mb-3">
         <Tab eventKey="boxes" title="📦 Boîtes">
           <div className="mb-3 d-flex justify-content-between">
@@ -791,7 +698,7 @@ const QuestionManager = () => {
                 onChange={(e) => setSelectedBox(e.target.value)}
               >
                 <option value="">Toutes les boîtes</option>
-                {quizStore.getBoxes().map(box => (
+                {questionsStore.getBoxes().map(box => (
                   <option key={box.name} value={box.name}>
                     {box.name} ({box.totalQuestions} questions)
                   </option>
@@ -800,14 +707,14 @@ const QuestionManager = () => {
             </div>
           </div>
 
-          {quizStore.getBoxes().length === 0 ? (
+          {questionsStore.getBoxes().length === 0 ? (
             <div className="text-center p-5">
               <FontAwesomeIcon icon={['fas', 'box']} size="3x" color="var(--alt-text-color)" />
               <p className="mt-3 text-muted">Aucune boîte. Créez votre première boîte et importez des cartes.</p>
             </div>
           ) : (
             <div className="row">
-              {(selectedBox ? quizStore.getBoxes().filter(b => b.name === selectedBox) : quizStore.getBoxes()).map(box => (
+              {(selectedBox ? questionsStore.getBoxes().filter(b => b.name === selectedBox) : questionsStore.getBoxes()).map(box => (
                 <div key={box.name} className="col-md-6 mb-3">
                   <div className="card">
                     <div className="card-header d-flex justify-content-between align-items-center">
@@ -839,7 +746,7 @@ const QuestionManager = () => {
                       <div className="d-flex flex-wrap gap-2 mb-3">
                         {box.cardNumbers.length > 0 ? (
                           box.cardNumbers.map(cardNum => {
-                            const cardQuestions = quizStore.getQuestionsByCard(box.name, cardNum);
+                            const cardQuestions = questionsStore.getQuestionsByCard(box.name, cardNum);
                             const categoryCounts = getCategoryCountsForCard(cardQuestions);
                             const isComplete = Object.values(categoryCounts).every(c => c === 1);
 
@@ -924,7 +831,7 @@ const QuestionManager = () => {
                 onChange={(e) => setSelectedBox(e.target.value)}
               >
                 <option value="">Toutes les boîtes</option>
-                {quizStore.getBoxes().map(box => (
+                {questionsStore.getBoxes().map(box => (
                   <option key={box.name} value={box.name}>
                     {box.name} ({box.totalQuestions} questions)
                   </option>

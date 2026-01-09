@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button, Alert } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalStore } from './store/global-store';
 import { TwitchMode, useSettingsStore } from './store/settings-store';
-import { useQuizStore } from './store/quiz-store-v2';
+import { useQuestionsStore } from './store/questions-store';
 
 const Settings = () => {
 
@@ -13,7 +13,8 @@ const Settings = () => {
 
   const settingsStore = useSettingsStore();
   const globalStore = useGlobalStore();
-  const quizStore = useQuizStore();
+  const questionsStore = useQuestionsStore();
+  const backupFileInputRef = useRef<HTMLInputElement>(null);
 
   const [validated, setValidated] = useState(false);
   const [chatNotifications, setChatNotifications] = useState<boolean>(settingsStore.chatNotifications);
@@ -21,6 +22,8 @@ const Settings = () => {
   const [acceptanceDelay, setAcceptanceDelay] = useState<number>(settingsStore.acceptanceDelay);
   const [scoreCommandMode, setScoreCommandMode] = useState<any>(settingsStore.scoreCommandMode);
   const [previewGuessNumber, setPreviewGuessNumber] = useState<boolean>(settingsStore.previewGuessNumber);
+  const [backupMessage, setBackupMessage] = useState<string>('');
+  const [backupError, setBackupError] = useState<string>('');
 
   useEffect(() => {
     globalStore.setSubtitle('Settings');
@@ -29,7 +32,7 @@ const Settings = () => {
   const submit = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     settingsStore.update({
       addEveryUser: addEveryUser,
       chatNotifications: chatNotifications,
@@ -38,6 +41,74 @@ const Settings = () => {
       scoreCommandMode: scoreCommandMode,
     });
     navigate('/quiz');
+  };
+
+  // Export backup complet
+  const handleExportFullBackup = () => {
+    const backupData = questionsStore.exportFullBackup();
+
+    const dataStr = JSON.stringify(backupData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `trivialpurtwitch-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setBackupMessage('✅ Backup complet exporté !');
+    setTimeout(() => setBackupMessage(''), 3000);
+  };
+
+  // Import backup complet
+  const handleImportFullBackup = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const content = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.onerror = reject;
+        reader.readAsText(file);
+      });
+
+      const backupData = JSON.parse(content);
+
+      const message = `⚠️ ATTENTION : Cette opération va remplacer TOUTES vos données actuelles :\n\n` +
+                      `- Questions (${questionsStore.questions.length} actuelles → ${backupData.quiz?.questions?.length || 0} dans le backup)\n` +
+                      `- Boîtes (${questionsStore.boxes.length} actuelles)\n` +
+                      `- Scores des joueurs\n` +
+                      `- Paramètres\n\n` +
+                      `Voulez-vous continuer ?`;
+
+      if (!window.confirm(message)) {
+        return;
+      }
+
+      const success = questionsStore.importFullBackup(backupData);
+
+      if (success) {
+        setBackupMessage('✅ Backup complet restauré ! Rechargement recommandé.');
+        setTimeout(() => {
+          if (window.confirm('Voulez-vous recharger la page pour appliquer tous les changements ?')) {
+            window.location.reload();
+          }
+        }, 1000);
+      } else {
+        setBackupError('❌ Erreur lors de la restauration du backup');
+        setTimeout(() => setBackupError(''), 5000);
+      }
+    } catch (error) {
+      setBackupError('❌ Fichier de backup invalide');
+      setTimeout(() => setBackupError(''), 5000);
+    }
+
+    // Reset input
+    event.target.value = '';
   };
 
   return (
@@ -91,12 +162,12 @@ const Settings = () => {
               type="switch"
               id="cumulativeScores"
               label="Cumuler les scores entre les cartes"
-              checked={quizStore.cumulativeScoresInCardMode}
-              onChange={(e) => quizStore.setCumulativeScores(e.target.checked)}
+              checked={questionsStore.cumulativeScoresInCardMode}
+              onChange={(e) => questionsStore.setCumulativeScores(e.target.checked)}
               style={{ fontSize: '16px' }}
             />
-            <Alert variant={quizStore.cumulativeScoresInCardMode ? 'success' : 'info'} className="mt-2 mb-0">
-              {quizStore.cumulativeScoresInCardMode ? (
+            <Alert variant={questionsStore.cumulativeScoresInCardMode ? 'success' : 'info'} className="mt-2 mb-0">
+              {questionsStore.cumulativeScoresInCardMode ? (
                 <>
                   <strong>Mode cumulatif activé</strong><br />
                   Les scores s'additionnent d'une carte à l'autre. Parfait pour une longue session avec plusieurs cartes !
@@ -121,12 +192,12 @@ const Settings = () => {
               type="switch"
               id="cumulativeScoresQuiz"
               label="Cumuler les scores entre les quiz"
-              checked={quizStore.cumulativeScoresInQuizMode}
-              onChange={(e) => quizStore.setCumulativeScoresQuiz(e.target.checked)}
+              checked={questionsStore.cumulativeScoresInQuizMode}
+              onChange={(e) => questionsStore.setCumulativeScoresQuiz(e.target.checked)}
               style={{ fontSize: '16px' }}
             />
-            <Alert variant={quizStore.cumulativeScoresInQuizMode ? 'success' : 'info'} className="mt-2 mb-0">
-              {quizStore.cumulativeScoresInQuizMode ? (
+            <Alert variant={questionsStore.cumulativeScoresInQuizMode ? 'success' : 'info'} className="mt-2 mb-0">
+              {questionsStore.cumulativeScoresInQuizMode ? (
                 <>
                   <strong>Mode cumulatif activé</strong><br />
                   Les scores s'additionnent d'un quiz à l'autre. Parfait pour une longue session avec plusieurs quiz !
@@ -152,8 +223,8 @@ const Settings = () => {
                 type="number"
                 min="1"
                 max="100"
-                value={quizStore.defaultQuizQuestions}
-                onChange={(e) => quizStore.setDefaultQuizQuestions(parseInt(e.target.value) || 10)}
+                value={questionsStore.defaultQuizQuestions}
+                onChange={(e) => questionsStore.setDefaultQuizQuestions(parseInt(e.target.value) || 10)}
                 style={{ width: '100px' }}
               />
               <span className="text-muted">questions</span>
@@ -171,6 +242,49 @@ const Settings = () => {
           <b>Cancel</b>
         </Button>
       </Form>
+
+      <br />
+      <h3>
+        <FontAwesomeIcon icon={['fas', 'database']} className="me-2" />
+        Backup complet
+      </h3>
+
+      <div className="card p-3 mb-3">
+        <p className="mb-2">
+          <strong>Sauvegardez toutes vos données</strong> (questions, boîtes, scores, paramètres) ou restaurez une sauvegarde complète.
+        </p>
+
+        {backupMessage && (
+          <Alert variant="success" className="mb-2">
+            {backupMessage}
+          </Alert>
+        )}
+
+        {backupError && (
+          <Alert variant="danger" className="mb-2">
+            {backupError}
+          </Alert>
+        )}
+
+        <div className="d-flex gap-2">
+          <Button variant="primary" onClick={handleExportFullBackup}>
+            <FontAwesomeIcon icon={['fas', 'download']} className="me-2" />
+            Exporter le backup complet
+          </Button>
+          <Button variant="warning" onClick={() => backupFileInputRef.current?.click()}>
+            <FontAwesomeIcon icon={['fas', 'upload']} className="me-2" />
+            Importer un backup complet
+          </Button>
+        </div>
+
+        <input
+          ref={backupFileInputRef}
+          type="file"
+          accept=".json"
+          style={{ display: 'none' }}
+          onChange={handleImportFullBackup}
+        />
+      </div>
     </div>
   );
 };

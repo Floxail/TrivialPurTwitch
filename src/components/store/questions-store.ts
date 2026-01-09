@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { loadQuestionsFromGitHub, mergeQuestionsFromGitHub } from '../../services/github-data-service';
+
 const localStorageKey: string = 'quiz_questions_storage_v2';
 
 // Catégories Trivial Pursuit standard
@@ -31,12 +32,6 @@ export const categoryColors: Record<TrivialCategory, string> = {
   [TrivialCategory.Sports]: '#FF5722',         // Rouge-Orange
 };
 
-// Modes de jeu
-export enum QuizMode {
-  CARD = 'card',    // Mode Carte : 6 questions (1 par catégorie)
-  QUIZ = 'quiz'     // Mode Quiz : X questions aléatoires
-}
-
 export type Question = {
   id: string;
   category: TrivialCategory;
@@ -48,26 +43,6 @@ export type Question = {
   difficulty?: 'easy' | 'medium' | 'hard';
 };
 
-// Carte de quiz (mode CARD)
-export type QuizCard = {
-  questions: Question[]; // 6 questions, une par catégorie
-  boxName: string;
-  cardNumber: number;
-};
-
-// Session de quiz active
-export type ActiveQuiz = {
-  mode: QuizMode;
-  boxName: string;
-  cardNumber?: number; // Seulement en mode CARD
-  questions: Question[]; // Liste des questions de cette session
-  currentQuestionIndex: number;
-  startTime: number;
-  questionStartTime: number;
-  answers: Map<number, string[]>; // Index de question -> liste des joueurs ayant répondu
-  totalQuestions: number; // Nombre total de questions dans cette session
-};
-
 // Structure d'une boîte (contient plusieurs cartes)
 export type TrivialBox = {
   name: string; // Ex: "Cinéma 91"
@@ -75,11 +50,16 @@ export type TrivialBox = {
   totalQuestions: number; // Nombre total de questions dans cette boîte
 };
 
-export class QuizData {
+// Carte de quiz (mode CARD)
+export type QuizCard = {
+  questions: Question[]; // 6 questions, une par catégorie
+  boxName: string;
+  cardNumber: number;
+};
+
+export class QuestionsData {
   questions: Question[] = [];
   boxes: TrivialBox[] = []; // Liste des boîtes avec leurs cartes
-  activeQuiz: ActiveQuiz | null = null;
-  completedQuizzes: number = 0;
   syncStatus: 'idle' | 'loading' | 'success' | 'error' = 'idle';
   lastGitHubSync?: string;
 
@@ -89,7 +69,7 @@ export class QuizData {
   defaultQuizQuestions: number = 10; // Nombre de questions par défaut en mode QUIZ
 }
 
-type Actions = {
+type QuestionsActions = {
   backup: () => void;
   clear: () => void;
 
@@ -114,12 +94,6 @@ type Actions = {
   generateQuizCard: (boxName: string, cardNumber: number) => QuizCard | null;
   generateRandomQuiz: (boxName: string, questionCount: number) => Question[] | null;
 
-  // Gestion du quiz actif
-  startQuiz: (mode: QuizMode, boxName: string, questions: Question[], cardNumber?: number) => void;
-  nextQuestion: () => boolean;
-  endQuiz: () => void;
-  recordAnswer: (questionIndex: number, playerNick: string) => void;
-
   // Settings
   setCumulativeScores: (value: boolean) => void;
   setCumulativeScoresQuiz: (value: boolean) => void;
@@ -137,12 +111,10 @@ type Actions = {
 };
 
 // Restore persisted state
-const plain: QuizData = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
-const restoredState: QuizData = {
+const plain: QuestionsData = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
+const restoredState: QuestionsData = {
   questions: plain.questions || [],
   boxes: plain.boxes || [],
-  activeQuiz: null, // On ne restore pas le quiz actif
-  completedQuizzes: plain.completedQuizzes || 0,
   syncStatus: 'idle',
   lastGitHubSync: plain.lastGitHubSync,
   cumulativeScoresInCardMode: plain.cumulativeScoresInCardMode || false,
@@ -150,97 +122,83 @@ const restoredState: QuizData = {
   defaultQuizQuestions: plain.defaultQuizQuestions || 10,
 };
 
-export const useQuizStore = create<QuizData & Actions>()(
+export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
   persist(
     (set, get) => ({
-      questions: restoredState.questions,
-      boxes: restoredState.boxes,
-      activeQuiz: restoredState.activeQuiz,
-      completedQuizzes: restoredState.completedQuizzes,
-      syncStatus: restoredState.syncStatus,
-      lastGitHubSync: restoredState.lastGitHubSync,
-      cumulativeScoresInCardMode: restoredState.cumulativeScoresInCardMode,
-      cumulativeScoresInQuizMode: restoredState.cumulativeScoresInQuizMode,
-      defaultQuizQuestions: restoredState.defaultQuizQuestions,
+      ...restoredState,
 
       backup: () => {
         const current = get();
-        const backedUp = {
+        const toSave = {
           questions: current.questions,
           boxes: current.boxes,
-          completedQuizzes: current.completedQuizzes,
+          lastGitHubSync: current.lastGitHubSync,
           cumulativeScoresInCardMode: current.cumulativeScoresInCardMode,
           cumulativeScoresInQuizMode: current.cumulativeScoresInQuizMode,
           defaultQuizQuestions: current.defaultQuizQuestions,
         };
-        localStorage.setItem(localStorageKey, JSON.stringify(backedUp));
+        localStorage.setItem(localStorageKey, JSON.stringify(toSave));
       },
 
       clear: () => {
-        localStorage.removeItem(localStorageKey);
         set({
           questions: [],
           boxes: [],
-          activeQuiz: null,
-          completedQuizzes: 0,
+          syncStatus: 'idle',
+          lastGitHubSync: undefined,
           cumulativeScoresInCardMode: false,
           cumulativeScoresInQuizMode: false,
           defaultQuizQuestions: 10,
         });
+        get().backup();
       },
 
+      // ========== GESTION DES QUESTIONS ==========
+
       addQuestion: (question: Question) => {
-        set((state) => {
-          const newQuestions = [...state.questions, question];
-          
-          // Mettre à jour la liste des boîtes
-          const boxes = get().rebuildBoxes(newQuestions);
-          
-          return {
-            questions: newQuestions,
-            boxes,
-          };
+        const currentQuestions = get().questions;
+        const newQuestions = [...currentQuestions, question];
+        const boxes = get().rebuildBoxes(newQuestions);
+
+        set({
+          questions: newQuestions,
+          boxes: boxes,
         });
         get().backup();
       },
 
       updateQuestion: (questionId: string, updates: Partial<Question>) => {
-        set((state) => {
-          const newQuestions = state.questions.map((q) =>
-            q.id === questionId ? { ...q, ...updates } : q
-          );
-          
-          // Mettre à jour la liste des boîtes
-          const boxes = get().rebuildBoxes(newQuestions);
-          
-          return {
-            questions: newQuestions,
-            boxes,
-          };
+        const currentQuestions = get().questions;
+        const newQuestions = currentQuestions.map((q) =>
+          q.id === questionId ? { ...q, ...updates } : q
+        );
+        const boxes = get().rebuildBoxes(newQuestions);
+
+        set({
+          questions: newQuestions,
+          boxes: boxes,
         });
         get().backup();
       },
 
       deleteQuestion: (questionId: string) => {
-        set((state) => {
-          const newQuestions = state.questions.filter((q) => q.id !== questionId);
-          
-          // Mettre à jour la liste des boîtes
-          const boxes = get().rebuildBoxes(newQuestions);
-          
-          return {
-            questions: newQuestions,
-            boxes,
-          };
+        const currentQuestions = get().questions;
+        const newQuestions = currentQuestions.filter((q) => q.id !== questionId);
+        const boxes = get().rebuildBoxes(newQuestions);
+
+        set({
+          questions: newQuestions,
+          boxes: boxes,
         });
         get().backup();
       },
 
-      // Fonction utilitaire pour reconstruire la liste des boîtes à partir des questions
+      // ========== GESTION DES BOÎTES ==========
+
       rebuildBoxes: (questions: Question[]): TrivialBox[] => {
         const boxMap = new Map<string, Set<number>>();
-        
-        questions.forEach(q => {
+
+        questions.forEach((q) => {
           if (!boxMap.has(q.boxName)) {
             boxMap.set(q.boxName, new Set());
           }
@@ -248,17 +206,18 @@ export const useQuizStore = create<QuizData & Actions>()(
             boxMap.get(q.boxName)!.add(q.cardNumber);
           }
         });
-        
+
         const boxes: TrivialBox[] = [];
-        boxMap.forEach((cardNumbers, boxName) => {
-          const boxQuestions = questions.filter(q => q.boxName === boxName);
+        boxMap.forEach((cardSet, boxName) => {
+          const cardNumbers = Array.from(cardSet).sort((a, b) => a - b);
+          const totalQuestions = questions.filter((q) => q.boxName === boxName).length;
           boxes.push({
             name: boxName,
-            cardNumbers: Array.from(cardNumbers).sort((a, b) => a - b),
-            totalQuestions: boxQuestions.length,
+            cardNumbers,
+            totalQuestions,
           });
         });
-        
+
         return boxes.sort((a, b) => a.name.localeCompare(b.name));
       },
 
@@ -267,164 +226,96 @@ export const useQuizStore = create<QuizData & Actions>()(
       },
 
       getBoxByName: (boxName: string) => {
-        return get().boxes.find(b => b.name.toLowerCase() === boxName.toLowerCase());
+        return get().boxes.find((box) => box.name === boxName);
       },
 
       addBox: (boxName: string) => {
-        set((state) => {
-          if (!state.boxes.find(b => b.name === boxName)) {
-            return {
-              boxes: [...state.boxes, {
-                name: boxName,
-                cardNumbers: [],
-                totalQuestions: 0,
-              }].sort((a, b) => a.name.localeCompare(b.name)),
-            };
-          }
-          return state;
-        });
+        const currentBoxes = get().boxes;
+        if (currentBoxes.find((box) => box.name === boxName)) {
+          return; // La boîte existe déjà
+        }
+
+        const newBox: TrivialBox = {
+          name: boxName,
+          cardNumbers: [],
+          totalQuestions: 0,
+        };
+
+        set({ boxes: [...currentBoxes, newBox] });
         get().backup();
       },
 
       removeBox: (boxName: string) => {
-        set((state) => {
-          // Supprimer toutes les questions de cette boîte
-          const newQuestions = state.questions.filter(q => q.boxName !== boxName);
-          const newBoxes = state.boxes.filter(b => b.name !== boxName);
-          
-          return {
-            questions: newQuestions,
-            boxes: newBoxes,
-          };
+        const currentQuestions = get().questions;
+        const newQuestions = currentQuestions.filter((q) => q.boxName !== boxName);
+        const boxes = get().rebuildBoxes(newQuestions);
+
+        set({
+          questions: newQuestions,
+          boxes: boxes,
         });
         get().backup();
       },
 
+      // ========== RÉCUPÉRATION DES QUESTIONS ==========
+
       getQuestionsByBox: (boxName: string) => {
-        return get().questions.filter(q => q.boxName === boxName);
+        return get().questions.filter((q) => q.boxName === boxName);
       },
 
       getQuestionsByCard: (boxName: string, cardNumber: number) => {
-        return get().questions.filter(q => 
-          q.boxName === boxName && q.cardNumber === cardNumber
+        return get().questions.filter(
+          (q) => q.boxName === boxName && q.cardNumber === cardNumber
         );
       },
 
       getCardNumbersForBox: (boxName: string) => {
         const box = get().getBoxByName(boxName);
-        return box?.cardNumbers || [];
+        return box ? box.cardNumbers : [];
       },
 
-      generateQuizCard: (boxName: string, cardNumber: number) => {
-        const cardQuestions = get().getQuestionsByCard(boxName, cardNumber);
-        
-        // Vérifier qu'on a exactement 6 questions (une par catégorie)
-        if (cardQuestions.length !== 6) {
-          console.error(`La carte ${boxName} #${cardNumber} doit contenir exactement 6 questions`);
+      // ========== GÉNÉRATION DE QUIZ ==========
+
+      generateQuizCard: (boxName: string, cardNumber: number): QuizCard | null => {
+        const questions = get().getQuestionsByCard(boxName, cardNumber);
+
+        if (questions.length === 0) {
           return null;
         }
-        
-        // Vérifier qu'on a une question par catégorie
-        const categoriesPresent = new Set(cardQuestions.map(q => q.category));
-        if (categoriesPresent.size !== 6) {
-          console.error(`La carte doit contenir une question de chaque catégorie`);
-          return null;
+
+        // Vérifier qu'on a bien une question par catégorie
+        const categoryCounts = new Map<TrivialCategory, number>();
+        questions.forEach((q) => {
+          categoryCounts.set(q.category, (categoryCounts.get(q.category) || 0) + 1);
+        });
+
+        // Une carte valide doit avoir exactement 6 questions (une par catégorie)
+        if (questions.length !== 6 || categoryCounts.size !== 6) {
+          console.warn(
+            `Carte ${boxName} #${cardNumber} invalide : ${questions.length} questions, ${categoryCounts.size} catégories`
+          );
         }
-        
-        // Trier les questions par catégorie (0 à 5)
-        const sortedQuestions = cardQuestions.sort((a, b) => a.category - b.category);
-        
+
         return {
-          questions: sortedQuestions,
+          questions,
           boxName,
           cardNumber,
         };
       },
 
-      generateRandomQuiz: (boxName: string, questionCount: number) => {
+      generateRandomQuiz: (boxName: string, questionCount: number): Question[] | null => {
         const allQuestions = get().getQuestionsByBox(boxName);
-        
+
         if (allQuestions.length === 0) {
-          console.error(`Aucune question dans la boîte ${boxName}`);
           return null;
         }
-        
-        // Piocher aléatoirement les questions (avec possibilité de doublons de catégories)
-        const selectedQuestions: Question[] = [];
-        const availableQuestions = [...allQuestions];
-        
-        for (let i = 0; i < questionCount && availableQuestions.length > 0; i++) {
-          const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-          selectedQuestions.push(availableQuestions[randomIndex]);
-          // Retirer pour éviter la même question deux fois
-          availableQuestions.splice(randomIndex, 1);
-        }
-        
-        return selectedQuestions;
+
+        // Mélanger et prendre N questions
+        const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, Math.min(questionCount, shuffled.length));
       },
 
-      startQuiz: (mode: QuizMode, boxName: string, questions: Question[], cardNumber?: number) => {
-        set({
-          activeQuiz: {
-            mode,
-            boxName,
-            cardNumber,
-            questions,
-            currentQuestionIndex: 0,
-            startTime: Date.now(),
-            questionStartTime: Date.now(),
-            answers: new Map(),
-            totalQuestions: questions.length,
-          },
-        });
-      },
-
-      nextQuestion: () => {
-        const current = get().activeQuiz;
-        if (!current) return false;
-
-        const nextIndex = current.currentQuestionIndex + 1;
-        if (nextIndex >= current.questions.length) {
-          return false; // Quiz terminé
-        }
-
-        set({
-          activeQuiz: {
-            ...current,
-            currentQuestionIndex: nextIndex,
-            questionStartTime: Date.now(),
-          },
-        });
-        return true;
-      },
-
-      endQuiz: () => {
-        set((state) => ({
-          activeQuiz: null,
-          completedQuizzes: state.completedQuizzes + 1,
-        }));
-        get().backup();
-      },
-
-      recordAnswer: (questionIndex: number, playerNick: string) => {
-        const current = get().activeQuiz;
-        if (!current) return;
-
-        const answers = new Map(current.answers);
-        const questionAnswers = answers.get(questionIndex) || [];
-        
-        if (!questionAnswers.includes(playerNick)) {
-          questionAnswers.push(playerNick);
-          answers.set(questionIndex, questionAnswers);
-
-          set({
-            activeQuiz: {
-              ...current,
-              answers,
-            },
-          });
-        }
-      },
+      // ========== SETTINGS ==========
 
       setCumulativeScores: (value: boolean) => {
         set({ cumulativeScoresInCardMode: value });
@@ -437,66 +328,49 @@ export const useQuizStore = create<QuizData & Actions>()(
       },
 
       setDefaultQuizQuestions: (count: number) => {
-        set({ defaultQuizQuestions: Math.max(1, Math.min(100, count)) });
+        const validCount = Math.max(1, Math.min(100, count));
+        set({ defaultQuizQuestions: validCount });
         get().backup();
       },
 
-      // Fonction de migration depuis l'ancien format v1
+      // ========== MIGRATION ==========
+
       migrateFromV1: () => {
-        const oldData = localStorage.getItem('quiz_questions_storage_v1');
-        if (!oldData) {
-          console.log('Aucune donnée v1 à migrer');
-          return;
-        }
-
         try {
-          const parsed = JSON.parse(oldData);
-          const oldQuestions = parsed.questions || [];
-          const oldBoxes = parsed.trivialBoxes || [];
+          const v1Data = localStorage.getItem('quiz_storage');
+          if (!v1Data) {
+            console.log('Aucune donnée v1 à migrer');
+            return;
+          }
 
-          console.log(`Migration de ${oldQuestions.length} questions...`);
+          const parsed = JSON.parse(v1Data);
+          if (!parsed.state || !parsed.state.questions) {
+            console.log('Format v1 invalide');
+            return;
+          }
 
-          // Convertir les questions
-          const newQuestions: Question[] = oldQuestions.map((oldQ: any) => {
-            // Extraire boxName et cardNumber depuis "Cinéma 91 #2"
-            const match = oldQ.trivialBox.match(/^(.+?)\s*#(\d+)$/);
+          const v1Questions = parsed.state.questions;
+          console.log(`Migration de ${v1Questions.length} questions depuis v1...`);
 
-            if (match) {
-              return {
-                ...oldQ,
-                boxName: match[1].trim(),
-                cardNumber: parseInt(match[2]),
-              };
-            } else {
-              // Pas de numéro, c'est une ancienne boîte sans carte
-              return {
-                ...oldQ,
-                boxName: oldQ.trivialBox,
-                cardNumber: undefined,
-              };
-            }
-          });
-
-          // Reconstruire les boîtes
-          const boxes = get().rebuildBoxes(newQuestions);
-
+          const boxes = get().rebuildBoxes(v1Questions);
           set({
-            questions: newQuestions,
-            boxes,
+            questions: v1Questions,
+            boxes: boxes,
           });
-
           get().backup();
-          console.log(`✅ Migration terminée : ${boxes.length} boîtes créées`);
+
+          console.log('✅ Migration v1 → v2 terminée');
         } catch (error) {
-          console.error('❌ Erreur lors de la migration :', error);
+          console.error('Erreur lors de la migration v1:', error);
         }
       },
 
-      // Synchronisation depuis GitHub
-      loadFromGitHub: async () => {
-        set({ syncStatus: 'loading' });
+      // ========== SYNCHRONISATION GITHUB ==========
 
+      loadFromGitHub: async () => {
         try {
+          set({ syncStatus: 'loading' });
+
           const githubData = await loadQuestionsFromGitHub();
 
           if (!githubData) {
@@ -504,20 +378,14 @@ export const useQuizStore = create<QuizData & Actions>()(
             return;
           }
 
-          const current = get();
+          const currentQuestions = get().questions;
+          const mergedQuestions = mergeQuestionsFromGitHub(githubData, currentQuestions);
 
-          // Fusionner avec les questions locales
-          const mergedQuestions = mergeQuestionsFromGitHub(
-            githubData,
-            current.questions
-          );
-
-          // Reconstruire les boîtes
           const boxes = get().rebuildBoxes(mergedQuestions);
 
           set({
             questions: mergedQuestions,
-            boxes,
+            boxes: boxes,
             syncStatus: 'success',
             lastGitHubSync: new Date().toISOString(),
           });
@@ -531,7 +399,8 @@ export const useQuizStore = create<QuizData & Actions>()(
         }
       },
 
-      // Export complet de toutes les données
+      // ========== BACKUP COMPLET ==========
+
       exportFullBackup: () => {
         const current = get();
 
@@ -563,7 +432,6 @@ export const useQuizStore = create<QuizData & Actions>()(
           quiz: {
             questions: current.questions,
             boxes: current.boxes,
-            completedQuizzes: current.completedQuizzes,
             cumulativeScoresInCardMode: current.cumulativeScoresInCardMode,
             cumulativeScoresInQuizMode: current.cumulativeScoresInQuizMode,
             defaultQuizQuestions: current.defaultQuizQuestions,
@@ -573,7 +441,6 @@ export const useQuizStore = create<QuizData & Actions>()(
         };
       },
 
-      // Import complet de toutes les données
       importFullBackup: (backupData: any): boolean => {
         try {
           // Validation basique
@@ -589,7 +456,6 @@ export const useQuizStore = create<QuizData & Actions>()(
             set({
               questions: backupData.quiz.questions || [],
               boxes: boxes,
-              completedQuizzes: backupData.quiz.completedQuizzes || 0,
               cumulativeScoresInCardMode: backupData.quiz.cumulativeScoresInCardMode || false,
               cumulativeScoresInQuizMode: backupData.quiz.cumulativeScoresInQuizMode || false,
               defaultQuizQuestions: backupData.quiz.defaultQuizQuestions || 10,
@@ -628,7 +494,10 @@ export const useQuizStore = create<QuizData & Actions>()(
       name: 'quiz_storage',
       partialize: (state) =>
         Object.fromEntries(
-          Object.entries(state).filter(([key]) => !['activeQuiz'].includes(key)),
+          Object.entries(state).filter(([key]) =>
+            ['questions', 'boxes', 'lastGitHubSync', 'cumulativeScoresInCardMode',
+             'cumulativeScoresInQuizMode', 'defaultQuizQuestions'].includes(key)
+          ),
         ),
     },
   ),
