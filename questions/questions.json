@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-01-04T00:20:07.863Z",
+  "exportDate": "2026-01-04T14:25:21.036Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -58,7 +58,7 @@
     {
       "name": "Vieweurs",
       "cardNumbers": [],
-      "totalQuestions": 1427
+      "totalQuestions": 1626
     }
   ],
   "questions": [
@@ -14954,6 +14954,1768 @@
       "answer": "La Forêt des Rêves Bleus",
       "alternativeAnswers": [
         "Bois des Cent Acres"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675266983317njbu3120",
+      "category": 0,
+      "question": "Quel pays a l'espérance de vie la plus élevée en 2025 ?",
+      "answer": "|R: Monaco",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767526698331l4ph7esqi",
+      "category": 0,
+      "question": "Quel est le nom de famille le plus courant aux États-Unis ?",
+      "answer": "Smith",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767526698331qca15axo9",
+      "category": 0,
+      "question": "Sous quel nom le 26 décembre est-il connu en Irlande ?",
+      "answer": "La Saint-ÉtienneSaint Stephen's Day",
+      "alternativeAnswers": [
+        "La Saint-Étienne",
+        "Saint Stephen's"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767526698331pacom0zee",
+      "category": 0,
+      "question": "Quelle entreprise de logiciels a son siège à Redmond, Washington ?",
+      "answer": "Microsoft",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767528086170zknot5cvf",
+      "category": 0,
+      "question": "Où seriez-vous si vous vous teniez sur les Piazza di Spagna ?",
+      "answer": "Rome",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675280861703j5ceprsg",
+      "category": 0,
+      "question": "Quelle ville est surnommée \"La Ville Éternelle\" ?",
+      "answer": "Rome",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675280861705o7ro2o57",
+      "category": 0,
+      "question": "Dans quel pays se trouve le Mont Kilimandjaro ?",
+      "answer": "Tanzanie",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767528086170a71x0zeu7",
+      "category": 0,
+      "question": "Quelle est la capitale de l'Irlande ?",
+      "answer": "Dublin",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767528086170hajmm1sbv",
+      "category": 0,
+      "question": "Quelle est la capitale de l'État de New York ?",
+      "answer": "Albany",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675280861704t22z5c71",
+      "category": 0,
+      "question": "Quel est le plus petit État des États-Unis en superficie ?",
+      "answer": "Rhode Island",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675280861704wj7qmp3j",
+      "category": 0,
+      "question": "Quel fleuve traverse le Grand Canyon ?",
+      "answer": "Le fleuve Colorado",
+      "alternativeAnswers": [
+        "Colorado"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767528086170dtpy7jtoe",
+      "category": 0,
+      "question": "Quelle est la plus grande ville hispanophone du monde en 2025 ?",
+      "answer": "Mexico",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767528086170ybbb8gh4u",
+      "category": 0,
+      "question": "Dans quel État américain se trouve l'aéroport le plus fréquenté du pays en 2025 ?",
+      "answer": "Géorgie",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767528086170lhe8i747k",
+      "category": 0,
+      "question": "Quel est le seul continent à posséder des terres dans les quatre hémisphères ?",
+      "answer": "L'Afrique",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767528086170utukubf5t",
+      "category": 0,
+      "question": "Sur quel continent se trouve le plus grand désert du monde ?",
+      "answer": "L'Antarctique",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675280861703ctjh0hz7",
+      "category": 0,
+      "question": "Combien de capitales européennes le Danube traverse-t-il ?",
+      "answer": "4",
+      "alternativeAnswers": [
+        "Quatre"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176752808617096thvmwdu",
+      "category": 0,
+      "question": "Quelle est la capitale de la Bulgarie ?",
+      "answer": "Sofia",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176752808617078h1f5hrf",
+      "category": 0,
+      "question": "Sur quel continent se trouve la ville de Bakou ?",
+      "answer": "Asie",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675280861700mmck3340",
+      "category": 0,
+      "question": "Quelle est la seule mer sans côtes (bordée uniquement par des courants océaniques) ?",
+      "answer": "La mer des Sargasses",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675280861709i36bx60v",
+      "category": 0,
+      "question": "Dans quel pays se trouve la centrale nucléaire de Tchernobyl ?",
+      "answer": "Ukraine",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768s80v3pth5",
+      "category": 1,
+      "question": "Quel est l'ingrédient principal du houmous ?",
+      "answer": "Les pois chiches",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768zzo8clbja",
+      "category": 1,
+      "question": "De quel pays le sushi est-il originaire ?",
+      "answer": "Le Japon",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768yxdii3xq0",
+      "category": 1,
+      "question": "Quelle viande est utilisée dans le hachis parmentier traditionnel (Shepherd's pie) ?",
+      "answer": "L'agneau",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768ep8palrta",
+      "category": 1,
+      "question": "Quel pays consomme le plus de café par habitant ?",
+      "answer": "La Finlande",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768urcahnrns",
+      "category": 1,
+      "question": "Le \"Cacio e Pepe\" est un plat incontournable de quelle ville italienne ?",
+      "answer": "Rome",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768uqu4kr8ml",
+      "category": 1,
+      "question": "Qu'est-ce qu'un Beaujolais ?",
+      "answer": "vin rouge",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768en5tuk9ms",
+      "category": 1,
+      "question": "Laquelle de ces sauces n'est traditionnellement pas végane : hoisin, Worcestershire, moutarde ou wasabi ?",
+      "answer": "Worcestershire",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176753193876892lezcsk6",
+      "category": 1,
+      "question": "Quelle est la bière brune (stout) la plus vendue au monde ?",
+      "answer": "La Guinness",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768alk47on3b",
+      "category": 1,
+      "question": "Quelle est la différence entre le brandy et le cognac ?",
+      "answer": "Le cognac doit obligatoirement provenir de la région de Cognac, en France",
+      "alternativeAnswers": [
+        "Le Cognac est Français",
+        "le provenance"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675319387682m45e2djs",
+      "category": 1,
+      "question": "Quel est l'ingrédient principal du dessert italien tiramisu ?",
+      "answer": "Le mascarpone",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675319387688lesycc6a",
+      "category": 1,
+      "question": "Quel fromage est traditionnellement fabriqué à partir de lait d'ânesse ?",
+      "answer": "Le Pule",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768up1e23ndo",
+      "category": 1,
+      "question": "Quel est l'ingrédient principal de la boisson alcoolisée absinthe ?",
+      "answer": "L'absinthe",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675319387680y5fhuhnf",
+      "category": 1,
+      "question": "Comment appelle-t-on le processus d'ajout de levure à la pâte pour créer des bulles de dioxyde de carbone ?",
+      "answer": "La fermentation",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768h6o3gg2mh",
+      "category": 1,
+      "question": "À quel pays attribue-t-on l'invention de la crème glacée ?",
+      "answer": "La Chine",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767531938768ewlps9a5y",
+      "category": 1,
+      "question": "Quel est le nom de l'art japonais de préparer et de présenter la nourriture ?",
+      "answer": "Le Moritsuke",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007vwmtuq59w",
+      "category": 1,
+      "question": "De quelle couleur sont les chaussures de Mickey Mouse ?",
+      "answer": "Jaune",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007vkowevyic",
+      "category": 1,
+      "question": "Dans quel film trouve-t-on le personnage d'Euréka le goéland ?",
+      "answer": "La Petite Sirène",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176753516200745dldh9d1",
+      "category": 1,
+      "question": "En quelle année le film Cendrillon est-il sorti ?",
+      "answer": "1950",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007rwtam058q",
+      "category": 1,
+      "question": "Quel film Disney/Pixar compte le plus de suites?",
+      "answer": "Toy Story",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675351620076u3ppx05z",
+      "category": 1,
+      "question": "Quel était le nom original donné à Mickey Mouse par Walt Disney ?",
+      "answer": "Mortimer Mouse",
+      "alternativeAnswers": [
+        "Mortimer"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007xt78f7a55",
+      "category": 1,
+      "question": "Quel personnage Glenn Close et Emma Stone ont-elles toutes deux incarné ?",
+      "answer": "Cruella d'Enfer",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007alnosf1zb",
+      "category": 1,
+      "question": "Combien d'Oscars de la \"Meilleure Chanson Originale\" Disney a-t-il remportés ?",
+      "answer": "14",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007c6xosgnw2",
+      "category": 1,
+      "question": "Dans quel film entend-on la réplique « Que la Force soit avec toi » ?",
+      "answer": "Star Wars",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007bmy7nitjg",
+      "category": 1,
+      "question": "Quel film d'animation met en scène un lionceau nommé Simba ?",
+      "answer": "Le Roi Lion",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675351620076jwcnio6b",
+      "category": 1,
+      "question": "Quelle actrice incarne Elle Woods dans \"La Revanche d'une blonde\" ?",
+      "answer": "Reese Witherspoon",
+      "alternativeAnswers": [
+        "Witherspoon"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675351620077oelos3nm",
+      "category": 1,
+      "question": "Quel super-héros est aussi connu comme \"l'araignée sympa du quartier\" de New York ?",
+      "answer": "Spider-Man",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007fx1bi7y3a",
+      "category": 1,
+      "question": "Quel film de 1994 contient la réplique « La vie, c'est comme une boîte de chocolats… » ?",
+      "answer": "Forrest Gump",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007ew2omqiw9",
+      "category": 1,
+      "question": "Quel réalisateur a fait \"Les Dents de la mer\" et \"E.T. l'extra-terrestre\" ?",
+      "answer": "Steven Spielberg",
+      "alternativeAnswers": [
+        "Spielberg"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007vu4xjbqgn",
+      "category": 1,
+      "question": "Dans quel film de 2014 Keanu Reeves joue-t-il un tueur à gages à la retraite cherchant à se venger ?",
+      "answer": "John Wick",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675351620074ngxxh2fv",
+      "category": 1,
+      "question": "Quel film a remporté l'Oscar du Meilleur Film en 2025 ?",
+      "answer": "Anora",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007fpoblkg30",
+      "category": 1,
+      "question": "Qui a réalisé \"The Dark Knight\" (2008) ?",
+      "answer": "Christopher Nolan",
+      "alternativeAnswers": [
+        "Nolan"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007b77dkrnwp",
+      "category": 1,
+      "question": "Quel film Marvel a réuni pour la première fois les six Avengers originaux à l'écran ?",
+      "answer": "Avengers",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675351620075uo3cjv8c",
+      "category": 1,
+      "question": "Dans quel film un archéologue au chapeau feutre chasse-t-il des artefacts anciens ?",
+      "answer": "Indiana Jones",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007mkbtrb4is",
+      "category": 1,
+      "question": "Quel film d'horreur de 2017 met en scène un rituel appelé « Le Tréfonds » (The Sunken Place) ?",
+      "answer": "Get Out",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007958x0zuj2",
+      "category": 1,
+      "question": "Quel a été le premier film à remporter l'Oscar du Meilleur film d'animation ?",
+      "answer": "Shrek (2001)",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675351620075ipi7noyg",
+      "category": 1,
+      "question": "Quel animateur japonais a fondé le Studio Ghibli avec Isao Takahata ?",
+      "answer": "Hayao Miyazaki",
+      "alternativeAnswers": [
+        "Miyazaki"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007b6sgei65z",
+      "category": 1,
+      "question": "Quel film de l'ère du muet contient la célèbre séquence des « Marches d'Odessa » ?",
+      "answer": "Le Cuirassé Potemkine",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007caqgeolj7",
+      "category": 1,
+      "question": "Quel film de SF de 1982, échec au box-office à sa sortie, est devenu culte et a eu une suite en 2017 ?",
+      "answer": "Blade Runner",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007rlehgg994",
+      "category": 1,
+      "question": "Quel film d'Hitchcock de 1959 contient une célèbre course-poursuite avec un avion épandeur ?",
+      "answer": "La Mort aux trousses",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007wry59cqm7",
+      "category": 1,
+      "question": "Quel thriller de 1995 est connu pour la réplique « Qu'est-ce qu'il y a dans la boîte ? » ?",
+      "answer": "Seven",
+      "alternativeAnswers": [
+        "Se7en"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535162007axsf3760m",
+      "category": 1,
+      "question": "Quel réalisateur est connu pour la \"Trilogie du dollar\"?",
+      "answer": "Sergio Leone",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453iiwagb29o",
+      "category": 1,
+      "question": "Quelle sitcom se déroule à New York et suit un groupe de six amis ?",
+      "answer": "Friends",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176753584545305drfgk7j",
+      "category": 1,
+      "question": "Quelle série de science-fiction met en scène une cabine de police appelée le TARDIS ?",
+      "answer": "Doctor Who",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453s97m57xck",
+      "category": 1,
+      "question": "Quelle série se déroule au sein de la Dunder Mifflin Paper Company ?",
+      "answer": "The Office",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453r9pr7h3ye",
+      "category": 1,
+      "question": "Quelle série dramatique se déroule à l'agence de publicité Sterling Cooper dans les années 60 ?",
+      "answer": "Mad Men",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453wzmfcmml3",
+      "category": 1,
+      "question": "Quelle série fantastique suit les aventures de Geralt de Riv ?",
+      "answer": "The Witcher",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453tgut5k33w",
+      "category": 1,
+      "question": "Quelle série policière se concentre sur le trafic de drogue à Baltimore ?",
+      "answer": "The Wire",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675358454536i7wdqwk5",
+      "category": 1,
+      "question": "Quelle série sur une prodige des échecs met en vedette Anya Taylor-Joy ?",
+      "answer": "Le Jeu de la Dame",
+      "alternativeAnswers": [
+        "The Queen’s Gambit"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453yqse4bue2",
+      "category": 1,
+      "question": "Quelle série suit l'empire médiatique de la famille Roy ?",
+      "answer": "Succession",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453nesc0wk5m",
+      "category": 1,
+      "question": "Quelle sitcom met en scène le personnage de Ron Swanson ?",
+      "answer": "Parks and Recreation",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675358454536rg3bv4vj",
+      "category": 1,
+      "question": "Quelle série d'époque suit la vie de la famille Crawley et de ses domestiques ?",
+      "answer": "Downton Abbey",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675358454536hqpt7oh1",
+      "category": 1,
+      "question": "Quelle mini-série de HBO dramatise la catastrophe nucléaire de 1986 en Ukraine ?",
+      "answer": "Chernobyl",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453bjcslgu0r",
+      "category": 1,
+      "question": "Quelle série des années 90 a popularisé la réplique « Pas de soupe pour toi ! » ?",
+      "answer": "Seinfeld",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453b404c3pq4",
+      "category": 1,
+      "question": "Quelle série créée par Vince Gilligan est un préquel de Breaking Bad ?",
+      "answer": "Better Call Saul",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453j2l34eyfp",
+      "category": 1,
+      "question": "Quelle série de 2004 commence par un crash d'avion sur une île mystérieuse ?",
+      "answer": "Lost : Les Disparus",
+      "alternativeAnswers": [
+        "Lost"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453mdqpuera9",
+      "category": 1,
+      "question": "Quelle série noire dano-suédoise met en scène les détectives Saga Norén et Martin Rohde ?",
+      "answer": "The Bridge",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453b7dvphts6",
+      "category": 1,
+      "question": "Quelle série d'anthologie créée par Rod Serling a débuté en 1959 ?",
+      "answer": "La Quatrième Dimension",
+      "alternativeAnswers": [
+        "The Twilight Zone"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453do9nwghk5",
+      "category": 1,
+      "question": "Quel drame mafieux de 1999 suit la vie de Tony Soprano ?",
+      "answer": "Les Soprano",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453drydevjvs",
+      "category": 1,
+      "question": "Quel groupe britannique a enregistré « Hey Jude » ?",
+      "answer": "Les Beatles",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675358454532bnqasgn5",
+      "category": 1,
+      "question": "Quelle chanteuse est surnommée la « Reine de la Soul » ?",
+      "answer": "Aretha Franklin",
+      "alternativeAnswers": [
+        "Franklin"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453hx632meok",
+      "category": 1,
+      "question": "Quel est le type de voix féminine le plus aigu dans le chant classique ?",
+      "answer": "Soprano",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453v2nahxaqv",
+      "category": 1,
+      "question": "Quelle artiste a sorti l'album « 1989 » ?",
+      "answer": "Taylor Swift",
+      "alternativeAnswers": [
+        "Swift"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453guad6zmtg",
+      "category": 1,
+      "question": "Quel groupe est célèbre pour la chanson « Bohemian Rhapsody » ?",
+      "answer": "Queen",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453muarduwxn",
+      "category": 1,
+      "question": "Quelle ville américaine est largement considérée comme le berceau du jazz ?",
+      "answer": "La Nouvelle-Orléans",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176753584545326onsbdld",
+      "category": 1,
+      "question": "De quel instrument Yo-Yo Ma joue-t-il ?",
+      "answer": "Le violoncelle",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453zslc8k885",
+      "category": 1,
+      "question": "Quel groupe détient le record du plus grand nombre de numéros 1 au Billboard Hot 100 ?",
+      "answer": "Les Beatles",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453twnilqv2v",
+      "category": 1,
+      "question": "Quelle chanteuse a remporté le plus grand nombre de Grammys de tous les temps ?",
+      "answer": "Beyoncé",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675358454530gnzsldx8",
+      "category": 1,
+      "question": "Quel compositeur a écrit « Les Quatre Saisons » ?",
+      "answer": "Antonio Vivaldi",
+      "alternativeAnswers": [
+        "Vivaldi"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453z4bx57tev",
+      "category": 1,
+      "question": "Quel groupe a popularisé le grunge ?",
+      "answer": "Nirvana",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675358454536nf2qcxzh",
+      "category": 1,
+      "question": "Quelle cérémonie de récompenses musicales est présentée par la Recording Academy ?",
+      "answer": "Les Grammy Awards",
+      "alternativeAnswers": [
+        "Grammy"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453ixnvvb0rs",
+      "category": 1,
+      "question": "Quel rappeur a le plus d'entrées au Hot 100 à l'ère du streaming ?",
+      "answer": "Drake",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176753584545326lwmu2jy",
+      "category": 1,
+      "question": "Quel compositeur a été le pionnier de la musique dodécaphonique (12 tons) ?",
+      "answer": "Arnold Schoenberg",
+      "alternativeAnswers": [
+        "Schoenberg"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453lsh03msuh",
+      "category": 1,
+      "question": "Quel producteur est célèbre pour sa technique du « Mur de son » (Wall of Sound) ?",
+      "answer": "Phil Spector",
+      "alternativeAnswers": [
+        "Spector"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453yhmjzupht",
+      "category": 1,
+      "question": "Quel album de 1982 est l'album le plus vendu de tous les temps dans le monde ?",
+      "answer": "Thriller",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453trc7ycswf",
+      "category": 1,
+      "question": "Quel album des Beatles de 1967 est souvent cité comme le premier « album concept » du rock ?",
+      "answer": "Sgt. Pepper’s Lonely Hearts Club Band",
+      "alternativeAnswers": [
+        "Pepper’s Lonely Hearts Club Band"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453jqh0917ro",
+      "category": 1,
+      "question": "Quel mode médiéval équivaut aux touches blanches du piano de Ré à Ré ?",
+      "answer": "Le mode Dorien",
+      "alternativeAnswers": [
+        "Dorien"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453lcqwgezmq",
+      "category": 1,
+      "question": "Quelle chanteuse a battu le record du plus grand nombre d'entrées simultanées dans le top 10 du Hot 100 en 2022 ?",
+      "answer": "Taylor Swift",
+      "alternativeAnswers": [
+        "Swift"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453djh61zxyj",
+      "category": 1,
+      "question": "Quel orchestre a créé « Le Sacre du printemps » de Stravinsky en 1913 ?",
+      "answer": "L'Orchestre des Concerts Lamoureux",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767535845453bklhhbca7",
+      "category": 1,
+      "question": "Quel type de voix d'opéra se situe entre la soprano et l'alto ?",
+      "answer": "Mezzo-soprano",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176752834337535e07h4wk",
+      "category": 2,
+      "question": "En argot australien, qu'est-ce qu'un \"bottle-o\" ?",
+      "answer": "Un magasin d'alcool",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675283433750ci9y8ss8",
+      "category": 2,
+      "question": "Combien de couleurs sont utilisées sur le drapeau sud-africain ?",
+      "answer": "6",
+      "alternativeAnswers": [
+        "six"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675283433755byg7mo14",
+      "category": 2,
+      "question": "Quel est le seul drapeau national qui n'a pas quatre côtés (qui n'est pas rectangulaire) ?",
+      "answer": "Le Népal",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675283433756e9rmt33r",
+      "category": 2,
+      "question": "Quel territoire arbore une épave de navire sur son drapeau ?",
+      "answer": "Les Bermudes",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767530146527rcik42tpv",
+      "category": 2,
+      "question": "Quel était le nom du chef de la mafia qui dirigeait le redouté \"Chicago Outfit\" ?",
+      "answer": "Al Capone",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767530146527yanskyuh4",
+      "category": 2,
+      "question": "Quel célèbre document historique commence par les mots \"Nous tenons ces vérités pour évidentes\" (\"We hold these truths to be self-evident\") ?",
+      "answer": "La Déclaration d'indépendance des États-Unis",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675301465274fwrkx92x",
+      "category": 2,
+      "question": "En quelle année les Nations Unies ont-elles été créées ?",
+      "answer": "1945",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767530146527wzr4ktoyu",
+      "category": 2,
+      "question": "Roald Amundsen a été le premier homme à atteindre le pôle Sud, mais de quel pays était-il originaire ?",
+      "answer": "La Norvège",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767530146527c5qadc2r1",
+      "category": 2,
+      "question": "Qui a traversé les Alpes avec des éléphants pour aller faire la guerre aux Romains ?",
+      "answer": "Hannibal",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675301465275sn13aunk",
+      "category": 2,
+      "question": "Quel événement a marqué la fin de l'Empire romain d'Occident ?",
+      "answer": "La chute de Rome",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675301465276j556faqx",
+      "category": 2,
+      "question": "Quelle ancienne dynastie chinoise est souvent considérée comme l'âge d'or de la civilisation chinoise ?",
+      "answer": "La dynastie Han",
+      "alternativeAnswers": [
+        "Han"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767530146527ahwzveeli",
+      "category": 2,
+      "question": "Quelle fut la cause principale de la Grande Famine en Irlande ?",
+      "answer": "Le mildiou de la pomme de terre",
+      "alternativeAnswers": [
+        "Mildiou"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767530146527od523jw3k",
+      "category": 2,
+      "question": "Quel puissant dirigeant mongol a conquis un vaste empire s'étendant de l'Asie à l'Europe ?",
+      "answer": "Gengis Khan",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767525120423gmfjolm84",
+      "category": 3,
+      "question": "En littérature, comment appelle-t-on un poème dont la disposition graphique des mots sur la page forme un dessin ?",
+      "answer": "Calligramme",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767525120423h97gc50b7",
+      "category": 3,
+      "question": "Qui fut l’amant de Kiki de Montparnasse ?",
+      "answer": "Man Ray",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176752512042360e8jhiqb",
+      "category": 3,
+      "question": "Quel peintre a rendu célèbre les boîtes de soupe Campbell’s ?",
+      "answer": "Andy Warhol",
+      "alternativeAnswers": [
+        "Warhol"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767526811261dyq84x877",
+      "category": 3,
+      "question": "Comment appelle-t-on un mot, une phrase ou un nombre qui se lit de la même façon à l'endroit et à l'envers ?",
+      "answer": "Un palindrome",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176752681126167jd5dbnc",
+      "category": 3,
+      "question": "Quelle forme d'art est décrite comme \"l'écriture décorative ou le lettrage manuscrit\" ?",
+      "answer": "La calligraphie",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767526811261mdob8oofn",
+      "category": 3,
+      "question": "Quel est le nom du système philosophique chinois qui met l'accent sur l'harmonie avec la nature ?",
+      "answer": "Le Taoïsme",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767526811261w3zv0qrm9",
+      "category": 3,
+      "question": "Quelle est la 4ème lettre de l'alphabet grec ?",
+      "answer": "Delta",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767526811261y0cl6assz",
+      "category": 3,
+      "question": "Qui était le dieu grec antique du Soleil ?",
+      "answer": "Apollon",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767526811261lfri7xk19",
+      "category": 3,
+      "question": "L'auréoline est une nuance de quelle couleur ?",
+      "answer": "Jaune",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767530570903ekxalirgc",
+      "category": 3,
+      "question": "Quel artiste de la Renaissance est enterré au Panthéon de Rome ?",
+      "answer": "Raphaël",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767530570903va5sr9wl6",
+      "category": 3,
+      "question": "Dans quel musée se trouvent (de manière controversée) les marbres du Parthénon ?",
+      "answer": "Le British Museum",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176753057090347vsxynps",
+      "category": 3,
+      "question": "Quel artiste de la Renaissance a peint le plafond de la chapelle Sixtine ?",
+      "answer": "Michel-Ange",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588qj96muz6f",
+      "category": 3,
+      "question": "Qui a écrit « Le Hobbit » ?",
+      "answer": "J.R.R. Tolkien",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675366535887g5c4oteu",
+      "category": 3,
+      "question": "Quel détective aimant faire travailler ses « petites cellules grises » Agatha Christie a-t-elle créé ?",
+      "answer": "Hercule Poirot",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588pmh4uw3ov",
+      "category": 3,
+      "question": "Dans quel roman trouve-t-on l'île du Pays imaginaire (Neverland) ?",
+      "answer": "Peter Pan",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588jbsoh3fmg",
+      "category": 3,
+      "question": "Qui a écrit « Orgueil et Préjugés » ?",
+      "answer": "Jane Austen",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675366535882c182lorf",
+      "category": 3,
+      "question": "Quel roman dystopique met en scène le personnage de « Big Brother » ?",
+      "answer": "1984",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588ketdiapm5",
+      "category": 3,
+      "question": "Quelle série de livres pour enfants présente une armoire menant dans un autre monde ?",
+      "answer": "Le Monde de Narnia",
+      "alternativeAnswers": [
+        "The Chronicles of Narnia"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588agfzm9fuf",
+      "category": 3,
+      "question": "Qui a écrit « Le Chat chapeauté » (The Cat in the Hat) ?",
+      "answer": "Dr. Seuss",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588kl4ddigbj",
+      "category": 3,
+      "question": "Quel roman américain met en scène le personnage de Scout Finch ?",
+      "answer": "Ne tirez pas sur l'oiseau moqueur",
+      "alternativeAnswers": [
+        "To Kill a Mockingbird"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675366535883ko91bw6s",
+      "category": 3,
+      "question": "Quel auteur a écrit « Cent ans de solitude » ?",
+      "answer": "Gabriel García Márquez",
+      "alternativeAnswers": [
+        "Márquez"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588wfcpfsf20",
+      "category": 3,
+      "question": "Quel écrivain russe a écrit « Guerre et Paix » ?",
+      "answer": "Léon Tolstoï",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588dzee5mc70",
+      "category": 3,
+      "question": "Quel poète a écrit « The Road Not Taken » (La route non prise) ?",
+      "answer": "Robert Frost",
+      "alternativeAnswers": [
+        "Frost"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588shx4h88ue",
+      "category": 3,
+      "question": "Dans quelle pièce de Shakespeare trouve-t-on le monologue « Être ou ne pas être » ?",
+      "answer": "Hamlet",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588797bbtymb",
+      "category": 3,
+      "question": "Quelle romancière a écrit « Beloved » ?",
+      "answer": "Toni Morrison",
+      "alternativeAnswers": [
+        "Morrison"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588au9clef2t",
+      "category": 3,
+      "question": "Quel poème épique antique raconte le voyage de retour d'Ulysse ?",
+      "answer": "L'Odyssée",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675366535888llnltogh",
+      "category": 3,
+      "question": "Quel auteur nigérian a écrit « Le monde s'effondre » (Things Fall Apart) ?",
+      "answer": "Chinua Achebe",
+      "alternativeAnswers": [
+        "Achebe"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176753665358834sy634du",
+      "category": 3,
+      "question": "Quel roman postmoderne met en scène le personnage d'Oedipa Maas ?",
+      "answer": "Vente à la criée du lot 49",
+      "alternativeAnswers": [
+        "The Crying of Lot 49"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588ze5i88bg2",
+      "category": 3,
+      "question": "Quel poète chilien a remporté le prix Nobel de littérature en 1971 ?",
+      "answer": "Pablo Neruda",
+      "alternativeAnswers": [
+        "Neruda"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588bjx6wxnc2",
+      "category": 3,
+      "question": "Quelle poétesse russe a écrit « Requiem » ?",
+      "answer": "Anna Akhmatova",
+      "alternativeAnswers": [
+        "Akhmatova"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675366535883nhsy3l8s",
+      "category": 3,
+      "question": "Quel auteur américain a écrit « Homme invisible, pour qui chantes-tu ? » (Invisible Man) en 1952 ?",
+      "answer": "Ralph Ellison",
+      "alternativeAnswers": [
+        "Ellison"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675366535886dleonygs",
+      "category": 3,
+      "question": "Quel historien antique a écrit « Les Histoires » (ou L'Enquête) ?",
+      "answer": "Hérodote",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767536653588wrc3uakv7",
+      "category": 3,
+      "question": "Quel est le nom de plume de Mary Ann Evans ?",
+      "answer": "George Eliot",
+      "alternativeAnswers": [
+        "Eliot"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767525284564guwn5wkyg",
+      "category": 4,
+      "question": "Quel est le quatrième état de la matière, avec gazeux, liquide et solide ?",
+      "answer": "Plasma",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767525284564qn7jog2iv",
+      "category": 4,
+      "question": "Quel est le nom le plus courant du rorqual bleu ?",
+      "answer": "La baleine bleue",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767525284564bj5gyieqj",
+      "category": 4,
+      "question": "Comment appelle-t-on les plantes qui perdent leurs feuilles en automne ?",
+      "answer": "Les Caduques",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767525748399qv27o2aoh",
+      "category": 4,
+      "question": "Quel animal peut vivre plusieurs jours sans tête ?",
+      "answer": "Le cafard",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767525748399wvv5rh85l",
+      "category": 4,
+      "question": "Combien d’utérus possède un kangourou femelle ?",
+      "answer": "Trois",
+      "alternativeAnswers": [
+        "3"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767529076745948xj75af",
+      "category": 4,
+      "question": "Combien d'éléments y a-t-il dans le tableau périodique ?",
+      "answer": "118",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675290767459m2px1rqq",
+      "category": 4,
+      "question": "Combien d'os avons-nous dans une oreille ?",
+      "answer": "3",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767529076745lvq95sewb",
+      "category": 4,
+      "question": "Quelle planète possède le plus de lunes ?",
+      "answer": "Saturne",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767529076745ezu34q9q5",
+      "category": 4,
+      "question": "Où se trouve le muscle le plus puissant du corps humain (par rapport à sa taille) ?",
+      "answer": "La mâchoire",
+      "alternativeAnswers": [
+        "le masséter"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675290767450iptck0vt",
+      "category": 4,
+      "question": "Quelle est la seule partie du corps censée avoir sa taille définitive dès la naissance ?",
+      "answer": "Les yeux",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767529076745xe9c2vqen",
+      "category": 4,
+      "question": "Comment s'appelle la couche la plus externe de l'atmosphère terrestre ?",
+      "answer": "L'exosphère",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767529076745v9xe1djkf",
+      "category": 4,
+      "question": "Quel est le processus par lequel les plantes convertissent la lumière du soleil en énergie ?",
+      "answer": "La photosynthèse",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675290767452jhg5ggfa",
+      "category": 4,
+      "question": "Qui a formulé la théorie selon laquelle la Terre tourne autour du soleil ?",
+      "answer": "Nicolas Copernic",
+      "alternativeAnswers": [
+        "Copernic"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675306087442tganu9sk",
+      "category": 4,
+      "question": "Quel était le nom du premier virus informatique ?",
+      "answer": "Creeper",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533731560l8pg1syff",
+      "category": 4,
+      "question": "En anglais, quel terme insolite désigne un groupe de corbeaux ?",
+      "answer": "un Meurtre",
+      "alternativeAnswers": [
+        "a Murder"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675337315605k7ci5br8",
+      "category": 4,
+      "question": "Quel est le seul mammifère capable d'un véritable vol ?",
+      "answer": "La chauve-souris",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675337315608ls2xas73",
+      "category": 4,
+      "question": "Comment appelle-t-on l'étude des oiseaux ?",
+      "answer": "L'ornithologie",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533731560j1h6i6bht",
+      "category": 4,
+      "question": "Quel est l'oiseau le plus rapide du monde ?",
+      "answer": "Le faucon pèlerin",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533731560hnzxeuoho",
+      "category": 4,
+      "question": "Combien de cœurs possède une pieuvre ?",
+      "answer": "Trois",
+      "alternativeAnswers": [
+        "3"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533731560vtdvnu249",
+      "category": 4,
+      "question": "En anglais, quel terme curieux désigne un groupe de pandas ?",
+      "answer": "Un embarras",
+      "alternativeAnswers": [
+        "Embarrassment"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533731560sgx80xnmq",
+      "category": 4,
+      "question": "Quel animal possède la langue la plus longue (parmi les animaux terrestres) ?",
+      "answer": "La girafe",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533731560eiqsz05hp",
+      "category": 4,
+      "question": "Quel est l'animal le plus bruyant sur Terre ?",
+      "answer": "Le grand cachalot",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767525579579yyp8apfky",
+      "category": 5,
+      "question": "Comment appelle-t-on le bateau traditionnel du bassin d’Arcachon ?",
+      "answer": "Une pinasse",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176752557957945nrazp4q",
+      "category": 5,
+      "question": "Au football, quel type de remise en jeu est effectuée après une sortie de but par l’équipe adverse ?",
+      "answer": "six mètres",
+      "alternativeAnswers": [
+        "6 metres"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767525579579uvgqb3tsq",
+      "category": 5,
+      "question": "En quelle année les premiers Jeux olympiques d’hiver ont-ils eu lieu ?",
+      "answer": "1924",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675255795791kmucekx6",
+      "category": 5,
+      "question": "Quel sport a une variante dite “gréco-romaine” ?",
+      "answer": "La lutte",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523agwnteu7m",
+      "category": 5,
+      "question": "Quel est le film le mieux noté sur IMDb au 1er janvier 2024 ?",
+      "answer": "Les Évadés",
+      "alternativeAnswers": [
+        "The Shawshank Redemption"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523ju30dmwer",
+      "category": 5,
+      "question": "Quelle série Netflix a été la plus regardée en 2021 ?",
+      "answer": "Squid Game",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523cv9959d2i",
+      "category": 5,
+      "question": "Qui a remporté le plus grand nombre d'Oscars au total ?",
+      "answer": "Walt Disney",
+      "alternativeAnswers": [
+        "Disney"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523ednk46tae",
+      "category": 5,
+      "question": "Quel personnage Robert Downey Jr. et Benedict Cumberbatch ont-ils tous deux incarné ?",
+      "answer": "Sherlock Holmes",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523lt752rwpe",
+      "category": 5,
+      "question": "Qui est le réalisateur du film acclamé par la critique « Parasite » ?",
+      "answer": "Bong Joon-ho",
+      "alternativeAnswers": [
+        "Joon-ho"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523n0xqr6x5w",
+      "category": 5,
+      "question": "Le film de 2002 « 8 Mile » est l'histoire semi-biographique de quel rappeur ?",
+      "answer": "Eminem",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523u1wj18keq",
+      "category": 5,
+      "question": "Troy Bolton et Gabriella Montez sont les deux personnages principaux de quel film Disney de 2006 ?",
+      "answer": "High School Musical",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523d44zz0i7e",
+      "category": 5,
+      "question": "Dans la série « Game of Thrones », quel est l'emblème (sigil) de la Maison Stark ?",
+      "answer": "Un loup-garou",
+      "alternativeAnswers": [
+        "Direwolf"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523e83w5cwji",
+      "category": 5,
+      "question": "Qui fait la voix originale d'Homer Simpson ?",
+      "answer": "Dan Castellaneta",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523guppba1y0",
+      "category": 5,
+      "question": "Quel artiste cumule le plus grand nombre de streams sur Spotify ?",
+      "answer": "Taylor Swift",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523o62951anu",
+      "category": 5,
+      "question": "Dans quel domaine scientifique Brian May, le guitariste de Queen, est-il également un expert ?",
+      "answer": "L'astrophysique",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523grgetlrvu",
+      "category": 5,
+      "question": "Quel est le nom du label discographique fondé par Dr. Dre ?",
+      "answer": "Aftermath Entertainment",
+      "alternativeAnswers": [
+        "Aftermath"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "176753323652377y95yv5b",
+      "category": 5,
+      "question": "Combien de fantômes poursuivent Pac-Man au début de chaque partie ?",
+      "answer": "4",
+      "alternativeAnswers": [
+        "Quatre"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523qjnhp5kp2",
+      "category": 5,
+      "question": "Kratos est le personnage principal de quelle série de jeux vidéo ?",
+      "answer": "God of War",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523m2uko24lw",
+      "category": 5,
+      "question": "Quel studio de jeux vidéo développe la série Red Dead Redemption ?",
+      "answer": "Rockstar Games",
+      "alternativeAnswers": [
+        "Rockstar"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675332365232sql3akiw",
+      "category": 5,
+      "question": "Quelle entreprise s'appelait à l'origine « Cadabra » ?",
+      "answer": "Amazon",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523psy4wxux1",
+      "category": 5,
+      "question": "En quelle année le premier iPhone est-il sorti ?",
+      "answer": "2007",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675332365238nosq29sc",
+      "category": 5,
+      "question": "Quelle marque de luxe est connue pour son logo emblématique aux deux « C » entrelacés ?",
+      "answer": "Chanel",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523kgbhbiiu1",
+      "category": 5,
+      "question": "Quelle marque de chaussures fabrique le modèle \"Mexico 66\" ?",
+      "answer": "Onitsuka Tiger (rachter par Asics)",
+      "alternativeAnswers": [
+        "Onitsuka Tiger",
+        "Asics"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675332365234gkrgjs4n",
+      "category": 5,
+      "question": "Dans quel pays Elon Musk est-il né ?",
+      "answer": "Afrique du Sud",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523kwyzgldsn",
+      "category": 5,
+      "question": "Quel pays a remporté le plus de Coupes du Monde de football ?",
+      "answer": "Le Brésil",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675332365230j5x4bmwh",
+      "category": 5,
+      "question": "Que signifie l'acronyme FIFA ?",
+      "answer": "Fédération Internationale de Football Association",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523hsnz9gcli",
+      "category": 5,
+      "question": "Dans quel sport Simone Biles est-elle célèbre ?",
+      "answer": "La gymnastique",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523tnas1elc3",
+      "category": 5,
+      "question": "Dans quelle ville se trouve le Hall of Fame de la NFL (Football Américain) ?",
+      "answer": "Canton",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523b68h4wtxl",
+      "category": 5,
+      "question": "Où se termine le Tour de France chaque année ?",
+      "answer": "Sur l'avenue des Champs-Élysées à Paris",
+      "alternativeAnswers": [
+        "Champs-Elysées"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523ld2usjvzc",
+      "category": 5,
+      "question": "Comment appelle-t-on une série de trois strikes consécutifs au bowling ?",
+      "answer": "Un \"Turkey\"",
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "17675332365234yyjsc7ea",
+      "category": 5,
+      "question": "À quelle hauteur se trouve un panier de basket réglementaire (NBA) ?",
+      "answer": "3,05 mètres",
+      "alternativeAnswers": [
+        "3",
+        "05",
+        "3.05"
+      ],
+      "difficulty": "",
+      "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767533236523zhtlop41u",
+      "category": 5,
+      "question": "Quel événement sportif impose un code vestimentaire strict \"tout en blanc\" ?",
+      "answer": "Le tournoi de Wimbledon",
+      "alternativeAnswers": [
+        "Wimbledon"
       ],
       "difficulty": "",
       "boxName": "Vieweurs"
