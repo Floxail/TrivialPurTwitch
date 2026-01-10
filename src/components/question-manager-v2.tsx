@@ -122,6 +122,25 @@ const QuestionManager = () => {
     setTimeout(() => setImportSuccess(''), 5000);
   };
 
+  // Fonction pour calculer le temps relatif
+  const getRelativeTime = (isoDate: string | undefined): string => {
+    if (!isoDate) return 'Jamais';
+
+    const now = Date.now();
+    const syncDate = new Date(isoDate).getTime();
+    const diffMs = now - syncDate;
+
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `il y a ${days} jour${days > 1 ? 's' : ''}`;
+    if (hours > 0) return `il y a ${hours} heure${hours > 1 ? 's' : ''}`;
+    if (minutes > 0) return `il y a ${minutes} minute${minutes > 1 ? 's' : ''}`;
+    return 'à l\'instant';
+  };
+
   // Synchronisation depuis GitHub
   const handleSyncFromGitHub = async () => {
     try {
@@ -438,6 +457,13 @@ const QuestionManager = () => {
       questionsStore.deleteQuestion(id);
     });
 
+    // Vérifier si la boîte actuelle est maintenant vide
+    const remainingQuestions = questionsStore.getQuestionsByBox(selectedBox);
+    if (selectedBox && remainingQuestions.length === 0) {
+      // Si la boîte est vide, revenir à "Toutes les boîtes"
+      setSelectedBox('');
+    }
+
     setSelectedQuestions(new Set());
     setShowBulkActionsModal(false);
   };
@@ -451,6 +477,13 @@ const QuestionManager = () => {
     selectedQuestions.forEach(id => {
       questionsStore.updateQuestion(id, { boxName: bulkMoveTargetBox });
     });
+
+    // Vérifier si la boîte actuelle est maintenant vide
+    const remainingQuestions = questionsStore.getQuestionsByBox(selectedBox);
+    if (selectedBox && remainingQuestions.length === 0) {
+      // Si la boîte est vide, revenir à "Toutes les boîtes"
+      setSelectedBox('');
+    }
 
     setSelectedQuestions(new Set());
     setShowBulkActionsModal(false);
@@ -683,6 +716,51 @@ const QuestionManager = () => {
             <FontAwesomeIcon icon={['fas', 'upload']} /> Importer Questions
           </Button>
         </div>
+      </div>
+
+      {/* Indicateur de statut de synchronisation */}
+      <div className="mb-3">
+        <Alert variant={questionsStore.syncStatus === 'success' ? 'success' : questionsStore.syncStatus === 'error' ? 'danger' : questionsStore.syncStatus === 'loading' ? 'info' : 'secondary'} className="py-2">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              {questionsStore.syncStatus === 'loading' && (
+                <>
+                  <FontAwesomeIcon icon={['fas', 'sync']} spin className="me-2" />
+                  <strong>Synchronisation en cours...</strong>
+                </>
+              )}
+              {questionsStore.syncStatus === 'success' && (
+                <>
+                  <FontAwesomeIcon icon={['fas', 'check-circle']} className="me-2" />
+                  <strong>Synchronisé avec GitHub</strong>
+                </>
+              )}
+              {questionsStore.syncStatus === 'error' && (
+                <>
+                  <FontAwesomeIcon icon={['fas', 'exclamation-triangle']} className="me-2" />
+                  <strong>Erreur lors de la dernière synchronisation</strong>
+                </>
+              )}
+              {questionsStore.syncStatus === 'idle' && (
+                <>
+                  <FontAwesomeIcon icon={['fas', 'info-circle']} className="me-2" />
+                  <strong>Prêt à synchroniser</strong>
+                </>
+              )}
+            </div>
+            <div className="text-muted small">
+              {questionsStore.lastGitHubSync && (
+                <>
+                  Dernière sync: {getRelativeTime(questionsStore.lastGitHubSync)}
+                  <span className="ms-2">({questionsStore.questions.length} questions)</span>
+                </>
+              )}
+              {!questionsStore.lastGitHubSync && (
+                <span>Aucune synchronisation effectuée</span>
+              )}
+            </div>
+          </div>
+        </Alert>
       </div>
 
       <Tabs defaultActiveKey="boxes" className="mb-3">

@@ -15,7 +15,6 @@ import Leaderboard from './leaderboard';
 
 let twitchCallback: (nick: string, tid: string, msg: string) => void = () => {};
 
-const QUESTION_TIME_LIMIT = 30; // secondes
 const SCORE_CMD_DELAY = 2000;
 
 const Quiz = () => {
@@ -36,7 +35,9 @@ const Quiz = () => {
 	const twitchNick = useAuthStore((state) => state.twitchNick);
 	const twitchToken = useAuthStore((state) => state.twitchOauthToken);
 
-	const [timeLeft, setTimeLeft] = useState(QUESTION_TIME_LIMIT);
+	// Utiliser le temps de réponse configuré dans les settings
+	const questionTimeLimit = settingsStore.questionTimeLimit;
+	const [timeLeft, setTimeLeft] = useState(questionTimeLimit);
 	const [questionRevealed, setQuestionRevealed] = useState(false);
 	const [podiumDisplayed, setPodiumDisplayed] = useState(false);
 	const [waitingForRedemption, setWaitingForRedemption] = useState(true);
@@ -155,7 +156,7 @@ const Quiz = () => {
 		}
 
 		// Réinitialiser les états
-		setTimeLeft(QUESTION_TIME_LIMIT);
+		setTimeLeft(questionTimeLimit);
 		currentAnswerersRef.current = [];
 		lastAnswerersRef.current = [];
 		setQuestionRevealed(false);
@@ -216,7 +217,7 @@ const Quiz = () => {
 			const safeQuestion = currentQuizState?.questions[currentQuizState.currentQuestionIndex];
 
 			if (finalAnswerers.length > 0) {
-				const msg = `✅ Bonne réponse : ${safeQuestion?.answer}! GG à ${finalAnswerers.slice(0, 5).map(a => a.nick).join(', ')}`;
+				const msg = `✅ Bonne réponse : ${safeQuestion?.answer}! Bravo à ${finalAnswerers.slice(0, 5).map(a => a.nick).join(', ')}, ...`;
 				twitchClient.current?.say(twitchNick, msg);
 			} else {
 				twitchClient.current?.say(twitchNick, `⏱️ Temps écoulé ! La réponse était : ${safeQuestion?.answer}`);
@@ -614,7 +615,7 @@ const Quiz = () => {
 		questionRevealedRef.current = true;
 	};
 
-	const progressPercent = (timeLeft / QUESTION_TIME_LIMIT) * 100;
+	const progressPercent = (timeLeft / questionTimeLimit) * 100;
 
 	return (
 		<>

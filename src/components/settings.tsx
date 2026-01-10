@@ -20,6 +20,7 @@ const Settings = () => {
   const [chatNotifications, setChatNotifications] = useState<boolean>(settingsStore.chatNotifications);
   const [addEveryUser, setAddEveryUser] = useState<boolean>(settingsStore.addEveryUser);
   const [acceptanceDelay, setAcceptanceDelay] = useState<number>(settingsStore.acceptanceDelay);
+  const [questionTimeLimit, setQuestionTimeLimit] = useState<number>(settingsStore.questionTimeLimit);
   const [scoreCommandMode, setScoreCommandMode] = useState<any>(settingsStore.scoreCommandMode);
   const [previewGuessNumber, setPreviewGuessNumber] = useState<boolean>(settingsStore.previewGuessNumber);
   const [backupMessage, setBackupMessage] = useState<string>('');
@@ -38,6 +39,7 @@ const Settings = () => {
       chatNotifications: chatNotifications,
       previewGuessNumber: previewGuessNumber && acceptanceDelay > 0,
       acceptanceDelay: acceptanceDelay,
+      questionTimeLimit: questionTimeLimit,
       scoreCommandMode: scoreCommandMode,
     });
     navigate('/quiz');
@@ -116,6 +118,12 @@ const Settings = () => {
       <Form noValidate validated={validated} onSubmit={submit}>
 
         <h3>Global</h3>
+
+        <Form.Group className="mb-3" controlId="formGroupQuestionTime">
+          <Form.Label>Temps de réponse par question</Form.Label>
+          <Form.Range onChange={(e) => setQuestionTimeLimit(e.target.valueAsNumber)} value={questionTimeLimit} style={{ width: '100%' }} min={15} max={60} />
+          <Form.Label style={{ width: '100%', textAlign: 'center', marginTop: '-10px' }}><i>{questionTimeLimit} seconde{questionTimeLimit > 1 ? 's' : ''}</i></Form.Label>
+        </Form.Group>
 
         <Form.Group className="mb-3" controlId="formGroupAcceptance">
           <Form.Label>Délai d'acceptation de la réponse</Form.Label>

@@ -5,6 +5,49 @@ const Changelog = ({ show, onClose }: any) => {
   return (
     <Modal scrollable={true} show={show} centered size="lg" dialogClassName="changelog-modal">
       <Modal.Body>
+        <h3><u>10/01/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Architecture & Performance</h5>
+        <br />
+        <ul>
+          <li>Refactoring complet : séparation du store monolithique en <code>questions-store</code> et <code>game-store</code></li>
+          <li>Amélioration de la maintenabilité et réduction des risques de bugs</li>
+          <li>Code mieux organisé avec séparation claire des responsabilités</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Sauvegarde & Sécurité des données</h5>
+        <br />
+        <ul>
+          <li>Système de backup complet dans les Settings</li>
+          <li>Export/Import JSON de toutes les données (questions, scores, paramètres)</li>
+          <li>Protection contre la perte de données lors du changement de navigateur</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Synchronisation GitHub</h5>
+        <br />
+        <ul>
+          <li>Indicateur visuel de statut de synchronisation</li>
+          <li>Affichage du temps écoulé depuis la dernière sync ("il y a X minutes")</li>
+          <li>Statut en temps réel : succès, erreur, chargement</li>
+          <li>Nombre de questions chargées affiché</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Paramètres & Personnalisation</h5>
+        <br />
+        <ul>
+          <li>Temps de réponse configurable par question (slider 15-60 secondes)</li>
+          <li>Déplacement du backup dans les Settings pour une meilleure organisation</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Corrections de bugs</h5>
+        <br />
+        <ul>
+          <li>Correction du bug d'affichage vide après déplacement de questions</li>
+          <li>Retour automatique à "Toutes les boîtes" si la boîte devient vide</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
         <h3><u>01/01/2026</u></h3>
         <br />
         <h5 className="h5-with-line">Podium & Trophées</h5>

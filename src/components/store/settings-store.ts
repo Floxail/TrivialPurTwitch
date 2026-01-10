@@ -14,6 +14,7 @@ type SettingsData = {
   chatNotifications: boolean;
   previewGuessNumber: boolean;
   acceptanceDelay: number;
+  questionTimeLimit: number;
   scoreCommandMode: TwitchMode;
 }
 
@@ -33,6 +34,7 @@ const initialState: SettingsData & ExtraSettingsData = {
   chatNotifications: true,
   previewGuessNumber: false,
   acceptanceDelay: 5,
+  questionTimeLimit: 30,
   scoreCommandMode: TwitchMode.Channel,
   theme: 0,
 };
