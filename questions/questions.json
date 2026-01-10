@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-01-04T14:25:21.036Z",
+  "exportDate": "2026-01-10T14:37:18.914Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -56,9 +56,14 @@
       "totalQuestions": 156
     },
     {
+      "name": "Univers audio-visuel",
+      "cardNumbers": [],
+      "totalQuestions": 221
+    },
+    {
       "name": "Vieweurs",
       "cardNumbers": [],
-      "totalQuestions": 1626
+      "totalQuestions": 1617
     }
   ],
   "questions": [
@@ -931,7 +936,10 @@
       "answer": "L'assassinat de l'archiduc François-Ferdinand",
       "trivialBox": "Vieweurs",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "assassinat"
+      ]
     },
     {
       "id": "1766255092841azmn7f817",
@@ -985,7 +993,11 @@
       "answer": "Miguel de Cervantes",
       "trivialBox": "Vieweurs",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "de Cervantes",
+        "Cervantes"
+      ]
     },
     {
       "id": "1766255157594kqr282qsc",
@@ -1466,7 +1478,10 @@
       "answer": "Usain Bolt",
       "trivialBox": "Vieweurs",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "Bolt"
+      ]
     },
     {
       "id": "1766255303633lo7lhqc3v",
@@ -3261,7 +3276,7 @@
     {
       "id": "1766850183966d4ymc9hel",
       "category": 0,
-      "question": "Au-dessus de quelle ville, représentée ici, la première photo aérienne depuis une montgolfière a-t-elle été prise ?",
+      "question": "Au-dessus de quelle ville, la première photo aérienne depuis une montgolfière a-t-elle été prise ?",
       "answer": "Paris",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -3446,7 +3461,7 @@
     {
       "id": "1766850183966h6idzwzon",
       "category": 0,
-      "question": "Dans quel pays d'Amérique du Sud peut-on admirer le Salto Ángel, représenté ici ?",
+      "question": "Dans quel pays d'Amérique du Sud peut-on admirer le Salto Ángel ?",
       "answer": "Au Venezuela",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -3486,7 +3501,7 @@
     {
       "id": "1766850183966b6dbgx7a9",
       "category": 0,
-      "question": "Dans quel pays peut-on visiter le temple d'Angkor Wat représenté ici ?",
+      "question": "Dans quel pays peut-on visiter le temple d'Angkor Wat ?",
       "answer": "Au Cambodge",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -3503,14 +3518,6 @@
       "id": "176685018396691qqbbzrm",
       "category": 0,
       "question": "Dans quel pays se trouve l'escalier mécanique le plus court du monde ?",
-      "answer": "Au Japon",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966y1rmmfynn",
-      "category": 0,
-      "question": "Dans quel pays se trouve la montagne représentée ici ?",
       "answer": "Au Japon",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -3550,7 +3557,7 @@
     {
       "id": "17668501839666ogkfwgww",
       "category": 0,
-      "question": "Dans quel pays trouve-t-on le bâtiment penché représenté ici ?",
+      "question": "Dans quel pays trouve-t-on un bâtiment penché ?",
       "answer": "En Italie",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -3560,14 +3567,6 @@
       "category": 0,
       "question": "Dans quel état américain se trouve la vallée de la Mort ?",
       "answer": "En Californie",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966qtl2lcvpe",
-      "category": 0,
-      "question": "Dans quelle capitale européenne se trouve la cathédrale, représentée ici ?",
-      "answer": "Moscou",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -3582,10 +3581,13 @@
     {
       "id": "1766850183966i6vs8kt4s",
       "category": 0,
-      "question": "Dans quelle chaîne de montagnes sud-américaine, représentée ici, le fleuve Amazone prend-il sa source ?",
-      "answer": "Dans les Andes",
+      "question": "Dans quelle chaîne de montagnes sud-américaine, le fleuve Amazone prend-il sa source ?",
+      "answer": "les Andes",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "andes"
+      ]
     },
     {
       "id": "1766850183966jd968pgb2",
@@ -3918,7 +3920,7 @@
     {
       "id": "1766850183966x2b2g477d",
       "category": 0,
-      "question": "Que signifie le nom cantonais de la ville de Hong Kong, représentée ici ?",
+      "question": "Que signifie le nom cantonais de la ville de Hong Kong ?",
       "answer": "Le port aux parfums",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -3942,7 +3944,7 @@
     {
       "id": "1766850183966doffsgwlo",
       "category": 0,
-      "question": "Quel canal, représenté ici, relie l'océan Atlantique à l'océan Pacifique ?",
+      "question": "Quel canal, relie l'océan Atlantique à l'océan Pacifique ?",
       "answer": "Le canal de Panama",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -3950,7 +3952,7 @@
     {
       "id": "17668501839669n14ktt4h",
       "category": 0,
-      "question": "Quel chapeau, représenté ici, doit son nom au mot espagnol signifiant « ombre » ?",
+      "question": "Quel chapeau, doit son nom au mot espagnol signifiant « ombre » ?",
       "answer": "Sombrero",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -4046,7 +4048,7 @@
     {
       "id": "176685018396690s8eimpq",
       "category": 0,
-      "question": "Quel fleuve africain, représenté ici, se jette dans les chutes Victoria ?",
+      "question": "Quel fleuve africain, se jette dans les chutes Victoria ?",
       "answer": "Le Zambèze",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -4206,7 +4208,7 @@
     {
       "id": "1766850183966ztfmmkoug",
       "category": 0,
-      "question": "Quel pays est traditionnellement associé aux fleurs représentées ici ?",
+      "question": "Quel pays est traditionnellement associé aux fleurs ?",
       "answer": "Les Pays-Bas",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -4292,14 +4294,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766850183966s1zahai5q",
-      "category": 0,
-      "question": "Quel pays, représenté ici, est le plus occidental d'Europe continentale ?",
-      "answer": "Le Portugal",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766850183966u1bgo2dyr",
       "category": 0,
       "question": "Quel phare, situé dans l'estuaire de la Gironde, est le seul phare en mer ouvert aux visites ?",
@@ -4310,7 +4304,7 @@
     {
       "id": "1766850183966xwumxhgzr",
       "category": 0,
-      "question": "Quel poisson, représenté ici, ne peut être préparé qu'avec une autorisation spéciale au Japon ?",
+      "question": "Quel poisson, ne peut être préparé qu'avec une autorisation spéciale au Japon ?",
       "answer": "Le fugu",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -4376,14 +4370,6 @@
       "category": 0,
       "question": "Quelle chaîne de montagnes se traduit par « demeure des neiges » et compte l'Everest parmi ses sommets ?",
       "answer": "L'Himalaya",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "1766850183966s4z99l468",
-      "category": 0,
-      "question": "Quelle espèce d'oiseau vivant au sud du Sahara est représentée ici ?",
-      "answer": "La grue royale",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -4502,7 +4488,7 @@
     {
       "id": "17668501839667clgp7q2l",
       "category": 0,
-      "question": "Quelle montagne, représentée ici, est le deuxième plus haut sommet du monde par rapport au niveau de la mer ?",
+      "question": "Quelle montagne, est le deuxième plus haut sommet du monde par rapport au niveau de la mer ?",
       "answer": "Le K2",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -4526,7 +4512,7 @@
     {
       "id": "17668501839664jcsg6b5z",
       "category": 0,
-      "question": "Quelle substance, représentée ici, est crachée par les volcans en éruption ?",
+      "question": "Quelle substance, est crachée par les volcans en éruption ?",
       "answer": "La lave",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -4678,7 +4664,7 @@
     {
       "id": "1766850183966zma3vmlw6",
       "category": 0,
-      "question": "Souvent associé avec l'animal représenté ici, quel état australien est un archipel comptant plus de 300 îles ?",
+      "question": "Quel état australien est un archipel comptant plus de 300 îles ?",
       "answer": "La Tasmanie",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -4752,14 +4738,6 @@
       "category": 0,
       "question": "À Paris, sur quelle place peut-on admirer l'un des obélisques de Louxor ?",
       "answer": "La place de la Concorde",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668501839668t2tzhqcv",
-      "category": 0,
-      "question": "À partir de quoi l'instrument caribéen représenté ici est-il traditionnellement fabriqué ?",
-      "answer": "De fûts de pétrole",
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -5555,7 +5533,10 @@
       "question": "Quel genre musical, notamment représenté par Confetti's, trouve ses racines en Belgique ?",
       "answer": "Le New beat",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "Newbeat"
+      ]
     },
     {
       "id": "17668521129064ip03kuu1",
@@ -5655,9 +5636,12 @@
       "id": "1766852112906px17lmytx",
       "category": 1,
       "question": "Quel studio de cinéma est représenté par un lion rugissant ?",
-      "answer": "MGM",
+      "answer": "Metro Goldwyn Mayer",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "MGM"
+      ]
     },
     {
       "id": "1766852112906hyoq1fk3a",
@@ -5749,7 +5733,10 @@
       "question": "Quelle célèbre maison de disques a signé Diana Ross & The Supremes et Marvin Gaye ?",
       "answer": "Motown Records",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "Motown"
+      ]
     },
     {
       "id": "17668521129064ryepgghu",
@@ -6217,14 +6204,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766852766367miwkk1q01",
-      "category": 2,
-      "question": "Comment appelle-t-on la tenue représentée ici ?",
-      "answer": "Salopette",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766852766367g7ux8y6pb",
       "category": 2,
       "question": "Comment appelle-t-on le document par lequel le Pape pose un acte juridique important ?",
@@ -6262,7 +6241,7 @@
     {
       "id": "1766852766367im946mgrt",
       "category": 2,
-      "question": "Comment s'appellent les structures, telles que celle représentée ici, que bâtissaient les Romains pour acheminer l'eau jusque dans les villes ?",
+      "question": "Comment s'appellent les structures que bâtissaient les Romains pour acheminer l'eau jusque dans les villes ?",
       "answer": "Des aqueducs",
       "alternativeAnswers": [
         "Aqueducs"
@@ -6322,7 +6301,7 @@
     {
       "id": "1766852766367uibr3uy4m",
       "category": 2,
-      "question": "Dans quel pays furent fabriqués les 15 000 premiers couteaux suisses, similaires à ceux représentés ici ?",
+      "question": "Dans quel pays furent fabriqués les 15 000 premiers couteaux suisses ?",
       "answer": "En Allemagne",
       "alternativeAnswers": [
         "Allemagne"
@@ -6436,7 +6415,7 @@
     {
       "id": "17668527663677dogktu3z",
       "category": 2,
-      "question": "De quel bâtiment londonien la Porte des Traîtres (Traitor's Gate), représentée ici, est-elle l'entrée ?",
+      "question": "De quel bâtiment londonien la Porte des Traîtres (Traitor's Gate), est-elle l'entrée ?",
       "answer": "La tour de Londres",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -6528,10 +6507,13 @@
     {
       "id": "17668527663670n2ohiisd",
       "category": 2,
-      "question": "Devant quel monument, représenté ici, Martin Luther King, Jr. prononça-t-il son fameux discours commençant par « J'ai fait un rêve » ?",
+      "question": "Devant quel monument, Martin Luther King, Jr. prononça-t-il son fameux discours commençant par « J'ai fait un rêve » ?",
       "answer": "Le Lincoln Memorial",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "Lincoln Memorial"
+      ]
     },
     {
       "id": "1766852766367so971bjkr",
@@ -6738,7 +6720,7 @@
     {
       "id": "1766852766367mtmq2blqe",
       "category": 2,
-      "question": "Par quelle civilisation fut bâtie Chichén Itzá, représentée ici ?",
+      "question": "Par quelle civilisation fut bâtie Chichén Itzá ?",
       "answer": "Les Mayas",
       "alternativeAnswers": [
         "Mayas"
@@ -6862,7 +6844,7 @@
     {
       "id": "1766852766367z7j3ug2gp",
       "category": 2,
-      "question": "Quel appareil, représenté ici, fut d'abord présenté par Johannes Lippershey, puis amélioré par Galilée pour l'observation astronomique ?",
+      "question": "Quel appareil, fut d'abord présenté par Johannes Lippershey, puis amélioré par Galilée pour l'observation astronomique ?",
       "answer": "Le télescope",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -6927,7 +6909,7 @@
     {
       "id": "17668527663672kx10olz7",
       "category": 2,
-      "question": "Quel est l'autre nom du London Eye, représenté ici ?",
+      "question": "Quel est l'autre nom du London Eye?",
       "answer": "Millennium Wheel",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -7269,7 +7251,7 @@
     {
       "id": "1766852766367m6t4lratr",
       "category": 2,
-      "question": "Quel roi de France, représenté ici, était appelé le Roi Soleil ?",
+      "question": "Quel roi de France, était appelé le Roi Soleil ?",
       "answer": "Louis XIV",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -7394,7 +7376,7 @@
     {
       "id": "1766852766367h2w14uk0q",
       "category": 2,
-      "question": "Quelle arme, représentée ici, est le symbole de l'honneur d'un samouraï ?",
+      "question": "Quelle arme, est le symbole de l'honneur d'un samouraï ?",
       "answer": "Le katana",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -7426,7 +7408,7 @@
     {
       "id": "1766852766367w64nyjtld",
       "category": 2,
-      "question": "Quelle civilisation antique a bâti les pyramides de Gizeh, représentées ici ?",
+      "question": "Quelle civilisation antique a bâti les pyramides de Gizeh ?",
       "answer": "Les Égyptiens",
       "alternativeAnswers": [
         "Égyptiens"
@@ -7635,7 +7617,7 @@
     {
       "id": "1766852766367tw9stl2wg",
       "category": 2,
-      "question": "Quelles chutes d'eau, représentées ici, Annie Taylor a-t-elle descendues dans un tonneau de bois ?",
+      "question": "Quelles chutes d'eau, Annie Taylor a-t-elle descendues dans un tonneau de bois ?",
       "answer": "Les chutes du Niagara",
       "alternativeAnswers": [
         "Niagara"
@@ -7657,7 +7639,10 @@
       "question": "Quels outils sont représentés sur l'ancien drapeau de l'Union soviétique ?",
       "answer": "La faucille et le marteau",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "Faucille et marteau"
+      ]
     },
     {
       "id": "1766852766367le8wkqnyy",
@@ -8091,17 +8076,6 @@
       "answer": "La France",
       "alternativeAnswers": [
         "France"
-      ],
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
-      "id": "17668527663670y02zz86y",
-      "category": 2,
-      "question": "À quel pays le drapeau représenté ici correspond-il ?",
-      "answer": "L'Afrique du Sud",
-      "alternativeAnswers": [
-        "Afrique du Sud"
       ],
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -8788,7 +8762,7 @@
     {
       "id": "1766853677095t5jrjcqnj",
       "category": 3,
-      "question": "Que tient l'homme représenté sur le tableau de Grant Wood American Gothic ?",
+      "question": "Que tient l'homme représenté sur le tableau de Grant Wood; American Gothic ?",
       "answer": "Une fourche",
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -9468,14 +9442,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "1766853677095orshgvoqb",
-      "category": 3,
-      "question": "Quelle langue, représentée ici, se lit de droite à gauche ?",
-      "answer": "L'hébreu",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766853677095t5ztvfs9u",
       "category": 3,
       "question": "Quelle lettre de l'alphabet n'est pas utilisée dans le roman de Georges Perec La Disparition ?",
@@ -10000,10 +9966,13 @@
     {
       "id": "1766854112853tcar6mrvx",
       "category": 4,
-      "question": "Dans quel royaume naturel trouve-t-on des variétés ayant pour nom oreille de lapin, cœur de sorcière ou encore jeune fille voilée ?",
-      "answer": "Les champignons",
+      "question": "À quel règne du vivant appartiennent les espèces surnommées \"oreille de lapin\", \"cœur de sorcière\" ou encore \"jeune fille voilée\" ?",
+      "answer": "Champignons",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "fongique"
+      ]
     },
     {
       "id": "1766854112853w70wy29c2",
@@ -10529,14 +10498,6 @@
       "boxName": "Vieweurs"
     },
     {
-      "id": "17668541128536wpyv5e8l",
-      "category": 4,
-      "question": "Quelle espèce de tigre, représentée ici, est la plus grande ?",
-      "answer": "Le tigre de Sibérie",
-      "difficulty": "medium",
-      "boxName": "Vieweurs"
-    },
-    {
       "id": "1766854112853cpk7opbg6",
       "category": 4,
       "question": "Quelle espèce, est issue de l'accouplement d'un âne et d'une jument ?",
@@ -11028,9 +10989,12 @@
       "id": "1766854440296ubh3z47fl",
       "category": 5,
       "question": "Comment s'appelle l'équipe de basket de Charleroi ?",
-      "answer": "« Spirou Basket »",
+      "answer": "Spirou Basket",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "Spirou"
+      ]
     },
     {
       "id": "1766854440296jtidz3qwx",
@@ -12462,10 +12426,7 @@
       "question": "Citez les membres des Beatles.",
       "answer": "John Lennon, Paul McCartney, Ringo Starr, George Harrison",
       "alternativeAnswers": [
-        "Lennon",
-        "McCartney",
-        "Starr",
-        "Harrison"
+        "Lennon McCartney Starr Harrison"
       ],
       "difficulty": "medium",
       "boxName": "Vieweurs"
@@ -16719,6 +16680,1994 @@
       ],
       "difficulty": "",
       "boxName": "Vieweurs"
+    },
+    {
+      "id": "1767793296318pcndrsaan",
+      "category": 1,
+      "question": "En quelle année se déroule Futurama ?",
+      "answer": "3000",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963180f8lq94ek",
+      "category": 1,
+      "question": "Dans Futurama combien de personne travaillent pour le professeur ?",
+      "answer": "6",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318gr6q1mzpo",
+      "category": 1,
+      "question": "Dans Futurama quel est le prénom de Fray ?",
+      "answer": "Phillip",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318aoqv8sw54",
+      "category": 1,
+      "question": "Dans Futurama quel métier Fray est-il destiné a exercé?",
+      "answer": "Livreur",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318mmwdvtjca",
+      "category": 1,
+      "question": "Quel est le passe temps préféré de Bender?",
+      "answer": "Voler",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963186r2dv8wbc",
+      "category": 1,
+      "question": "Pourquoi Bender a t-il été programmé ?",
+      "answer": "pour tordre des objets",
+      "alternativeAnswers": [
+        "tordre des objets"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318i87v0yjm4",
+      "category": 1,
+      "question": "Dans ma famille d'abord le père dirige une entreprise de ?",
+      "answer": "transport",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318xv5i4dbmm",
+      "category": 1,
+      "question": "Dans Mercredi comment se prénom l'ancêtre de mercredi apparaissant dans ses visions ?",
+      "answer": "Goody",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318mkci70b40",
+      "category": 1,
+      "question": "Dans Mercredi comment se prénom l'école ?",
+      "answer": "Nervermore",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318mmnckz7uu",
+      "category": 1,
+      "question": "Dans Mercredi comment se prénom la boisson bleu au bal de Nevermore ?",
+      "answer": "Yétitini",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "176779329631846fm46e4o",
+      "category": 1,
+      "question": "Dans Mercredi quelle actrice joue Enid ?",
+      "answer": "Emma Myers",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318ros3imlxe",
+      "category": 1,
+      "question": "Dans Squid game un enquêteur va prendre s'introduire et prendre la place d'un soldat. Quel numéro portera t-il ?",
+      "answer": "29",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318kxgr0sr2q",
+      "category": 1,
+      "question": "Dans Squid Game quelle maladie à Oh-ll-nam, jouer n1?",
+      "answer": "tumeur au cerveau",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318zublmxvge",
+      "category": 1,
+      "question": "film Si vous ne trouvez pas ce titre, vous pouvez devenir complètement marteau !",
+      "answer": "Thor",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318p3l1yq4nv",
+      "category": 1,
+      "question": "Dans quelle série une contractuelle enquête-t-elle sur un meurtre survenu dans une fête foraine ?",
+      "answer": "Killer Coaster",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318vuhizlubi",
+      "category": 1,
+      "question": "Laquelle de ces séries a, comme personnages principaux, quatre septuagénaires ?",
+      "answer": "Grace et Frankie",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318ile1tz1fl",
+      "category": 1,
+      "question": "Cette série adapte différents livres d'horreurs destinés à la jeunesse. Comment s'appelle-t-elle ?",
+      "answer": "Chaire de poule",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963185r5mv8yu6",
+      "category": 1,
+      "question": "Stranger Things ou Riverdale : Cherryl Blossom",
+      "answer": "Riverdale",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318b6u7thsd2",
+      "category": 1,
+      "question": "Grrr Grrr je suis tout vert qui suis-je ?",
+      "answer": "L'incroyable Hulk",
+      "alternativeAnswers": [
+        "Hulk"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318n631yi3f5",
+      "category": 1,
+      "question": "Qui découvre qu'Heisenberg est Walter en premier ?",
+      "answer": "Hank",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318emt25gldc",
+      "category": 1,
+      "question": "Dans quelle ville se situe l'action de la série ''Boardwalk Empire'' ?",
+      "answer": "Atlantic City",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318ds01jygdm",
+      "category": 1,
+      "question": "Quel est le métier de l'héroïne Claire Randall, dans la série TV ''Outlander'' ?",
+      "answer": "infirmière",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318rq7t2ya7w",
+      "category": 1,
+      "question": "Dans Kaamelott Avec quoi peut-on jouer une partie de grelottine ?",
+      "answer": "des Haricots",
+      "alternativeAnswers": [
+        "Haricots"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963180whttqyh9",
+      "category": 1,
+      "question": "Qui dit que le Graal est probablement un bocal à anchois ?",
+      "answer": "Perceval",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318oxsw164ya",
+      "category": 1,
+      "question": "Dans Stranger Things quel personnage à un rapport avec un sifflet ?",
+      "answer": "Billy",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963188b8xj1gu0",
+      "category": 1,
+      "question": "ans Stranger Things la batte aux clous qui s'en est munie ?",
+      "answer": "Steve",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318tlnacscrw",
+      "category": 1,
+      "question": "Dans True Blood comment se prénom la l'héroïne principale ?",
+      "answer": "Sookie Stackhouse",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "176779329631822cso2guh",
+      "category": 1,
+      "question": "Je suis serveuse  au Merlotte's et télépathe qui suis-je?",
+      "answer": "Sookie Stackhouse",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318dwk8fmxt5",
+      "category": 1,
+      "question": "Je suis doué au piano j'ai des frères, poupipou",
+      "answer": "Dewey",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963181dg8ka33b",
+      "category": 1,
+      "question": "Je suis une mère en colère contre sa famille et j'ai un mari étourdie, pourquoi je n'ai pas eu des filles ?",
+      "answer": "Malcolm",
+      "alternativeAnswers": [
+        "Malcolm in the Middle"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318ooon63502",
+      "category": 1,
+      "question": "Nous sommes 3 méchantes, nous aimons tourmenté les humains, le diable est notre dieu",
+      "answer": "Les 3 soeur du destins",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "176779329631884mwvo1la",
+      "category": 1,
+      "question": "Je mange des cerveaux, je vois les souvenirs des victimes, je résous des crimes qui suis-je ?",
+      "answer": "Olivia Moore",
+      "alternativeAnswers": [
+        "Liv"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318a7p58zb5r",
+      "category": 1,
+      "question": "Quel est le métier de Liv  (olivia Moore) ?",
+      "answer": "Médecin légiste",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318ylh8ggulf",
+      "category": 1,
+      "question": "Comment s'appelle cette série où l'on suit les aventures de la famille Stevens ?",
+      "answer": "Guerre des Stevens",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318q0swk2d8y",
+      "category": 1,
+      "question": "Dans la Csa del Papel quelle est la spécialité de Rio ?",
+      "answer": "piratage informatique",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318jrb8wc895",
+      "category": 1,
+      "question": "Personnage : Je suis Rousse stricte et mon prénom évoque du fromage",
+      "answer": "Bree Van de Kamp",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318g5hk8dymg",
+      "category": 1,
+      "question": "Personnage : Je fais joujou avec des os et je collabore avec le FBI",
+      "answer": "Temperance Brennan",
+      "alternativeAnswers": [
+        "Bernnan"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963183uqr6mens",
+      "category": 1,
+      "question": "Gormogon est un tueur cannibale dans quelle série ?",
+      "answer": "Bones",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318em2bz3nf6",
+      "category": 1,
+      "question": "Dans Supernatural que prenne les dieux Païens de Noël ?",
+      "answer": "du sang et des ongles",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318edqgt4oc4",
+      "category": 1,
+      "question": "Dans Supernatural de quoi Sam a-t-il peur ?",
+      "answer": "Clown et poupées",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963185w4dhu7qy",
+      "category": 1,
+      "question": "Dans Monk comment s'appelle le groupe de Rock de Randy ?",
+      "answer": "The Randy disher Project",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318h1liyf8t2",
+      "category": 1,
+      "question": "Dans Monk Sharona à peur de quoi dans l'un des épisode?",
+      "answer": "Eléphants",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318bbok4cok5",
+      "category": 1,
+      "question": "Dans Monk quel animal possède Julie ?",
+      "answer": "Un poisson rouge",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318mfesk3jrq",
+      "category": 1,
+      "question": "Dans Monk de quoi meurt de DR. Kroger ?",
+      "answer": "Crise cardiaque",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318kgk4bmgpd",
+      "category": 1,
+      "question": "Carrie Wells est une policière pourvue d'une mémoire incroyable dans :",
+      "answer": "Unforgettable",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318yr5qnec2r",
+      "category": 1,
+      "question": "Brenda Leigh Johnson est le chef-adjoint dans une unité de la Police de Los Angeles chargée des crimes prioritaires dans :",
+      "answer": "The Closer",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963185sy43411q",
+      "category": 1,
+      "question": "Patrick Jane, tenace et fantasque aide les enquêteurs du CBI dans :",
+      "answer": "Mentalist",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318c2ujc7eql",
+      "category": 1,
+      "question": "A Storybrooke vivent des personnages de contes qu'Emma Swan rencontre dans :",
+      "answer": "Unce Upon a time",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963187dtxtvq8k",
+      "category": 1,
+      "question": "Dans quelle série retrouve t-on les rescapés du vol 815",
+      "answer": "Lost les disparues",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677932963181dlks682y",
+      "category": 1,
+      "question": "A Boston, deux amies, une enquêtrice et un médecin légiste résolvent les crimes dans",
+      "answer": "Rizzoli et Isles",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767793296318qvh3ac59l",
+      "category": 1,
+      "question": "Olivia Benson et Elliot Stabler se chargent des crimes à caractères sexuels et à la protection des victimes dans :",
+      "answer": "New York, unité spéciale",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174lomfl73z8",
+      "category": 0,
+      "question": "Dans Friends Ross et Monica ont créer un danse au lycée comme s'appelle t-elle ?",
+      "answer": "La routine",
+      "alternativeAnswers": [
+        "Routine"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951746qdryx4un",
+      "category": 0,
+      "question": "Dans Friends Joey a peur de quel animal ?",
+      "answer": "Tarentule",
+      "alternativeAnswers": [
+        "mygale",
+        "araignée"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951741ilmre8gf",
+      "category": 0,
+      "question": "Dans Friends qu'elle est le prénom de la 2ème femme de Ross ?",
+      "answer": "Emily",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174o009nmmbj",
+      "category": 0,
+      "question": "Dans Friends en quoi se déguise Ross pour Halloween ?",
+      "answer": "Binjtnik",
+      "alternativeAnswers": [
+        "Mister Patate",
+        "Mister patate de l'espace"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174etz5oowb5",
+      "category": 0,
+      "question": "Dans quelle série : 5 garçons 2 parents et les surdouées",
+      "answer": "Malcolm",
+      "alternativeAnswers": [
+        "Malcolm in the Middle"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174f9pyh9tp8",
+      "category": 0,
+      "question": "Dans quelle série : Mr rigolo muet gaffe",
+      "answer": "Mr.Bean",
+      "alternativeAnswers": [
+        "Bean"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "176776519517431exqx355",
+      "category": 0,
+      "question": "Dans quelle série ? un homme un chat un journal l'avenir ?",
+      "answer": "Demain à la une",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174hb67wslew",
+      "category": 0,
+      "question": "Quel personnage je suis ?  je suis sortie avec Angel et Spike",
+      "answer": "Buffy",
+      "alternativeAnswers": [
+        "Buffy contre les vampires"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174jisovk6ek",
+      "category": 0,
+      "question": "Dans Charmed je suis un objet utile pour combattre les méchant quel est mon nom ?",
+      "answer": "Le livre des ombres",
+      "alternativeAnswers": [
+        "Livre des ombres",
+        "livres ombres"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174sg0eh0nab",
+      "category": 0,
+      "question": "Personnage d'une vieille série qui a un remake sur Netflix, Blonde, Chat, Harvey. Qui suis-je ?",
+      "answer": "Sabrina",
+      "alternativeAnswers": [
+        "Sabrina l'apprentie sorcière"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951745yyj3fou0",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Directeur Queen.",
+      "answer": "Docteur Quinn",
+      "alternativeAnswers": [
+        "Docteur Quinn femme médecin"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951741oxngd6zb",
+      "category": 0,
+      "question": "Dans quel film ? Vert, Noël, grincheux",
+      "answer": "Le Grinch",
+      "alternativeAnswers": [
+        "Grinch"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174cz534nfoy",
+      "category": 0,
+      "question": "Série retrouve mon titre original : So_s le s__e_l",
+      "answer": "Sous le soleil",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951747tcfbxfo3",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Géraldine, mange jardin",
+      "answer": "Joséphine ange gardien",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951742im75hgyk",
+      "category": 0,
+      "question": "Série retrouve mon titre original : PocObor",
+      "answer": "Robocop",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174uc1qv7vqk",
+      "category": 0,
+      "question": "Dans Police Academy nom du chef détesté de touste ?",
+      "answer": "Thaddeus Harris",
+      "alternativeAnswers": [
+        "Thaddeus",
+        "Harris"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174xvv55jr9a",
+      "category": 0,
+      "question": "Dans quel film ? Boite de chocolat, vietnam, crevette",
+      "answer": "Forrest Gump",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174hq34kuysr",
+      "category": 0,
+      "question": "Dans Forrest Gump quel est le nom de la société de crevette ?",
+      "answer": "Bubba Gump",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174m55sg4h7x",
+      "category": 0,
+      "question": "Dans quel film ? la main, Fétide",
+      "answer": "La famille Addams",
+      "alternativeAnswers": [
+        "Addams"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174dixoo4rf9",
+      "category": 0,
+      "question": "Dans la famille Addam's le nom du cousin poilu ?",
+      "answer": "cousin machin",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174a41mvqak7",
+      "category": 0,
+      "question": "Dans le film la famille Addam's les retrouvailles comment se prénom le chien de fetide ?",
+      "answer": "Boucher",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174ix55klry3",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Araskeb",
+      "answer": "Arabesque",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174u19xciru9",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Broke in Badge",
+      "answer": "Breaking Bad",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174ql00gkxvl",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Femmes espérèrent",
+      "answer": "desperate housewife",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "176776519517412ozg3cuz",
+      "category": 0,
+      "question": "Série retrouve mon titre original : peau de coq",
+      "answer": "Chaire de poule",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174t9mslwzpl",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Les hypers Nénéttes",
+      "answer": "Les Supers nanas",
+      "alternativeAnswers": [
+        "supers Nanas"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951744p8xzknsh",
+      "category": 0,
+      "question": "Série animé retrouve mon titre original : le car fantastique",
+      "answer": "Le Bus magique",
+      "alternativeAnswers": [
+        "Bus magique"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951742impgb5zt",
+      "category": 0,
+      "question": "Dans quel dessin animé un savant fou fabrique des animaux dans son château?",
+      "answer": "Docteur Globule",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174qwwadjzs0",
+      "category": 0,
+      "question": "Série d'animation retrouve mon titre original : Les bonheurs de Faucille",
+      "answer": "les Malheurs de Sophie",
+      "alternativeAnswers": [
+        "malheurs Sophie"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174uvnvual7v",
+      "category": 0,
+      "question": "Réplique de quelle série ?  : Attends papa je parle à mon père",
+      "answer": "Ma famille d'abord",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174by0r0ehz1",
+      "category": 0,
+      "question": "Réplique de quelle série ? Basket tong, basket tong du fun pour moi du fun pour toi",
+      "answer": "Ma famille d'abord",
+      "alternativeAnswers": [
+        "Franklin"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174sjhfyh59z",
+      "category": 0,
+      "question": "Dans quelle série ?   casino - Big Ed - baleine",
+      "answer": "Las Vegas",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174zmwhj67hl",
+      "category": 0,
+      "question": "Dans quelle série ?  3 enfants - Indiana - Frankie",
+      "answer": "the Middle",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174sssm3wztq",
+      "category": 0,
+      "question": "Dans quelle série ? Ado - vision",
+      "answer": "Phénomène Raven",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174ua31dyjmb",
+      "category": 0,
+      "question": "Dans quelle série ? 2frères - Karma - liste",
+      "answer": "Earl",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174ik3xponk7",
+      "category": 0,
+      "question": "Synopsis série : Là le gas il sait tout sauf qui il est ?",
+      "answer": "John Doe",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174c3t3fo8sb",
+      "category": 0,
+      "question": "Dans quelle série ? 4 - pizza - animal",
+      "answer": "Les Tortues Ninja",
+      "alternativeAnswers": [
+        "Tortues Ninja"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174bb9gt8nzt",
+      "category": 0,
+      "question": "Dans quelle série la famille avec les épées pour le pouvoir en hiver la ?",
+      "answer": "Game of Thrones",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174z5ljylu62",
+      "category": 0,
+      "question": "Synopsis série à moitié vrai :  Y en 5, un va hyper lentement, l'autre se prends pour dieu, un muet, y en a un il a un truc avec un poulpe et je crois que quelqu'un fait de la boucherie ou est bouché bref vous allez trouver.",
+      "answer": "The Boys",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951742m1z119cy",
+      "category": 0,
+      "question": "Dans quelle série ? Horreur - Hôtel - Asile - Forains",
+      "answer": "American Horror story",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174avrbdhja2",
+      "category": 0,
+      "question": "Synopsis série : C'est comme les femmes désespérer, mais elle font le ménage avec des secrets et du sang",
+      "answer": "Devious Maids",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174sqf5k2xp3",
+      "category": 0,
+      "question": "Réplique de quelle série ?  Salut toi qui es tu ?",
+      "answer": "You",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951748woi3hebe",
+      "category": 0,
+      "question": "Dans quelle série ? Amour - librairie - mort",
+      "answer": "You",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174myv9bi9h1",
+      "category": 0,
+      "question": "Dans quelle série ? Hoptial - autisme",
+      "answer": "Good Docteur",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174psznrkm4c",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Mandarine est la nouvelle couleur orange",
+      "answer": "Orange is the New Black",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174l2e82gtrl",
+      "category": 0,
+      "question": "Dans la série Riverdal comment s'appelle le 1er gang de la série ?",
+      "answer": "Southside Serpents",
+      "alternativeAnswers": [
+        "South side serpent"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174t0qk3uzjr",
+      "category": 0,
+      "question": "Synopsis à moitié vrai : C'est un chat qui cuisine, il veut être un grand chef, mais bon c'est un peu le bordel",
+      "answer": "The Bear",
+      "alternativeAnswers": [
+        "Bear"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174zu83accee",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Les éphémérides du Bridge",
+      "answer": "La Chroniques des Brigerton",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951743y168x993",
+      "category": 0,
+      "question": "Dans quelle série ? Parapluie - rond - argent",
+      "answer": "Squid Game",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174unv3ldax6",
+      "category": 0,
+      "question": "Dans quel film ? minuit - créature - repas",
+      "answer": "Gremlins",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174lomfl73z8",
+      "category": 0,
+      "question": "Dans Friends Ross et Monica ont créer un danse au lycée comme s'appelle t-elle ?",
+      "answer": "La routine",
+      "alternativeAnswers": [
+        "Routine"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951746qdryx4un",
+      "category": 0,
+      "question": "Dans Friends Joey a peur de quel animal ?",
+      "answer": "Tarentule",
+      "alternativeAnswers": [
+        "mygale",
+        "araignée"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951741ilmre8gf",
+      "category": 0,
+      "question": "Dans Friends qu'elle est le prénom de la 2ème femme de Ross ?",
+      "answer": "Emily",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174o009nmmbj",
+      "category": 0,
+      "question": "Dans Friends en quoi se déguise Ross pour Halloween ?",
+      "answer": "Binjtnik",
+      "alternativeAnswers": [
+        "Mister Patate",
+        "Mister patate de l'espace"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174etz5oowb5",
+      "category": 0,
+      "question": "Dans quelle série : 5 garçons 2 parents et les surdouées",
+      "answer": "Malcolm",
+      "alternativeAnswers": [
+        "Malcolm in the Middle"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174f9pyh9tp8",
+      "category": 0,
+      "question": "Dans quelle série : Mr rigolo muet gaffe",
+      "answer": "Mr.Bean",
+      "alternativeAnswers": [
+        "Bean"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "176776519517431exqx355",
+      "category": 0,
+      "question": "Dans quelle série ? un homme un chat un journal l'avenir ?",
+      "answer": "Demain à la une",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174hb67wslew",
+      "category": 0,
+      "question": "Quel personnage je suis ?  je suis sortie avec Angel et Spike",
+      "answer": "Buffy",
+      "alternativeAnswers": [
+        "Buffy contre les vampires"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174jisovk6ek",
+      "category": 0,
+      "question": "Dans Charmed je suis un objet utile pour combattre les méchant quel est mon nom ?",
+      "answer": "Le livre des ombres",
+      "alternativeAnswers": [
+        "Livre des ombres",
+        "livres ombres"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174sg0eh0nab",
+      "category": 0,
+      "question": "Personnage d'une vieille série qui a un remake sur Netflix, Blonde, Chat, Harvey. Qui suis-je ?",
+      "answer": "Sabrina",
+      "alternativeAnswers": [
+        "Sabrina l'apprentie sorcière"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951745yyj3fou0",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Directeur Queen.",
+      "answer": "Docteur Quinn",
+      "alternativeAnswers": [
+        "Docteur Quinn femme médecin"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951741oxngd6zb",
+      "category": 0,
+      "question": "Dans quel film ? Vert, Noël, grincheux",
+      "answer": "Le Grinch",
+      "alternativeAnswers": [
+        "Grinch"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174cz534nfoy",
+      "category": 0,
+      "question": "Série retrouve mon titre original : So_s le s__e_l",
+      "answer": "Sous le soleil",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951747tcfbxfo3",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Géraldine, mange jardin",
+      "answer": "Joséphine ange gardien",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951742im75hgyk",
+      "category": 0,
+      "question": "Série retrouve mon titre original : PocObor",
+      "answer": "Robocop",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174uc1qv7vqk",
+      "category": 0,
+      "question": "Dans Police Academy nom du chef détesté de touste ?",
+      "answer": "Thaddeus Harris",
+      "alternativeAnswers": [
+        "Thaddeus",
+        "Harris"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174xvv55jr9a",
+      "category": 0,
+      "question": "Dans quel film ? Boite de chocolat, vietnam, crevette",
+      "answer": "Forrest Gump",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174hq34kuysr",
+      "category": 0,
+      "question": "Dans Forrest Gump quel est le nom de la société de crevette ?",
+      "answer": "Bubba Gump",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174m55sg4h7x",
+      "category": 0,
+      "question": "Dans quel film ? la main, Fétide",
+      "answer": "La famille Addams",
+      "alternativeAnswers": [
+        "Addams"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174dixoo4rf9",
+      "category": 0,
+      "question": "Dans la famille Addam's le nom du cousin poilu ?",
+      "answer": "cousin machin",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174a41mvqak7",
+      "category": 0,
+      "question": "Dans le film la famille Addam's les retrouvailles comment se prénom le chien de fetide ?",
+      "answer": "Boucher",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174ix55klry3",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Araskeb",
+      "answer": "Arabesque",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174u19xciru9",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Broke in Badge",
+      "answer": "Breaking Bad",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174ql00gkxvl",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Femmes espérèrent",
+      "answer": "desperate housewife",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "176776519517412ozg3cuz",
+      "category": 0,
+      "question": "Série retrouve mon titre original : peau de coq",
+      "answer": "Chaire de poule",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174t9mslwzpl",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Les hypers Nénéttes",
+      "answer": "Les Supers nanas",
+      "alternativeAnswers": [
+        "supers Nanas"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951744p8xzknsh",
+      "category": 0,
+      "question": "Série animé retrouve mon titre original : le car fantastique",
+      "answer": "Le Bus magique",
+      "alternativeAnswers": [
+        "Bus magique"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951742impgb5zt",
+      "category": 0,
+      "question": "Dans quel dessin animé un savant fou fabrique des animaux dans son château?",
+      "answer": "Docteur Globule",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174qwwadjzs0",
+      "category": 0,
+      "question": "Série d'animation retrouve mon titre original : Les bonheurs de Faucille",
+      "answer": "les Malheurs de Sophie",
+      "alternativeAnswers": [
+        "malheurs Sophie"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174uvnvual7v",
+      "category": 0,
+      "question": "Réplique de quelle série ?  : Attends papa je parle à mon père",
+      "answer": "Ma famille d'abord",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174by0r0ehz1",
+      "category": 0,
+      "question": "Réplique de quelle série ? Basket tong, basket tong du fun pour moi du fun pour toi",
+      "answer": "Ma famille d'abord",
+      "alternativeAnswers": [
+        "Franklin"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174sjhfyh59z",
+      "category": 0,
+      "question": "Dans quelle série ?   casino - Big Ed - baleine",
+      "answer": "Las Vegas",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174zmwhj67hl",
+      "category": 0,
+      "question": "Dans quelle série ?  3 enfants - Indiana - Frankie",
+      "answer": "the Middle",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174sssm3wztq",
+      "category": 0,
+      "question": "Dans quelle série ? Ado - vision",
+      "answer": "Phénomène Raven",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174ua31dyjmb",
+      "category": 0,
+      "question": "Dans quelle série ? 2frères - Karma - liste",
+      "answer": "Earl",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174ik3xponk7",
+      "category": 0,
+      "question": "Synopsis série : Là le gas il sait tout sauf qui il est ?",
+      "answer": "John Doe",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174c3t3fo8sb",
+      "category": 0,
+      "question": "Dans quelle série ? 4 - pizza - animal",
+      "answer": "Les Tortues Ninja",
+      "alternativeAnswers": [
+        "Tortues Ninja"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174bb9gt8nzt",
+      "category": 0,
+      "question": "Dans quelle série la famille avec les épées pour le pouvoir en hiver la ?",
+      "answer": "Game of Thrones",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174z5ljylu62",
+      "category": 0,
+      "question": "Synopsis série à moitié vrai :  Y en 5, un va hyper lentement, l'autre se prends pour dieu, un muet, y en a un il a un truc avec un poulpe et je crois que quelqu'un fait de la boucherie ou est bouché bref vous allez trouver.",
+      "answer": "The Boys",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951742m1z119cy",
+      "category": 0,
+      "question": "Dans quelle série ? Horreur - Hôtel - Asile - Forains",
+      "answer": "American Horror story",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174avrbdhja2",
+      "category": 0,
+      "question": "Synopsis série : C'est comme les femmes désespérer, mais elle font le ménage avec des secrets et du sang",
+      "answer": "Devious Maids",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174sqf5k2xp3",
+      "category": 0,
+      "question": "Réplique de quelle série ?  Salut toi qui es tu ?",
+      "answer": "You",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951748woi3hebe",
+      "category": 0,
+      "question": "Dans quelle série ? Amour - librairie - mort",
+      "answer": "You",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174myv9bi9h1",
+      "category": 0,
+      "question": "Dans quelle série ? Hoptial - autisme",
+      "answer": "Good Docteur",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174psznrkm4c",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Mandarine est la nouvelle couleur orange",
+      "answer": "Orange is the New Black",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174l2e82gtrl",
+      "category": 0,
+      "question": "Dans la série Riverdal comment s'appelle le 1er gang de la série ?",
+      "answer": "Southside Serpents",
+      "alternativeAnswers": [
+        "South side serpent"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174t0qk3uzjr",
+      "category": 0,
+      "question": "Synopsis à moitié vrai : C'est un chat qui cuisine, il veut être un grand chef, mais bon c'est un peu le bordel",
+      "answer": "The Bear",
+      "alternativeAnswers": [
+        "Bear"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174zu83accee",
+      "category": 0,
+      "question": "Série retrouve mon titre original : Les éphémérides du Bridge",
+      "answer": "La Chroniques des Brigerton",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17677651951743y168x993",
+      "category": 0,
+      "question": "Dans quelle série ? Parapluie - rond - argent",
+      "answer": "Squid Game",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767765195174unv3ldax6",
+      "category": 0,
+      "question": "Dans quel film ? minuit - créature - repas",
+      "answer": "Gremlins",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249knoo20o9p",
+      "category": 1,
+      "question": "Dans Friends cité les deux personnages qui ont introduit leur tête dans une dinde ?",
+      "answer": "Joey, Monica",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552491pfpobz9e",
+      "category": 1,
+      "question": "Dans Friends Ross parle de l'Unagi, Rachel transforme Unagi en ?",
+      "answer": "Cornet de peau de saumon",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552492h1b24arn",
+      "category": 1,
+      "question": "Phoebe accouche des triplés de son frère quel sont leur prénom ?",
+      "answer": "Chandler, Franck Jr Jr, Leslie",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249vlszrdinr",
+      "category": 1,
+      "question": "Quel est le deuxième prénom de Chandler ?",
+      "answer": "Murielle",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552496azeczu8l",
+      "category": 1,
+      "question": "Compléter cette phrase de Rachel dans Friends \" oeil pour oeil, tétons pour ... \"",
+      "answer": "petit zizi",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249f02z6n2w4",
+      "category": 1,
+      "question": "Quel acteur joue Joey dans Friends ?",
+      "answer": "Matt le Blanc",
+      "alternativeAnswers": [
+        "Le Blanc"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249b60y9dnrz",
+      "category": 1,
+      "question": "Dans Friends Phoebe pense que Ross et le ... de Rachel",
+      "answer": "Homard",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249bsgvcls1f",
+      "category": 1,
+      "question": "Dans Friends pour l'anniversaire de Ross le concert de qui va voir la bande ?",
+      "answer": "Hootie et les poissons volants",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249jocjbwyvi",
+      "category": 1,
+      "question": "Dans Friends Phoebe demande des place à Ross pour un concert de ?",
+      "answer": "Sting",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249jpnh6mzyz",
+      "category": 1,
+      "question": "Dans Friends qui est l'acteur qui joue le strip-teaseur à l'enterrement de vie de jeune fille de Phoebe",
+      "answer": "Danny Devito",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249hel7st8d8",
+      "category": 1,
+      "question": "Dans Friends Ross pour plaire à une fille fait une modification corporel laquelle?",
+      "answer": "se blanchit les dents",
+      "alternativeAnswers": [
+        "Blanchir les dents"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249dp3cvwc85",
+      "category": 1,
+      "question": "Dans Friends Phoebe trouve son marie Mike grâce à qui ?",
+      "answer": "Joey",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249rtux0pspk",
+      "category": 1,
+      "question": "Dans Friends Monica envisage de vivre dans une maison en ?",
+      "answer": "Fromage",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "176764555524981yhd2a1r",
+      "category": 1,
+      "question": "Dans Friends a cause de Pohebe Monica se retrouve avec un lit en forme de ?",
+      "answer": "Voiture",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552499ms91rhlc",
+      "category": 1,
+      "question": "Dans Friends le demi frère de Phoebe, Frank Jr est jouer par quel acteur ?",
+      "answer": "Giovanni Ribisi",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249zc47e74y7",
+      "category": 1,
+      "question": "Sarah Michelle Gellar a t-elle jouer dans Firends ? ( Vrai , Faux )",
+      "answer": "Faux",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249vqa36dnuv",
+      "category": 1,
+      "question": "Dans how i met your mother comment s'appelle la femme de Ted Mosby ?",
+      "answer": "Tracy",
+      "alternativeAnswers": [
+        "Tracy McConnell"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249rhkknkizy",
+      "category": 1,
+      "question": "Dans how i met your mother Lily et Marshall achète un appartement avec un caractéristique spécial laquelle?",
+      "answer": "Il est penché",
+      "alternativeAnswers": [
+        "penché",
+        "à côté d'une station d'épuration"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249qpotgb5eg",
+      "category": 1,
+      "question": "Dans Friends Monica fait des troues dans l'appart de Joey et Chandler pour qu'elle raison ?",
+      "answer": "Savoir à quoi sert l'interrupteur",
+      "alternativeAnswers": [
+        "interrupteur"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249xb0lr1kp8",
+      "category": 1,
+      "question": "Dans how i met your mother Robin Scherbatsky était une popo star au Canada connu sous quel nom ?",
+      "answer": "Robby Sparkles",
+      "alternativeAnswers": [
+        "Sparkles"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249r8pkufmq2",
+      "category": 1,
+      "question": "Dans how i met your mother dans qu'elle pays Lily et Marshal devait-il déménager ?",
+      "answer": "Italie",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552492hfjklvia",
+      "category": 1,
+      "question": "Dans Friends le singe de Ross à une chanson préférer qu'elle est le titre de cette chanson  ?",
+      "answer": "Le lion est mort ce soir",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249glaf05qpo",
+      "category": 1,
+      "question": "Dans Friends Joey à un pingouin en peluche comment s'appelle t- il ?",
+      "answer": "Hugsy",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249uqef7fe1p",
+      "category": 1,
+      "question": "Dans how i met your mother quel est le prénom de la 1ère copine de Barney ?",
+      "answer": "Shannon",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249kthizqkhw",
+      "category": 1,
+      "question": "Dans how i met your mother Barney a été dépucelé à qu'elle âge ?",
+      "answer": "23 ans",
+      "alternativeAnswers": [
+        "23",
+        "Vingt-trois"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249pepo22emw",
+      "category": 1,
+      "question": "Dans how i met your mother qu'elle est la couleur du fameux parapluie ?",
+      "answer": "Jaune",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249ku8wecs4y",
+      "category": 1,
+      "question": "Dans how i met your mother comment s'appelle le serveur que remercie Lily à chaque fois qu'il lui sert un verre ? (saison 10)",
+      "answer": "Linus",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249tsxu4xgda",
+      "category": 1,
+      "question": "Dans how i met your mother Quel plat la mère de Barney prépare-t-elle pour tous les clients de l'hôtel ?",
+      "answer": "des oeufs brouillées",
+      "alternativeAnswers": [
+        "oeufs brouillés"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249gn3jrajt9",
+      "category": 1,
+      "question": "Dans how i met your mother Où Barney souhaite-t-il faire le dîner de répétition de son mariage ?",
+      "answer": "Laser game",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249xbqaqjr42",
+      "category": 1,
+      "question": "Dans How i met your mother Quelle chanson française chante la \"future\" de Ted sur son balcon ?",
+      "answer": "La vie en Rose",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552492r9dlkete",
+      "category": 1,
+      "question": "Dans How i met your mother comment se prénoe la mère de Robin ?",
+      "answer": "Geneviève",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249l1af8gsh5",
+      "category": 1,
+      "question": "Dans how i met your mother de quoi se compose essentiellement la salade de la famille Erkisen ?",
+      "answer": "Mayonnaise",
+      "alternativeAnswers": [
+        "Mayo"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249wqensq2b0",
+      "category": 1,
+      "question": "Dans how i met your mother quel est le pourcentage que donne toujours Barney ? A: 83  B: 82  C: 85 D: 84",
+      "answer": "A",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249f0sqbghit",
+      "category": 1,
+      "question": "How i met your mother quelle est la partie du corps de Marshall que Lily préfère ?",
+      "answer": "Mollets",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552498rrdawhhs",
+      "category": 1,
+      "question": "Dans Big bang théorie dans quel ville se passe la série ?",
+      "answer": "Pasadena",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249d0u0wwzv9",
+      "category": 1,
+      "question": "Dans Big bang théorie de quel Etat vient Sheldon ?",
+      "answer": "Texas",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249d5suf2052",
+      "category": 1,
+      "question": "Dans Big bang théorie pourquoi Sheldon veut-il apprendre le mandarin ?",
+      "answer": "se plaindre au restaurant chinois",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552494eh29pbu7",
+      "category": 1,
+      "question": "Dans Big bang théorie Quelle personne Amy surnomme-t-elle \" petit Gnou \" ?",
+      "answer": "Bernadette",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249oumw3qvgs",
+      "category": 1,
+      "question": "Dans Big bang théorie quel acteur de la série star treck apparaît régulièrement dans la série ?",
+      "answer": "Will Wheaton",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552498zielj96n",
+      "category": 1,
+      "question": "Dans Big bang théorie quel personnage de la série à un spin off dédié ?",
+      "answer": "Sheldon",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552496re1ipdww",
+      "category": 1,
+      "question": "Dans Big bang théorie Que font-ils le mercredi soir ?",
+      "answer": "Soirée comics book store",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249t0fcf2u45",
+      "category": 1,
+      "question": "Dans Big bang théorie Quand Sheldon utilise-t-il le mot \" Bazinga \" ?",
+      "answer": "C",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552493pk7lx1zk",
+      "category": 1,
+      "question": "Dans Malcolm qui a brûlé la robe de Loïs ?",
+      "answer": "Hal",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552491ckn6a0aj",
+      "category": 1,
+      "question": "Dans Malcolm qui est le pire des enfants pour Loïs ?",
+      "answer": "Jamie",
+      "alternativeAnswers": [
+        "Moi je dirais Resse mais bon XD"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249madayg7bp",
+      "category": 1,
+      "question": "Dans Malcolm Dans \"La vente au Sapin de Noël \", qui est l'ennemis de Loïs ?",
+      "answer": "écureuil",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249csoecgd81",
+      "category": 1,
+      "question": "Dans Malcolm comment se prénomme la mère de Loïs ?",
+      "answer": "Ida",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249efxl4l8mc",
+      "category": 1,
+      "question": "Dans Malcolm la soeur de Loïs est malade de quel organe a t-elle besoin ?",
+      "answer": "Rein",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249hqx0kph5y",
+      "category": 1,
+      "question": "Dans Malcolm Comment s'appelle la patronne de Francis en Alaska ?",
+      "answer": "Lavernia",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249ks9390zgx",
+      "category": 1,
+      "question": "Dans Malcolm quel est le nom de la famille de Malcom?",
+      "answer": "on ne sais pas",
+      "alternativeAnswers": [
+        "Inconnue",
+        "on ne le dit pas",
+        "ils n'en ont pas"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249j6cj6iez5",
+      "category": 1,
+      "question": "Dans Malcolm comment les enfants peuvent-ils éviter les punitions ?",
+      "answer": "Allumer une bougie à la vanille",
+      "alternativeAnswers": [
+        "Bougie vanille"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552498wwpwrzwm",
+      "category": 1,
+      "question": "Dans Malcolm pour qui Dewey chante-t-il son fameux Poupipoupipou?",
+      "answer": "Baby-sitter",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249ialn4yaw0",
+      "category": 1,
+      "question": "Dans Malcolm de combien est le QI de Malcolm ?",
+      "answer": "165",
+      "alternativeAnswers": [
+        "BCP TROP"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249y399d7hr0",
+      "category": 1,
+      "question": "Dans Malcolm comment s'appelle le chat de Greg ?",
+      "answer": "Caramel",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552498bl7a5k2u",
+      "category": 1,
+      "question": "Dans Malcolm Comment se prénomme le lapin obèse de Dewey ?",
+      "answer": "Sumo",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249drbiye0z4",
+      "category": 1,
+      "question": "Dans Grey's Anatomy Qui est surnomé le tyran ?",
+      "answer": "Bailey",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552498bibh683x",
+      "category": 1,
+      "question": "Dans Grey's Anatomy Comment se prénomme la 1ère patiente de Meredith ?",
+      "answer": "B",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552490s8xkd1tq",
+      "category": 1,
+      "question": "Dans Grey's Anatomy quel personnage est vierge à son arrivée dans la série ?",
+      "answer": "April Kepner",
+      "alternativeAnswers": [
+        "Kepner"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249dhq82uij0",
+      "category": 1,
+      "question": "Dans Grey's Anatomy quel est le premier personnage principale meurt ?",
+      "answer": "George O'Malley",
+      "alternativeAnswers": [
+        "O'Malley"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249g9oxk0qvp",
+      "category": 1,
+      "question": "Dans Grey's Anatomy  comment surnomme t-on Dreke Sherperd ?",
+      "answer": "Docteur Mamour",
+      "alternativeAnswers": [
+        "Mamour"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249ekgrvwbge",
+      "category": 1,
+      "question": "Dans Grey's Anatomy qui est le 1er personnage à avoir un cancer ?",
+      "answer": "Izzie Stevens",
+      "alternativeAnswers": [
+        "Stevens"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249meklp5duq",
+      "category": 1,
+      "question": "Dans Grey's Anatomy Callie Torres a qu'elle spécialité en médecine ?",
+      "answer": "Chirurgie orthopédique",
+      "alternativeAnswers": [
+        "Orth",
+        "orthopédique"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552497v172v3k4",
+      "category": 1,
+      "question": "Dans Grey's Anatomy Entre Callie et Arizona laquelle à trompé l'autre ?",
+      "answer": "Arizona",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249d2femmwnn",
+      "category": 1,
+      "question": "Dans Grey's Anatomy Alex Karef est détesté par tout les internes pour quel raison ?",
+      "answer": "Poucave Meredith",
+      "alternativeAnswers": [
+        "dénonce Meredith",
+        "trahis Meredith",
+        "cafte Meredith",
+        "signal Meredith"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249iqs2xizsc",
+      "category": 1,
+      "question": "Dans Grey's Anatomy quel interne est viré à cause d'une erreur médical fatal. (inhalation de fumé)",
+      "answer": "April Kepner",
+      "alternativeAnswers": [
+        "Kepner"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249mpucrazed",
+      "category": 1,
+      "question": "Dans Grey's Anatomy Christinat Yang suite à un accident de train cherche un membre dans tout l'hôpital lequel ?",
+      "answer": "Jambe droite",
+      "alternativeAnswers": [
+        "Jambe"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249mum2jimcw",
+      "category": 1,
+      "question": "Dans Grey's Anatomy avec qui Jo Wilson se marie ?",
+      "answer": "Alex Karef",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249j7opd6o0k",
+      "category": 1,
+      "question": "Dans Grey's Anatomy Alex Karef découvre qu'il a des enfants cachés avec qui ?",
+      "answer": "Izzie Stevens",
+      "alternativeAnswers": [
+        "Stevens"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "17676455552495zi50atra",
+      "category": 1,
+      "question": "Dans Grey's Anatomy de quoi souffrait la mère de Meredith ?",
+      "answer": "Alzheimer",
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249a6rhhp5n6",
+      "category": 1,
+      "question": "Dans Grey's Anatomy qui est l'interne de Mark Sloan ?",
+      "answer": "Jackson Avery",
+      "alternativeAnswers": [
+        "Avery"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
+    },
+    {
+      "id": "1767645555249uq6khd5us",
+      "category": 1,
+      "question": "Dans Grey's Anatomy Amelia Sheperd à un enfant biologique ?",
+      "answer": "Atticus Lincoln",
+      "alternativeAnswers": [
+        "Lincoln"
+      ],
+      "difficulty": "",
+      "boxName": "Univers audio-visuel"
     }
   ]
 }
