@@ -39,11 +39,21 @@ const Changelog = ({ show, onClose }: any) => {
           <li>Déplacement du backup dans les Settings pour une meilleure organisation</li>
         </ul>
         <br />
+        <h5 className="h5-with-line">Outils & Productivité</h5>
+        <br />
+        <ul>
+          <li>Convertisseur de questions intégré en React avec saisie manuelle</li>
+          <li>Accessible directement via le bouton "Ajouter une carte"</li>
+          <li>Modes Carte (6 questions) et Quiz (X questions)</li>
+          <li>Génération de JSON compatible pour import direct</li>
+        </ul>
+        <br />
         <h5 className="h5-with-line">Corrections de bugs</h5>
         <br />
         <ul>
           <li>Correction du bug d'affichage vide après déplacement de questions</li>
           <li>Retour automatique à "Toutes les boîtes" si la boîte devient vide</li>
+          <li>Correction de la synchronisation GitHub pour supprimer les questions retirées</li>
         </ul>
         <br />
         <hr />

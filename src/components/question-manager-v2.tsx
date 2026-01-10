@@ -888,7 +888,7 @@ const QuestionManager = () => {
                       <Button
                         size="sm"
                         variant="outline-primary"
-                        onClick={() => window.open('/convertisseur-cartes.html', '_blank')}
+                        onClick={() => navigate('/convertisseur')}
                       >
                         <FontAwesomeIcon icon={['fas', 'plus']} /> Ajouter une carte
                       </Button>
