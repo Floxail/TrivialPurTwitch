@@ -62,6 +62,7 @@ export class QuestionsData {
   boxes: TrivialBox[] = []; // Liste des boîtes avec leurs cartes
   syncStatus: 'idle' | 'loading' | 'success' | 'error' = 'idle';
   lastGitHubSync?: string;
+  lastGitHubQuestionIds: string[] = []; // IDs des questions GitHub lors de la dernière sync
 
   // Settings
   cumulativeScoresInCardMode: boolean = false; // Cumuler les scores entre cartes
@@ -117,6 +118,7 @@ const restoredState: QuestionsData = {
   boxes: plain.boxes || [],
   syncStatus: 'idle',
   lastGitHubSync: plain.lastGitHubSync,
+  lastGitHubQuestionIds: plain.lastGitHubQuestionIds || [],
   cumulativeScoresInCardMode: plain.cumulativeScoresInCardMode || false,
   cumulativeScoresInQuizMode: plain.cumulativeScoresInQuizMode || false,
   defaultQuizQuestions: plain.defaultQuizQuestions || 10,
@@ -133,6 +135,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           questions: current.questions,
           boxes: current.boxes,
           lastGitHubSync: current.lastGitHubSync,
+          lastGitHubQuestionIds: current.lastGitHubQuestionIds,
           cumulativeScoresInCardMode: current.cumulativeScoresInCardMode,
           cumulativeScoresInQuizMode: current.cumulativeScoresInQuizMode,
           defaultQuizQuestions: current.defaultQuizQuestions,
@@ -146,6 +149,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           boxes: [],
           syncStatus: 'idle',
           lastGitHubSync: undefined,
+          lastGitHubQuestionIds: [],
           cumulativeScoresInCardMode: false,
           cumulativeScoresInQuizMode: false,
           defaultQuizQuestions: 10,
@@ -379,12 +383,24 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           }
 
           const currentQuestions = get().questions;
-          const mergedQuestions = mergeQuestionsFromGitHub(githubData, currentQuestions);
+          const previousGithubIds = get().lastGitHubQuestionIds.length > 0
+            ? new Set(get().lastGitHubQuestionIds)
+            : undefined;
+
+          const mergedQuestions = mergeQuestionsFromGitHub(
+            githubData,
+            currentQuestions,
+            previousGithubIds
+          );
+
+          // Sauvegarder les IDs GitHub actuels pour la prochaine sync
+          const currentGithubIds = githubData.questions.map((q: any) => q.id);
 
           const boxes = get().rebuildBoxes(mergedQuestions);
 
           set({
             questions: mergedQuestions,
+            lastGitHubQuestionIds: currentGithubIds,
             boxes: boxes,
             syncStatus: 'success',
             lastGitHubSync: new Date().toISOString(),
@@ -495,8 +511,9 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
       partialize: (state) =>
         Object.fromEntries(
           Object.entries(state).filter(([key]) =>
-            ['questions', 'boxes', 'lastGitHubSync', 'cumulativeScoresInCardMode',
-             'cumulativeScoresInQuizMode', 'defaultQuizQuestions'].includes(key)
+            ['questions', 'boxes', 'lastGitHubSync', 'lastGitHubQuestionIds',
+             'cumulativeScoresInCardMode', 'cumulativeScoresInQuizMode',
+             'defaultQuizQuestions'].includes(key)
           ),
         ),
     },

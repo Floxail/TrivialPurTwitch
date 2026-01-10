@@ -28,3 +28,4 @@ yarn-error.log*
 *.csv
 .ipynb_checkpoints
 .~*
+CLAUDE.md

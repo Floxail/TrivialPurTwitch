@@ -36,21 +36,36 @@ export const loadQuestionsFromGitHub = async (): Promise<any> => {
 // Fusionner les questions GitHub avec localStorage
 export const mergeQuestionsFromGitHub = (
   githubData: any,
-  localQuestions: any[]
+  localQuestions: any[],
+  previousGithubIds?: Set<string>
 ): any[] => {
   if (!githubData || !githubData.questions) {
     return localQuestions;
   }
 
   const githubQuestions = githubData.questions;
+  const currentGithubIds = new Set(githubQuestions.map((q: any) => q.id));
 
-  // Créer un Set des IDs GitHub
-  const githubIds = new Set(githubQuestions.map((q: any) => q.id));
+  // Déterminer quelles questions locales sont vraiment "locales" (créées manuellement)
+  // On considère qu'une question est locale si :
+  // 1. Elle n'est pas dans GitHub actuellement
+  // 2. Elle n'était pas dans GitHub précédemment (si on a l'historique)
 
-  // Garder uniquement les questions locales qui ne sont PAS dans GitHub
-  // (ce sont les questions créées manuellement en local)
-  const localOnlyQuestions = localQuestions.filter(q => !githubIds.has(q.id));
+  let localOnlyQuestions;
 
-  // Retourner : toutes les questions GitHub + questions locales uniquement
+  if (previousGithubIds) {
+    // Si on a l'historique des IDs GitHub précédents
+    // Les questions vraiment locales sont celles qui n'ont JAMAIS été dans GitHub
+    localOnlyQuestions = localQuestions.filter(q =>
+      !currentGithubIds.has(q.id) && !previousGithubIds.has(q.id)
+    );
+  } else {
+    // Premier chargement : on considère que les questions non-GitHub sont locales
+    localOnlyQuestions = localQuestions.filter(q => !currentGithubIds.has(q.id));
+  }
+
+  console.log(`🔄 Merge: ${githubQuestions.length} questions GitHub + ${localOnlyQuestions.length} questions locales`);
+
+  // Retourner : toutes les questions GitHub + questions vraiment locales
   return [...githubQuestions, ...localOnlyQuestions];
 };
