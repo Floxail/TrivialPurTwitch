@@ -777,6 +777,18 @@ const Quiz = () => {
 										<p className="text-muted">
 											<strong>🎮 Pour le streamer :</strong> Commande <code>!quiz</code>
 										</p>
+										<Button
+											variant="primary"
+											size="lg"
+											className="mt-2"
+											onClick={() => {
+												setPendingQuizRequester(twitchNick || 'Streamer');
+												setShowModeSelector(true);
+											}}
+										>
+											<FontAwesomeIcon icon={['fas', 'play']} className="me-2" />
+											Lancer un Quiz
+										</Button>
 									</div>
 									{questionsStore.getBoxes().length > 0 && (
 										<div className="mt-4 p-3" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '10px', display: 'inline-block' }}>

@@ -222,7 +222,9 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           });
         });
 
-        return boxes.sort((a, b) => a.name.localeCompare(b.name));
+        return boxes.sort((a, b) =>
+          a.name.toLowerCase().localeCompare(b.name.toLowerCase(), 'fr', { sensitivity: 'base' })
+        );
       },
 
       getBoxes: () => {

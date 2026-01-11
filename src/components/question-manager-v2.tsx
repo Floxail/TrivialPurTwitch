@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Button, Form, Modal, Table, Badge, Tabs, Tab, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { categoryColors, categoryNames, Question, TrivialCategory, useQuestionsStore } from './store/questions-store';
@@ -160,13 +160,29 @@ const QuestionManager = () => {
     }
   };
 
-  const allQuestions = selectedBox
-    ? questionsStore.getQuestionsByBox(selectedBox)
-    : questionsStore.questions;
+  // Filtrage robuste en cascade - source unique de vérité
+  const filteredQuestions = useMemo(() => {
+    // 1. On part de toutes les questions brutes du store
+    let result = questionsStore.questions;
 
-  const filteredQuestions = filterCategory === 'all'
-    ? allQuestions
-    : allQuestions.filter(q => q.category === filterCategory);
+    // 2. On applique le filtre de BOÎTE de manière stricte
+    if (selectedBox && selectedBox.trim()) {
+      result = result.filter(q => q.boxName === selectedBox);
+    }
+
+    // 3. On applique le filtre de CATÉGORIE
+    if (filterCategory !== 'all') {
+      result = result.filter(q => q.category === filterCategory);
+    }
+
+    return result;
+  }, [selectedBox, filterCategory, questionsStore.questions]);
+
+  // Si besoin de allQuestions pour d'autres calculs (stats, etc.)
+  const allQuestions = useMemo(() => {
+    if (!selectedBox || !selectedBox.trim()) return questionsStore.questions;
+    return questionsStore.questions.filter(q => q.boxName === selectedBox);
+  }, [selectedBox, questionsStore.questions]);
 
   // Export JSON
   const handleExport = () => {
