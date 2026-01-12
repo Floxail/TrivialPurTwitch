@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/TrivialPurTwitch/static/css/main.8abc552e.css",
-    "main.js": "/TrivialPurTwitch/static/js/main.b115be6c.js",
+    "main.css": "/TrivialPurTwitch/static/css/main.fd653319.css",
+    "main.js": "/TrivialPurTwitch/static/js/main.383f31f1.js",
     "index.html": "/TrivialPurTwitch/index.html",
-    "main.8abc552e.css.map": "/TrivialPurTwitch/static/css/main.8abc552e.css.map",
-    "main.b115be6c.js.map": "/TrivialPurTwitch/static/js/main.b115be6c.js.map"
+    "main.fd653319.css.map": "/TrivialPurTwitch/static/css/main.fd653319.css.map",
+    "main.383f31f1.js.map": "/TrivialPurTwitch/static/js/main.383f31f1.js.map"
   },
   "entrypoints": [
-    "static/css/main.8abc552e.css",
-    "static/js/main.b115be6c.js"
+    "static/css/main.fd653319.css",
+    "static/js/main.383f31f1.js"
   ]
 }
