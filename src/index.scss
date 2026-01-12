@@ -6,9 +6,55 @@ $btn-transition: none;
 
 :root {
   --spot-color: #ff60b7;
+  --spot-color-hover: #ff7ac5;
+  --spot-color-dark: #d94d9a;
   --icon-blue-color: #367ac2;
   --icon-green-color: #18ad1d;
   --icon-red-color: #f34a4a;
+}
+
+// Style global des boutons - hover et active en rose
+.btn {
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--spot-color) !important;
+    border-color: var(--spot-color) !important;
+    color: white !important;
+    box-shadow: 0 0 10px rgba(255, 96, 183, 0.4);
+  }
+
+  &:active:not(:disabled),
+  &.active:not(:disabled) {
+    background-color: var(--spot-color-dark) !important;
+    border-color: var(--spot-color-dark) !important;
+    color: white !important;
+    box-shadow: 0 0 15px rgba(255, 96, 183, 0.5);
+  }
+
+  &:focus:not(:disabled) {
+    box-shadow: 0 0 0 0.2rem rgba(255, 96, 183, 0.35);
+  }
+}
+
+// Boutons outline - style spécial
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-danger,
+.btn-outline-warning,
+.btn-outline-info {
+  &:hover:not(:disabled) {
+    background-color: var(--spot-color) !important;
+    border-color: var(--spot-color) !important;
+    color: white !important;
+  }
+
+  &.active:not(:disabled) {
+    background-color: var(--spot-color) !important;
+    border-color: var(--spot-color) !important;
+    color: white !important;
+  }
 }
 
 // ==================================== light
