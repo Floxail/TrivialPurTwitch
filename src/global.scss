@@ -390,11 +390,15 @@ svg {
   }
 
   .leaderboard-avatar {
-    border-radius: 100%;
+    border-radius: 50%;
     height: 35px;
     width: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    object-fit: cover;
     border: 1.5px solid black;
     vertical-align: top;
+    flex-shrink: 0;
   }
 
   .leaderboard-nick {

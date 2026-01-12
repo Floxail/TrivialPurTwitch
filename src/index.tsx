@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.scss';
+import './lumon-terminal.css'; // Lumon Industries Terminal UI
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 

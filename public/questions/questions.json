@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-01-11T09:05:12.950Z",
+  "exportDate": "2026-01-12T13:35:40.979Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -12,9 +12,13 @@
         5,
         6,
         7,
-        8
+        8,
+        9,
+        10,
+        11,
+        12
       ],
-      "totalQuestions": 48
+      "totalQuestions": 72
     },
     {
       "name": "Exemple",
@@ -17898,6 +17902,255 @@
         "Ferri. Karine Ferri"
       ],
       "boxName": "Yoann Gourcuff"
+    },
+    {
+      "id": "1768137817071uz2ldd77b",
+      "category": 0,
+      "question": "Qui portait la 'tenue de soirée' offerte par Gérard Depardieu ?",
+      "answer": "Michel Blanc",
+      "boxName": "Cinéma 91",
+      "cardNumber": 9,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768137817071efa1q72kb",
+      "category": 1,
+      "question": "Qui a réalisé 'Le Bal des vampires' ?",
+      "answer": "Roman Polanski",
+      "alternativeAnswers": [
+        "Polanski"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 9,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768137817071elczyh3f1",
+      "category": 2,
+      "question": "Dans le brouillard de quelle ville se glisse furtivement 'Mr Hyde' ?",
+      "answer": "De Londres",
+      "alternativeAnswers": [
+        "Londres"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 9,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768137817071knc8mk0gy",
+      "category": 3,
+      "question": "Quelle campagne le conseil municipal de Birmingham a-t-il lancée, conjuguée avec la sortie de 'Cauchemar de Dracula' ?",
+      "answer": "Le recrutement de donneurs de sang",
+      "alternativeAnswers": [
+        "Don de sang"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 9,
+      "difficulty": "medium"
+    },
+    {
+      "id": "17681378170710mu9u1o99",
+      "category": 4,
+      "question": "A qui appartient la société de production \"Les Films M.J.\" ?",
+      "answer": "Marlène Jobert",
+      "boxName": "Cinéma 91",
+      "cardNumber": 9,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768137817071b82g1svz7",
+      "category": 5,
+      "question": "Comment est mieux connu l'interprète de 'Frankenstein', William Henry Pratt ?",
+      "answer": "Boris Karloff",
+      "boxName": "Cinéma 91",
+      "cardNumber": 9,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139033643jfioee7cp",
+      "category": 0,
+      "question": "Qui a filmé 'L'Arroseur arrosé' ?",
+      "answer": "Les frères Lumière",
+      "boxName": "Cinéma 91",
+      "cardNumber": 10,
+      "difficulty": "medium"
+    },
+    {
+      "id": "17681390336435zcedjcug",
+      "category": 1,
+      "question": "A qui Marlon Brando a-t-il passé de la pommade dans 'Le Dernier Tango à Paris' ?",
+      "answer": "Maria Schneider",
+      "boxName": "Cinéma 91",
+      "cardNumber": 10,
+      "difficulty": "medium"
+    },
+    {
+      "id": "176813903364387ghevqpf",
+      "category": 2,
+      "question": "De quel film Michael Jackson s'est-il inspiré pour son vidéo-clip 'Thriller' ?",
+      "answer": "La Nuit des morts vivants",
+      "boxName": "Cinéma 91",
+      "cardNumber": 10,
+      "difficulty": "medium"
+    },
+    {
+      "id": "17681390336431sj390auq",
+      "category": 3,
+      "question": "Combien avaient payé les spectateurs de la 1re représentation payante du cinéma ?",
+      "answer": "Un franc",
+      "alternativeAnswers": [
+        "1 franc"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 10,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139033643bkm1h7jhz",
+      "category": 4,
+      "question": "Quelle actrice valait le plus cher par son cachet en 1990 : Glenn Close, Faye Dunaway ou Julia Roberts ?",
+      "answer": "Julia Roberts",
+      "boxName": "Cinéma 91",
+      "cardNumber": 10,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139033643nflsml1sl",
+      "category": 5,
+      "question": "Quelle voiture James Dean conduisait-il le dernier jour de sa vie ?",
+      "answer": "Une Porsche",
+      "alternativeAnswers": [
+        "Porsche"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 10,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139450836ss2sb7u0t",
+      "category": 0,
+      "question": "Quels sont les animaux préférés de 'Monsieur Hire' ?",
+      "answer": "Des souris blanches",
+      "boxName": "Cinéma 91",
+      "cardNumber": 11,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139450836oovajdwmt",
+      "category": 1,
+      "question": "Que chantait Doris Day pour retrouver son fils dans 'L'Homme qui en savait trop' ?",
+      "answer": "Que sera, sera",
+      "boxName": "Cinéma 91",
+      "cardNumber": 11,
+      "difficulty": "medium"
+    },
+    {
+      "id": "17681394508365ayydm7st",
+      "category": 2,
+      "question": "De quelles couleurs est la cape de 'Dracula' ?",
+      "answer": "Rouge et noir",
+      "boxName": "Cinéma 91",
+      "cardNumber": 11,
+      "difficulty": "medium"
+    },
+    {
+      "id": "17681394508364uy5b0h7i",
+      "category": 3,
+      "question": "Quelle était, dit-on, la cause de la maladie de peau de Lon Chaney, grande star des films muets, qui a causé sa mort ?",
+      "answer": "Les produits de maquillage qu'il utilisait",
+      "alternativeAnswers": [
+        "Maquillage"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 11,
+      "difficulty": "medium"
+    },
+    {
+      "id": "17681394508362xeyl5ppa",
+      "category": 4,
+      "question": "Quelle actrice est devenue ministre de la Culture en Grèce ?",
+      "answer": "Melina Mercouri",
+      "alternativeAnswers": [
+        "Mercouri"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 11,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139450836bsd0rmtnu",
+      "category": 5,
+      "question": "Dans quel pays Omar Sharif a-t-il commencé à tourner ?",
+      "answer": "En Egypte",
+      "alternativeAnswers": [
+        "égypte"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 11,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139986163nyywd5t0m",
+      "category": 0,
+      "question": "De quelle société 'M. Le Quesnoy' était-il directeur dans 'La vie est un long fleuve tranquille' ?",
+      "answer": "De l'EDF",
+      "alternativeAnswers": [
+        "EDF"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 12,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139986163x27e0w0fr",
+      "category": 1,
+      "question": "En quelle année 'Sherlock Holmes' a-t-il avoué au cinéma pour la première fois : \"Élémentaire mon cher Watson\" ?",
+      "answer": "1929 dans 'Le Retour de Sherlock Holmes'",
+      "alternativeAnswers": [
+        "1929"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 12,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139986163g8icivdze",
+      "category": 2,
+      "question": "Quel héros a été le plus souvent filmé : Sherlock Holmes, Tarzan ou Dracula ?",
+      "answer": "Sherlock Holmes",
+      "alternativeAnswers": [
+        "Sherlock"
+      ],
+      "boxName": "Cinéma 91",
+      "cardNumber": 12,
+      "difficulty": "medium"
+    },
+    {
+      "id": "176813998616322el24ft6",
+      "category": 3,
+      "question": "Quelle société a pour symbole un globe terrestre au début des films ?",
+      "answer": "Universal",
+      "boxName": "Cinéma 91",
+      "cardNumber": 12,
+      "difficulty": "medium"
+    },
+    {
+      "id": "17681399861636xsqw6ri3",
+      "category": 4,
+      "question": "Quel \"homme à la bombe\" dans 'Y a-t-il enfin un pilote dans l'avion' est l'ex-mari de Cher ?",
+      "answer": "Sonny Bono",
+      "boxName": "Cinéma 91",
+      "cardNumber": 12,
+      "difficulty": "medium"
+    },
+    {
+      "id": "1768139986163mjm2nhagj",
+      "category": 5,
+      "question": "Qui, Georges Lazenby, Sean Connery, Roger Moore et Timothy Dalton, ont-ils en commun ?",
+      "answer": "James Bond",
+      "boxName": "Cinéma 91",
+      "cardNumber": 12,
+      "difficulty": "medium"
     }
   ]
 }

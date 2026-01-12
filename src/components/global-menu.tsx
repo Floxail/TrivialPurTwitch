@@ -48,9 +48,9 @@ const GlobalMenu = () => {
       <div ref={ref} onClick={(e) => {
         e.preventDefault();
         onClick(e);
-      }} style={{ fontSize: 'large', backgroundColor: 'var(--global-menu-color)', borderRadius: '35px', display: 'inline-block' }}>
+      }} style={{ fontSize: 'large', backgroundColor: 'var(--global-menu-color)', borderRadius: '35px', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
         <FontAwesomeIcon icon={['fas', 'bars']} style={{ margin: '0 0.5rem 0 0.75rem', verticalAlign: 'middle' }} />
-        <img src={twitchAvatar} style={{ height: '35px', borderRadius: '100%' }} />
+        <img src={twitchAvatar} style={{ height: '35px', width: '35px', borderRadius: '50%', objectFit: 'cover' }} alt="Avatar" />
       </div>
     ),
   );

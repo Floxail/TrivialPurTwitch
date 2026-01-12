@@ -1,0 +1,743 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   LUMON INDUSTRIES TERMINAL SYSTEM - RETRO-FUTURISTIC CSS
+   "The work is mysterious and important."
+   Compatible avec Create React App (sans Tailwind @apply)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GOOGLE FONTS IMPORT
+   ═══════════════════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap');
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Lumon Colors */
+  --lumon-void: #000B0F;
+  --lumon-slate: #04080F;
+  --lumon-dark: #0A1015;
+  --lumon-surface: #111820;
+
+  --lumon-cyan: #00F0FF;
+  --lumon-cyan-dim: #007080;
+  --lumon-cyan-rgb: 0, 240, 255;
+
+  --lumon-amber: #FFB000;
+  --lumon-amber-dim: #805800;
+  --lumon-amber-rgb: 255, 176, 0;
+
+  --lumon-danger: #FF0033;
+  --lumon-danger-rgb: 255, 0, 51;
+
+  --lumon-success: #00FF66;
+  --lumon-success-rgb: 0, 255, 102;
+
+  --lumon-text: #F0F0F0;
+  --lumon-text-dim: #8892A0;
+  --lumon-text-muted: #4A5568;
+
+  /* Scanline settings */
+  --scanline-color: rgba(0, 0, 0, 0.08);
+  --scanline-size: 2px;
+
+  /* Grain settings */
+  --grain-opacity: 0.03;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCANLINE OVERLAY EFFECT
+   Simulates CRT monitor scanlines
+   ═══════════════════════════════════════════════════════════════════════════ */
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent var(--scanline-size),
+    var(--scanline-color) var(--scanline-size),
+    var(--scanline-color) calc(var(--scanline-size) * 2)
+  );
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Intense scanlines variant */
+.scanlines-intense::before {
+  --scanline-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Subtle scanlines variant */
+.scanlines-subtle::before {
+  --scanline-color: rgba(0, 0, 0, 0.04);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FILM GRAIN TEXTURE
+   Adds organic noise to the display
+   ═══════════════════════════════════════════════════════════════════════════ */
+.film-grain {
+  position: relative;
+}
+
+.film-grain::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: var(--grain-opacity);
+  pointer-events: none;
+  z-index: 101;
+  animation: grain-shift 0.5s steps(10) infinite;
+}
+
+@keyframes grain-shift {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -2%); }
+  20% { transform: translate(2%, 2%); }
+  30% { transform: translate(-1%, 1%); }
+  40% { transform: translate(1%, -1%); }
+  50% { transform: translate(-2%, 2%); }
+  60% { transform: translate(2%, -2%); }
+  70% { transform: translate(0, 2%); }
+  80% { transform: translate(-2%, 0); }
+  90% { transform: translate(2%, 1%); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   VIGNETTE EFFECT
+   Darker corners like old CRT monitors
+   ═══════════════════════════════════════════════════════════════════════════ */
+.vignette {
+  position: relative;
+}
+
+.vignette::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 150px 60px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  z-index: 99;
+}
+
+.vignette-subtle::before {
+  box-shadow: inset 0 0 100px 40px rgba(0, 0, 0, 0.4);
+}
+
+.vignette-intense::before {
+  box-shadow: inset 0 0 200px 80px rgba(0, 0, 0, 0.85);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CRT SCREEN CURVATURE EFFECT
+   ═══════════════════════════════════════════════════════════════════════════ */
+.crt-curve {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.crt-curve-subtle {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PHOSPHOR GLOW TEXT EFFECTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.text-glow-cyan {
+  color: var(--lumon-cyan);
+  text-shadow:
+    0 0 5px rgba(var(--lumon-cyan-rgb), 0.5),
+    0 0 10px rgba(var(--lumon-cyan-rgb), 0.3),
+    0 0 20px rgba(var(--lumon-cyan-rgb), 0.2);
+}
+
+.text-glow-amber {
+  color: var(--lumon-amber);
+  text-shadow:
+    0 0 5px rgba(var(--lumon-amber-rgb), 0.5),
+    0 0 10px rgba(var(--lumon-amber-rgb), 0.3),
+    0 0 20px rgba(var(--lumon-amber-rgb), 0.2);
+}
+
+.text-glow-danger {
+  color: var(--lumon-danger);
+  text-shadow:
+    0 0 5px rgba(var(--lumon-danger-rgb), 0.5),
+    0 0 10px rgba(var(--lumon-danger-rgb), 0.3),
+    0 0 20px rgba(var(--lumon-danger-rgb), 0.2);
+}
+
+.text-glow-success {
+  color: var(--lumon-success);
+  text-shadow:
+    0 0 5px rgba(var(--lumon-success-rgb), 0.5),
+    0 0 10px rgba(var(--lumon-success-rgb), 0.3),
+    0 0 20px rgba(var(--lumon-success-rgb), 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FLICKER ANIMATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+.flicker {
+  animation: flicker-effect 0.15s infinite;
+}
+
+@keyframes flicker-effect {
+  0% { opacity: 1; }
+  3% { opacity: 0.95; }
+  6% { opacity: 1; }
+  7% { opacity: 0.97; }
+  9% { opacity: 1; }
+  12% { opacity: 0.98; }
+  20% { opacity: 1; }
+  25% { opacity: 0.96; }
+  30% { opacity: 1; }
+  70% { opacity: 1; }
+  72% { opacity: 0.95; }
+  77% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+.flicker-subtle {
+  animation: flicker-subtle 3s infinite;
+}
+
+@keyframes flicker-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.98; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TERMINAL CURSOR
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-cursor::after {
+  content: '█';
+  color: var(--lumon-cyan);
+  animation: blink-cursor 1s step-end infinite;
+  margin-left: 2px;
+}
+
+.terminal-cursor-amber::after {
+  color: var(--lumon-amber);
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HORIZONTAL SCAN LINE (Moving)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.scan-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(var(--lumon-cyan-rgb), 0.15),
+    transparent
+  );
+  animation: scan-down 8s linear infinite;
+  pointer-events: none;
+  z-index: 102;
+}
+
+@keyframes scan-down {
+  0% { top: -4px; }
+  100% { top: 100%; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DECORATIVE SYSTEM ARTIFACTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.system-artifact {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--lumon-text-muted);
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  user-select: none;
+}
+
+.system-artifact-glow {
+  color: var(--lumon-cyan-dim);
+  text-shadow: 0 0 3px rgba(var(--lumon-cyan-rgb), 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BORDER GLOW EFFECTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.border-glow-cyan {
+  border: 1px solid var(--lumon-cyan-dim);
+  box-shadow:
+    0 0 5px rgba(var(--lumon-cyan-rgb), 0.2),
+    inset 0 0 5px rgba(var(--lumon-cyan-rgb), 0.1);
+}
+
+.border-glow-cyan-intense {
+  border: 1px solid var(--lumon-cyan);
+  box-shadow:
+    0 0 10px rgba(var(--lumon-cyan-rgb), 0.4),
+    0 0 20px rgba(var(--lumon-cyan-rgb), 0.2),
+    inset 0 0 10px rgba(var(--lumon-cyan-rgb), 0.15);
+}
+
+.border-glow-amber {
+  border: 1px solid var(--lumon-amber-dim);
+  box-shadow:
+    0 0 5px rgba(var(--lumon-amber-rgb), 0.2),
+    inset 0 0 5px rgba(var(--lumon-amber-rgb), 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TABLE LEDGER LINES
+   ═══════════════════════════════════════════════════════════════════════════ */
+.ledger-row {
+  border-bottom: 1px solid rgba(var(--lumon-cyan-rgb), 0.1);
+  transition: all 0.15s ease;
+}
+
+.ledger-row:hover {
+  background-color: rgba(var(--lumon-cyan-rgb), 0.05);
+  border-bottom-color: rgba(var(--lumon-cyan-rgb), 0.2);
+}
+
+.ledger-row-selected {
+  background-color: rgba(var(--lumon-cyan-rgb), 0.1) !important;
+  border-bottom-color: var(--lumon-cyan-dim) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTON STATES - Terminal Style
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border: 1px solid var(--lumon-cyan-dim);
+  background-color: transparent;
+  color: var(--lumon-cyan);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 150ms ease;
+  border-radius: 0;
+}
+
+.terminal-btn:hover {
+  background-color: var(--lumon-cyan);
+  color: var(--lumon-void);
+  box-shadow: 0 0 15px rgba(var(--lumon-cyan-rgb), 0.4);
+}
+
+.terminal-btn:active {
+  transform: translate(1px, 1px);
+}
+
+.terminal-btn:disabled {
+  border-color: var(--lumon-text-muted);
+  color: var(--lumon-text-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.terminal-btn:disabled:hover {
+  background-color: transparent;
+}
+
+/* Danger variant */
+.terminal-btn-danger {
+  border-color: var(--lumon-danger);
+  color: var(--lumon-danger);
+}
+
+.terminal-btn-danger:hover {
+  background-color: var(--lumon-danger);
+  color: var(--lumon-void);
+  box-shadow: 0 0 15px rgba(var(--lumon-danger-rgb), 0.4);
+}
+
+/* Amber variant */
+.terminal-btn-amber {
+  border-color: var(--lumon-amber-dim);
+  color: var(--lumon-amber);
+}
+
+.terminal-btn-amber:hover {
+  background-color: var(--lumon-amber);
+  color: var(--lumon-void);
+  box-shadow: 0 0 15px rgba(var(--lumon-amber-rgb), 0.4);
+}
+
+/* Small size */
+.terminal-btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INPUT FIELDS - Terminal Style
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-input {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.875rem;
+  color: var(--lumon-text);
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--lumon-cyan-dim);
+  padding: 0.5rem;
+  width: 100%;
+  outline: none;
+  transition: all 150ms ease;
+  border-radius: 0;
+}
+
+.terminal-input::placeholder {
+  color: var(--lumon-text-muted);
+  font-style: normal;
+}
+
+.terminal-input:focus {
+  border-bottom-color: var(--lumon-cyan);
+  box-shadow: 0 2px 10px rgba(var(--lumon-cyan-rgb), 0.2);
+}
+
+.terminal-input:disabled {
+  color: var(--lumon-text-muted);
+  border-color: var(--lumon-text-muted);
+  cursor: not-allowed;
+}
+
+/* Box variant */
+.terminal-input-box {
+  border: 1px solid var(--lumon-cyan-dim);
+  background-color: rgba(0, 11, 15, 0.5);
+}
+
+.terminal-input-box:focus {
+  border-color: var(--lumon-cyan);
+  box-shadow:
+    0 0 10px rgba(var(--lumon-cyan-rgb), 0.2),
+    inset 0 0 10px rgba(var(--lumon-cyan-rgb), 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SELECT DROPDOWNS - Terminal Style
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-select {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.875rem;
+  color: var(--lumon-text);
+  background-color: var(--lumon-void);
+  border: 1px solid var(--lumon-cyan-dim);
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 150ms ease;
+  border-radius: 0;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300F0FF' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.terminal-select:focus {
+  border-color: var(--lumon-cyan);
+  box-shadow: 0 0 10px rgba(var(--lumon-cyan-rgb), 0.2);
+}
+
+.terminal-select option {
+  background-color: var(--lumon-slate);
+  color: var(--lumon-text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CHECKBOX - Terminal Style
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-checkbox {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--lumon-cyan-dim);
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 150ms ease;
+  border-radius: 0;
+  position: relative;
+}
+
+.terminal-checkbox:checked {
+  background-color: var(--lumon-cyan);
+  border-color: var(--lumon-cyan);
+}
+
+.terminal-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--lumon-void);
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.terminal-checkbox:focus {
+  box-shadow: 0 0 8px rgba(var(--lumon-cyan-rgb), 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODAL / DIALOG - Terminal Style
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 11, 15, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+}
+
+.terminal-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--lumon-slate);
+  border: 1px solid var(--lumon-cyan-dim);
+  padding: 1.5rem;
+  max-width: 42rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 50;
+  box-shadow:
+    0 0 30px rgba(var(--lumon-cyan-rgb), 0.2),
+    0 0 60px rgba(var(--lumon-cyan-rgb), 0.1);
+}
+
+.terminal-modal-header {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.125rem;
+  text-transform: uppercase;
+  color: var(--lumon-cyan);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--lumon-cyan-dim);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BADGE / TAG - Terminal Style
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-badge {
+  display: inline-block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0.125rem 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0;
+}
+
+.terminal-badge-cyan {
+  border-color: var(--lumon-cyan-dim);
+  color: var(--lumon-cyan);
+  background-color: rgba(0, 240, 255, 0.1);
+}
+
+.terminal-badge-amber {
+  border-color: var(--lumon-amber-dim);
+  color: var(--lumon-amber);
+  background-color: rgba(255, 176, 0, 0.1);
+}
+
+.terminal-badge-danger {
+  border-color: var(--lumon-danger);
+  color: var(--lumon-danger);
+  background-color: rgba(255, 0, 51, 0.1);
+}
+
+.terminal-badge-success {
+  border-color: var(--lumon-success);
+  color: var(--lumon-success);
+  background-color: rgba(0, 255, 102, 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PANEL / CARD - Terminal Style
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-panel {
+  background-color: var(--lumon-dark);
+  border: 1px solid rgba(0, 112, 128, 0.3);
+  padding: 1rem;
+  border-radius: 0;
+}
+
+.terminal-panel-header {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.125rem;
+  text-transform: uppercase;
+  color: var(--lumon-cyan);
+  border-bottom: 1px solid rgba(0, 112, 128, 0.3);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.terminal-panel-glow {
+  box-shadow:
+    inset 0 0 20px rgba(var(--lumon-cyan-rgb), 0.03),
+    0 0 15px rgba(var(--lumon-cyan-rgb), 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TAB NAVIGATION - Terminal Style
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(0, 112, 128, 0.3);
+}
+
+.terminal-tab {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0.5rem 1rem;
+  color: var(--lumon-text-dim);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 150ms ease;
+}
+
+.terminal-tab:hover {
+  color: var(--lumon-cyan);
+}
+
+.terminal-tab-active {
+  color: var(--lumon-cyan);
+  border-bottom-color: var(--lumon-cyan);
+  text-shadow: 0 0 10px rgba(var(--lumon-cyan-rgb), 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ALERT / NOTIFICATION - Terminal Style
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-alert {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0;
+}
+
+.terminal-alert-info {
+  border-color: var(--lumon-cyan-dim);
+  background-color: rgba(0, 240, 255, 0.05);
+  color: var(--lumon-cyan);
+}
+
+.terminal-alert-success {
+  border-color: var(--lumon-success);
+  background-color: rgba(0, 255, 102, 0.05);
+  color: var(--lumon-success);
+}
+
+.terminal-alert-warning {
+  border-color: var(--lumon-amber-dim);
+  background-color: rgba(255, 176, 0, 0.05);
+  color: var(--lumon-amber);
+}
+
+.terminal-alert-danger {
+  border-color: var(--lumon-danger);
+  background-color: rgba(255, 0, 51, 0.05);
+  color: var(--lumon-danger);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBAR STYLING
+   ═══════════════════════════════════════════════════════════════════════════ */
+.terminal-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.terminal-scrollbar::-webkit-scrollbar-track {
+  background: var(--lumon-void);
+}
+
+.terminal-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--lumon-cyan-dim);
+  border-radius: 0;
+}
+
+.terminal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--lumon-cyan);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════ */
+.text-mono-tech {
+  font-family: 'Share Tech Mono', 'Roboto Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.text-display-tech {
+  font-family: 'Orbitron', 'Share Tech', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CATEGORY COLOR UTILITIES (Trivial Pursuit)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.category-geography { color: #4A90E2; border-color: #4A90E2; }
+.category-entertainment { color: #E91E63; border-color: #E91E63; }
+.category-history { color: #FFC107; border-color: #FFC107; }
+.category-arts { color: #8B4513; border-color: #8B4513; }
+.category-science { color: #4CAF50; border-color: #4CAF50; }
+.category-sports { color: #FF5722; border-color: #FF5722; }
+
+.category-bg-geography { background-color: rgba(74, 144, 226, 0.15); }
+.category-bg-entertainment { background-color: rgba(233, 30, 99, 0.15); }
+.category-bg-history { background-color: rgba(255, 193, 7, 0.15); }
+.category-bg-arts { background-color: rgba(139, 69, 19, 0.15); }
+.category-bg-science { background-color: rgba(76, 175, 80, 0.15); }
+.category-bg-sports { background-color: rgba(255, 87, 34, 0.15); }

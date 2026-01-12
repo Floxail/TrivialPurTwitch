@@ -109,6 +109,9 @@ type QuestionsActions = {
   // Backup complet
   exportFullBackup: () => any;
   importFullBackup: (backupData: any) => boolean;
+
+  // Dédoublonnage
+  removeDuplicates: () => number;
 };
 
 // Restore persisted state
@@ -506,6 +509,37 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           console.error('❌ Erreur lors de la restauration du backup:', error);
           return false;
         }
+      },
+
+      // ========== DÉDOUBLONNAGE ==========
+
+      removeDuplicates: (): number => {
+        const currentQuestions = get().questions;
+        const seen = new Map<string, Question>();
+
+        // On garde la première occurrence de chaque question unique
+        // Critère d'unicité: question + answer + boxName
+        currentQuestions.forEach((q) => {
+          const key = `${q.question.trim().toLowerCase()}|${q.answer.trim().toLowerCase()}|${q.boxName}`;
+          if (!seen.has(key)) {
+            seen.set(key, q);
+          }
+        });
+
+        const uniqueQuestions = Array.from(seen.values());
+        const removedCount = currentQuestions.length - uniqueQuestions.length;
+
+        if (removedCount > 0) {
+          const boxes = get().rebuildBoxes(uniqueQuestions);
+          set({
+            questions: uniqueQuestions,
+            boxes: boxes,
+          });
+          get().backup();
+          console.log(`✅ ${removedCount} doublon(s) supprimé(s)`);
+        }
+
+        return removedCount;
       },
     }),
     {

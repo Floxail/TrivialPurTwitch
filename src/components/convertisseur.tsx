@@ -29,6 +29,9 @@ const Convertisseur = () => {
   // Mode Quiz - un seul bloc de texte
   const [quizTextBlock, setQuizTextBlock] = useState('');
 
+  // Mode Quiz - choix de catégorie ('random' ou 0-5)
+  const [quizCategoryMode, setQuizCategoryMode] = useState<'random' | number>('random');
+
   const categoryColors = ['#4A90E2', '#E91E63', '#FFC107', '#533303ff', '#4CAF50', '#FF5722'];
   const categoryNames = ['▲ Bleu', '▲ Rose', '▲ Jaune', '▲ Marron', '▲ Vert', '▲ Orange'];
 
@@ -79,6 +82,7 @@ const Convertisseur = () => {
     setQuizTextBlock('');
     setBoxName('');
     setCardNumber(1);
+    setQuizCategoryMode('random');
   };
 
   const downloadJSON = () => {
@@ -116,7 +120,7 @@ const Convertisseur = () => {
 
       questionsData = parsed.map((q, index) => ({
         id: `${boxName.toLowerCase().replace(/\s+/g, '_')}_quiz_${index}`,
-        category: Math.floor(Math.random() * 6),
+        category: quizCategoryMode === 'random' ? Math.floor(Math.random() * 6) : quizCategoryMode,
         question: q.question,
         answer: q.answer,
         ...(q.alternativeAnswers && q.alternativeAnswers.length > 0 && {
@@ -235,6 +239,39 @@ const Convertisseur = () => {
         ) : (
           <Card>
             <Card.Body>
+              <Form.Group className="mb-3">
+                <Form.Label><strong>Catégorie des questions</strong></Form.Label>
+                <div className="d-flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant={quizCategoryMode === 'random' ? 'primary' : 'outline-secondary'}
+                    onClick={() => setQuizCategoryMode('random')}
+                  >
+                    🎲 Aléatoire
+                  </Button>
+                  {categoryNames.map((name, index) => (
+                    <Button
+                      key={index}
+                      size="sm"
+                      variant={quizCategoryMode === index ? 'primary' : 'outline-secondary'}
+                      onClick={() => setQuizCategoryMode(index)}
+                      style={{
+                        borderColor: categoryColors[index],
+                        color: quizCategoryMode === index ? 'white' : categoryColors[index],
+                        backgroundColor: quizCategoryMode === index ? categoryColors[index] : 'transparent',
+                      }}
+                    >
+                      {name}
+                    </Button>
+                  ))}
+                </div>
+                <small className="text-muted mt-1 d-block">
+                  {quizCategoryMode === 'random'
+                    ? 'Chaque question aura une couleur aléatoire'
+                    : `Toutes les questions seront en ${categoryNames[quizCategoryMode as number]}`}
+                </small>
+              </Form.Group>
+
               <Form.Group>
                 <Form.Label>
                   <strong>Saisissez vos questions</strong>

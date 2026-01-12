@@ -109,14 +109,8 @@ const QuestionManager = () => {
       return;
     }
 
-    let removedCount = 0;
-    duplicates.forEach(dup => {
-      // Garder le premier, supprimer les autres
-      for (let i = 1; i < dup.ids.length; i++) {
-        questionsStore.deleteQuestion(dup.ids[i]);
-        removedCount++;
-      }
-    });
+    // Utiliser la fonction optimisée du store
+    const removedCount = questionsStore.removeDuplicates();
 
     setImportSuccess(`✅ ${removedCount} doublon(s) supprimé(s) !`);
     setTimeout(() => setImportSuccess(''), 5000);
@@ -163,7 +157,7 @@ const QuestionManager = () => {
   // Filtrage robuste en cascade - source unique de vérité
   const filteredQuestions = useMemo(() => {
     // 1. On part de toutes les questions brutes du store
-    let result = questionsStore.questions;
+    let result = [...questionsStore.questions];
 
     // 2. On applique le filtre de BOÎTE de manière stricte
     if (selectedBox && selectedBox.trim()) {
@@ -174,6 +168,21 @@ const QuestionManager = () => {
     if (filterCategory !== 'all') {
       result = result.filter(q => q.category === filterCategory);
     }
+
+    // 4. Tri alphabétique par boxName, puis par cardNumber, puis par category
+    result.sort((a, b) => {
+      // D'abord par boxName (alphabétique français)
+      const boxCompare = a.boxName.toLowerCase().localeCompare(b.boxName.toLowerCase(), 'fr', { sensitivity: 'base' });
+      if (boxCompare !== 0) return boxCompare;
+
+      // Ensuite par cardNumber (si présent)
+      const cardA = a.cardNumber ?? 0;
+      const cardB = b.cardNumber ?? 0;
+      if (cardA !== cardB) return cardA - cardB;
+
+      // Enfin par catégorie
+      return a.category - b.category;
+    });
 
     return result;
   }, [selectedBox, filterCategory, questionsStore.questions]);
