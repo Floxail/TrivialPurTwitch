@@ -15,12 +15,19 @@ const Login = () => {
   }, []);
 
   const twitchLogin = async () => {
+    // Store state for CSRF protection
+    const state = crypto.randomUUID();
+    sessionStorage.setItem('oauth_state', state);
+
+    // Implicit Flow - supported by Twitch for client-side apps
+    // Note: Authorization Code Flow with PKCE requires a backend with client_secret
     window.location.href = 'https://id.twitch.tv/oauth2/authorize' +
       '?client_id=' + process.env.REACT_APP_TWITCH_CLIENT_ID +
-      '&redirect_uri=' + getAppHomeURL() + '/callback' +
+      '&redirect_uri=' + encodeURIComponent(getAppHomeURL() + '/callback') +
       '&scope=chat:read+chat:edit+whispers:edit' +
       '&force_verify=true' +
-      '&response_type=token';
+      '&response_type=token' +  // Implicit Flow (client-side)
+      '&state=' + state;
   };
 
   const twitchIcon = <FontAwesomeIcon icon={['fab', 'twitch']} color="#6441A4" />;
@@ -58,7 +65,7 @@ const Login = () => {
         <p className="text-muted">Connectez-vous avec Twitch pour commencer</p>
       </div>
       <LoginButton 
-        loggedIn={authStore.twitchOauthToken !== undefined} 
+        loggedIn={authStore.isLoggedIn()} 
         appName="Twitch" 
         onClick={twitchLogin} 
         icon={twitchIcon}

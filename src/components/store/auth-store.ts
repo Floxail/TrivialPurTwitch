@@ -2,8 +2,102 @@ import { getUsers, setDefaultAuth, validateToken } from 'services/twitch-api';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+// Simple XOR-based obfuscation for token storage
+// Note: This is obfuscation, not encryption. For true security,
+// consider server-side token storage or Web Crypto API
+const OBFUSCATION_KEY = 'TrvlPrTwtch2024!';
+
+const obfuscateToken = (token: string): string => {
+  let result = '';
+  for (let i = 0; i < token.length; i++) {
+    result += String.fromCharCode(
+      token.charCodeAt(i) ^ OBFUSCATION_KEY.charCodeAt(i % OBFUSCATION_KEY.length)
+    );
+  }
+  return btoa(result); // Base64 encode
+};
+
+const deobfuscateToken = (obfuscated: string): string => {
+  try {
+    const decoded = atob(obfuscated);
+    let result = '';
+    for (let i = 0; i < decoded.length; i++) {
+      result += String.fromCharCode(
+        decoded.charCodeAt(i) ^ OBFUSCATION_KEY.charCodeAt(i % OBFUSCATION_KEY.length)
+      );
+    }
+    return result;
+  } catch {
+    return '';
+  }
+};
+
+/**
+ * Detect if a token is in the old format (plain text) vs new format (obfuscated)
+ * Old tokens from Twitch start with alphanumeric characters
+ * New obfuscated tokens are Base64 encoded (may contain +, /, =)
+ */
+const isLegacyToken = (token: string): boolean => {
+  // Old Twitch tokens are alphanumeric only, typically 30 chars
+  // New obfuscated tokens are Base64 and often contain non-alphanumeric chars after decoding
+
+  // Try to decode as Base64 - if it fails or produces garbage, it's likely a legacy token
+  try {
+    const decoded = atob(token);
+    // If decoded string has control characters or is mostly non-printable, it's obfuscated
+    const hasBinaryChars = /[\x00-\x1F]/.test(decoded);
+    if (hasBinaryChars) {
+      // This is likely an obfuscated token (XOR produces binary chars)
+      return false;
+    }
+    // If it decodes cleanly to printable chars, check if original looks like a Twitch token
+    // Twitch tokens are alphanumeric, ~30 chars
+    if (/^[a-z0-9]{20,50}$/i.test(token)) {
+      return true; // Legacy plain text token
+    }
+    return false;
+  } catch {
+    // If atob fails, check if it's a plain alphanumeric token
+    return /^[a-z0-9]{20,50}$/i.test(token);
+  }
+};
+
+/**
+ * Migrate legacy tokens to new obfuscated format
+ * Called once on store initialization
+ */
+const migrateLegacyToken = (): void => {
+  try {
+    const stored = localStorage.getItem('auth_data');
+    if (!stored) return;
+
+    const data = JSON.parse(stored);
+    if (!data.state?.twitchOauthToken) return;
+
+    const token = data.state.twitchOauthToken;
+
+    if (isLegacyToken(token)) {
+      console.log('[Auth] Migrating legacy token to secure format...');
+      // Re-save with obfuscated token
+      data.state.twitchOauthToken = obfuscateToken(token);
+      // Legacy tokens don't have expiration, set a default (4 hours from now)
+      data.state.tokenExpiresAt = Date.now() + (4 * 60 * 60 * 1000);
+      localStorage.setItem('auth_data', JSON.stringify(data));
+      console.log('[Auth] Token migration complete');
+    }
+  } catch (e) {
+    console.error('[Auth] Token migration failed:', e);
+    // If migration fails, clear the corrupted data
+    localStorage.removeItem('auth_data');
+  }
+};
+
+// Run migration on module load (before store initialization)
+migrateLegacyToken();
+
 export type AuthData = {
-  twitchOauthToken?: string,
+  twitchOauthToken?: string,        // Now stores obfuscated token
+  tokenExpiresAt?: number,          // Timestamp when token expires
   twitchNick?: string,
   twitchAvatar?: string
 }
@@ -11,10 +105,12 @@ export type AuthData = {
 type Actions = {
   clear: () => void;
   deleteTwitchOAuthToken: () => void;
-  setTwitchOAuthToken: (token: string) => void;
+  setTwitchOAuthToken: (token: string, expiresIn?: number) => void;
+  getTwitchOAuthToken: () => string | undefined;  // Returns deobfuscated token
   validateTwitchOAuthToken: () => void;
   setTwitchNickAndAvatar: (nick: string, avatar: string) => void;
   isLoggedIn: () => boolean;
+  isTokenExpired: () => boolean;
 }
 
 export const useAuthStore = create<AuthData & Actions>()(
@@ -23,22 +119,54 @@ export const useAuthStore = create<AuthData & Actions>()(
       clear: () => {
         set({
           twitchOauthToken: undefined,
+          tokenExpiresAt: undefined,
         });
+        // Explicitly clear localStorage
+        localStorage.removeItem('auth_data');
+        sessionStorage.clear();
       },
       deleteTwitchOAuthToken: () => {
-        set(() => ({ twitchOauthToken: undefined }));
+        set(() => ({ twitchOauthToken: undefined, tokenExpiresAt: undefined }));
+        localStorage.removeItem('auth_data');
       },
-      setTwitchOAuthToken: (token: string) => {
-        set(() => ({ twitchOauthToken: token }));
+      setTwitchOAuthToken: (token: string, expiresIn?: number) => {
+        const obfuscated = obfuscateToken(token);
+        const expiresAt = expiresIn ? Date.now() + (expiresIn * 1000) : undefined;
+        set(() => ({ twitchOauthToken: obfuscated, tokenExpiresAt: expiresAt }));
+      },
+      getTwitchOAuthToken: (): string | undefined => {
+        const current = get();
+        if (!current.twitchOauthToken) return undefined;
+
+        // Check if token is expired
+        if (current.tokenExpiresAt && Date.now() > current.tokenExpiresAt) {
+          current.deleteTwitchOAuthToken();
+          return undefined;
+        }
+
+        return deobfuscateToken(current.twitchOauthToken);
+      },
+      isTokenExpired: (): boolean => {
+        const current = get();
+        if (!current.tokenExpiresAt) return false;
+        return Date.now() > current.tokenExpiresAt;
       },
       validateTwitchOAuthToken: () => {
         const current = get();
-        if (current.twitchOauthToken) {
-          validateToken(current.twitchOauthToken).then(response => {
+        const token = current.getTwitchOAuthToken(); // Get deobfuscated token
+
+        if (token) {
+          // Check expiration first
+          if (current.isTokenExpired()) {
+            current.deleteTwitchOAuthToken();
+            return;
+          }
+
+          validateToken(token).then(response => {
             if (response.status !== 200) {
               current.deleteTwitchOAuthToken();
             } else {
-              setDefaultAuth(current.twitchOauthToken || '');
+              setDefaultAuth(token);
               response.json().then(body => {
                 getUsers([body['user_id']]).then(response => {
                   set(() => ({ twitchNick: body['login'], twitchAvatar: response.data.data[0].profile_image_url }));

@@ -33,7 +33,8 @@ const Quiz = () => {
 	const getPlayersFromNick = usePlayerStore((state) => state.getPlayers);
 
 	const twitchNick = useAuthStore((state) => state.twitchNick);
-	const twitchToken = useAuthStore((state) => state.twitchOauthToken);
+	const getTwitchToken = useAuthStore((state) => state.getTwitchOAuthToken);
+	const twitchToken = getTwitchToken(); // Get deobfuscated token
 
 	// Utiliser le temps de réponse configuré dans les settings
 	const questionTimeLimit = settingsStore.questionTimeLimit;
@@ -909,8 +910,17 @@ const Quiz = () => {
 										size="sm"
 										onClick={handleNextQuestion}
 									>
-										<FontAwesomeIcon icon={['fas', 'step-forward']} color="#ff60b7" size="lg" />
-										<b>SUIVANT</b>
+										{activeQuiz.currentQuestionIndex + 1 >= activeQuiz.totalQuestions ? (
+											<>
+												<FontAwesomeIcon icon={['fas', 'trophy']} color="#ff60b7" size="lg" />
+												<b>PODIUM</b>
+											</>
+										) : (
+											<>
+												<FontAwesomeIcon icon={['fas', 'step-forward']} color="#ff60b7" size="lg" />
+												<b>SUIVANT</b>
+											</>
+										)}
 									</Button>
 									&nbsp;
 									<Button

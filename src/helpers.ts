@@ -1,6 +1,3 @@
-import { instanceToPlain, plainToInstance } from 'class-transformer';
-import { createPKCECodes, PKCECodePair } from 'pkce';
-
 export const getAppHomeURL = () => {
   return new URL(window.location.href).origin + process.env.PUBLIC_URL;
 };
@@ -18,19 +15,6 @@ const getParam = (name: string, value: string) => {
   var regex = new RegExp('[\\?&#]' + name + '=([^&#]*)'),
     results = regex.exec(value);
   return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
-
-export const computePkcePair = async () => {
-  const codePair: PKCECodePair = await createPKCECodes();
-  localStorage.setItem('pkce_pair', JSON.stringify(instanceToPlain(codePair)));
-  return codePair;
-};
-
-export const consumePkcePair = () => {
-  const plain: PKCECodePair = JSON.parse(localStorage.getItem('pkce_pair') || '{}');
-  const codePair: PKCECodePair = plainToInstance(PKCECodePair, plain);
-  localStorage.removeItem('pkce_pair');
-  return codePair;
 };
 
 export const colors: string[] = ['#D23F9A', '#7FBB61', '#2C75C2', '#F2A83A', '#6456F1', '#19E3B2', '#FA6B4D', '#8C84D4', '#D3F721', '#4A4A47'];
