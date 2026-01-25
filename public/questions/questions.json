@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-01-12T13:35:40.979Z",
+  "exportDate": "2026-01-25T13:00:33.984Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -60,9 +60,9 @@
       "totalQuestions": 156
     },
     {
-      "name": "Univers audio-visuel",
+      "name": "Univers audiovisuel",
       "cardNumbers": [],
-      "totalQuestions": 121
+      "totalQuestions": 185
     },
     {
       "name": "Vieweurs",
@@ -16688,7 +16688,7 @@
       "question": "En quelle année se déroule Futurama ?",
       "answer": "3000",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963180f8lq94ek",
@@ -16696,7 +16696,7 @@
       "question": "Dans Futurama combien de personne travaillent pour le professeur ?",
       "answer": "6",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318gr6q1mzpo",
@@ -16704,7 +16704,7 @@
       "question": "Dans Futurama quel est le prénom de Fray ?",
       "answer": "Phillip",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318aoqv8sw54",
@@ -16712,7 +16712,7 @@
       "question": "Dans Futurama quel métier Fray est-il destiné a exercé?",
       "answer": "Livreur",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318mmwdvtjca",
@@ -16720,7 +16720,7 @@
       "question": "Quel est le passe temps préféré de Bender?",
       "answer": "Voler",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963186r2dv8wbc",
@@ -16731,7 +16731,7 @@
         "tordre des objets"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318i87v0yjm4",
@@ -16739,7 +16739,7 @@
       "question": "Dans ma famille d'abord le père dirige une entreprise de ?",
       "answer": "transport",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318xv5i4dbmm",
@@ -16747,7 +16747,7 @@
       "question": "Dans Mercredi comment se prénom l'ancêtre de mercredi apparaissant dans ses visions ?",
       "answer": "Goody",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318mkci70b40",
@@ -16755,7 +16755,7 @@
       "question": "Dans Mercredi comment se prénom l'école ?",
       "answer": "Nervermore",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318mmnckz7uu",
@@ -16763,7 +16763,7 @@
       "question": "Dans Mercredi comment se prénom la boisson bleu au bal de Nevermore ?",
       "answer": "Yétitini",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "176779329631846fm46e4o",
@@ -16771,7 +16771,7 @@
       "question": "Dans Mercredi quelle actrice joue Enid ?",
       "answer": "Emma Myers",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318ros3imlxe",
@@ -16779,7 +16779,7 @@
       "question": "Dans Squid game un enquêteur va prendre s'introduire et prendre la place d'un soldat. Quel numéro portera t-il ?",
       "answer": "29",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318kxgr0sr2q",
@@ -16787,7 +16787,7 @@
       "question": "Dans Squid Game quelle maladie à Oh-ll-nam, jouer n1?",
       "answer": "tumeur au cerveau",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318zublmxvge",
@@ -16795,7 +16795,7 @@
       "question": "film Si vous ne trouvez pas ce titre, vous pouvez devenir complètement marteau !",
       "answer": "Thor",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318p3l1yq4nv",
@@ -16803,7 +16803,7 @@
       "question": "Dans quelle série une contractuelle enquête-t-elle sur un meurtre survenu dans une fête foraine ?",
       "answer": "Killer Coaster",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318vuhizlubi",
@@ -16811,7 +16811,7 @@
       "question": "Laquelle de ces séries a, comme personnages principaux, quatre septuagénaires ?",
       "answer": "Grace et Frankie",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318ile1tz1fl",
@@ -16819,7 +16819,7 @@
       "question": "Cette série adapte différents livres d'horreurs destinés à la jeunesse. Comment s'appelle-t-elle ?",
       "answer": "Chaire de poule",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963185r5mv8yu6",
@@ -16827,7 +16827,7 @@
       "question": "Stranger Things ou Riverdale : Cherryl Blossom",
       "answer": "Riverdale",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318b6u7thsd2",
@@ -16838,7 +16838,7 @@
         "Hulk"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318n631yi3f5",
@@ -16846,7 +16846,7 @@
       "question": "Qui découvre qu'Heisenberg est Walter en premier ?",
       "answer": "Hank",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318emt25gldc",
@@ -16854,7 +16854,7 @@
       "question": "Dans quelle ville se situe l'action de la série ''Boardwalk Empire'' ?",
       "answer": "Atlantic City",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318ds01jygdm",
@@ -16862,7 +16862,7 @@
       "question": "Quel est le métier de l'héroïne Claire Randall, dans la série TV ''Outlander'' ?",
       "answer": "infirmière",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318rq7t2ya7w",
@@ -16873,7 +16873,7 @@
         "Haricots"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963180whttqyh9",
@@ -16881,7 +16881,7 @@
       "question": "Qui dit que le Graal est probablement un bocal à anchois ?",
       "answer": "Perceval",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318oxsw164ya",
@@ -16889,7 +16889,7 @@
       "question": "Dans Stranger Things quel personnage à un rapport avec un sifflet ?",
       "answer": "Billy",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963188b8xj1gu0",
@@ -16897,7 +16897,7 @@
       "question": "ans Stranger Things la batte aux clous qui s'en est munie ?",
       "answer": "Steve",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318tlnacscrw",
@@ -16905,7 +16905,7 @@
       "question": "Dans True Blood comment se prénom la l'héroïne principale ?",
       "answer": "Sookie Stackhouse",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "176779329631822cso2guh",
@@ -16913,7 +16913,7 @@
       "question": "Je suis serveuse  au Merlotte's et télépathe qui suis-je?",
       "answer": "Sookie Stackhouse",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318dwk8fmxt5",
@@ -16921,7 +16921,7 @@
       "question": "Je suis doué au piano j'ai des frères, poupipou",
       "answer": "Dewey",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963181dg8ka33b",
@@ -16932,7 +16932,7 @@
         "Malcolm in the Middle"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318ooon63502",
@@ -16940,7 +16940,7 @@
       "question": "Nous sommes 3 méchantes, nous aimons tourmenté les humains, le diable est notre dieu",
       "answer": "Les 3 soeur du destins",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "176779329631884mwvo1la",
@@ -16951,7 +16951,7 @@
         "Liv"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318a7p58zb5r",
@@ -16959,7 +16959,7 @@
       "question": "Quel est le métier de Liv  (olivia Moore) ?",
       "answer": "Médecin légiste",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318ylh8ggulf",
@@ -16967,7 +16967,7 @@
       "question": "Comment s'appelle cette série où l'on suit les aventures de la famille Stevens ?",
       "answer": "Guerre des Stevens",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318q0swk2d8y",
@@ -16975,7 +16975,7 @@
       "question": "Dans la Csa del Papel quelle est la spécialité de Rio ?",
       "answer": "piratage informatique",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318jrb8wc895",
@@ -16983,7 +16983,7 @@
       "question": "Personnage : Je suis Rousse stricte et mon prénom évoque du fromage",
       "answer": "Bree Van de Kamp",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318g5hk8dymg",
@@ -16994,7 +16994,7 @@
         "Bernnan"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963183uqr6mens",
@@ -17002,7 +17002,7 @@
       "question": "Gormogon est un tueur cannibale dans quelle série ?",
       "answer": "Bones",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318em2bz3nf6",
@@ -17010,7 +17010,7 @@
       "question": "Dans Supernatural que prenne les dieux Païens de Noël ?",
       "answer": "du sang et des ongles",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318edqgt4oc4",
@@ -17018,7 +17018,7 @@
       "question": "Dans Supernatural de quoi Sam a-t-il peur ?",
       "answer": "Clown et poupées",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963185w4dhu7qy",
@@ -17026,7 +17026,7 @@
       "question": "Dans Monk comment s'appelle le groupe de Rock de Randy ?",
       "answer": "The Randy disher Project",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318h1liyf8t2",
@@ -17034,7 +17034,7 @@
       "question": "Dans Monk Sharona à peur de quoi dans l'un des épisode?",
       "answer": "Eléphants",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318bbok4cok5",
@@ -17042,7 +17042,7 @@
       "question": "Dans Monk quel animal possède Julie ?",
       "answer": "Un poisson rouge",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318mfesk3jrq",
@@ -17050,7 +17050,7 @@
       "question": "Dans Monk de quoi meurt de DR. Kroger ?",
       "answer": "Crise cardiaque",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318kgk4bmgpd",
@@ -17058,7 +17058,7 @@
       "question": "Carrie Wells est une policière pourvue d'une mémoire incroyable dans :",
       "answer": "Unforgettable",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318yr5qnec2r",
@@ -17066,7 +17066,7 @@
       "question": "Brenda Leigh Johnson est le chef-adjoint dans une unité de la Police de Los Angeles chargée des crimes prioritaires dans :",
       "answer": "The Closer",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963185sy43411q",
@@ -17074,7 +17074,7 @@
       "question": "Patrick Jane, tenace et fantasque aide les enquêteurs du CBI dans :",
       "answer": "Mentalist",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318c2ujc7eql",
@@ -17082,7 +17082,7 @@
       "question": "A Storybrooke vivent des personnages de contes qu'Emma Swan rencontre dans :",
       "answer": "Unce Upon a time",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963187dtxtvq8k",
@@ -17090,7 +17090,7 @@
       "question": "Dans quelle série retrouve t-on les rescapés du vol 815",
       "answer": "Lost les disparues",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17677932963181dlks682y",
@@ -17098,7 +17098,7 @@
       "question": "A Boston, deux amies, une enquêtrice et un médecin légiste résolvent les crimes dans",
       "answer": "Rizzoli et Isles",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767793296318qvh3ac59l",
@@ -17106,7 +17106,7 @@
       "question": "Olivia Benson et Elliot Stabler se chargent des crimes à caractères sexuels et à la protection des victimes dans :",
       "answer": "New York, unité spéciale",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249knoo20o9p",
@@ -17114,7 +17114,7 @@
       "question": "Dans Friends cité les deux personnages qui ont introduit leur tête dans une dinde ?",
       "answer": "Joey, Monica",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552491pfpobz9e",
@@ -17122,7 +17122,7 @@
       "question": "Dans Friends Ross parle de l'Unagi, Rachel transforme Unagi en ?",
       "answer": "Cornet de peau de saumon",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552492h1b24arn",
@@ -17130,7 +17130,7 @@
       "question": "Phoebe accouche des triplés de son frère quel sont leur prénom ?",
       "answer": "Chandler, Franck Jr Jr, Leslie",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249vlszrdinr",
@@ -17138,7 +17138,7 @@
       "question": "Quel est le deuxième prénom de Chandler ?",
       "answer": "Murielle",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552496azeczu8l",
@@ -17146,7 +17146,7 @@
       "question": "Compléter cette phrase de Rachel dans Friends \" oeil pour oeil, tétons pour ... \"",
       "answer": "petit zizi",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249f02z6n2w4",
@@ -17157,7 +17157,7 @@
         "Le Blanc"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249b60y9dnrz",
@@ -17165,7 +17165,7 @@
       "question": "Dans Friends Phoebe pense que Ross et le ... de Rachel",
       "answer": "Homard",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249bsgvcls1f",
@@ -17173,7 +17173,7 @@
       "question": "Dans Friends pour l'anniversaire de Ross le concert de qui va voir la bande ?",
       "answer": "Hootie et les poissons volants",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249jocjbwyvi",
@@ -17181,7 +17181,7 @@
       "question": "Dans Friends Phoebe demande des place à Ross pour un concert de ?",
       "answer": "Sting",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249jpnh6mzyz",
@@ -17189,7 +17189,7 @@
       "question": "Dans Friends qui est l'acteur qui joue le strip-teaseur à l'enterrement de vie de jeune fille de Phoebe",
       "answer": "Danny Devito",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249hel7st8d8",
@@ -17200,7 +17200,7 @@
         "Blanchir les dents"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249dp3cvwc85",
@@ -17208,7 +17208,7 @@
       "question": "Dans Friends Phoebe trouve son marie Mike grâce à qui ?",
       "answer": "Joey",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249rtux0pspk",
@@ -17216,7 +17216,7 @@
       "question": "Dans Friends Monica envisage de vivre dans une maison en ?",
       "answer": "Fromage",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "176764555524981yhd2a1r",
@@ -17224,7 +17224,7 @@
       "question": "Dans Friends a cause de Pohebe Monica se retrouve avec un lit en forme de ?",
       "answer": "Voiture",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552499ms91rhlc",
@@ -17232,7 +17232,7 @@
       "question": "Dans Friends le demi frère de Phoebe, Frank Jr est jouer par quel acteur ?",
       "answer": "Giovanni Ribisi",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249zc47e74y7",
@@ -17240,7 +17240,7 @@
       "question": "Sarah Michelle Gellar a t-elle jouer dans Firends ? ( Vrai , Faux )",
       "answer": "Faux",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249vqa36dnuv",
@@ -17251,7 +17251,7 @@
         "Tracy McConnell"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249rhkknkizy",
@@ -17263,7 +17263,7 @@
         "à côté d'une station d'épuration"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249qpotgb5eg",
@@ -17274,7 +17274,7 @@
         "interrupteur"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249xb0lr1kp8",
@@ -17285,7 +17285,7 @@
         "Sparkles"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249r8pkufmq2",
@@ -17293,7 +17293,7 @@
       "question": "Dans how i met your mother dans qu'elle pays Lily et Marshal devait-il déménager ?",
       "answer": "Italie",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552492hfjklvia",
@@ -17301,7 +17301,7 @@
       "question": "Dans Friends le singe de Ross à une chanson préférer qu'elle est le titre de cette chanson  ?",
       "answer": "Le lion est mort ce soir",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249glaf05qpo",
@@ -17309,7 +17309,7 @@
       "question": "Dans Friends Joey à un pingouin en peluche comment s'appelle t- il ?",
       "answer": "Hugsy",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249uqef7fe1p",
@@ -17317,7 +17317,7 @@
       "question": "Dans how i met your mother quel est le prénom de la 1ère copine de Barney ?",
       "answer": "Shannon",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249kthizqkhw",
@@ -17329,7 +17329,7 @@
         "Vingt-trois"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249pepo22emw",
@@ -17337,7 +17337,7 @@
       "question": "Dans how i met your mother qu'elle est la couleur du fameux parapluie ?",
       "answer": "Jaune",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249ku8wecs4y",
@@ -17345,7 +17345,7 @@
       "question": "Dans how i met your mother comment s'appelle le serveur que remercie Lily à chaque fois qu'il lui sert un verre ? (saison 10)",
       "answer": "Linus",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249tsxu4xgda",
@@ -17356,7 +17356,7 @@
         "oeufs brouillés"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249gn3jrajt9",
@@ -17364,7 +17364,7 @@
       "question": "Dans how i met your mother Où Barney souhaite-t-il faire le dîner de répétition de son mariage ?",
       "answer": "Laser game",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249xbqaqjr42",
@@ -17372,7 +17372,7 @@
       "question": "Dans How i met your mother Quelle chanson française chante la \"future\" de Ted sur son balcon ?",
       "answer": "La vie en Rose",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552492r9dlkete",
@@ -17380,7 +17380,7 @@
       "question": "Dans How i met your mother comment se prénoe la mère de Robin ?",
       "answer": "Geneviève",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249l1af8gsh5",
@@ -17391,7 +17391,7 @@
         "Mayo"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249wqensq2b0",
@@ -17399,7 +17399,7 @@
       "question": "Dans how i met your mother quel est le pourcentage que donne toujours Barney ? A: 83  B: 82  C: 85 D: 84",
       "answer": "A",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249f0sqbghit",
@@ -17407,7 +17407,7 @@
       "question": "How i met your mother quelle est la partie du corps de Marshall que Lily préfère ?",
       "answer": "Mollets",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552498rrdawhhs",
@@ -17415,7 +17415,7 @@
       "question": "Dans Big bang théorie dans quel ville se passe la série ?",
       "answer": "Pasadena",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249d0u0wwzv9",
@@ -17423,7 +17423,7 @@
       "question": "Dans Big bang théorie de quel Etat vient Sheldon ?",
       "answer": "Texas",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249d5suf2052",
@@ -17431,7 +17431,7 @@
       "question": "Dans Big bang théorie pourquoi Sheldon veut-il apprendre le mandarin ?",
       "answer": "se plaindre au restaurant chinois",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552494eh29pbu7",
@@ -17439,7 +17439,7 @@
       "question": "Dans Big bang théorie Quelle personne Amy surnomme-t-elle \" petit Gnou \" ?",
       "answer": "Bernadette",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249oumw3qvgs",
@@ -17447,7 +17447,7 @@
       "question": "Dans Big bang théorie quel acteur de la série star treck apparaît régulièrement dans la série ?",
       "answer": "Will Wheaton",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552498zielj96n",
@@ -17455,7 +17455,7 @@
       "question": "Dans Big bang théorie quel personnage de la série à un spin off dédié ?",
       "answer": "Sheldon",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552496re1ipdww",
@@ -17463,7 +17463,7 @@
       "question": "Dans Big bang théorie Que font-ils le mercredi soir ?",
       "answer": "Soirée comics book store",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249t0fcf2u45",
@@ -17471,7 +17471,7 @@
       "question": "Dans Big bang théorie Quand Sheldon utilise-t-il le mot \" Bazinga \" ?",
       "answer": "C",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552493pk7lx1zk",
@@ -17479,7 +17479,7 @@
       "question": "Dans Malcolm qui a brûlé la robe de Loïs ?",
       "answer": "Hal",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552491ckn6a0aj",
@@ -17490,7 +17490,7 @@
         "Moi je dirais Resse mais bon XD"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249madayg7bp",
@@ -17498,7 +17498,7 @@
       "question": "Dans Malcolm Dans \"La vente au Sapin de Noël \", qui est l'ennemis de Loïs ?",
       "answer": "écureuil",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249csoecgd81",
@@ -17506,7 +17506,7 @@
       "question": "Dans Malcolm comment se prénomme la mère de Loïs ?",
       "answer": "Ida",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249efxl4l8mc",
@@ -17514,7 +17514,7 @@
       "question": "Dans Malcolm la soeur de Loïs est malade de quel organe a t-elle besoin ?",
       "answer": "Rein",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249hqx0kph5y",
@@ -17522,7 +17522,7 @@
       "question": "Dans Malcolm Comment s'appelle la patronne de Francis en Alaska ?",
       "answer": "Lavernia",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249ks9390zgx",
@@ -17535,7 +17535,7 @@
         "ils n'en ont pas"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249j6cj6iez5",
@@ -17546,7 +17546,7 @@
         "Bougie vanille"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552498wwpwrzwm",
@@ -17554,7 +17554,7 @@
       "question": "Dans Malcolm pour qui Dewey chante-t-il son fameux Poupipoupipou?",
       "answer": "Baby-sitter",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249ialn4yaw0",
@@ -17565,7 +17565,7 @@
         "BCP TROP"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249y399d7hr0",
@@ -17573,7 +17573,7 @@
       "question": "Dans Malcolm comment s'appelle le chat de Greg ?",
       "answer": "Caramel",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552498bl7a5k2u",
@@ -17581,7 +17581,7 @@
       "question": "Dans Malcolm Comment se prénomme le lapin obèse de Dewey ?",
       "answer": "Sumo",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249drbiye0z4",
@@ -17589,7 +17589,7 @@
       "question": "Dans Grey's Anatomy Qui est surnomé le tyran ?",
       "answer": "Bailey",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552498bibh683x",
@@ -17597,7 +17597,7 @@
       "question": "Dans Grey's Anatomy Comment se prénomme la 1ère patiente de Meredith ?",
       "answer": "B",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552490s8xkd1tq",
@@ -17608,7 +17608,7 @@
         "Kepner"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249dhq82uij0",
@@ -17619,7 +17619,7 @@
         "O'Malley"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249g9oxk0qvp",
@@ -17630,7 +17630,7 @@
         "Mamour"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249ekgrvwbge",
@@ -17641,7 +17641,7 @@
         "Stevens"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249meklp5duq",
@@ -17653,7 +17653,7 @@
         "orthopédique"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552497v172v3k4",
@@ -17661,7 +17661,7 @@
       "question": "Dans Grey's Anatomy Entre Callie et Arizona laquelle à trompé l'autre ?",
       "answer": "Arizona",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249d2femmwnn",
@@ -17675,7 +17675,7 @@
         "signal Meredith"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249iqs2xizsc",
@@ -17686,7 +17686,7 @@
         "Kepner"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249mpucrazed",
@@ -17697,7 +17697,7 @@
         "Jambe"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249mum2jimcw",
@@ -17705,7 +17705,7 @@
       "question": "Dans Grey's Anatomy avec qui Jo Wilson se marie ?",
       "answer": "Alex Karef",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249j7opd6o0k",
@@ -17716,7 +17716,7 @@
         "Stevens"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "17676455552495zi50atra",
@@ -17724,7 +17724,7 @@
       "question": "Dans Grey's Anatomy de quoi souffrait la mère de Meredith ?",
       "answer": "Alzheimer",
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249a6rhhp5n6",
@@ -17735,7 +17735,7 @@
         "Avery"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "1767645555249uq6khd5us",
@@ -17746,7 +17746,7 @@
         "Lincoln"
       ],
       "difficulty": "",
-      "boxName": "Univers audio-visuel"
+      "boxName": "Univers audiovisuel"
     },
     {
       "id": "yoann_gourcuff_quiz_0",
@@ -18151,6 +18151,476 @@
       "boxName": "Cinéma 91",
       "cardNumber": 12,
       "difficulty": "medium"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_0",
+      "category": 1,
+      "question": "Synopsis mal raconté - Un gamin oublié protège sa caravane des méchants…",
+      "answer": "Maman j’ai raté l’avion",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_1",
+      "category": 1,
+      "question": "Film - 🍫 🏃‍➡️ 🇻🇳 🦐",
+      "answer": "Forrest Gump",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_2",
+      "category": 1,
+      "question": "Film - 🪾🐟👞👞🏵️",
+      "answer": "Big fish",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_3",
+      "category": 1,
+      "question": "Film - 🐰🎩👑♥️🐈‍⬛🐛",
+      "answer": "Alice aux pays des merveilles",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_4",
+      "category": 1,
+      "question": "Film - 🧼🤼🏻",
+      "answer": "Fight club",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_5",
+      "category": 1,
+      "question": "Film - 🤫🐑🔪😷",
+      "answer": "Le silence des agneaux",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_6",
+      "category": 1,
+      "question": "Film - 🛳️🧊",
+      "answer": "Titanic",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_7",
+      "category": 1,
+      "question": "Film - 📺🫧 🧰🧍🏻🎥 🎥",
+      "answer": "Truman Show",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_8",
+      "category": 1,
+      "question": "Synopsis mal raconté -  Je me rappel d’un tapis iconique, une vague de sang et 2 gamines flippantes. L’histoire ? je ne sais plus XD",
+      "answer": "Shining",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_9",
+      "category": 1,
+      "question": "Synopsis mal raconté - Une souris, son propriétaire, un grand homme au coeur tendre et super pouvoir, un petit malin qui veut faire genre grâce à sa famille, un vrai vilain…  Tout ça dans une prison et un final dès plus électrisant.",
+      "answer": "La ligne verte",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_10",
+      "category": 1,
+      "question": "Synopsis mal raconté -  C’est une histoire d’un mec qui se fait pissé sur son tapis, je me rappel plus trop pourquoi, mais avec ces potes il kiffent le bowling, mais l’un d’eux meurs.",
+      "answer": "The big Lebowski",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_11",
+      "category": 1,
+      "question": "Synopsis mal raconté - Un coup de dés et l’aventure est partie pour retrouver la réalité.",
+      "answer": "Jumanji",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_12",
+      "category": 1,
+      "question": "🦖🛺🦟🩸",
+      "answer": "Jurassic Park",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_13",
+      "category": 1,
+      "question": "Synopsis mal raconté - Des chiffres et lettre vertes, des messages cryptés “compréhensible”, il s’éveille à la vérité, mais qu’est-ce que … ?",
+      "answer": "Matrix",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_14",
+      "category": 1,
+      "question": "🏰✂️🧑🏻‍🦱",
+      "answer": "Edouard aux mains d’argents",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_15",
+      "category": 1,
+      "question": "Dans qu’elle filme voit-on une femme à 3 seins, et un mec avec un mec qui lui sort du bid (beurk)",
+      "answer": "Total Recall",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_16",
+      "category": 1,
+      "question": "Synopsis mal raconté - Y a une invasion sur terre puis le corps d’une dame avec la tête d’un chien, un chien avec la tête de la dame. Ya trop de cerveau à l’air et bcp de piouuu piou pistolet LA chanson sauvera la terre",
+      "answer": "Mars attacks !",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_17",
+      "category": 1,
+      "question": "Film - Dans la famille Addame comment s’appelle le cousin tout poilu ?",
+      "answer": "Cousin machin",
+      "alternativeAnswers": [
+        "Machin"
+      ],
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_18",
+      "category": 1,
+      "question": "Synopsis mal raconté - Pan pan pan pan quand tout foire pour de l’argent. C’est toi le vendu non c’est toi pan pan…",
+      "answer": "Réservoir Dogs",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_19",
+      "category": 1,
+      "question": "Synopsis mal raconté - Il gagne les Jo alors que ce sport est pas hyper praticable chez eux",
+      "answer": "Rata Rocket",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_20",
+      "category": 1,
+      "question": "synopsis mal raconté -  Je crois c’est la libération d’un truc avec des bandlettes là, à cause d’une malédiction",
+      "answer": "La momie",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_21",
+      "category": 1,
+      "question": "Synopsis mal raconté -  Un projet une caméra et il se passe quoi ? bein au final on sait pas trop et ça m’a aggacé trop perso..",
+      "answer": "Projet blair witch",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_22",
+      "category": 1,
+      "question": "Synopsis mal raconté - Diantre qu’est-ce qu’on fou à cette époque ?",
+      "answer": "Les visiteurs",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_23",
+      "category": 1,
+      "question": "Dans le film à nous quatre qu’elle actrice joue les jumelles ?",
+      "answer": "Lindsay Lohan",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_24",
+      "category": 1,
+      "question": "🧑🏽‍💼🧑🏻‍💼🛸",
+      "answer": "Men in Black",
+      "alternativeAnswers": [
+        "MIB"
+      ],
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_25",
+      "category": 1,
+      "question": "Synopsis mal raconté - Je chevauche les pleins mais j’ai perdu ma tête.",
+      "answer": "Sleepy Hollow, la légende du cavalier sans tête",
+      "alternativeAnswers": [
+        "Sleepy Hollow"
+      ],
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_26",
+      "category": 1,
+      "question": "Synopsis mal raconté - J’ai pas compris le film, mais ils étaient défoncés.",
+      "answer": "Las Vegas Parano",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_27",
+      "category": 1,
+      "question": "Synopsis mal raconté - Bon c’est un mec qui est tout le temps négatif, jusqu’au jour ou un petit mot de 3 lettre va changer sa vie et lui faire vivre de merveilleuse aventure",
+      "answer": "Yes man",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_28",
+      "category": 1,
+      "question": "Synopsis mal raconté - Je crois c’est un vampire, il chasse ses congénères, mais genre il vit le jour",
+      "answer": "Blade",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_29",
+      "category": 1,
+      "question": "Synopsis mal raconté - Je chante du gospel dans un couvent, mais je suis pas Nonne",
+      "answer": "Sister Act",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_30",
+      "category": 1,
+      "question": "Synopsis mal raconté - Un professeur vit des aventures dans le turfu",
+      "answer": "Retour vers le futur",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_31",
+      "category": 1,
+      "question": "Synopsis mal raconté - Un homme meurt, mais se trouve à l’intérieur des toiles de sa femme",
+      "answer": "Au delà de nos rêves",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_32",
+      "category": 1,
+      "question": "Synopsis mal ranconté - Des animaux pleins de tâches risque leur peau, pour une meuf pas  du tout vegan…",
+      "answer": "Les 101 dalmatins",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_33",
+      "category": 1,
+      "question": "Synopsis mal raconté- C’est un mec qui veut sauver tout le monde, il kiffe pas trop les pingouin je crois et il se prend pour une chauve-souris.",
+      "answer": "Batman, le défi",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_34",
+      "category": 1,
+      "question": "Film - Y a une série du même nom mais pour le film ils on juste rajouté un X",
+      "answer": "Malcolm X",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_35",
+      "category": 1,
+      "question": "synopsis mal raconté- Photographe ringard relou tout ce qu’on detèste en 2026… et la nuit il joue à OSS 117 en aussi problématique",
+      "answer": "Austin Power",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_36",
+      "category": 1,
+      "question": "Synopsis mal raconté - Parce que l’homme qui se prend pour une chauve-souris à besoin d’un acolyte",
+      "answer": "Batman & Robin",
+      "alternativeAnswers": [
+        "Batamn et Robin"
+      ],
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_37",
+      "category": 1,
+      "question": "Synopsis mal raconté - Cette saucisse qui veux jouer à un jeux et ça finis en vrai boucherie",
+      "answer": "Saw",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_38",
+      "category": 1,
+      "question": "Synopsis mal raconté - qui est le con de qui ?",
+      "answer": "Dîner de cons",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_39",
+      "category": 1,
+      "question": "Snyopsis mal raconté - Oupsi quelqu’un est mort on le cache et venez on fait genre on dit rien on s’en souvient pas et tout devrait bien se passé ..",
+      "answer": "Souviens toi l’été derniers",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_40",
+      "category": 1,
+      "question": "Synopsis mal raconté - Quel idée d’avoir un enfant qui fait des voeux d’anniversaire qui se réalise et qui t’empêche de faire ton métier d’avocat.",
+      "answer": "Menteur menteur",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_41",
+      "category": 1,
+      "question": "Synopsis mal raconté - T’es posé sur le canapé tu chill tranquille et la une gamine flippante qui débarque dans ton salon et après il reste 7 jours avant de dead.",
+      "answer": "Le cercle",
+      "alternativeAnswers": [
+        "the ring"
+      ],
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_42",
+      "category": 1,
+      "question": "Film - Alors ce film à le même prénom qu’un détective dans une veille série",
+      "answer": "Hercule",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_43",
+      "category": 1,
+      "question": "Synopsis mal raconté - Encore ce foutu homme chauve-souris mais visiblement pour toujours",
+      "answer": "Batman forever",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_44",
+      "category": 1,
+      "question": "Film - 🐢🍕",
+      "answer": "Les tortues Ninja",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_45",
+      "category": 1,
+      "question": "Synopsis mal raconté - le voisin d une autre planète qui a débarquer pour m emprunté mon téléphone",
+      "answer": "E.T",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_46",
+      "category": 1,
+      "question": "Synopsis mal raconté -  Au bord de la plage on aime se doré la pilule et faire trempette. L’être humain oublie parfois qu’il reste une proie sous l’eau.  Il y a de grand dent…",
+      "answer": "Dent de la mer",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_47",
+      "category": 1,
+      "question": "Stranghers things sans le monde a l envers",
+      "answer": "Les goonies",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_48",
+      "category": 1,
+      "question": "Synopsis de film - Un vieux grincheux cherche à gâché la fête de noël de chouxville",
+      "answer": "Grinch",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_49",
+      "category": 1,
+      "question": "Synopsis mal raconté - C’est l’histoire de la création d’un hêtre un peu particulier, il a tendance à glisser et bcp rebondir, son deuxième nom pour être slim !",
+      "answer": "Flubber",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_50",
+      "category": 1,
+      "question": "Cherryl blossom est un personnage de qu’elle série ?",
+      "answer": "riverdale",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_51",
+      "category": 1,
+      "question": "Dans quel gang est Jughead Jones dans riverdale ?",
+      "answer": "Southside Serpents",
+      "boxName": "Univers audiovisuel",
+      "difficulty": "medium"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_52",
+      "category": 1,
+      "question": "synopsis mal raconté - Il y a trois mec qui se prenne un peu pour des justiciers avec des espèces d’aspirateurs pour les phénomènes paranormaux",
+      "answer": "S.O.S fantômes",
+      "alternativeAnswers": [
+        "Sos Fantômes"
+      ],
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_53",
+      "category": 1,
+      "question": "Synopsis mal raconté - Des légumes qui font petés avec un alien visuellement improvisé et bloubloublou glouglou un truc du genre.",
+      "answer": "La soupe aux choux",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_54",
+      "category": 1,
+      "question": "Synopsis mal raconté - Une histoire sous une grande étendue d’eau",
+      "answer": "Le grand bleu",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_55",
+      "category": 1,
+      "question": "Synopsis mal raconté - C’est un peu UN Tome Raider puisqu’à l’époque les héroïnes sont pas hyper populaires, bref il cherche un trésor perdue.",
+      "answer": "Indiana Jones et l’ache perdure",
+      "alternativeAnswers": [
+        "indiana Jones"
+      ],
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_56",
+      "category": 1,
+      "question": "Je suis le porté iconique dans le film ?",
+      "answer": "Dirty dancing",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_57",
+      "category": 1,
+      "question": "Synopsis mal raconté - Quel drôle d’idée d’aller se balader en forêt alors que tu sais très bien que tu cherches tes congénères qui te voit comme de la bouff..",
+      "answer": "Cannibal Holocaust",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_58",
+      "category": 1,
+      "question": "Synopsis mal raconté - Une bande d’objet parte en ballade pour retrouver leur ami. Il se ballade dans une forêt, il aiment chanter. Dans ce tumulte, il y a l’aspirateur râleur, la lampe froussarde, un grille pin malin et une couverture chauffante terrorisé. Bref tout vas bien se passé",
+      "answer": "Le petit grille-pain courageux",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_59",
+      "category": 1,
+      "question": "Synopsis mal raconté - 5 enfants de tout horizon sont plongé dans un univers gourmand, petite chanson et un seul gagnant.",
+      "answer": "Charlie et la chocolaterie",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_60",
+      "category": 1,
+      "question": "Synopsis mal raconté -   Si tu dis mon nom plusieurs fois je viens à toi de l’au-delà!",
+      "answer": "Beetle juice",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_61",
+      "category": 1,
+      "question": "Synopsis mal raconté - Pour ces deux sœurs en plein adolescence leur faim va faire de gros dégâts.",
+      "answer": "Grave",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_62",
+      "category": 1,
+      "question": "Synopsis mal raconté - Je divise mon temps pour le showbiness, jusqu’à la déformation final",
+      "answer": "the Substance",
+      "boxName": "Univers audiovisuel"
+    },
+    {
+      "id": "univers_audiovisuel_quiz_63",
+      "category": 1,
+      "question": "1 synopsis 2 film  mal raconté -  C’est 3 justiciers qui chasse avec des aspirateurs, ils croient attrapé des êtres surnaturel surprises dans le sac de d’aspirateur, il le seul l’unique malfaiteur au masque qui commet ses méfaits.",
+      "answer": "SOS Fantomas",
+      "boxName": "Univers audiovisuel"
     }
   ]
 }
