@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-01-25T13:00:33.984Z",
+  "exportDate": "2026-01-31T22:29:48.184Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -78,12 +78,20 @@
   "questions": [
     {
       "id": "1766225057432fgrtvspys",
-      "question": "De ces trois villes, laquelle est la moins éloignée de Paris :\n- Hong Kong\n- Mexico\n- Los Angeles",
+      "question": "De ces trois villes, laquelle est la moins éloignée de Paris ?",
       "answer": "Los Angeles",
       "category": 0,
       "trivialBox": "Classique",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Hong Kong",
+        "Los Angeles",
+        "Sydney",
+        "Mexico"
+      ],
+      "qcmCorrectIndex": 1
     },
     {
       "id": "17662251985611g6on9lil",
@@ -6607,72 +6615,136 @@
     {
       "id": "1766852766367eqzbxb77q",
       "category": 2,
-      "question": "Laquelle de ces célébrités n'a jamais été ambassadeur des Nations Unies : Angelina Jolie, George Clooney ou Brad Pitt ?",
+      "question": "Laquelle de ces célébrités n'a jamais été ambassadeur des Nations Unies ?",
       "answer": "Brad Pitt",
       "alternativeAnswers": [
         "Pitt"
       ],
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Brad Pitt",
+        "Aucune de ces réponses",
+        "Angelina Jolie",
+        "George Clooney"
+      ],
+      "qcmCorrectIndex": 0
     },
     {
       "id": "1766852766367w6qa1we50",
       "category": 2,
-      "question": "Laquelle de ces fêtes a lieu le plus tard dans l'année : la Saint-Patrick, la Saint-Valentin ou l'Anzac Day ?",
+      "question": "Laquelle de ces fêtes a lieu le plus tard dans l'année ?",
       "answer": "L'Anzac Day",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "la Saint-Patrick",
+        "Tous les trois",
+        "l'Anzac Day",
+        "la Saint-Valentin"
+      ],
+      "qcmCorrectIndex": 2
     },
     {
       "id": "1766852766367pd9dzeccr",
       "category": 2,
-      "question": "Laquelle de ces gares n'était pas desservie par le fameux Train bleu : Marseille, Nice ou Bordeaux ?",
+      "question": "Laquelle de ces gares n'était pas desservie par le fameux Train bleu ?",
       "answer": "Bordeaux",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Marseille",
+        "Aucun des trois",
+        "Bordeaux",
+        "Nice"
+      ],
+      "qcmCorrectIndex": 2
     },
     {
       "id": "1766852766367k6e2ym7y7",
       "category": 2,
-      "question": "Laquelle de ces lettres est interdite sur une plaque d'immatriculation française pour éviter les confusions : A, M ou U ?",
+      "question": "Laquelle de ces lettres est interdite sur une plaque d'immatriculation française pour éviter les confusions ?",
       "answer": "U",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Tous les trois",
+        "M",
+        "A",
+        "U"
+      ],
+      "qcmCorrectIndex": 3
     },
     {
       "id": "176685276636742wvrzckx",
       "category": 2,
-      "question": "Laquelle de ces personnalités politiques n'a pas étudié à l'université d'Oxford : Bill Clinton, Tony Blair ou Vladimir Poutine ?",
+      "question": "Laquelle de ces personnalités politiques n'a pas étudié à l'université d'Oxford ?",
       "answer": "Vladimir Poutine",
       "alternativeAnswers": [
         "Poutine"
       ],
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Vladimir Poutine",
+        "Aucune de ces réponses",
+        "Tony Blair",
+        "Bill Clinton"
+      ],
+      "qcmCorrectIndex": 0
     },
     {
       "id": "17668527663672x76a0d1y",
       "category": 2,
-      "question": "Laquelle de ces villes n'a pas pour surnom « Venise » : Bruges, Amsterdam ou Oran ?",
+      "question": "Laquelle de ces villes n'a pas pour surnom « Venise » ?",
       "answer": "Oran",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Moscou",
+        "Bruges",
+        "Amsterdam",
+        "Oran"
+      ],
+      "qcmCorrectIndex": 3
     },
     {
       "id": "1766852766367utwcc1z6b",
       "category": 2,
-      "question": "Lequel de ces pays d'Europe n'est pas une monarchie : l'Espagne, la Suède ou le Portugal ?",
+      "question": "Lequel de ces pays d'Europe n'est pas une monarchie ?",
       "answer": "Le Portugal",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "le Portugal",
+        "L'Australie",
+        "l'Espagne",
+        "la Suède"
+      ],
+      "qcmCorrectIndex": 0
     },
     {
       "id": "176685276636799cvl7yih",
       "category": 2,
-      "question": "Lequel de ces édifices n'a pas été construit pour une exposition universelle : la Tour Eiffel, l'Atomium ou l'Empire State Building ?",
+      "question": "Lequel de ces édifices n'a pas été construit pour une exposition universelle ?",
       "answer": "L'Empire State Building",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "la Tour Eiffel",
+        "l'Empire State Building",
+        "l'Atomium",
+        "Aucun des trois"
+      ],
+      "qcmCorrectIndex": 1
     },
     {
       "id": "17668527663670ms7mkxya",
@@ -6740,10 +6812,18 @@
     {
       "id": "1766852766367zjeiew9fz",
       "category": 2,
-      "question": "Parmi ces sigles, lequel ne désigne pas une agence de renseignement : la CIA, le MI6 ou la DGesCO ?",
+      "question": "Parmi ?",
       "answer": "DGesCO",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "ces sigles",
+        "la DGesCO",
+        "lequel ne désigne pas une agence de renseignement : la CIA",
+        "le MI6"
+      ],
+      "qcmCorrectIndex": 1
     },
     {
       "id": "1766852766367a18siqd5s",
@@ -6775,10 +6855,18 @@
     {
       "id": "1766852766367915nb2ydm",
       "category": 2,
-      "question": "Parmi ces inventions, laquelle n'a pas été brevetée par Moulinex : le presse-purée, le hachoir électrique ou le café instantané ?",
+      "question": "Parmi ?",
       "answer": "Le café instantané",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "le café instantané",
+        "laquelle n'a pas été brevetée par Moulinex : le presse-purée",
+        "le hachoir électrique",
+        "ces inventions"
+      ],
+      "qcmCorrectIndex": 0
     },
     {
       "id": "1766852766367fzjvt1nir",
@@ -8691,18 +8779,34 @@
     {
       "id": "17668536770950cguaf9j6",
       "category": 3,
-      "question": "Lequel de ces héros n'a pas été créé par Jean Van Hamme : Thorgal, Largo Winch ou Corto Maltese ?",
+      "question": "Lequel de ces héros n'a pas été créé par Jean Van Hamme ?",
       "answer": "Corto Maltese",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Thorgal",
+        "Largo Winch",
+        "Aucun des trois",
+        "Corto Maltese"
+      ],
+      "qcmCorrectIndex": 3
     },
     {
       "id": "1766853677095naccw22p7",
       "category": 3,
-      "question": "Lequel de ces magazines n'est pas un hebdomadaire : Elle, Paris Match ou Fluide glacial ?",
+      "question": "Lequel de ces magazines n'est pas un hebdomadaire ?",
       "answer": "Fluide glacial",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Paris Match",
+        "Elle",
+        "L'Express",
+        "Fluide glacial"
+      ],
+      "qcmCorrectIndex": 3
     },
     {
       "id": "17668536770953aicxsogo",
@@ -8715,10 +8819,18 @@
     {
       "id": "1766853677095qdqnr2lae",
       "category": 3,
-      "question": "Parmi ces langues, laquelle n'est pas romane : l'espagnol, le roumain ou le grec ?",
+      "question": "Parmi ?",
       "answer": "Le grec",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "ces langues",
+        "le roumain",
+        "le grec",
+        "laquelle n'est pas romane : l'espagnol"
+      ],
+      "qcmCorrectIndex": 2
     },
     {
       "id": "17668536770956uk7xf2ao",
@@ -12852,10 +12964,18 @@
     {
       "id": "17670563290911e6y6h8ms",
       "category": 0,
-      "question": "Lequel des pays suivants ne s'étend pas sur deux continents : la Russie, la Chine, la Turquie, l'Azerbaïdjan ?",
+      "question": "Lequel des pays suivants ne s'étend pas sur deux continents ?",
       "answer": "La Chine",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "la Turquie",
+        "la Chine",
+        "la Russie",
+        "l'Azerbaïdjan"
+      ],
+      "qcmCorrectIndex": 1
     },
     {
       "id": "1767056329091zvhlnpujj",
@@ -13632,10 +13752,18 @@
     {
       "id": "1767056640975n1jci4bqc",
       "category": 5,
-      "question": "Les arctophiles collectionnent lequel des objets suivants : bateaux, ours en peluche, napperons, pièces de monnaie ?",
+      "question": "Les arctophiles collectionnent lequel des objets suivants ?",
       "answer": "Les ours en peluche",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "pièces de monnaie",
+        "ours en peluche",
+        "bateaux",
+        "napperons"
+      ],
+      "qcmCorrectIndex": 1
     },
     {
       "id": "1767056640975rw8tn8jwg",
@@ -14381,10 +14509,18 @@
     {
       "id": "1766854440296mkyeuqxn7",
       "category": 5,
-      "question": "Lequel de ces terrains est le plus grand : handball, basket ou volley ?",
+      "question": "Lequel de ces terrains est le plus grand ?",
       "answer": "Le terrain de handball",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Le golf",
+        "volley",
+        "basket",
+        "handball"
+      ],
+      "qcmCorrectIndex": 3
     },
     {
       "id": "1767448932869vdctxt0lx",
@@ -15141,10 +15277,18 @@
     {
       "id": "1767531938768en5tuk9ms",
       "category": 1,
-      "question": "Laquelle de ces sauces n'est traditionnellement pas végane : hoisin, Worcestershire, moutarde ou wasabi ?",
+      "question": "Laquelle de ces sauces n'est traditionnellement pas végane ?",
       "answer": "Worcestershire",
       "difficulty": "",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Worcestershire",
+        "moutarde",
+        "hoisin",
+        "wasabi"
+      ],
+      "qcmCorrectIndex": 0
     },
     {
       "id": "176753193876892lezcsk6",
