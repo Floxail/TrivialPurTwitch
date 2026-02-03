@@ -1,14 +1,31 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { Button, Form, Modal, Table, Badge, Tabs, Tab, Alert } from 'react-bootstrap';
+import { Button, Form, Table, Badge, Tabs, Tab, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { categoryColors, categoryNames, Question, TrivialCategory, useQuestionsStore } from './store/questions-store';
+import { categoryColors, categoryNames, Question, QuestionType, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
+import { BoxModal, QuestionModal, BulkActionsModal } from './question-manager-modals';
 
 const QuestionManager = () => {
   const navigate = useNavigate();
   const globalStore = useGlobalStore();
-  const questionsStore = useQuestionsStore();
+
+  // Sélecteurs Zustand optimisés - ne re-render que quand ces valeurs changent
+  const storeQuestions = useQuestionsStore(state => state.questions);
+  const storeBoxes = useQuestionsStore(state => state.boxes);
+  const syncStatus = useQuestionsStore(state => state.syncStatus);
+  const lastGitHubSync = useQuestionsStore(state => state.lastGitHubSync);
+
+  // Actions du store (références stables, ne causent pas de re-render)
+  const addQuestion = useQuestionsStore(state => state.addQuestion);
+  const updateQuestion = useQuestionsStore(state => state.updateQuestion);
+  const deleteQuestion = useQuestionsStore(state => state.deleteQuestion);
+  const addBox = useQuestionsStore(state => state.addBox);
+  const removeBox = useQuestionsStore(state => state.removeBox);
+  const getBoxByName = useQuestionsStore(state => state.getBoxByName);
+  const loadFromGitHub = useQuestionsStore(state => state.loadFromGitHub);
+  const removeDuplicates = useQuestionsStore(state => state.removeDuplicates);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [showModal, setShowModal] = useState(false);
@@ -17,31 +34,19 @@ const QuestionManager = () => {
   const [filterCategory, setFilterCategory] = useState<TrivialCategory | 'all'>('all');
   const [importSuccess, setImportSuccess] = useState<string>('');
   const [importError, setImportError] = useState<string>('');
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
-
-  // Form state
-  const [formData, setFormData] = useState({
-    question: '',
-    answer: '',
-    alternativeAnswers: '',
-    category: TrivialCategory.Geography,
-    boxName: '',
-    cardNumber: undefined as number | undefined,
-    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
-  });
+  const [preselectedBoxForModal, setPreselectedBoxForModal] = useState<string>('');
 
   // Gestion des boîtes
   const [showBoxModal, setShowBoxModal] = useState(false);
-  const [newBoxName, setNewBoxName] = useState('');
 
   // Sélection multiple
   const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(new Set());
   const [showBulkActionsModal, setShowBulkActionsModal] = useState(false);
   const [bulkAction, setBulkAction] = useState<'delete' | 'move' | null>(null);
-  const [bulkMoveTargetBox, setBulkMoveTargetBox] = useState<string>('');
 
   useEffect(() => {
     globalStore.setSubtitle('Gestion des questions');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Détection des doublons
@@ -50,7 +55,7 @@ const QuestionManager = () => {
     const questionMap = new Map<string, { count: number; ids: string[]; questions: Question[] }>();
 
     // Grouper par question (insensible à la casse et aux espaces)
-    questionsStore.questions.forEach(q => {
+    storeQuestions.forEach(q => {
       const normalizedQuestion = q.question.toLowerCase().trim();
       const key = `${normalizedQuestion}|${q.boxName}`; // Inclure la boîte dans la clé
 
@@ -110,7 +115,7 @@ const QuestionManager = () => {
     }
 
     // Utiliser la fonction optimisée du store
-    const removedCount = questionsStore.removeDuplicates();
+    const removedCount = removeDuplicates();
 
     setImportSuccess(`✅ ${removedCount} doublon(s) supprimé(s) !`);
     setTimeout(() => setImportSuccess(''), 5000);
@@ -139,67 +144,78 @@ const QuestionManager = () => {
   const handleSyncFromGitHub = async () => {
     try {
       setImportSuccess('🔄 Synchronisation avec GitHub en cours...');
-      await questionsStore.loadFromGitHub();
-
-      if (questionsStore.syncStatus === 'success') {
-        setImportSuccess('✅ Synchronisation GitHub réussie !');
-        setTimeout(() => setImportSuccess(''), 5000);
-      } else {
-        setImportError('❌ Erreur lors de la synchronisation GitHub');
-        setTimeout(() => setImportError(''), 5000);
-      }
+      await loadFromGitHub();
+      setImportSuccess('✅ Synchronisation GitHub réussie !');
+      setTimeout(() => setImportSuccess(''), 5000);
     } catch (error) {
       setImportError('❌ Erreur lors de la synchronisation GitHub');
       setTimeout(() => setImportError(''), 5000);
     }
   };
 
-  // Filtrage robuste en cascade - source unique de vérité
-  const filteredQuestions = useMemo(() => {
-    // 1. On part de toutes les questions brutes du store
-    let result = [...questionsStore.questions];
+  // ==========================================================
+  // DONNÉES MÉMORISÉES - Évite les recalculs à chaque frappe
+  // ==========================================================
 
-    // 2. On applique le filtre de BOÎTE de manière stricte
-    if (selectedBox && selectedBox.trim()) {
-      result = result.filter(q => q.boxName === selectedBox);
+  // Boîtes avec leurs stats (mémorisé)
+  const boxesWithStats = useMemo(() => {
+    return storeBoxes.map(box => ({
+      ...box,
+      totalQuestions: storeQuestions.filter(q => q.boxName === box.name).length
+    }));
+  }, [storeBoxes, storeQuestions]);
+
+  // Questions filtrées (mémorisé)
+  const filteredQuestions = useMemo(() => {
+    let result = [...storeQuestions];
+
+    if (selectedBox && selectedBox.trim() !== '') {
+      const boxNameToFilter = selectedBox.trim();
+      result = result.filter(q => (q.boxName || '').trim() === boxNameToFilter);
     }
 
-    // 3. On applique le filtre de CATÉGORIE
     if (filterCategory !== 'all') {
       result = result.filter(q => q.category === filterCategory);
     }
 
-    // 4. Tri alphabétique par boxName, puis par cardNumber, puis par category
     result.sort((a, b) => {
-      // D'abord par boxName (alphabétique français)
-      const boxCompare = a.boxName.toLowerCase().localeCompare(b.boxName.toLowerCase(), 'fr', { sensitivity: 'base' });
+      const boxCompare = (a.boxName || '').toLowerCase().localeCompare((b.boxName || '').toLowerCase(), 'fr', { sensitivity: 'base' });
       if (boxCompare !== 0) return boxCompare;
-
-      // Ensuite par cardNumber (si présent)
       const cardA = a.cardNumber ?? 0;
       const cardB = b.cardNumber ?? 0;
       if (cardA !== cardB) return cardA - cardB;
-
-      // Enfin par catégorie
       return a.category - b.category;
     });
 
     return result;
-  }, [selectedBox, filterCategory, questionsStore.questions]);
+  }, [storeQuestions, selectedBox, filterCategory]);
 
-  // Si besoin de allQuestions pour d'autres calculs (stats, etc.)
-  const allQuestions = useMemo(() => {
-    if (!selectedBox || !selectedBox.trim()) return questionsStore.questions;
-    return questionsStore.questions.filter(q => q.boxName === selectedBox);
-  }, [selectedBox, questionsStore.questions]);
+  // Questions par boîte (mémorisé)
+  const questionsByBoxMap = useMemo(() => {
+    const map = new Map<string, Question[]>();
+    storeQuestions.forEach(q => {
+      const boxName = q.boxName || '';
+      if (!map.has(boxName)) {
+        map.set(boxName, []);
+      }
+      map.get(boxName)!.push(q);
+    });
+    return map;
+  }, [storeQuestions]);
+
+  // Fonction helper pour obtenir les questions d'une boîte (utilise le cache)
+  const getBoxQuestions = (boxName: string): Question[] => {
+    return questionsByBoxMap.get(boxName) || [];
+  };
+
 
   // Export JSON
   const handleExport = () => {
     const exportData = {
       version: '2.0',
       exportDate: new Date().toISOString(),
-      boxes: questionsStore.boxes,
-      questions: questionsStore.questions,
+      boxes: storeBoxes,
+      questions: storeQuestions,
     };
 
     const dataStr = JSON.stringify(exportData, null, 2);
@@ -247,27 +263,26 @@ const QuestionManager = () => {
 
         // Import des boîtes si présentes (v2)
         if (data.boxes && Array.isArray(data.boxes)) {
-          data.boxes.forEach((box: any) => {
-            if (!questionsStore.boxes.find(b => b.name === box.name)) {
-              questionsStore.addBox(box.name);
+          for (const box of data.boxes) {
+            if (!storeBoxes.find(b => b.name === box.name)) {
+              addBox(box.name);
               totalBoxesAdded++;
             }
-          });
+          }
         }
 
         // Import des boîtes depuis trivialBoxes (v1.0)
         if (data.trivialBoxes && Array.isArray(data.trivialBoxes)) {
-          data.trivialBoxes.forEach((boxName: string) => {
-            if (!questionsStore.boxes.find(b => b.name === boxName)) {
-              questionsStore.addBox(boxName);
+          for (const boxName of data.trivialBoxes) {
+            if (!storeBoxes.find(b => b.name === boxName)) {
+              addBox(boxName);
               totalBoxesAdded++;
             }
-          });
+          }
         }
 
         // Import des questions
-        let fileImportedCount = 0;
-        data.questions.forEach((q: any) => {
+        for (const q of data.questions) {
           // Normaliser le format : v1.0 utilise 'trivialBox', v2.0 utilise 'boxName'
           const normalizedQuestion: Question = {
             ...q,
@@ -280,18 +295,17 @@ const QuestionManager = () => {
           }
 
           // Vérifier que la question n'existe pas déjà
-          const exists = questionsStore.questions.find(existing =>
+          const exists = storeQuestions.find(existing =>
             existing.question === normalizedQuestion.question && existing.boxName === normalizedQuestion.boxName
           );
 
           if (!exists) {
-            questionsStore.addQuestion(normalizedQuestion);
-            fileImportedCount++;
+            addQuestion(normalizedQuestion);
             totalImported++;
           } else {
             totalSkipped++;
           }
-        });
+        }
 
       } catch (error) {
         errorFiles.push(`${file.name}: ${error instanceof Error ? error.message : 'erreur inconnue'}`);
@@ -329,30 +343,9 @@ const QuestionManager = () => {
     }
   };
 
-  const handleOpenModal = (question?: Question) => {
-    if (question) {
-      setEditingQuestion(question);
-      setFormData({
-        question: question.question,
-        answer: question.answer,
-        alternativeAnswers: question.alternativeAnswers?.join(', ') || '',
-        category: question.category,
-        boxName: question.boxName,
-        cardNumber: question.cardNumber,
-        difficulty: question.difficulty || 'medium',
-      });
-    } else {
-      setEditingQuestion(null);
-      setFormData({
-        question: '',
-        answer: '',
-        alternativeAnswers: '',
-        category: TrivialCategory.Geography,
-        boxName: selectedBox || questionsStore.getBoxes()[0]?.name || '',
-        cardNumber: undefined,
-        difficulty: 'medium',
-      });
-    }
+  const handleOpenModal = (question?: Question, preselectedBox?: string) => {
+    setEditingQuestion(question || null);
+    setPreselectedBoxForModal(preselectedBox || selectedBox || boxesWithStats[0]?.name || '');
     setShowModal(true);
   };
 
@@ -361,17 +354,19 @@ const QuestionManager = () => {
     setEditingQuestion(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  // Callback pour le QuestionModal
+  const handleQuestionSubmit = (formData: any, isEdit: boolean, editId?: string) => {
     const alternativeAnswers = formData.alternativeAnswers
       .split(',')
-      .map(a => a.trim())
-      .filter(a => a.length > 0);
+      .map((a: string) => a.trim())
+      .filter((a: string) => a.length > 0);
 
-    if (editingQuestion) {
-      // Modification
-      questionsStore.updateQuestion(editingQuestion.id, {
+    const isQcm = formData.questionType === QuestionType.QCM;
+    const qcmOptions = isQcm ? formData.qcmOptions.filter((o: string) => o.trim().length > 0) : undefined;
+    const qcmCorrectIndex = isQcm ? formData.qcmCorrectIndex : undefined;
+
+    if (isEdit && editId) {
+      updateQuestion(editId, {
         question: formData.question,
         answer: formData.answer,
         alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
@@ -379,11 +374,13 @@ const QuestionManager = () => {
         boxName: formData.boxName,
         cardNumber: formData.cardNumber,
         difficulty: formData.difficulty,
+        questionType: formData.questionType,
+        qcmOptions: qcmOptions,
+        qcmCorrectIndex: qcmCorrectIndex,
       });
     } else {
-      // Création
       const newQuestion: Question = {
-        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        id: Date.now().toString() + Math.random().toString(36).substring(2, 11),
         question: formData.question,
         answer: formData.answer,
         alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
@@ -391,8 +388,11 @@ const QuestionManager = () => {
         boxName: formData.boxName,
         cardNumber: formData.cardNumber,
         difficulty: formData.difficulty,
+        questionType: formData.questionType,
+        qcmOptions: qcmOptions,
+        qcmCorrectIndex: qcmCorrectIndex,
       };
-      questionsStore.addQuestion(newQuestion);
+      addQuestion(newQuestion);
     }
 
     handleCloseModal();
@@ -400,57 +400,29 @@ const QuestionManager = () => {
 
   const handleDeleteQuestion = (questionId: string) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette question ?')) {
-      questionsStore.deleteQuestion(questionId);
+      deleteQuestion(questionId);
     }
   };
 
-  const handleAddBox = () => {
-    if (newBoxName.trim()) {
-      questionsStore.addBox(newBoxName.trim());
-      setNewBoxName('');
-      setShowBoxModal(false);
-    }
+  // Callback pour le BoxModal
+  const handleBoxAdd = (name: string) => {
+    addBox(name);
+    setShowBoxModal(false);
   };
 
   const handleDeleteBox = (boxName: string) => {
-    const box = questionsStore.getBoxByName(boxName);
+    const box = getBoxByName(boxName);
     if (!box) return;
 
     if (!window.confirm(`Supprimer la boîte "${boxName}" et toutes ses ${box.totalQuestions} questions ?`)) {
       return;
     }
 
-    questionsStore.removeBox(boxName);
+    removeBox(boxName);
   };
 
-  const handleDeleteCard = (boxName: string, cardNumber: number) => {
-    const cardQuestions = questionsStore.getQuestionsByCard(boxName, cardNumber);
-
-    if (!window.confirm(`Supprimer la carte #${cardNumber} (${cardQuestions.length} questions) ?`)) {
-      return;
-    }
-
-    cardQuestions.forEach(q => {
-      questionsStore.deleteQuestion(q.id);
-    });
-  };
-
-  const getCategoryCountsForCard = (questions: Question[]): Record<TrivialCategory, number> => {
-    const counts: Record<TrivialCategory, number> = {
-      [TrivialCategory.Geography]: 0,
-      [TrivialCategory.Entertainment]: 0,
-      [TrivialCategory.History]: 0,
-      [TrivialCategory.Arts]: 0,
-      [TrivialCategory.Science]: 0,
-      [TrivialCategory.Sports]: 0,
-    };
-
-    questions.forEach(q => {
-      counts[q.category]++;
-    });
-
-    return counts;
-  };
+  // Fonctions supprimées - mode carte retiré
+  // handleDeleteCard et getCategoryCountsForCard ne sont plus utilisées
 
   // Gestion de la sélection multiple
   const handleToggleQuestion = (questionId: string) => {
@@ -479,11 +451,11 @@ const QuestionManager = () => {
     }
 
     selectedQuestions.forEach(id => {
-      questionsStore.deleteQuestion(id);
+      deleteQuestion(id);
     });
 
     // Vérifier si la boîte actuelle est maintenant vide
-    const remainingQuestions = questionsStore.getQuestionsByBox(selectedBox);
+    const remainingQuestions = getBoxQuestions(selectedBox);
     if (selectedBox && remainingQuestions.length === 0) {
       // Si la boîte est vide, revenir à "Toutes les boîtes"
       setSelectedBox('');
@@ -493,26 +465,19 @@ const QuestionManager = () => {
     setShowBulkActionsModal(false);
   };
 
-  const handleBulkMove = () => {
-    if (!bulkMoveTargetBox) {
-      alert('Veuillez sélectionner une boîte de destination');
-      return;
-    }
-
+  const handleBulkMove = (targetBox: string) => {
     selectedQuestions.forEach(id => {
-      questionsStore.updateQuestion(id, { boxName: bulkMoveTargetBox });
+      updateQuestion(id, { boxName: targetBox });
     });
 
     // Vérifier si la boîte actuelle est maintenant vide
-    const remainingQuestions = questionsStore.getQuestionsByBox(selectedBox);
+    const remainingQuestions = getBoxQuestions(selectedBox);
     if (selectedBox && remainingQuestions.length === 0) {
-      // Si la boîte est vide, revenir à "Toutes les boîtes"
       setSelectedBox('');
     }
 
     setSelectedQuestions(new Set());
     setShowBulkActionsModal(false);
-    setBulkMoveTargetBox('');
   };
 
   const handleOpenBulkActions = (action: 'delete' | 'move') => {
@@ -545,182 +510,32 @@ const QuestionManager = () => {
       />
 
       {/* Modal de gestion des boîtes */}
-      <Modal show={showBoxModal} onHide={() => setShowBoxModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Nouvelle boîte</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group>
-            <Form.Label>Nom de la boîte</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ex: Cinéma 91, Histoire..."
-              value={newBoxName}
-              onChange={(e) => setNewBoxName(e.target.value)}
-            />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowBoxModal(false)}>
-            Annuler
-          </Button>
-          <Button variant="primary" onClick={handleAddBox}>
-            Ajouter
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <BoxModal
+        show={showBoxModal}
+        onHide={() => setShowBoxModal(false)}
+        onAdd={handleBoxAdd}
+      />
 
       {/* Modal d'édition de question */}
-      <Modal show={showModal} onHide={handleCloseModal} size="lg" centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{editingQuestion ? 'Modifier la question' : 'Nouvelle question'}</Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={handleSubmit}>
-          <Modal.Body>
-            <Form.Group className="mb-3">
-              <Form.Label>Boîte Trivial Pursuit *</Form.Label>
-              <Form.Select
-                required
-                value={formData.boxName}
-                onChange={(e) => setFormData({ ...formData, boxName: e.target.value })}
-              >
-                <option value="">Sélectionner une boîte...</option>
-                {questionsStore.getBoxes().map(box => (
-                  <option key={box.name} value={box.name}>{box.name}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Numéro de carte (optionnel)</Form.Label>
-              <Form.Control
-                type="number"
-                min="1"
-                placeholder="Laissez vide pour question hors carte"
-                value={formData.cardNumber || ''}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  cardNumber: e.target.value ? parseInt(e.target.value) : undefined
-                })}
-              />
-              <Form.Text className="text-muted">
-                Pour mode CARTE, chaque carte doit avoir exactement 6 questions (1 par catégorie)
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Catégorie *</Form.Label>
-              <Form.Select
-                required
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: parseInt(e.target.value) as TrivialCategory })}
-              >
-                {Object.entries(categoryNames).map(([key, name]) => (
-                  <option key={key} value={key}>
-                    {name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Question *</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                required
-                placeholder="Entrez votre question..."
-                value={formData.question}
-                onChange={(e) => setFormData({ ...formData, question: e.target.value })}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Réponse *</Form.Label>
-              <Form.Control
-                type="text"
-                required
-                placeholder="Réponse correcte"
-                value={formData.answer}
-                onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Réponses alternatives (optionnel)</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Séparez par des virgules : réponse1, réponse2"
-                value={formData.alternativeAnswers}
-                onChange={(e) => setFormData({ ...formData, alternativeAnswers: e.target.value })}
-              />
-              <Form.Text className="text-muted">
-                Accepte aussi les variantes orthographiques grâce à la tolérance aux fautes
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Difficulté</Form.Label>
-              <Form.Select
-                value={formData.difficulty}
-                onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as 'easy' | 'medium' | 'hard' })}
-              >
-                <option value="easy">Facile</option>
-                <option value="medium">Moyen</option>
-                <option value="hard">Difficile</option>
-              </Form.Select>
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseModal}>
-              Annuler
-            </Button>
-            <Button variant="primary" type="submit">
-              {editingQuestion ? 'Modifier' : 'Ajouter'}
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
+      <QuestionModal
+        show={showModal}
+        onHide={handleCloseModal}
+        onSubmit={handleQuestionSubmit}
+        editingQuestion={editingQuestion}
+        boxes={boxesWithStats}
+        defaultBoxName={preselectedBoxForModal}
+      />
 
       {/* Modal d'actions de masse */}
-      <Modal show={showBulkActionsModal} onHide={() => setShowBulkActionsModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {bulkAction === 'delete' ? 'Supprimer les questions' : 'Changer de boîte'}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {bulkAction === 'delete' ? (
-            <p>
-              Voulez-vous vraiment supprimer <strong>{selectedQuestions.size}</strong> question(s) ?
-            </p>
-          ) : (
-            <Form.Group>
-              <Form.Label>Boîte de destination</Form.Label>
-              <Form.Select
-                value={bulkMoveTargetBox}
-                onChange={(e) => setBulkMoveTargetBox(e.target.value)}
-              >
-                <option value="">Sélectionner une boîte...</option>
-                {questionsStore.getBoxes().map(box => (
-                  <option key={box.name} value={box.name}>{box.name}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowBulkActionsModal(false)}>
-            Annuler
-          </Button>
-          <Button
-            variant={bulkAction === 'delete' ? 'danger' : 'primary'}
-            onClick={bulkAction === 'delete' ? handleBulkDelete : handleBulkMove}
-          >
-            {bulkAction === 'delete' ? 'Supprimer' : 'Déplacer'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <BulkActionsModal
+        show={showBulkActionsModal}
+        onHide={() => setShowBulkActionsModal(false)}
+        action={bulkAction}
+        selectedCount={selectedQuestions.size}
+        boxes={boxesWithStats}
+        onDelete={handleBulkDelete}
+        onMove={handleBulkMove}
+      />
 
       {/* Interface principale */}
       <div className="mb-3 d-flex justify-content-between">
@@ -745,28 +560,28 @@ const QuestionManager = () => {
 
       {/* Indicateur de statut de synchronisation */}
       <div className="mb-3">
-        <Alert variant={questionsStore.syncStatus === 'success' ? 'success' : questionsStore.syncStatus === 'error' ? 'danger' : questionsStore.syncStatus === 'loading' ? 'info' : 'secondary'} className="py-2">
+        <Alert variant={syncStatus === 'success' ? 'success' : syncStatus === 'error' ? 'danger' : syncStatus === 'loading' ? 'info' : 'secondary'} className="py-2">
           <div className="d-flex justify-content-between align-items-center">
             <div>
-              {questionsStore.syncStatus === 'loading' && (
+              {syncStatus === 'loading' && (
                 <>
                   <FontAwesomeIcon icon={['fas', 'sync']} spin className="me-2" />
                   <strong>Synchronisation en cours...</strong>
                 </>
               )}
-              {questionsStore.syncStatus === 'success' && (
+              {syncStatus === 'success' && (
                 <>
                   <FontAwesomeIcon icon={['fas', 'check-circle']} className="me-2" />
                   <strong>Synchronisé avec GitHub</strong>
                 </>
               )}
-              {questionsStore.syncStatus === 'error' && (
+              {syncStatus === 'error' && (
                 <>
                   <FontAwesomeIcon icon={['fas', 'exclamation-triangle']} className="me-2" />
                   <strong>Erreur lors de la dernière synchronisation</strong>
                 </>
               )}
-              {questionsStore.syncStatus === 'idle' && (
+              {syncStatus === 'idle' && (
                 <>
                   <FontAwesomeIcon icon={['fas', 'info-circle']} className="me-2" />
                   <strong>Prêt à synchroniser</strong>
@@ -774,13 +589,13 @@ const QuestionManager = () => {
               )}
             </div>
             <div className="text-muted small">
-              {questionsStore.lastGitHubSync && (
+              {lastGitHubSync && (
                 <>
-                  Dernière sync: {getRelativeTime(questionsStore.lastGitHubSync)}
-                  <span className="ms-2">({questionsStore.questions.length} questions)</span>
+                  Dernière sync: {getRelativeTime(lastGitHubSync)}
+                  <span className="ms-2">({storeQuestions.length} questions)</span>
                 </>
               )}
-              {!questionsStore.lastGitHubSync && (
+              {!lastGitHubSync && (
                 <span>Aucune synchronisation effectuée</span>
               )}
             </div>
@@ -801,7 +616,7 @@ const QuestionManager = () => {
                 onChange={(e) => setSelectedBox(e.target.value)}
               >
                 <option value="">Toutes les boîtes</option>
-                {questionsStore.getBoxes().map(box => (
+                {boxesWithStats.map(box => (
                   <option key={box.name} value={box.name}>
                     {box.name} ({box.totalQuestions} questions)
                   </option>
@@ -810,117 +625,89 @@ const QuestionManager = () => {
             </div>
           </div>
 
-          {questionsStore.getBoxes().length === 0 ? (
+          {boxesWithStats.length === 0 ? (
             <div className="text-center p-5">
               <FontAwesomeIcon icon={['fas', 'box']} size="3x" color="var(--alt-text-color)" />
-              <p className="mt-3 text-muted">Aucune boîte. Créez votre première boîte et importez des cartes.</p>
+              <p className="mt-3 text-muted">Aucune boîte. Créez votre première boîte et importez des questions.</p>
             </div>
           ) : (
             <div className="row">
-              {(selectedBox ? questionsStore.getBoxes().filter(b => b.name === selectedBox) : questionsStore.getBoxes()).map(box => (
-                <div key={box.name} className="col-md-6 mb-3">
-                  <div className="card">
-                    <div className="card-header d-flex justify-content-between align-items-center">
-                      <h5 className="mb-0">
-                        <FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
-                        {box.name}
-                      </h5>
-                      <Button
-                        size="sm"
-                        variant="outline-danger"
-                        onClick={() => handleDeleteBox(box.name)}
-                      >
-                        <FontAwesomeIcon icon={['fas', 'trash']} />
-                      </Button>
-                    </div>
-                    <div className="card-body">
-                      {/* Statistiques */}
-                      <div className="mb-3">
-                        <Badge bg="primary" className="me-2">
-                          {box.cardNumbers.length} carte{box.cardNumbers.length > 1 ? 's' : ''}
-                        </Badge>
-                        <Badge bg="secondary">
-                          {box.totalQuestions} question{box.totalQuestions > 1 ? 's' : ''}
-                        </Badge>
+              {(selectedBox ? boxesWithStats.filter(b => b.name === selectedBox) : boxesWithStats).map(box => {
+                // Compter les types de questions
+                const boxQuestions = getBoxQuestions(box.name);
+                const qcmCount = boxQuestions.filter(q => q.questionType === QuestionType.QCM).length;
+                const freeTextCount = boxQuestions.length - qcmCount;
+
+                return (
+                  <div key={box.name} className="col-md-6 mb-3">
+                    <div className="card">
+                      <div className="card-header d-flex justify-content-between align-items-center">
+                        <h5 className="mb-0">
+                          <FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
+                          {box.name}
+                        </h5>
+                        <Button
+                          size="sm"
+                          variant="outline-danger"
+                          onClick={() => handleDeleteBox(box.name)}
+                        >
+                          <FontAwesomeIcon icon={['fas', 'trash']} />
+                        </Button>
                       </div>
+                      <div className="card-body">
+                        {/* Statistiques */}
+                        <div className="mb-3">
+                          <Badge bg="secondary" className="me-2">
+                            {box.totalQuestions} question{box.totalQuestions > 1 ? 's' : ''}
+                          </Badge>
+                          {qcmCount > 0 && (
+                            <Badge bg="success" className="me-2">
+                              📋 {qcmCount} QCM
+                            </Badge>
+                          )}
+                          {freeTextCount > 0 && (
+                            <Badge bg="outline-secondary" style={{ border: '1px solid #666', color: '#888' }}>
+                              ✏️ {freeTextCount} Libre{freeTextCount > 1 ? 's' : ''}
+                            </Badge>
+                          )}
+                        </div>
 
-                      {/* Liste des cartes */}
-                      <h6 className="mb-2">Cartes disponibles :</h6>
-                      <div className="d-flex flex-wrap gap-2 mb-3">
-                        {box.cardNumbers.length > 0 ? (
-                          box.cardNumbers.map(cardNum => {
-                            const cardQuestions = questionsStore.getQuestionsByCard(box.name, cardNum);
-                            const categoryCounts = getCategoryCountsForCard(cardQuestions);
-                            const isComplete = Object.values(categoryCounts).every(c => c === 1);
-
+                        {/* Répartition par catégorie */}
+                        <h6 className="mb-2">Par catégorie :</h6>
+                        <div className="d-flex flex-wrap gap-1 mb-3">
+                          {Object.entries(categoryNames).map(([key, name]) => {
+                            const count = boxQuestions.filter(q => q.category === parseInt(key)).length;
                             return (
-                              <div
-                                key={cardNum}
-                                className={`border rounded p-2 ${isComplete ? 'border-success' : 'border-warning'}`}
-                                style={{ width: '120px', cursor: 'pointer' }}
-                                onClick={() => setExpandedCard(expandedCard === `${box.name}-${cardNum}` ? null : `${box.name}-${cardNum}`)}
+                              <Badge
+                                key={key}
+                                bg=""
+                                style={{
+                                  backgroundColor: count > 0 ? categoryColors[parseInt(key) as TrivialCategory] : '#444',
+                                  color: 'white',
+                                  opacity: count > 0 ? 1 : 0.5
+                                }}
                               >
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <strong>Carte #{cardNum}</strong>
-                                  {isComplete ? (
-                                    <Badge bg="success">✓</Badge>
-                                  ) : (
-                                    <Badge bg="warning">{cardQuestions.length}/6</Badge>
-                                  )}
-                                </div>
-
-                                {/* Détails de la carte (si expanded) */}
-                                {expandedCard === `${box.name}-${cardNum}` && (
-                                  <div className="mt-2" style={{ fontSize: '12px' }}>
-                                    {Object.entries(categoryNames).map(([key, name]) => {
-                                      const count = categoryCounts[parseInt(key) as TrivialCategory];
-                                      return (
-                                        <div key={key} className="d-flex justify-content-between">
-                                          <span
-                                            style={{
-                                              color: categoryColors[parseInt(key) as TrivialCategory],
-                                              fontWeight: count > 0 ? 'bold' : 'normal'
-                                            }}
-                                          >
-                                            {name.substring(0, 3)}
-                                          </span>
-                                          <span>{count > 0 ? '✓' : '✗'}</span>
-                                        </div>
-                                      );
-                                    })}
-                                    <Button
-                                      size="sm"
-                                      variant="outline-danger"
-                                      className="mt-2 w-100"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDeleteCard(box.name, cardNum);
-                                      }}
-                                    >
-                                      <FontAwesomeIcon icon={['fas', 'trash']} /> Supprimer
-                                    </Button>
-                                  </div>
-                                )}
-                              </div>
+                                {name.replace('▲ ', '')} : {count}
+                              </Badge>
                             );
-                          })
-                        ) : (
-                          <p className="text-muted">Aucune carte dans cette boîte</p>
-                        )}
-                      </div>
+                          })}
+                        </div>
 
-                      {/* Bouton pour ajouter une carte */}
-                      <Button
-                        size="sm"
-                        variant="outline-primary"
-                        onClick={() => navigate('/convertisseur')}
-                      >
-                        <FontAwesomeIcon icon={['fas', 'plus']} /> Ajouter une carte
-                      </Button>
+                        {/* Bouton pour ajouter une question */}
+                        <Button
+                          size="sm"
+                          variant="outline-primary"
+                          onClick={() => {
+                            handleOpenModal(undefined, box.name);
+                          }}
+                        >
+                          <FontAwesomeIcon icon={['fas', 'plus']} /> Ajouter une question
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </Tab>
@@ -934,7 +721,7 @@ const QuestionManager = () => {
                 onChange={(e) => setSelectedBox(e.target.value)}
               >
                 <option value="">Toutes les boîtes</option>
-                {questionsStore.getBoxes().map(box => (
+                {boxesWithStats.map(box => (
                   <option key={box.name} value={box.name}>
                     {box.name} ({box.totalQuestions} questions)
                   </option>
@@ -980,7 +767,7 @@ const QuestionManager = () => {
               <p className="mt-3 text-muted">Aucune question. Commencez par ajouter une boîte Trivial Pursuit et des questions.</p>
             </div>
           ) : (
-            <Table hover responsive>
+            <Table hover responsive key={`table-${selectedBox}-${filterCategory}`}>
               <thead>
                 <tr>
                   <th style={{ width: '5%' }}>
@@ -991,7 +778,7 @@ const QuestionManager = () => {
                     />
                   </th>
                   <th style={{ width: '12%' }}>Boîte</th>
-                  <th style={{ width: '8%' }}>Carte #</th>
+                  <th style={{ width: '8%' }}>Type</th>
                   <th style={{ width: '12%' }}>Catégorie</th>
                   <th style={{ width: '30%' }}>Question</th>
                   <th style={{ width: '20%' }}>Réponse</th>
@@ -1010,10 +797,10 @@ const QuestionManager = () => {
                     </td>
                     <td><Badge bg="secondary">{question.boxName}</Badge></td>
                     <td>
-                      {question.cardNumber !== undefined ? (
-                        <Badge bg="info">#{question.cardNumber}</Badge>
+                      {question.questionType === QuestionType.QCM ? (
+                        <Badge bg="success">📋 QCM</Badge>
                       ) : (
-                        <span className="text-muted">-</span>
+                        <Badge bg="outline-secondary" style={{ border: '1px solid #666', color: '#aaa' }}>✏️ Libre</Badge>
                       )}
                     </td>
                     <td>

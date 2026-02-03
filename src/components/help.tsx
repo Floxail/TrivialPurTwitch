@@ -19,7 +19,7 @@ const Help = ({ show, onClose }: any) => {
           <li>Ajouter un ou plusieurs <strong>points de chaine</strong> personalisés.</li>
           <li>Nommer et décrire le point de chaîne a votre guise.</li>
           <li>Mettre un prix qui vous semble correct.</li>
-          <li>Ajouter la demande de saisie de texte pour que les viewers puissent entrer le numéro de la question (Mode Quiz) ou la boîte voulue (Mode Carte).</li>
+          <li>Ajouter la demande de saisie de texte pour que les viewers puissent entrer le nombre de questions.</li>
         </ul>
         <h2>Comment Jouer</h2>
         <ul>

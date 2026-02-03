@@ -1,9 +1,8 @@
 import { create } from 'zustand';
 import { Question } from './questions-store';
 
-// Modes de jeu
+// Mode de jeu (simplifié - mode carte supprimé)
 export enum QuizMode {
-  CARD = 'card',    // Mode Carte : 6 questions (1 par catégorie)
   QUIZ = 'quiz'     // Mode Quiz : X questions aléatoires
 }
 
@@ -11,7 +10,6 @@ export enum QuizMode {
 export type ActiveQuiz = {
   mode: QuizMode;
   boxName: string;
-  cardNumber?: number; // Seulement en mode CARD
   questions: Question[]; // Liste des questions de cette session
   currentQuestionIndex: number;
   startTime: number;
@@ -27,7 +25,7 @@ export class GameData {
 
 type GameActions = {
   // Gestion du quiz actif
-  startQuiz: (mode: QuizMode, boxName: string, questions: Question[], cardNumber?: number) => void;
+  startQuiz: (mode: QuizMode, boxName: string, questions: Question[]) => void;
   nextQuestion: () => boolean;
   endQuiz: () => void;
   recordAnswer: (questionIndex: number, playerNick: string) => void;
@@ -45,7 +43,7 @@ export const useGameStore = create<GameData & GameActions>()((set, get) => ({
 
   // ========== GESTION DU QUIZ ACTIF ==========
 
-  startQuiz: (mode: QuizMode, boxName: string, questions: Question[], cardNumber?: number) => {
+  startQuiz: (mode: QuizMode, boxName: string, questions: Question[]) => {
     if (questions.length === 0) {
       console.error('Impossible de démarrer un quiz sans questions');
       return;
@@ -54,7 +52,6 @@ export const useGameStore = create<GameData & GameActions>()((set, get) => ({
     const newQuiz: ActiveQuiz = {
       mode,
       boxName,
-      cardNumber,
       questions,
       currentQuestionIndex: 0,
       startTime: Date.now(),
@@ -64,7 +61,7 @@ export const useGameStore = create<GameData & GameActions>()((set, get) => ({
     };
 
     set({ activeQuiz: newQuiz });
-    console.log(`✅ Quiz démarré : ${mode} - ${boxName}${cardNumber ? ` #${cardNumber}` : ''} - ${questions.length} questions`);
+    console.log(`✅ Quiz démarré : ${boxName} - ${questions.length} questions`);
   },
 
   nextQuestion: (): boolean => {

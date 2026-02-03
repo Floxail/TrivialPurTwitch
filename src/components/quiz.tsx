@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { cleanValueLight, removeArticles, sorensenDiceScore } from 'helpers';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, ProgressBar, Modal, Form, Alert } from 'react-bootstrap';
 import { Client, Options } from 'tmi.js';
 import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
 import { Answer, Player, usePlayerStore } from './store/player-store';
 import { TwitchMode, useSettingsStore } from './store/settings-store';
-import { categoryColors, categoryNames, Question, useQuestionsStore } from './store/questions-store';
+import { categoryColors, categoryNames, QuestionType, useQuestionsStore } from './store/questions-store';
 import { QuizMode, useGameStore } from './store/game-store';
 import Podium from './podium';
 import Leaderboard from './leaderboard';
@@ -17,6 +17,9 @@ let twitchCallback: (nick: string, tid: string, msg: string) => void = () => {};
 
 const SCORE_CMD_DELAY = 2000;
 
+// Labels pour les options QCM
+const QCM_LABELS = ['A', 'B', 'C', 'D'];
+
 const Quiz = () => {
 	const twitchClient = useRef<Client | null>(null);
 	const questionTimer = useRef<NodeJS.Timeout | null>(null);
@@ -24,7 +27,10 @@ const Quiz = () => {
 	const delayedScoreCommands = useRef<string[]>([]);
 
 	const settingsStore = useSettingsStore();
-	const questionsStore = useQuestionsStore();
+	// Sélecteurs pour éviter les re-renders inutiles
+	const boxes = useQuestionsStore((state) => state.boxes);
+	const cumulativeScoresInQuizMode = useQuestionsStore((state) => state.cumulativeScoresInQuizMode);
+	const questionsStore = useQuestionsStore(); // Pour les actions
 	const gameStore = useGameStore();
 	const setSubtitle = useGlobalStore((state) => state.setSubtitle);
 
@@ -47,18 +53,23 @@ const Quiz = () => {
 	// Refs pour éviter les problèmes de closure dans onProposition
 	const questionRevealedRef = useRef(false);
 	const currentAnswerersRef = useRef<{ nick: string; isFirst: boolean }[]>([]);
+	// Track des tentatives QCM (un viewer ne peut répondre qu'une seule fois en QCM)
+	const qcmAttemptsRef = useRef<Set<string>>(new Set());
 
-	// États pour le modal de sélection de carte/quiz
+	// États pour le modal de sélection de quiz
 	const [showModeSelector, setShowModeSelector] = useState(false);
 	const [pendingQuizRequester, setPendingQuizRequester] = useState<string>('');
-	const [selectedMode, setSelectedMode] = useState<QuizMode>(QuizMode.CARD);
 	const [selectedBoxName, setSelectedBoxName] = useState<string>('');
-	const [cardNumber, setCardNumber] = useState<string>('');
 	const [quizQuestionCount, setQuizQuestionCount] = useState<number>(10);
 	const [modeError, setModeError] = useState<string>('');
+	const [balanceCategories, setBalanceCategories] = useState<boolean>(true); // Mode couleurs équilibrées
 
 	const activeQuiz = gameStore.activeQuiz;
 	const currentQuestion = activeQuiz?.questions[activeQuiz.currentQuestionIndex];
+
+	// Vérifie si la question actuelle est un QCM
+	const isQcmQuestion = currentQuestion?.questionType === QuestionType.QCM &&
+		currentQuestion?.qcmOptions && currentQuestion.qcmOptions.length === 4;
 
 	useEffect(() => {
 		if (twitchNick && twitchToken) {
@@ -74,20 +85,14 @@ const Quiz = () => {
 		if (activeQuiz) {
 			const questionNum = activeQuiz.currentQuestionIndex + 1;
 			const totalQuestions = activeQuiz.totalQuestions;
-			const modeText = activeQuiz.mode === QuizMode.CARD
-				? `Carte #${activeQuiz.cardNumber}`
-				: 'Quiz';
-			const categoryText = activeQuiz.mode === QuizMode.CARD
-				? ` - ${categoryNames[activeQuiz.questions[activeQuiz.currentQuestionIndex]?.category || 0]}`
-				: '';
 
-			setSubtitle(`${modeText} - Question ${questionNum}/${totalQuestions}${categoryText}`);
+			setSubtitle(`Quiz - Question ${questionNum}/${totalQuestions}`);
 			setWaitingForRedemption(false);
 
 			// Démarrer le timer pour chaque question
 			startQuestionTimer();
 		} else {
-			setSubtitle('En attente de points de chaîne...');
+			setSubtitle('En attente...');
 			setWaitingForRedemption(true);
 		}
 
@@ -160,6 +165,7 @@ const Quiz = () => {
 		setTimeLeft(questionTimeLimit);
 		currentAnswerersRef.current = [];
 		lastAnswerersRef.current = [];
+		qcmAttemptsRef.current = new Set(); // Reset des tentatives QCM
 		setQuestionRevealed(false);
 		questionRevealedRef.current = false;
 
@@ -218,10 +224,16 @@ const Quiz = () => {
 			const safeQuestion = currentQuizState?.questions[currentQuizState.currentQuestionIndex];
 
 			if (finalAnswerers.length > 0) {
-				const msg = `✅ Bonne réponse : ${safeQuestion?.answer}! Bravo à ${finalAnswerers.slice(0, 5).map(a => a.nick).join(', ')}, ...`;
+				const answerText = safeQuestion?.questionType === QuestionType.QCM && safeQuestion?.qcmCorrectIndex !== undefined
+					? `${QCM_LABELS[safeQuestion.qcmCorrectIndex]} - ${safeQuestion?.answer}`
+					: safeQuestion?.answer;
+				const msg = `✅ Bonne réponse : ${answerText}! Bravo à ${finalAnswerers.slice(0, 5).map(a => a.nick).join(', ')}${finalAnswerers.length > 5 ? ', ...' : ''}`;
 				twitchClient.current?.say(twitchNick, msg);
 			} else {
-				twitchClient.current?.say(twitchNick, `⏱️ Temps écoulé ! La réponse était : ${safeQuestion?.answer}`);
+				const answerText = safeQuestion?.questionType === QuestionType.QCM && safeQuestion?.qcmCorrectIndex !== undefined
+					? `${QCM_LABELS[safeQuestion.qcmCorrectIndex]} - ${safeQuestion?.answer}`
+					: safeQuestion?.answer;
+				twitchClient.current?.say(twitchNick, `⏱️ Temps écoulé ! La réponse était : ${answerText}`);
 			}
 		}
 	};
@@ -258,34 +270,26 @@ const Quiz = () => {
 	const handleChannelPointsRedemption = (nick: string, tid: string, userInput: string) => {
 		initPlayer(nick, tid);
 
-		// Parser l'entrée utilisateur pour déterminer le mode
-		// Format attendu pour MODE CARTE : "Nom de la Boîte"
-		// Format attendu pour MODE QUIZ : "10" (juste un nombre)
-
 		const trimmedInput = userInput.trim();
 
-		// Vérifier si c'est un nombre (mode QUIZ)
+		// Vérifier si c'est un nombre (nombre de questions)
 		const questionCount = parseInt(trimmedInput);
 
 		if (!isNaN(questionCount) && trimmedInput === questionCount.toString()) {
-			// MODE QUIZ : l'utilisateur a entré un nombre
+			// L'utilisateur a entré un nombre de questions
 			setPendingQuizRequester(nick);
-			setSelectedMode(QuizMode.QUIZ);
 			setQuizQuestionCount(questionCount);
 			setShowModeSelector(true);
 		} else {
-			// MODE CARTE : l'utilisateur a entré un nom de boîte
-			const boxName = trimmedInput;
+			// L'utilisateur a entré un nom de boîte
 			setPendingQuizRequester(nick);
-			setSelectedMode(QuizMode.CARD);
-			setSelectedBoxName(boxName);
+			setSelectedBoxName(trimmedInput);
 			setShowModeSelector(true);
 		}
 	};
 
 	const onProposition = (nick: string, tid: string, message: string) => {
 		// Si la question est révélée, on ignore TOUTES les propositions
-		// Cela empêche de répondre pendant le temps mort entre deux questions
 		if (questionRevealedRef.current) {
 			return;
 		}
@@ -309,7 +313,7 @@ const Quiz = () => {
 
 			const args = message.substring(5).trim().split(' ');
 
-			// Format: !quiz carte BoxName  OU  !quiz BoxName 20
+			// Format: !quiz BoxName [nombre]
 			if (args.length === 0 || args[0] === '') {
 				// Pas d'arguments = ouvrir le sélecteur
 				setPendingQuizRequester(nick);
@@ -317,120 +321,124 @@ const Quiz = () => {
 				return;
 			}
 
-			// Avec arguments
-			const firstArg = args[0].toLowerCase();
+			const lastArg = args[args.length - 1];
+			const questionCount = parseInt(lastArg);
 
-			if (firstArg === 'carte') {
-				// Mode CARTE: !quiz carte BoxName
-				const boxName = args.slice(1).join(' ');
+			if (!isNaN(questionCount)) {
+				// Dernier arg est un nombre
+				const boxName = args.slice(0, -1).join(' ');
 				setPendingQuizRequester(nick);
-				setSelectedMode(QuizMode.CARD);
 				setSelectedBoxName(boxName);
+				setQuizQuestionCount(questionCount);
 				setShowModeSelector(true);
 			} else {
-				// Mode QUIZ: !quiz BoxName [nombre]
-				const lastArg = args[args.length - 1];
-				const questionCount = parseInt(lastArg);
-
-				if (!isNaN(questionCount)) {
-					// Dernier arg est un nombre
-					const boxName = args.slice(0, -1).join(' ');
-					setPendingQuizRequester(nick);
-					setSelectedMode(QuizMode.QUIZ);
-					setSelectedBoxName(boxName);
-					setQuizQuestionCount(questionCount);
-					setShowModeSelector(true);
-				} else {
-					// Pas de nombre = ouvrir le sélecteur avec la boîte pré-remplie
-					const boxName = args.join(' ');
-					setPendingQuizRequester(nick);
-					setSelectedBoxName(boxName);
-					setShowModeSelector(true);
-				}
+				// Pas de nombre = ouvrir le sélecteur avec la boîte pré-remplie
+				const boxName = args.join(' ');
+				setPendingQuizRequester(nick);
+				setSelectedBoxName(boxName);
+				setShowModeSelector(true);
 			}
 			return;
 		}
 
 		// Vérification des réponses
-		// IMPORTANT: Récupérer activeQuiz et currentQuestion directement du store
-		// pour éviter les problèmes de closure avec les anciennes valeurs
 		const currentActiveQuiz = gameStore.activeQuiz;
 		const currentActiveQuestion = currentActiveQuiz?.questions[currentActiveQuiz.currentQuestionIndex];
 
-		// Utiliser les refs pour avoir les valeurs à jour
 		if (currentActiveQuiz && currentActiveQuestion && !questionRevealedRef.current) {
-			const proposition = cleanValueLight(message);
-			const propositionNoArticles = removeArticles(proposition);
-
-			// Vérifier si le joueur a déjà répondu (utiliser la ref)
+			// Vérifier si le joueur a déjà répondu
 			if (currentAnswerersRef.current.find((a) => a.nick === nick)) {
 				return;
 			}
 
-			// Vérifier la réponse
-			const correctAnswer = cleanValueLight(currentActiveQuestion.answer);
-			const correctAnswerNoArticles = removeArticles(correctAnswer);
-			const alternativeAnswers = currentActiveQuestion.alternativeAnswers?.map(cleanValueLight) || [];
-
 			let isCorrect = false;
 
-			// Fonction pour vérifier la similarité avec tolérance améliorée
-			const checkMatch = (answer: string, prop: string, propNoArticles: string) => {
-				const answerNoArticles = removeArticles(answer);
+			// Mode QCM : vérifier si la réponse est A, B, C ou D
+			if (currentActiveQuestion.questionType === QuestionType.QCM &&
+				currentActiveQuestion.qcmOptions &&
+				currentActiveQuestion.qcmCorrectIndex !== undefined) {
 
-				// Vérification exacte (avec et sans articles)
-				if (answer === prop || answerNoArticles === propNoArticles) {
-					return true;
-				}
+				const answer = message.trim().toUpperCase();
+				const correctIndex = currentActiveQuestion.qcmCorrectIndex;
 
-				// Vérification de sous-chaîne pour réponses similaires
-				// Ex: "pluie acide" devrait matcher "pluies acides"
-				const minLength = Math.min(answerNoArticles.length, propNoArticles.length);
-				const maxLength = Math.max(answerNoArticles.length, propNoArticles.length);
+				// Vérifier si c'est une réponse QCM valide (A, B, C, D ou 1, 2, 3, 4)
+				const isValidQcmAnswer = QCM_LABELS.includes(answer) || ['1', '2', '3', '4'].includes(answer);
 
-				// Si les longueurs sont proches (différence max de 2 caractères pour le pluriel/singulier)
-				if (maxLength - minLength <= 2 && minLength >= 4) {
-					if (answerNoArticles.includes(propNoArticles) || propNoArticles.includes(answerNoArticles)) {
-						return true;
+				if (isValidQcmAnswer) {
+					// En QCM, un viewer ne peut répondre qu'UNE SEULE FOIS (pas de seconde chance)
+					if (qcmAttemptsRef.current.has(nick)) {
+						return; // Déjà tenté, ignorer
 					}
-				}
+					// Enregistrer la tentative
+					qcmAttemptsRef.current.add(nick);
 
-				// Pour les réponses plus longues, vérification si l'une contient au moins 80% de l'autre
-				if (minLength >= 5) {
-					const requiredLength = Math.ceil(answerNoArticles.length * 0.8);
-					if (propNoArticles.length >= requiredLength && answerNoArticles.includes(propNoArticles)) {
-						return true;
-					}
-					if (answerNoArticles.length >= requiredLength && propNoArticles.includes(answerNoArticles)) {
-						return true;
-					}
-				}
-
-				// Vérification avec score de similarité (seuil à 0.70 pour être plus permissif)
-				// D'abord sans articles
-				if (sorensenDiceScore(answerNoArticles, propNoArticles) >= 0.70) {
-					return true;
-				}
-
-				// Puis avec articles
-				if (sorensenDiceScore(answer, prop) >= 0.75) {
-					return true;
-				}
-
-				return false;
-			};
-
-			// Vérifier la réponse principale
-			if (checkMatch(correctAnswer, proposition, propositionNoArticles)) {
-				isCorrect = true;
-			}
-
-			// Vérifier les réponses alternatives
-			if (!isCorrect) {
-				for (const altAnswer of alternativeAnswers) {
-					if (checkMatch(altAnswer, proposition, propositionNoArticles)) {
+					// Vérifier si c'est la bonne réponse
+					if (answer === QCM_LABELS[correctIndex] || answer === String(correctIndex + 1)) {
 						isCorrect = true;
-						break;
+					}
+				}
+				// Si ce n'est pas une réponse QCM valide, on ignore silencieusement
+			} else {
+				// Mode réponse libre (comportement existant)
+				const proposition = cleanValueLight(message);
+				const propositionNoArticles = removeArticles(proposition);
+
+				const correctAnswer = cleanValueLight(currentActiveQuestion.answer);
+				const alternativeAnswers = currentActiveQuestion.alternativeAnswers?.map(cleanValueLight) || [];
+
+				// Fonction pour vérifier la similarité avec tolérance améliorée
+				const checkMatch = (answer: string, prop: string, propNoArticles: string) => {
+					const answerNoArticles = removeArticles(answer);
+
+					// Vérification exacte (avec et sans articles)
+					if (answer === prop || answerNoArticles === propNoArticles) {
+						return true;
+					}
+
+					// Vérification de sous-chaîne pour réponses similaires
+					const minLength = Math.min(answerNoArticles.length, propNoArticles.length);
+					const maxLength = Math.max(answerNoArticles.length, propNoArticles.length);
+
+					if (maxLength - minLength <= 2 && minLength >= 4) {
+						if (answerNoArticles.includes(propNoArticles) || propNoArticles.includes(answerNoArticles)) {
+							return true;
+						}
+					}
+
+					// Pour les réponses plus longues
+					if (minLength >= 5) {
+						const requiredLength = Math.ceil(answerNoArticles.length * 0.8);
+						if (propNoArticles.length >= requiredLength && answerNoArticles.includes(propNoArticles)) {
+							return true;
+						}
+						if (answerNoArticles.length >= requiredLength && propNoArticles.includes(answerNoArticles)) {
+							return true;
+						}
+					}
+
+					// Score de similarité
+					if (sorensenDiceScore(answerNoArticles, propNoArticles) >= 0.70) {
+						return true;
+					}
+					if (sorensenDiceScore(answer, prop) >= 0.75) {
+						return true;
+					}
+
+					return false;
+				};
+
+				// Vérifier la réponse principale
+				if (checkMatch(correctAnswer, proposition, propositionNoArticles)) {
+					isCorrect = true;
+				}
+
+				// Vérifier les réponses alternatives
+				if (!isCorrect) {
+					for (const altAnswer of alternativeAnswers) {
+						if (checkMatch(altAnswer, proposition, propositionNoArticles)) {
+							isCorrect = true;
+							break;
+						}
 					}
 				}
 			}
@@ -446,65 +454,42 @@ const Quiz = () => {
 
 	twitchCallback = onProposition;
 
-	// Lancer le quiz avec le mode sélectionné
+	// Lancer le quiz
 	const handleStartQuiz = () => {
 		if (!selectedBoxName) {
 			alert('⚠️ Veuillez sélectionner une boîte');
 			return;
 		}
 
-		const box = questionsStore.getBoxByName(selectedBoxName);
-		if (!box) {
-			setModeError(`❌ La boîte "${selectedBoxName}" n'existe pas`);
-			return;
+		let questions: ReturnType<typeof questionsStore.generateRandomQuiz>;
+		let displayBoxName = selectedBoxName;
+
+		// Mode "Toutes les boîtes"
+		if (selectedBoxName === '__ALL_BOXES__') {
+			questions = questionsStore.generateRandomQuizAllBoxes(quizQuestionCount, balanceCategories);
+			displayBoxName = balanceCategories ? 'Mix équilibré' : 'Mix aléatoire';
+		} else {
+			const box = questionsStore.getBoxByName(selectedBoxName);
+			if (!box) {
+				setModeError(`❌ La boîte "${selectedBoxName}" n'existe pas`);
+				return;
+			}
+			questions = questionsStore.generateRandomQuiz(selectedBoxName, quizQuestionCount);
 		}
 
-		let questions: Question[] | null = null;
-		let cardNum: number | undefined = undefined;
-
-		if (selectedMode === QuizMode.CARD) {
-			// Mode CARTE
-			if (!cardNumber) {
-				setModeError('⚠️ Veuillez entrer un numéro de carte');
-				return;
-			}
-
-			const num = parseInt(cardNumber);
-			if (!box.cardNumbers.includes(num)) {
-				setModeError(`❌ La carte #${num} n'existe pas dans "${selectedBoxName}"`);
-				return;
-			}
-
-			const card = questionsStore.generateQuizCard(selectedBoxName, num);
-			if (!card) {
-				setModeError(`❌ Impossible de générer la carte #${num}`);
-				return;
-			}
-
-			questions = card.questions;
-			cardNum = num;
-
-		} else {
-			// Mode QUIZ
-			questions = questionsStore.generateRandomQuiz(selectedBoxName, quizQuestionCount);
-			if (!questions) {
-				setModeError(`❌ Impossible de générer le quiz`);
-				return;
-			}
+		if (!questions || questions.length === 0) {
+			setModeError(`❌ Impossible de générer le quiz (pas assez de questions)`);
+			return;
 		}
 
 		// Sauvegarder le requester avant de fermer le modal
 		const requester = pendingQuizRequester;
 
 		// Démarrer le quiz dans le store
-		gameStore.startQuiz(selectedMode, selectedBoxName, questions, cardNum);
+		gameStore.startQuiz(QuizMode.QUIZ, displayBoxName, questions);
 
 		// Gérer les scores cumulatifs
-		if (selectedMode === QuizMode.CARD && !questionsStore.cumulativeScoresInCardMode) {
-			// Réinitialiser les scores en mode CARTE si pas cumulatif
-			usePlayerStore.getState().clear();
-		} else if (selectedMode === QuizMode.QUIZ && !questionsStore.cumulativeScoresInQuizMode) {
-			// Réinitialiser les scores en mode QUIZ si pas cumulatif
+		if (!cumulativeScoresInQuizMode) {
 			usePlayerStore.getState().clear();
 		}
 
@@ -512,28 +497,37 @@ const Quiz = () => {
 		setShowModeSelector(false);
 		setPendingQuizRequester('');
 		setSelectedBoxName('');
-		setCardNumber('');
 		setQuizQuestionCount(10);
 		setModeError('');
 
 		// Envoyer le message de lancement et la première question dans le chat
 		if (twitchNick && questions) {
-			const modeText = selectedMode === QuizMode.CARD
-				? `Carte #${cardNum}`
-				: `${questions.length} questions`;
-			twitchClient.current?.say(twitchNick, `🎲 Quiz lancé pour ${requester} ! ${selectedBoxName} - ${modeText}`);
+			twitchClient.current?.say(twitchNick, `🎲 Quiz lancé pour ${requester} ! ${displayBoxName} - ${questions.length} questions`);
 
 			// Envoyer la première question après 1 seconde
 			setTimeout(() => {
 				const currentActiveQuiz = useGameStore.getState().activeQuiz;
 				if (currentActiveQuiz && currentActiveQuiz.questions.length > 0) {
 					const firstQuestion = currentActiveQuiz.questions[0];
-					const catText = selectedMode === QuizMode.CARD
-						? ` ${categoryNames[firstQuestion.category]}`
-						: '';
-					twitchClient.current?.say(twitchNick, `❓ Question 1/${currentActiveQuiz.questions.length}${catText} : ${firstQuestion.question}`);
+					let questionMsg = `❓ Question 1/${currentActiveQuiz.questions.length} : ${firstQuestion.question}`;
+
+					// Ajouter les options QCM si applicable
+					if (firstQuestion.questionType === QuestionType.QCM && firstQuestion.qcmOptions) {
+						questionMsg += ` | ${firstQuestion.qcmOptions.map((opt, i) => `${QCM_LABELS[i]}) ${opt}`).join(' | ')}`;
+					}
+
+					twitchClient.current?.say(twitchNick, questionMsg);
 				}
 			}, 1000);
+		}
+	};
+
+	// Terminer la session (pour mode cumulatif)
+	const handleEndSession = () => {
+		setPodiumDisplayed(true);
+		usePlayerStore.getState().clear();
+		if (twitchNick) {
+			twitchClient.current?.say(twitchNick, '🏆 Session terminée ! Scores réinitialisés.');
 		}
 	};
 
@@ -549,8 +543,7 @@ const Quiz = () => {
 			clearInterval(questionTimer.current);
 		}
 
-		// 2. Vérifier s'il reste des questions SANS changer l'état tout de suite
-		// On accède directement à l'état frais du store pour éviter les closures périmées
+		// 2. Vérifier s'il reste des questions
 		const storeState = useGameStore.getState();
 		const currentQuiz = storeState.activeQuiz;
 
@@ -569,32 +562,31 @@ const Quiz = () => {
 			return;
 		}
 
-		// 3. On lance la transition (Délai)
-		// L'interface reste sur la question précédente révélée pendant ce temps
+		// 3. Transition
 		setTimeout(() => {
-			// 4. MAINTENANT on change la question dans le store (L'UI se met à jour ici)
 			gameStore.nextQuestion();
 
-			// 5. On récupère la NOUVELLE question fraîchement active
-			const updatedStore = useGameStore.getState(); // Important : reprendre l'état à jour
+			const updatedStore = useGameStore.getState();
 			const newQuiz = updatedStore.activeQuiz;
 
 			if (newQuiz) {
 				const newQuestion = newQuiz.questions[newQuiz.currentQuestionIndex];
 				const questionNum = newQuiz.currentQuestionIndex + 1;
 
-				// 6. On envoie le message Twitch synchro avec l'affichage
 				if (settingsStore.chatNotifications && twitchNick) {
-					const catText = newQuiz.mode === QuizMode.CARD
-						? ` ${categoryNames[newQuestion.category]}`
-						: '';
-					twitchClient.current?.say(twitchNick, `❓ Question ${questionNum}/${newQuiz.totalQuestions}${catText} : ${newQuestion.question}`);
+					let questionMsg = `❓ Question ${questionNum}/${newQuiz.totalQuestions} : ${newQuestion.question}`;
+
+					// Ajouter les options QCM si applicable
+					if (newQuestion.questionType === QuestionType.QCM && newQuestion.qcmOptions) {
+						questionMsg += ` | ${newQuestion.qcmOptions.map((opt, i) => `${QCM_LABELS[i]}) ${opt}`).join(' | ')}`;
+					}
+
+					twitchClient.current?.say(twitchNick, questionMsg);
 				}
 
-				// 7. On démarre le timer
 				startQuestionTimer();
 			}
-		}, 1000); // J'ai augmenté à 1000ms pour laisser le temps aux gens de lire la réponse précédente
+		}, 1000);
 	};
 
 	const handleRevealAnswer = () => {
@@ -602,7 +594,6 @@ const Quiz = () => {
 			clearInterval(questionTimer.current);
 		}
 
-		// Si pas encore révélé, révéler et attribuer les points immédiatement
 		if (!questionRevealed) {
 			handleTimeUp();
 		}
@@ -618,15 +609,16 @@ const Quiz = () => {
 
 	const progressPercent = (timeLeft / questionTimeLimit) * 100;
 
+	// Vérifie si le mode cumulatif est actif
+
 	return (
 		<>
-			{/* Modal de sélection de mode et carte/quiz */}
+			{/* Modal de sélection du quiz */}
 			<Modal
 				show={showModeSelector}
 				onHide={() => {
 					setShowModeSelector(false);
 					setSelectedBoxName('');
-					setCardNumber('');
 					setQuizQuestionCount(10);
 					setModeError('');
 				}}
@@ -641,46 +633,19 @@ const Quiz = () => {
 						<strong>{pendingQuizRequester}</strong> demande un quiz. Configurez les paramètres :
 					</p>
 
-					{/* Sélection du mode */}
-					<Form.Group className="mb-4">
-						<Form.Label><strong>Mode de jeu</strong></Form.Label>
-						<div className="d-flex gap-2">
-							<Button
-								variant={selectedMode === QuizMode.CARD ? 'primary' : 'outline-primary'}
-								onClick={() => setSelectedMode(QuizMode.CARD)}
-								className="flex-fill"
-							>
-								🎴 Mode CARTE
-								<div style={{ fontSize: '12px', marginTop: '5px' }}>
-									6 questions (1 par catégorie)
-								</div>
-							</Button>
-							<Button
-								variant={selectedMode === QuizMode.QUIZ ? 'primary' : 'outline-primary'}
-								onClick={() => setSelectedMode(QuizMode.QUIZ)}
-								className="flex-fill"
-							>
-								📚 Mode QUIZ
-								<div style={{ fontSize: '12px', marginTop: '5px' }}>
-									Questions aléatoires
-								</div>
-							</Button>
-						</div>
-					</Form.Group>
-
 					{/* Sélection de la boîte */}
 					<Form.Group className="mb-3">
-						<Form.Label>Boîte Trivial Pursuit</Form.Label>
+						<Form.Label>Boîte de questions</Form.Label>
 						<Form.Select
 							value={selectedBoxName}
 							onChange={(e) => {
 								setSelectedBoxName(e.target.value);
-								setCardNumber('');
 								setModeError('');
 							}}
 						>
 							<option value="">Sélectionner une boîte...</option>
-							{questionsStore.getBoxes().map(box => (
+							<option value="__ALL_BOXES__">🎨 Toutes les boîtes (couleurs mélangées)</option>
+							{boxes.map(box => (
 								<option key={box.name} value={box.name}>
 									{box.name} ({box.totalQuestions} questions)
 								</option>
@@ -688,44 +653,35 @@ const Quiz = () => {
 						</Form.Select>
 					</Form.Group>
 
-					{/* Mode CARTE : Sélection du numéro */}
-					{selectedMode === QuizMode.CARD && selectedBoxName && (
+					{/* Option équilibrer les catégories - visible uniquement en mode "Toutes les boîtes" */}
+					{selectedBoxName === '__ALL_BOXES__' && (
 						<Form.Group className="mb-3">
-							<Form.Label>Numéro de carte *</Form.Label>
-							<Form.Select
-								required
-								value={cardNumber}
-								onChange={(e) => {
-									setCardNumber(e.target.value);
-									setModeError('');
-								}}
-							>
-								<option value="">Sélectionner une carte...</option>
-								{questionsStore.getCardNumbersForBox(selectedBoxName).map(num => (
-									<option key={num} value={num}>Carte #{num}</option>
-								))}
-							</Form.Select>
-							{questionsStore.getCardNumbersForBox(selectedBoxName).length === 0 && (
-								<Form.Text className="text-danger d-block mt-2">
-									⚠️ Aucune carte disponible dans cette boîte
-								</Form.Text>
-							)}
+							<Form.Check
+								type="switch"
+								id="balanceCategories"
+								label="Équilibrer les catégories (une question de chaque couleur en rotation)"
+								checked={balanceCategories}
+								onChange={(e) => setBalanceCategories(e.target.checked)}
+							/>
+							<Form.Text className="text-muted">
+								{balanceCategories
+									? '📊 Les questions seront réparties équitablement entre les 6 catégories'
+									: '🎲 Les questions seront choisies aléatoirement sans équilibrage'}
+							</Form.Text>
 						</Form.Group>
 					)}
 
-					{/* Mode QUIZ : Nombre de questions */}
-					{selectedMode === QuizMode.QUIZ && (
-						<Form.Group className="mb-3">
-							<Form.Label>Nombre de questions</Form.Label>
-							<Form.Control
-								type="number"
-								min="1"
-								max="550"
-								value={quizQuestionCount}
-								onChange={(e) => setQuizQuestionCount(parseInt(e.target.value) || 10)}
-							/>
-						</Form.Group>
-					)}
+					{/* Nombre de questions */}
+					<Form.Group className="mb-3">
+						<Form.Label>Nombre de questions</Form.Label>
+						<Form.Control
+							type="number"
+							min="1"
+							max="550"
+							value={quizQuestionCount}
+							onChange={(e) => setQuizQuestionCount(parseInt(e.target.value) || 10)}
+						/>
+					</Form.Group>
 
 					{/* Message d'erreur */}
 					{modeError && (
@@ -740,7 +696,6 @@ const Quiz = () => {
 						onClick={() => {
 							setShowModeSelector(false);
 							setSelectedBoxName('');
-							setCardNumber('');
 							setQuizQuestionCount(10);
 							setModeError('');
 						}}
@@ -750,7 +705,7 @@ const Quiz = () => {
 					<Button
 						variant="primary"
 						onClick={handleStartQuiz}
-						disabled={!selectedBoxName || (selectedMode === QuizMode.CARD && !cardNumber)}
+						disabled={!selectedBoxName}
 					>
 						🚀 Lancer le quiz
 					</Button>
@@ -764,14 +719,13 @@ const Quiz = () => {
 							{waitingForRedemption && (
 								<div style={{ margin: 'auto', textAlign: 'center', padding: '50px' }}>
 									<FontAwesomeIcon icon={['fas', 'gift']} size="4x" color="var(--alt-text-color)" />
-									<h3 className="mt-4">En attente de Puntos...</h3>
+									<h3 className="mt-4">En attente...</h3>
 									<div className="mt-3">
 										<p className="text-muted">
 											<strong>🎁 Pour les viewers :</strong> Utilisez vos <strong>points de chaîne</strong> !
 										</p>
 										<p className="text-muted" style={{ fontSize: '14px' }}>
-											Mode CARTE : Entrez le nom de la boîte<br />
-											Mode QUIZ : Entrez le nombre de questions
+											Entrez le nombre de questions souhaitées
 										</p>
 									</div>
 									<div className="mt-4">
@@ -790,14 +744,27 @@ const Quiz = () => {
 											<FontAwesomeIcon icon={['fas', 'play']} className="me-2" />
 											Lancer un Quiz
 										</Button>
+
+										{/* Bouton Terminer Session (si mode cumulatif activé) */}
+										{cumulativeScoresInQuizMode && (
+											<Button
+												variant="warning"
+												size="lg"
+												className="mt-2 ms-2"
+												onClick={handleEndSession}
+											>
+												<FontAwesomeIcon icon={['fas', 'flag-checkered']} className="me-2" />
+												Terminer la session
+											</Button>
+										)}
 									</div>
-									{questionsStore.getBoxes().length > 0 && (
+									{boxes.length > 0 && (
 										<div className="mt-4 p-3" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '10px', display: 'inline-block' }}>
 											<p className="text-muted mb-2">
 												<strong>📦 Boîtes disponibles :</strong>
 											</p>
 											<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-												{questionsStore.getBoxes().map(b => (
+												{boxes.map(b => (
 													<span key={b.name} style={{
 														backgroundColor: '#ff60b7',
 														color: 'white',
@@ -831,6 +798,7 @@ const Quiz = () => {
 										}}
 									>
 										{categoryNames[currentQuestion.category]}
+										{isQcmQuestion && <span className="ms-2">📋 QCM</span>}
 									</div>
 
 									<ProgressBar
@@ -849,12 +817,38 @@ const Quiz = () => {
 										marginBottom: '20px',
 										minHeight: '150px',
 										display: 'flex',
+										flexDirection: 'column',
 										alignItems: 'center',
 										justifyContent: 'center'
 									}}>
 										<h2 style={{ textAlign: 'center', margin: 0 }}>
 											{currentQuestion.question}
 										</h2>
+
+										{/* Options QCM */}
+										{isQcmQuestion && currentQuestion.qcmOptions && !questionRevealed && (
+											<div className="qcm-options mt-4" style={{ width: '100%', maxWidth: '600px' }}>
+												<div className="row g-2">
+													{currentQuestion.qcmOptions.map((option, index) => (
+														<div key={index} className="col-6">
+															<div style={{
+																backgroundColor: 'var(--bg-color)',
+																border: '2px solid var(--border-color)',
+																borderRadius: '10px',
+																padding: '15px',
+																textAlign: 'center',
+																fontSize: '16px'
+															}}>
+																<strong style={{ color: '#ff60b7' }}>{QCM_LABELS[index]})</strong> {option}
+															</div>
+														</div>
+													))}
+												</div>
+												<p className="text-center mt-3 text-muted" style={{ fontSize: '14px' }}>
+													Répondez avec <strong>A</strong>, <strong>B</strong>, <strong>C</strong> ou <strong>D</strong> dans le chat
+												</p>
+											</div>
+										)}
 									</div>
 
 									{/* Réponse révélée */}
@@ -867,7 +861,11 @@ const Quiz = () => {
 											textAlign: 'center',
 											color: 'white'
 										}}>
-											<h3>✅ {currentQuestion.answer}</h3>
+											<h3>
+												✅ {isQcmQuestion && currentQuestion.qcmCorrectIndex !== undefined
+													? `${QCM_LABELS[currentQuestion.qcmCorrectIndex]} - ${currentQuestion.answer}`
+													: currentQuestion.answer}
+											</h3>
 										</div>
 									)}
 

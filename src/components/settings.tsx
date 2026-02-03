@@ -161,39 +161,9 @@ const Settings = () => {
         <div className="card p-3 mb-3">
           <Form.Group className="mb-3">
             <div className="d-flex align-items-center mb-2">
-              <FontAwesomeIcon icon={['fas', 'trophy']} className="me-2" size="lg" color="#FFD700" />
-              <Form.Label className="mb-0">
-                <strong>Scores en mode CARTE</strong>
-              </Form.Label>
-            </div>
-            <Form.Check
-              type="switch"
-              id="cumulativeScores"
-              label="Cumuler les scores entre les cartes"
-              checked={questionsStore.cumulativeScoresInCardMode}
-              onChange={(e) => questionsStore.setCumulativeScores(e.target.checked)}
-              style={{ fontSize: '16px' }}
-            />
-            <Alert variant={questionsStore.cumulativeScoresInCardMode ? 'success' : 'info'} className="mt-2 mb-0">
-              {questionsStore.cumulativeScoresInCardMode ? (
-                <>
-                  <strong>Mode cumulatif activé</strong><br />
-                  Les scores s'additionnent d'une carte à l'autre. Parfait pour une longue session avec plusieurs cartes !
-                </>
-              ) : (
-                <>
-                  <strong>Mode reset activé</strong><br />
-                  Les scores sont réinitialisés à chaque nouvelle carte. Parfait pour des parties courtes et indépendantes !
-                </>
-              )}
-            </Alert>
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <div className="d-flex align-items-center mb-2">
               <FontAwesomeIcon icon={['fas', 'trophy']} className="me-2" size="lg" color="#4CAF50" />
               <Form.Label className="mb-0">
-                <strong>Scores en mode QUIZ</strong>
+                <strong>Scores persistants</strong>
               </Form.Label>
             </div>
             <Form.Check
@@ -208,7 +178,7 @@ const Settings = () => {
               {questionsStore.cumulativeScoresInQuizMode ? (
                 <>
                   <strong>Mode cumulatif activé</strong><br />
-                  Les scores s'additionnent d'un quiz à l'autre. Parfait pour une longue session avec plusieurs quiz !
+                  Les scores s'additionnent d'un quiz à l'autre. Utilisez le bouton "Terminer la session" sur l'écran Quiz pour afficher le podium final et réinitialiser les scores.
                 </>
               ) : (
                 <>
@@ -223,7 +193,7 @@ const Settings = () => {
             <div className="d-flex align-items-center mb-2">
               <FontAwesomeIcon icon={['fas', 'list-ol']} className="me-2" size="lg" color="#4A90E2" />
               <Form.Label className="mb-0">
-                <strong>Questions par défaut en mode QUIZ</strong>
+                <strong>Questions par défaut</strong>
               </Form.Label>
             </div>
             <div className="d-flex align-items-center gap-2">
@@ -238,7 +208,7 @@ const Settings = () => {
               <span className="text-muted">questions</span>
             </div>
             <Form.Text className="text-muted">
-              Utilisé quand le mode QUIZ est lancé sans préciser de nombre (entre 1 et 100)
+              Nombre de questions par défaut lors du lancement d'un quiz (entre 1 et 100)
             </Form.Text>
           </Form.Group>
         </div>

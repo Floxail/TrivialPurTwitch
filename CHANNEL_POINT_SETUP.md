@@ -6,17 +6,12 @@ Guide pour configurer les récompenses de points de chaîne Twitch pour TrivialQ
 
 ## 📋 Récompenses à créer
 
-Vous devez créer **deux récompenses personnalisées** sur votre dashboard Twitch.
+Vous devez créer **une récompenses personnalisées** sur votre dashboard Twitch.
 
 ### 1. Quiz Carte (1000 points)
 
-- **Nom :** `Quiz Carte` *(exactement comme ça)*
-- **Coût :** 1000 points *(ou à votre choix)*
-- **Description :** "Lance un quiz de 6 questions (1 par catégorie) depuis une boîte. Entrez le nom de la boîte (ex: Géographie)"
-- **Demander au spectateur de saisir du texte :** ✅ **OUI**
-- **Image :** 🎲 *(optionnel)*
 
-### 2. Quiz Personnalisé (1500 points)
+### Quiz Personnalisé (1500 points)
 
 - **Nom :** `Quiz Personnalisé` *(exactement comme ça)*
 - **Coût :** 1500 points *(ou à votre choix)*
@@ -79,14 +74,6 @@ export const REWARD_CONFIGS = {
 
 ### Pour les spectateurs
 
-**Mode Carte :**
-```
-1. Cliquer sur "Quiz Carte" dans les récompenses
-2. Entrer le nom d'une boîte (ex: "Géographie")
-3. Valider
-→ Le quiz démarre avec 6 questions de géographie
-```
-
 **Mode Personnalisé :**
 ```
 1. Cliquer sur "Quiz Personnalisé" dans les récompenses
@@ -100,7 +87,6 @@ export const REWARD_CONFIGS = {
 En tant que streamer, vous pouvez tester sans dépenser de points :
 
 ```
-!quiz carte Géographie
 !quiz 10
 ```
 
@@ -109,25 +95,6 @@ En tant que streamer, vous pouvez tester sans dépenser de points :
 ---
 
 ## 🔍 Validation
-
-### Mode Carte
-
-**Format attendu :** Nom de la boîte (texte)
-
-**Exemples valides :**
-- `Géographie`
-- `Histoire`
-- `Cinéma`
-
-**Vérifications :**
-- La boîte doit exister dans votre base de données
-- La boîte doit avoir au moins 6 questions (1 par catégorie)
-
-**Messages d'erreur :**
-```
-❌ Boîte "XYZ" non trouvée. Boîtes disponibles: Géographie, Histoire
-❌ Pas assez de questions dans la boîte "Géographie" (6 requises)
-```
 
 ### Mode Personnalisé
 

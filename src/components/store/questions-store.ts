@@ -32,15 +32,26 @@ export const categoryColors: Record<TrivialCategory, string> = {
   [TrivialCategory.Sports]: '#FF5722',         // Rouge-Orange
 };
 
+// Type de question
+export enum QuestionType {
+  FREE_TEXT = 'free_text',  // Réponse libre (mode actuel)
+  QCM = 'qcm'               // Questionnaire à Choix Multiples
+}
+
 export type Question = {
   id: string;
   category: TrivialCategory;
   question: string;
   answer: string;
-  alternativeAnswers?: string[]; // Réponses alternatives acceptées
-  boxName: string; // Nom de la boîte (sans #numéro)
-  cardNumber?: number; // Numéro de carte (optionnel, pour le mode CARD)
+  alternativeAnswers?: string[]; // Réponses alternatives acceptées (mode FREE_TEXT)
+  boxName: string; // Nom de la boîte
+  cardNumber?: number; // Numéro de carte (pour organisation)
   difficulty?: 'easy' | 'medium' | 'hard';
+
+  // Champs QCM
+  questionType?: QuestionType; // Par défaut FREE_TEXT si non spécifié
+  qcmOptions?: string[]; // 4 options (A, B, C, D)
+  qcmCorrectIndex?: number; // Index de la bonne réponse (0-3)
 };
 
 // Structure d'une boîte (contient plusieurs cartes)
@@ -94,6 +105,7 @@ type QuestionsActions = {
   // Génération de quiz
   generateQuizCard: (boxName: string, cardNumber: number) => QuizCard | null;
   generateRandomQuiz: (boxName: string, questionCount: number) => Question[] | null;
+  generateRandomQuizAllBoxes: (questionCount: number, balanceCategories?: boolean) => Question[] | null;
 
   // Settings
   setCumulativeScores: (value: boolean) => void;
@@ -322,6 +334,62 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         // Mélanger et prendre N questions
         const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
         return shuffled.slice(0, Math.min(questionCount, shuffled.length));
+      },
+
+      generateRandomQuizAllBoxes: (questionCount: number, balanceCategories: boolean = false): Question[] | null => {
+        const allQuestions = get().questions;
+
+        if (allQuestions.length === 0) {
+          return null;
+        }
+
+        if (!balanceCategories) {
+          // Mode simple : mélanger toutes les questions
+          const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+          return shuffled.slice(0, Math.min(questionCount, shuffled.length));
+        }
+
+        // Mode équilibré : essayer d'avoir une répartition équitable des catégories
+        const byCategory = new Map<TrivialCategory, Question[]>();
+
+        // Grouper par catégorie
+        allQuestions.forEach(q => {
+          if (!byCategory.has(q.category)) {
+            byCategory.set(q.category, []);
+          }
+          byCategory.get(q.category)!.push(q);
+        });
+
+        // Mélanger chaque catégorie
+        byCategory.forEach((questions, cat) => {
+          byCategory.set(cat, questions.sort(() => Math.random() - 0.5));
+        });
+
+        const result: Question[] = [];
+        let remaining = questionCount;
+
+        // Prendre des questions de chaque catégorie en rotation
+        const categories = Array.from(byCategory.keys()).sort(() => Math.random() - 0.5);
+        let catIndex = 0;
+
+        while (remaining > 0 && categories.length > 0) {
+          const cat = categories[catIndex % categories.length];
+          const catQuestions = byCategory.get(cat)!;
+
+          if (catQuestions.length > 0) {
+            result.push(catQuestions.shift()!);
+            remaining--;
+          } else {
+            // Plus de questions dans cette catégorie, la retirer
+            categories.splice(catIndex % categories.length, 1);
+            if (categories.length === 0) break;
+          }
+
+          catIndex++;
+        }
+
+        // Mélanger le résultat final pour varier l'ordre des catégories
+        return result.sort(() => Math.random() - 0.5);
       },
 
       // ========== SETTINGS ==========
