@@ -48,6 +48,9 @@ export interface ParsedBulkQuestion {
   question: string;
   answer: string;
   alternativeAnswers: string[];
+  isQcm?: boolean;
+  qcmOptions?: string[];
+  qcmCorrectIndex?: number;
 }
 
 interface BulkAddModalProps {
@@ -365,8 +368,11 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
 // ============================================================
 
 const BULK_ADD_PLACEHOLDER = `Q: Quelle est la capitale de la France ?
-R: Paris
-ALT: paris
+A: Lyon
+B: Paris
+C: Marseille
+D: Bordeaux
+R: B
 
 Q: Qui a peint la Joconde ?
 R: Léonard de Vinci
@@ -380,6 +386,8 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
   // Séparer les blocs par les lignes "Q:" (chaque bloc commence par Q:)
   const blocks = text.split(/\n(?=Q\s*:)/i).filter(b => b.trim().length > 0);
 
+  const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
   for (let i = 0; i < blocks.length; i++) {
     const block = blocks[i].trim();
     const lines = block.split('\n').map(l => l.trim()).filter(l => l.length > 0);
@@ -387,23 +395,29 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
     let question = '';
     let answer = '';
     const alternativeAnswers: string[] = [];
+    const qcmOptions: Record<string, string> = {};
 
     for (const line of lines) {
       const qMatch = line.match(/^Q\s*:\s*(.+)/i);
       const rMatch = line.match(/^R\s*:\s*(.+)/i);
       const altMatch = line.match(/^ALT\s*:\s*(.+)/i);
+      // Match QCM options: "A: texte", "B: texte", etc.
+      const optMatch = line.match(/^([A-F])\s*:\s*(.+)/);
 
       if (qMatch) {
         question = qMatch[1].trim();
+      } else if (altMatch) {
+        // ALT: doit être testé avant optMatch (car "A:" matcherait aussi)
+        alternativeAnswers.push(altMatch[1].trim());
       } else if (rMatch) {
         answer = rMatch[1].trim();
-      } else if (altMatch) {
-        alternativeAnswers.push(altMatch[1].trim());
+      } else if (optMatch) {
+        qcmOptions[optMatch[1]] = optMatch[2].trim();
       }
     }
 
     if (!question && !answer) {
-      continue; // Bloc vide, on ignore
+      continue;
     }
 
     if (!question) {
@@ -416,7 +430,26 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
       continue;
     }
 
-    questions.push({ question, answer, alternativeAnswers });
+    // Détecter si c'est un QCM : au moins 2 options A-F et réponse = une lettre
+    const optionKeys = QCM_LABELS.filter(l => qcmOptions[l]);
+    const answerUpper = answer.toUpperCase();
+    const isQcm = optionKeys.length >= 2 && QCM_LABELS.includes(answerUpper) && qcmOptions[answerUpper];
+
+    if (isQcm) {
+      const orderedOptions = optionKeys.map(l => qcmOptions[l]);
+      const correctIndex = optionKeys.indexOf(answerUpper);
+
+      questions.push({
+        question,
+        answer: qcmOptions[answerUpper],
+        alternativeAnswers: [],
+        isQcm: true,
+        qcmOptions: orderedOptions,
+        qcmCorrectIndex: correctIndex,
+      });
+    } else {
+      questions.push({ question, answer, alternativeAnswers });
+    }
   }
 
   return { questions, errors };
@@ -499,7 +532,7 @@ export const BulkAddModal: React.FC<BulkAddModalProps> = React.memo(({
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>Questions (format Q:/R:/ALT:)</Form.Label>
+          <Form.Label>Questions (format Q:/R:/ALT: ou QCM)</Form.Label>
           <Form.Control
             as="textarea"
             rows={12}
@@ -512,7 +545,9 @@ export const BulkAddModal: React.FC<BulkAddModalProps> = React.memo(({
             style={{ fontFamily: 'monospace', fontSize: '13px' }}
           />
           <Form.Text className="text-muted">
-            Séparez chaque question par une ligne vide. Format : <code>Q:</code> question, <code>R:</code> réponse, <code>ALT:</code> réponse alternative (optionnel, plusieurs possibles)
+            Séparez chaque question par une ligne vide.<br />
+            <strong>Texte libre :</strong> <code>Q:</code> question, <code>R:</code> réponse, <code>ALT:</code> alternative (optionnel)<br />
+            <strong>QCM :</strong> <code>Q:</code> question, <code>A:</code> <code>B:</code> <code>C:</code> <code>D:</code> options, <code>R:</code> lettre correcte (ex: B)
           </Form.Text>
         </Form.Group>
 
@@ -538,10 +573,28 @@ export const BulkAddModal: React.FC<BulkAddModalProps> = React.memo(({
               <div style={{ maxHeight: '200px', overflowY: 'auto', fontSize: '13px' }}>
                 {preview.questions.map((q, i) => (
                   <div key={i} className="mb-2 p-2" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '5px' }}>
-                    <strong>Q:</strong> {q.question}<br />
-                    <strong>R:</strong> {q.answer}
-                    {q.alternativeAnswers.length > 0 && (
-                      <><br /><span className="text-muted">ALT: {q.alternativeAnswers.join(', ')}</span></>
+                    <strong>Q:</strong> {q.question}
+                    {q.isQcm && <Badge bg="info" className="ms-2">QCM</Badge>}
+                    <br />
+                    {q.isQcm && q.qcmOptions ? (
+                      <>
+                        {q.qcmOptions.map((opt, j) => (
+                          <span key={j}>
+                            <span style={{ color: j === q.qcmCorrectIndex ? '#4CAF50' : 'inherit', fontWeight: j === q.qcmCorrectIndex ? 'bold' : 'normal' }}>
+                              {String.fromCharCode(65 + j)}: {opt}
+                              {j === q.qcmCorrectIndex && ' \u2713'}
+                            </span>
+                            <br />
+                          </span>
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        <strong>R:</strong> {q.answer}
+                        {q.alternativeAnswers.length > 0 && (
+                          <><br /><span className="text-muted">ALT: {q.alternativeAnswers.join(', ')}</span></>
+                        )}
+                      </>
                     )}
                   </div>
                 ))}

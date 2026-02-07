@@ -3,7 +3,8 @@
     "allow": [
       "Bash(yarn add:*)",
       "Bash(npx tailwindcss:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

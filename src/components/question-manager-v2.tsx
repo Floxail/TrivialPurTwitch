@@ -490,6 +490,7 @@ const QuestionManager = () => {
   const handleBulkAddSubmit = (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean) => {
     const categoryValues = Object.values(TrivialCategory).filter(v => typeof v === 'number') as TrivialCategory[];
     let added = 0;
+    let qcmCount = 0;
 
     for (const q of questions) {
       const category = randomCategories
@@ -503,15 +504,21 @@ const QuestionManager = () => {
         alternativeAnswers: q.alternativeAnswers.length > 0 ? q.alternativeAnswers : undefined,
         category,
         boxName,
-        questionType: QuestionType.FREE_TEXT,
+        questionType: q.isQcm ? QuestionType.QCM : QuestionType.FREE_TEXT,
         difficulty: 'medium',
+        ...(q.isQcm && q.qcmOptions ? {
+          qcmOptions: q.qcmOptions,
+          qcmCorrectIndex: q.qcmCorrectIndex ?? 0,
+        } : {}),
       };
 
       addQuestion(newQuestion);
       added++;
+      if (q.isQcm) qcmCount++;
     }
 
-    setImportSuccess(`✅ ${added} question(s) ajoutée(s) en masse dans "${boxName}"`);
+    const detail = qcmCount > 0 ? ` (${qcmCount} QCM, ${added - qcmCount} texte libre)` : '';
+    setImportSuccess(`✅ ${added} question(s) ajoutée(s) en masse dans "${boxName}"${detail}`);
     setTimeout(() => setImportSuccess(''), 5000);
   };
 
