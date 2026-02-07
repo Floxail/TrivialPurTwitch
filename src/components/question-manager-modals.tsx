@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Modal, Badge } from 'react-bootstrap';
+import { Button, Form, Modal, Badge, Alert } from 'react-bootstrap';
 import { Question, QuestionType, TrivialCategory, categoryNames } from './store/questions-store';
 
 // ============================================================
@@ -42,6 +42,20 @@ interface BulkActionsModalProps {
   boxes: { name: string }[];
   onDelete: () => void;
   onMove: (targetBox: string) => void;
+}
+
+export interface ParsedBulkQuestion {
+  question: string;
+  answer: string;
+  alternativeAnswers: string[];
+}
+
+interface BulkAddModalProps {
+  show: boolean;
+  onHide: () => void;
+  onSubmit: (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean) => void;
+  boxes: { name: string }[];
+  defaultBoxName: string;
 }
 
 // ============================================================
@@ -338,6 +352,216 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
           </Button>
         </Modal.Footer>
       </Form>
+    </Modal>
+  );
+});
+
+// ============================================================
+// BulkActionsModal - Modal pour actions de masse
+// ============================================================
+
+// ============================================================
+// BulkAddModal - Modal pour ajouter plusieurs questions en masse
+// ============================================================
+
+const BULK_ADD_PLACEHOLDER = `Q: Quelle est la capitale de la France ?
+R: Paris
+ALT: paris
+
+Q: Qui a peint la Joconde ?
+R: Léonard de Vinci
+ALT: Leonard de Vinci
+ALT: De Vinci`;
+
+function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; errors: string[] } {
+  const questions: ParsedBulkQuestion[] = [];
+  const errors: string[] = [];
+
+  // Séparer les blocs par les lignes "Q:" (chaque bloc commence par Q:)
+  const blocks = text.split(/\n(?=Q\s*:)/i).filter(b => b.trim().length > 0);
+
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i].trim();
+    const lines = block.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+    let question = '';
+    let answer = '';
+    const alternativeAnswers: string[] = [];
+
+    for (const line of lines) {
+      const qMatch = line.match(/^Q\s*:\s*(.+)/i);
+      const rMatch = line.match(/^R\s*:\s*(.+)/i);
+      const altMatch = line.match(/^ALT\s*:\s*(.+)/i);
+
+      if (qMatch) {
+        question = qMatch[1].trim();
+      } else if (rMatch) {
+        answer = rMatch[1].trim();
+      } else if (altMatch) {
+        alternativeAnswers.push(altMatch[1].trim());
+      }
+    }
+
+    if (!question && !answer) {
+      continue; // Bloc vide, on ignore
+    }
+
+    if (!question) {
+      errors.push(`Bloc ${i + 1} : question manquante (Q: ...)`);
+      continue;
+    }
+
+    if (!answer) {
+      errors.push(`Bloc ${i + 1} : réponse manquante (R: ...) pour "${question.substring(0, 40)}..."`);
+      continue;
+    }
+
+    questions.push({ question, answer, alternativeAnswers });
+  }
+
+  return { questions, errors };
+}
+
+export const BulkAddModal: React.FC<BulkAddModalProps> = React.memo(({
+  show,
+  onHide,
+  onSubmit,
+  boxes,
+  defaultBoxName
+}) => {
+  const [text, setText] = useState('');
+  const [boxName, setBoxName] = useState('');
+  const [randomCategories, setRandomCategories] = useState(true);
+  const [preview, setPreview] = useState<{ questions: ParsedBulkQuestion[]; errors: string[] } | null>(null);
+
+  useEffect(() => {
+    if (show) {
+      setText('');
+      setBoxName(defaultBoxName);
+      setRandomCategories(true);
+      setPreview(null);
+    }
+  }, [show, defaultBoxName]);
+
+  const handlePreview = () => {
+    const result = parseBulkQuestions(text);
+    setPreview(result);
+  };
+
+  const handleSubmit = () => {
+    if (!boxName) {
+      alert('Veuillez sélectionner une boîte');
+      return;
+    }
+
+    const result = preview || parseBulkQuestions(text);
+
+    if (result.questions.length === 0) {
+      alert('Aucune question valide détectée');
+      return;
+    }
+
+    onSubmit(result.questions, boxName, randomCategories);
+    onHide();
+  };
+
+  return (
+    <Modal show={show} onHide={onHide} size="lg" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Ajout en masse de questions</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form.Group className="mb-3">
+          <Form.Label>Boîte de destination *</Form.Label>
+          <Form.Select
+            required
+            value={boxName}
+            onChange={(e) => setBoxName(e.target.value)}
+          >
+            <option value="">Sélectionner une boîte...</option>
+            {boxes.map(box => (
+              <option key={box.name} value={box.name}>{box.name}</option>
+            ))}
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Check
+            type="switch"
+            id="randomCategories"
+            label="Catégories aléatoires"
+            checked={randomCategories}
+            onChange={(e) => setRandomCategories(e.target.checked)}
+          />
+          <Form.Text className="text-muted">
+            Chaque question sera assignée à une catégorie Trivial Pursuit aléatoire
+          </Form.Text>
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Questions (format Q:/R:/ALT:)</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={12}
+            placeholder={BULK_ADD_PLACEHOLDER}
+            value={text}
+            onChange={(e) => {
+              setText(e.target.value);
+              setPreview(null); // Reset preview on edit
+            }}
+            style={{ fontFamily: 'monospace', fontSize: '13px' }}
+          />
+          <Form.Text className="text-muted">
+            Séparez chaque question par une ligne vide. Format : <code>Q:</code> question, <code>R:</code> réponse, <code>ALT:</code> réponse alternative (optionnel, plusieurs possibles)
+          </Form.Text>
+        </Form.Group>
+
+        <Button variant="outline-info" size="sm" onClick={handlePreview} disabled={!text.trim()}>
+          Prévisualiser
+        </Button>
+
+        {preview && (
+          <div className="mt-3">
+            {preview.questions.length > 0 && (
+              <Alert variant="success">
+                {preview.questions.length} question(s) détectée(s)
+              </Alert>
+            )}
+            {preview.errors.length > 0 && (
+              <Alert variant="warning">
+                {preview.errors.map((err, i) => (
+                  <div key={i}>{err}</div>
+                ))}
+              </Alert>
+            )}
+            {preview.questions.length > 0 && (
+              <div style={{ maxHeight: '200px', overflowY: 'auto', fontSize: '13px' }}>
+                {preview.questions.map((q, i) => (
+                  <div key={i} className="mb-2 p-2" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '5px' }}>
+                    <strong>Q:</strong> {q.question}<br />
+                    <strong>R:</strong> {q.answer}
+                    {q.alternativeAnswers.length > 0 && (
+                      <><br /><span className="text-muted">ALT: {q.alternativeAnswers.join(', ')}</span></>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onHide}>
+          Annuler
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={!text.trim() || !boxName}
+        >
+          Ajouter {preview ? `(${preview.questions.length})` : ''}
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 });

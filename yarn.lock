@@ -3583,6 +3583,41 @@ __metadata:
   languageName: node
   linkType: hard
 
+"TrivialPurTwitch@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "TrivialPurTwitch@workspace:."
+  dependencies:
+    "@fortawesome/fontawesome-svg-core": "npm:^6.2.1"
+    "@fortawesome/free-brands-svg-icons": "npm:^6.2.1"
+    "@fortawesome/free-regular-svg-icons": "npm:^6.2.1"
+    "@fortawesome/free-solid-svg-icons": "npm:^6.2.1"
+    "@fortawesome/react-fontawesome": "npm:^0.2.0"
+    "@types/react": "npm:^18.0.27"
+    "@types/react-dom": "npm:^18.0.10"
+    "@types/tmi.js": "npm:^1.8.2"
+    autoprefixer: "npm:^10"
+    axios: "npm:^1.13.2"
+    bootstrap: "npm:^5.3.3"
+    class-transformer: "npm:^0.5.1"
+    eslint: "npm:^8.6.0"
+    framer-motion: "npm:^12.25.0"
+    gh-pages: "npm:^6.3.0"
+    lucide-react: "npm:^0.562.0"
+    postcss: "npm:^8"
+    react: "npm:^18.2.0"
+    react-bootstrap: "npm:^2.10.6"
+    react-dom: "npm:^18.2.0"
+    react-router-dom: "npm:^6.8.0"
+    react-scripts: "npm:^5.0.1"
+    reflect-metadata: "npm:^0.1.13"
+    sass: "npm:^1.58.3"
+    tailwindcss: "npm:^3.4.0"
+    tmi.js: "npm:^1.8.5"
+    typescript: "npm:^4.9.5"
+    zustand: "npm:^5.0.2"
+  languageName: unknown
+  linkType: soft
+
 "abab@npm:^2.0.3, abab@npm:^2.0.5":
   version: 2.0.6
   resolution: "abab@npm:2.0.6"
@@ -4333,41 +4368,6 @@ __metadata:
   checksum: 10c0/75a59cafc10fb12a11d510e77110c6c7ae3f4ca22463d52487709ca7f18f69d886aa387557cc9864fbdb10153d0bdb4caacabf11541f55e89ed6e18d12ece2b5
   languageName: node
   linkType: hard
-
-"blindtestwitch@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "blindtestwitch@workspace:."
-  dependencies:
-    "@fortawesome/fontawesome-svg-core": "npm:^6.2.1"
-    "@fortawesome/free-brands-svg-icons": "npm:^6.2.1"
-    "@fortawesome/free-regular-svg-icons": "npm:^6.2.1"
-    "@fortawesome/free-solid-svg-icons": "npm:^6.2.1"
-    "@fortawesome/react-fontawesome": "npm:^0.2.0"
-    "@types/react": "npm:^18.0.27"
-    "@types/react-dom": "npm:^18.0.10"
-    "@types/tmi.js": "npm:^1.8.2"
-    autoprefixer: "npm:^10"
-    axios: "npm:^1.13.2"
-    bootstrap: "npm:^5.3.3"
-    class-transformer: "npm:^0.5.1"
-    eslint: "npm:^8.6.0"
-    framer-motion: "npm:^12.25.0"
-    gh-pages: "npm:^6.3.0"
-    lucide-react: "npm:^0.562.0"
-    postcss: "npm:^8"
-    react: "npm:^18.2.0"
-    react-bootstrap: "npm:^2.10.6"
-    react-dom: "npm:^18.2.0"
-    react-router-dom: "npm:^6.8.0"
-    react-scripts: "npm:^5.0.1"
-    reflect-metadata: "npm:^0.1.13"
-    sass: "npm:^1.58.3"
-    tailwindcss: "npm:^3.4.0"
-    tmi.js: "npm:^1.8.5"
-    typescript: "npm:^4.9.5"
-    zustand: "npm:^5.0.2"
-  languageName: unknown
-  linkType: soft
 
 "bluebird@npm:^3.7.2":
   version: 3.7.2

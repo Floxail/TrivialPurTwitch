@@ -513,7 +513,7 @@ const Quiz = () => {
 
 					// Ajouter les options QCM si applicable
 					if (firstQuestion.questionType === QuestionType.QCM && firstQuestion.qcmOptions) {
-						questionMsg += ` | ${firstQuestion.qcmOptions.map((opt, i) => `${QCM_LABELS[i]}) ${opt}`).join(' | ')}`;
+						questionMsg += ` | ${firstQuestion.qcmOptions.map((opt, i) => `${QCM_LABELS[i]} - ${opt}`).join(' | ')}`;
 					}
 
 					twitchClient.current?.say(twitchNick, questionMsg);
@@ -578,7 +578,7 @@ const Quiz = () => {
 
 					// Ajouter les options QCM si applicable
 					if (newQuestion.questionType === QuestionType.QCM && newQuestion.qcmOptions) {
-						questionMsg += ` | ${newQuestion.qcmOptions.map((opt, i) => `${QCM_LABELS[i]}) ${opt}`).join(' | ')}`;
+						questionMsg += ` | ${newQuestion.qcmOptions.map((opt, i) => `${QCM_LABELS[i]} - ${opt}`).join(' | ')}`;
 					}
 
 					twitchClient.current?.say(twitchNick, questionMsg);
@@ -644,7 +644,7 @@ const Quiz = () => {
 							}}
 						>
 							<option value="">Sélectionner une boîte...</option>
-							<option value="__ALL_BOXES__">🎨 Toutes les boîtes (couleurs mélangées)</option>
+							<option value="__ALL_BOXES__">Toutes les boîtes (couleurs mélangées)</option>
 							{boxes.map(box => (
 								<option key={box.name} value={box.name}>
 									{box.name} ({box.totalQuestions} questions)
@@ -665,8 +665,8 @@ const Quiz = () => {
 							/>
 							<Form.Text className="text-muted">
 								{balanceCategories
-									? '📊 Les questions seront réparties équitablement entre les 6 catégories'
-									: '🎲 Les questions seront choisies aléatoirement sans équilibrage'}
+									? 'Les questions seront réparties équitablement entre les 6 catégories'
+									: 'Les questions seront choisies aléatoirement sans équilibrage'}
 							</Form.Text>
 						</Form.Group>
 					)}
@@ -722,16 +722,13 @@ const Quiz = () => {
 									<h3 className="mt-4">En attente...</h3>
 									<div className="mt-3">
 										<p className="text-muted">
-											<strong>🎁 Pour les viewers :</strong> Utilisez vos <strong>points de chaîne</strong> !
+											<strong>Pour les viewers :</strong> Utilisez vos <strong>points de chaîne</strong> !
 										</p>
 										<p className="text-muted" style={{ fontSize: '14px' }}>
 											Entrez le nombre de questions souhaitées
 										</p>
 									</div>
 									<div className="mt-4">
-										<p className="text-muted">
-											<strong>🎮 Pour le streamer :</strong> Commande <code>!quiz</code>
-										</p>
 										<Button
 											variant="primary"
 											size="lg"
@@ -828,18 +825,26 @@ const Quiz = () => {
 										{/* Options QCM */}
 										{isQcmQuestion && currentQuestion.qcmOptions && !questionRevealed && (
 											<div className="qcm-options mt-4" style={{ width: '100%', maxWidth: '600px' }}>
-												<div className="row g-2">
+												<div className="row g-3">
 													{currentQuestion.qcmOptions.map((option, index) => (
 														<div key={index} className="col-6">
 															<div style={{
-																backgroundColor: 'var(--bg-color)',
-																border: '2px solid var(--border-color)',
-																borderRadius: '10px',
-																padding: '15px',
-																textAlign: 'center',
-																fontSize: '16px'
+																backgroundColor: 'rgba(122, 122, 122, 0.89)',
+																borderRadius: '12px',
+																padding: '18px 20px',
+																fontSize: '17px',
+																display: 'flex',
+																alignItems: 'center',
+																gap: '10px'
 															}}>
-																<strong style={{ color: '#ff60b7' }}>{QCM_LABELS[index]})</strong> {option}
+																<span style={{
+																	color: '#ff60b7',
+																	fontWeight: 'bold',
+																	fontSize: '19px',
+																	minWidth: '20px'
+																}}>{QCM_LABELS[index]}</span>
+																<span style={{ color: 'var(--text-color)' }}>-</span>
+																<span>{option}</span>
 															</div>
 														</div>
 													))}

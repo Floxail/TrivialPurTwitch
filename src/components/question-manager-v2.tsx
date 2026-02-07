@@ -4,7 +4,7 @@ import { Button, Form, Table, Badge, Tabs, Tab, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { categoryColors, categoryNames, Question, QuestionType, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
-import { BoxModal, QuestionModal, BulkActionsModal } from './question-manager-modals';
+import { BoxModal, QuestionModal, BulkActionsModal, BulkAddModal, ParsedBulkQuestion } from './question-manager-modals';
 
 const QuestionManager = () => {
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ const QuestionManager = () => {
   const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(new Set());
   const [showBulkActionsModal, setShowBulkActionsModal] = useState(false);
   const [bulkAction, setBulkAction] = useState<'delete' | 'move' | null>(null);
+  const [showBulkAddModal, setShowBulkAddModal] = useState(false);
 
   useEffect(() => {
     globalStore.setSubtitle('Gestion des questions');
@@ -485,6 +486,35 @@ const QuestionManager = () => {
     setShowBulkActionsModal(true);
   };
 
+  // Ajout en masse de questions
+  const handleBulkAddSubmit = (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean) => {
+    const categoryValues = Object.values(TrivialCategory).filter(v => typeof v === 'number') as TrivialCategory[];
+    let added = 0;
+
+    for (const q of questions) {
+      const category = randomCategories
+        ? categoryValues[Math.floor(Math.random() * categoryValues.length)]
+        : TrivialCategory.Geography;
+
+      const newQuestion: Question = {
+        id: Date.now().toString() + Math.random().toString(36).substring(2, 11),
+        question: q.question,
+        answer: q.answer,
+        alternativeAnswers: q.alternativeAnswers.length > 0 ? q.alternativeAnswers : undefined,
+        category,
+        boxName,
+        questionType: QuestionType.FREE_TEXT,
+        difficulty: 'medium',
+      };
+
+      addQuestion(newQuestion);
+      added++;
+    }
+
+    setImportSuccess(`✅ ${added} question(s) ajoutée(s) en masse dans "${boxName}"`);
+    setTimeout(() => setImportSuccess(''), 5000);
+  };
+
   return (
     <>
       {/* Alerts pour import */}
@@ -526,6 +556,15 @@ const QuestionManager = () => {
         defaultBoxName={preselectedBoxForModal}
       />
 
+      {/* Modal d'ajout en masse */}
+      <BulkAddModal
+        show={showBulkAddModal}
+        onHide={() => setShowBulkAddModal(false)}
+        onSubmit={handleBulkAddSubmit}
+        boxes={boxesWithStats}
+        defaultBoxName={selectedBox || boxesWithStats[0]?.name || ''}
+      />
+
       {/* Modal d'actions de masse */}
       <BulkActionsModal
         show={showBulkActionsModal}
@@ -554,6 +593,9 @@ const QuestionManager = () => {
           </Button>
           <Button variant="info" className="me-2" onClick={() => fileInputRef.current?.click()}>
             <FontAwesomeIcon icon={['fas', 'upload']} /> Importer Questions
+          </Button>
+          <Button variant="outline-primary" onClick={() => setShowBulkAddModal(true)}>
+            <FontAwesomeIcon icon={['fas', 'list']} /> Ajout en masse
           </Button>
         </div>
       </div>
