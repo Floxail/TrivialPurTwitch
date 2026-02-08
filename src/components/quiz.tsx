@@ -795,7 +795,11 @@ const Quiz = () => {
 										}}
 									>
 										{categoryNames[currentQuestion.category]}
-										{isQcmQuestion && <span className="ms-2">📋 QCM</span>}
+										{activeQuiz.boxName.startsWith('Mix') && currentQuestion.boxName && (
+											<span className="ms-2" style={{ opacity: 0.8, fontWeight: 'normal', fontSize: '0.85em' }}>
+												| {currentQuestion.boxName}
+											</span>
+										)}
 									</div>
 
 									<ProgressBar
