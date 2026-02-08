@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-02-08T17:35:35.620Z",
+  "exportDate": "2026-02-08T17:41:11.218Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -73,11 +73,6 @@
       "name": "Supernatural (RomanCrow)",
       "cardNumbers": [],
       "totalQuestions": 20
-    },
-    {
-      "name": "test",
-      "cardNumbers": [],
-      "totalQuestions": 2
     },
     {
       "name": "Univers audiovisuel",
@@ -18778,34 +18773,6 @@
       "question": "1 synopsis 2 film  mal raconté -  C’est 3 justiciers qui chasse avec des aspirateurs, ils croient attrapé des êtres surnaturel surprises dans le sac de d’aspirateur, il le seul l’unique malfaiteur au masque qui commet ses méfaits.",
       "answer": "SOS Fantomas",
       "boxName": "Univers audiovisuel"
-    },
-    {
-      "id": "1770043715820gz7znbiuv",
-      "question": "Test1",
-      "answer": "oui",
-      "category": 0,
-      "boxName": "test",
-      "difficulty": "medium",
-      "questionType": "free_text",
-      "alternativeAnswers": [
-        "jeanlousi"
-      ]
-    },
-    {
-      "id": "17700437683839kd8qz1mm",
-      "question": "test 2",
-      "answer": "b",
-      "category": 4,
-      "boxName": "test",
-      "difficulty": "medium",
-      "questionType": "qcm",
-      "qcmOptions": [
-        "b",
-        "544",
-        "6",
-        "gg"
-      ],
-      "qcmCorrectIndex": 0
     },
     {
       "id": "concours_1770471206053fhsht9cb",
