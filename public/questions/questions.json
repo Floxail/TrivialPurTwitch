@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-02-07T13:44:35.294Z",
+  "exportDate": "2026-02-08T17:35:35.620Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -23,7 +23,7 @@
     {
       "name": "Concours",
       "cardNumbers": [],
-      "totalQuestions": 862
+      "totalQuestions": 860
     },
     {
       "name": "Exemple",
@@ -63,6 +63,16 @@
         26
       ],
       "totalQuestions": 156
+    },
+    {
+      "name": "Poirot (RomanCrow)",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Supernatural (RomanCrow)",
+      "cardNumbers": [],
+      "totalQuestions": 20
     },
     {
       "name": "test",
@@ -1466,7 +1476,13 @@
       "answer": "42,195",
       "trivialBox": "Vieweurs",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "alternativeAnswers": [
+        "42",
+        "42.2",
+        "42.1"
+      ],
+      "questionType": "free_text"
     },
     {
       "id": "17662553036337tp3qasne",
@@ -4907,9 +4923,10 @@
       "id": "1766852112906sn9i0gbfd",
       "category": 1,
       "question": "Dans Monty Python : Sacré Graal, que disent les chevaliers qui exigent un jardinet ?",
-      "answer": "« Ni »",
+      "answer": "Ni",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "free_text"
     },
     {
       "id": "17668521129061whi5kbyt",
@@ -5969,13 +5986,14 @@
     {
       "id": "1766852112906fzajdsjfs",
       "category": 1,
-      "question": "Qui anime l'émission Secret Story ?",
+      "question": "Qui anime l'émission Secret Story entre 2007 et 2017 ?",
       "answer": "Benjamin Castaldi",
       "alternativeAnswers": [
         "Castaldi"
       ],
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "free_text"
     },
     {
       "id": "1766852112906d7sa1scst",
@@ -10267,10 +10285,11 @@
     {
       "id": "1766854112853ic8xeo2ol",
       "category": 4,
-      "question": "Qu'appelle-t-on somnambulisme ?",
-      "answer": "Le fait de marcher dans son sommeil",
+      "question": "Qu'es-ce que le somnambulisme ?",
+      "answer": "un trouble du sommeil ",
       "difficulty": "medium",
-      "boxName": "Vieweurs"
+      "boxName": "Vieweurs",
+      "questionType": "free_text"
     },
     {
       "id": "1766854112853b4jvim8nd",
@@ -20837,22 +20856,6 @@
       "qcmCorrectIndex": 2
     },
     {
-      "id": "concours_1770471206181trf9gniv",
-      "category": 3,
-      "question": "Comment s'appelle le chef d'État du Japon?",
-      "answer": "aux États-Unis",
-      "difficulty": "medium",
-      "boxName": "Concours",
-      "questionType": "qcm",
-      "qcmOptions": [
-        "aux États-Unis",
-        "Empereur Hirohito",
-        "Empereur Okinava",
-        "Empereur Yamamoto S. Le plus grand barrage du monde a été construit"
-      ],
-      "qcmCorrectIndex": 0
-    },
-    {
       "id": "concours_1770471206182bc1xuyd1",
       "category": 5,
       "question": "Son emblème est le kiwi. De quel pays s'agit-il?",
@@ -20899,22 +20902,6 @@
         "Les îles Fidji"
       ],
       "qcmCorrectIndex": 2
-    },
-    {
-      "id": "concours_1770471206185zzhv17q2",
-      "category": 3,
-      "question": "À propos de l'Océanie",
-      "answer": "Wellington",
-      "difficulty": "medium",
-      "boxName": "Concours",
-      "questionType": "qcm",
-      "qcmOptions": [
-        "Wellington",
-        "Port Moresby",
-        "Nukualofa",
-        "Aucune de ces réponses"
-      ],
-      "qcmCorrectIndex": 0
     },
     {
       "id": "concours_1770471206186eed98y1x",
@@ -21389,7 +21376,7 @@
       "boxName": "Concours",
       "questionType": "qcm",
       "qcmOptions": [
-        "Lenoyau",
+        "Le noyau",
         "Le cytoplasme",
         "Le mésoderme",
         "Les mitochondries"
@@ -21976,17 +21963,17 @@
       "id": "concours_1770471206253qdb4mqu6",
       "category": 0,
       "question": "Un assesseur est",
-      "answer": "un officier de justice",
+      "answer": "Aucune de ces réponses",
       "difficulty": "medium",
       "boxName": "Concours",
       "questionType": "qcm",
       "qcmOptions": [
-        "unavocat",
+        "un avocat",
         "un officier de justice",
         "un greffier",
         "Aucune de ces réponses"
       ],
-      "qcmCorrectIndex": 1
+      "qcmCorrectIndex": 3
     },
     {
       "id": "concours_1770471206254s0ykyt8l",
@@ -32579,6 +32566,463 @@
         "un organisme nouveau de géopolitique"
       ],
       "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770571251111n2br69eej",
+      "question": "Combien de saison la série Supernatural compte-elle ?",
+      "answer": "15",
+      "category": 5,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17705712511217micafvke",
+      "question": "en quelle années la série Supernatural à-elle débuté ?",
+      "answer": "2005",
+      "category": 0,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251126yak55pcdw",
+      "question": "quel est le nom de familles des frères Sam et Dean ?",
+      "answer": "Winchester",
+      "category": 2,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17705712511304lac4jtef",
+      "question": "quel sont les deux principaux moyen de repousser un fantôme ?",
+      "answer": "Du sel et le fer",
+      "category": 1,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "de l'amour et un joli sourire",
+        "des flingues et le drapeau américain",
+        "de l'essence et de la bière",
+        "Du sel et le fer"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770571251135dna3wdcsv",
+      "question": "Dans quel Pays ce déroule principalement la série ?",
+      "answer": "USA",
+      "alternativeAnswers": [
+        "États-Unis d’Amérique ; États-Unis"
+      ],
+      "category": 2,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251141in1ke5swc",
+      "question": "Qui est Castiel ?",
+      "answer": "Un ange",
+      "category": 1,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251145mha9c66ht",
+      "question": "quelle est le nom de l’émission de chasseurs de fantôme présente dans la série ?",
+      "answer": "Ghostfacers",
+      "category": 3,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251150dvxvryov0",
+      "question": "Quel chanson débute chaque final de saison de Supernatural à l’exception du final de la série ?",
+      "answer": "Carry On Wayward Son",
+      "category": 0,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Big Bisous",
+        "Higway to Hell",
+        "Carry On Wayward Son",
+        "Pokerface"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770571251155vn41fwonm",
+      "question": "Quelle est la première créature que les frères chassent dans la série ?",
+      "answer": "Un fantôme",
+      "alternativeAnswers": [
+        "une dame blanche ; un spectre"
+      ],
+      "category": 1,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251160fngo882qk",
+      "question": "De quel modèle est la voiture chérie de Dean ?",
+      "answer": "Une Chevrolet Impala de 1967 noir",
+      "alternativeAnswers": [
+        "Chevrolet ; Impala noir ; Impala"
+      ],
+      "category": 2,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251165w2npgd2qa",
+      "question": "comment s'appelle le père de Sam et Dean ?",
+      "answer": "John Winchester",
+      "category": 2,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251169ogzviiwv5",
+      "question": "Qui sont les ténèbres ?",
+      "answer": "La sœur de dieu",
+      "category": 5,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251174ikivhp32u",
+      "question": "qui est le tueur en série dont le fantôme est présent dans l'épisode 6 de la saison 2 ?",
+      "answer": "Henry H Holmes",
+      "category": 0,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17705712511798n5mtqkiu",
+      "question": "comment s'appelle l’espèce hybride créer par Eve, la mère de tous les monstres dans la saison 6 ?",
+      "answer": "Jefferson Starships",
+      "category": 1,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251184izj6p21us",
+      "question": "Dans l'épisode 17 de la Saison 6, Quel est la raison donné par l'ange Balthazar pour avoir remonté le temps et empêché le Titanic de coulé ?",
+      "answer": "il déteste la musique « My hearth will go on »",
+      "category": 4,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "c'est juste un chic type et pas du tout un trafiquant d'arme céleste",
+        "il déteste la musique « My hearth will go on »",
+        "Il s'ennuyait",
+        "Il n'a rien compris au jeu Titanic Adventure out of Time, sorti en 1996 et développé par Cyberflix Incorporated"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770571251188nlmwfb7u7",
+      "question": "comment s'appelle le jeux télévisé dans lequel les frères sont piégé dans « Téléportation » l'épisode 8 de la saison 5 ?",
+      "answer": "The Nutcracker",
+      "category": 2,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251193wi6axp3vn",
+      "question": "quelle est le meilleur moyen de tuer un vampire ?",
+      "answer": "La décapitation",
+      "alternativeAnswers": [
+        "lui couper la tête ; lui détruire la tête"
+      ],
+      "category": 0,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251197xmqape146",
+      "question": "quels créature se cache derrière le Thinman dans l'épisodes #Thinman ?",
+      "answer": "un flic",
+      "alternativeAnswers": [
+        "un humain ; un policier ; ACAB"
+      ],
+      "category": 3,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571251203jjr903ebw",
+      "question": "Dans l'épisode le puits aux souhait, quel artefact donne, entre autre occurrences paranormales, vit à un ours en pluche dépressif ?",
+      "answer": "une pièce maudite",
+      "alternativeAnswers": [
+        "Une pièce ; Une malédiction babylonienne"
+      ],
+      "category": 4,
+      "boxName": "Supernatural (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571351870k3hi9nsyq",
+      "question": "Quel chien animé,fort sympathique au demeurant, fait équipe avec les frères dans l'épisode Scoobynatural?",
+      "answer": "Scooby-Doo",
+      "alternativeAnswers": [
+        "Scooby"
+      ],
+      "category": 0,
+      "boxName": "Supernatural (RomanCrow)",
+      "difficulty": "medium",
+      "questionType": "free_text"
+    },
+    {
+      "id": "1770571404898cjezy7gmx",
+      "question": "Qui à écrit Hercules Poirot ?",
+      "answer": "Agatha Christie",
+      "alternativeAnswers": [
+        "Christie"
+      ],
+      "category": 3,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17705714049071wwxab0ty",
+      "question": "Dans le très nul Crime de l'Orient Express de Keneth Branagh en 2017, que cache la moustache de Poirot ?",
+      "answer": "Une cicatrice",
+      "category": 4,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404912cuetjsxuz",
+      "question": "Dans quel tome de détective Conan, l'entrée de l'encyclopédie sur Hercule Poirot apparait ?",
+      "answer": "le tome 7",
+      "category": 3,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404918nmw8hwl34",
+      "question": "Quel est le nom français du Roman Dead Man's Folly ?",
+      "answer": "Poirot joue le jeu",
+      "category": 2,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17705714049239i8widq87",
+      "question": "en quelle décennie à été écrit Hercule Poirot quitte la scène ?",
+      "answer": "les années 40",
+      "alternativeAnswers": [
+        "40's ; 1940, les années quarante"
+      ],
+      "category": 3,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404927mt0txe6jm",
+      "question": "qui a été crée par Agatha Christie ?",
+      "answer": "Miss Marple",
+      "category": 5,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Jessica Fletcher",
+        "Miss Marple",
+        "Mémé",
+        "Angela Lansbury"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770571404932k1tevpaey",
+      "question": "Qu'est ce qu'Hercules Poirot aime faire fonctionner ?",
+      "answer": "ses petites cellules grises",
+      "alternativeAnswers": [
+        "ses cellules grises"
+      ],
+      "category": 2,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17705714049373f96a4vba",
+      "question": "Qui incarne Hercule Poirot dans la série de 1989 ?",
+      "answer": "David Suchet",
+      "category": 4,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404943d528b9ye7",
+      "question": "Qui a demander un Quizz sur Poirot ?",
+      "answer": "Comtessetataire",
+      "category": 2,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Comtessetataire",
+        "Rajah",
+        "Proxima",
+        "Malaury Nataff"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770571404947wm17tevcs",
+      "question": "comment s'appelle l'inspecteur de Scotland yard ayant souvent affaire à Poirot ?",
+      "answer": "James Japp",
+      "alternativeAnswers": [
+        "l'inspecteur-chef James Japp ; L'inspecteur Japp"
+      ],
+      "category": 0,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404953tr4cinapl",
+      "question": "comment s'appelle l'immonde trou de balle qui incarne Hercules dans la série les aventures d'Hercules ?",
+      "answer": "Kevin Sorbo",
+      "alternativeAnswers": [
+        "Sorbo"
+      ],
+      "category": 1,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17705714049583r7s2j2ic",
+      "question": "contrairement à la croyance populaire, le Pokémon Canarticho ne se ballade pas avec un poireaux. Quel est donc ce mystérieux végétal ?",
+      "answer": "de la ciboule",
+      "alternativeAnswers": [
+        "cive ; cébette ; oignon d'hiver ; oignon vert ; oignon-pays"
+      ],
+      "category": 4,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404964rbg2qfg9h",
+      "question": "Dans le volume de Detective Conan ou apparait l'entrée sur Poirot, qui est le deuxième détective présenté ?",
+      "answer": "Colombo",
+      "category": 4,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Sherlock Holmes",
+        "Ellery Queen",
+        "Colombo",
+        "Rintarô Norizuki"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17705714049680300qizud",
+      "question": "comment s'appelle la première victime dans le roman A.B.C. contre Poirot ?",
+      "answer": "Alice Asher",
+      "alternativeAnswers": [
+        "Asher"
+      ],
+      "category": 4,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404973zb3fnqzx8",
+      "question": "en quelle année est sortie la première version française d' A.B.C. contre Poirot ?",
+      "answer": "1938",
+      "category": 1,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404977kwcgmn138",
+      "question": "Quelle est la nationalité de l'acteur David Suchet ?",
+      "answer": "Britannique",
+      "category": 2,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Belge",
+        "Française",
+        "Britannique",
+        "Suisse"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770571404983x98vsapfl",
+      "question": "pendant combien d'années David Suchet incarna Hercule Poirot ?",
+      "answer": "24",
+      "category": 5,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404988toh1g4iz1",
+      "question": "qui est le premier acteur à avoir incarné Poirot ?",
+      "answer": "Albert Finney",
+      "alternativeAnswers": [
+        "Finnet"
+      ],
+      "category": 3,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "17705714049942r7ipi3aw",
+      "question": "A la date du 8 février 2026, quand est sortie le dernier roman mettant en scène Hercule Poirot ? (année uniquement)",
+      "answer": "2025",
+      "category": 4,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770571404999k7lzhg5ah",
+      "question": "comment s'appelle le premier roman d'Agatha Christie mettant en scène Hercule Poirot ?",
+      "answer": "La Mystérieuse Affaire de Styles",
+      "alternativeAnswers": [
+        "The Mysterious Affair at Styles."
+      ],
+      "category": 2,
+      "boxName": "Poirot (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
     }
   ]
 }
