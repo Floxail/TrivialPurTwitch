@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-02-09T11:39:20.237Z",
+  "exportDate": "2026-02-09T16:23:38.994Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -34485,7 +34485,7 @@
     },
     {
       "id": "1770636869002f7nlwoq8f",
-      "question": "Associez les plats suivants à leur région d’origine :",
+      "question": "Associez les plats suivants à leur région d’origine :\nA. flammekueche B. tablier de sapeur C. raclette D. bouillabaisse I. Marseille II. Savoie III. Lyon IV. Alsace",
       "answer": "A/IV - B/III - C/II - D/I",
       "category": 0,
       "boxName": "Quiz FTP Societé #1",
