@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-02-08T17:41:11.218Z",
+  "exportDate": "2026-02-09T11:39:20.237Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -70,6 +70,36 @@
       "totalQuestions": 20
     },
     {
+      "name": "Quiz FTP Art #1",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FTP Art #2",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FTP Ciné #1",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FTP Ciné #2",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FTP Societé #1",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FTP Societé #2",
+      "cardNumbers": [],
+      "totalQuestions": 19
+    },
+    {
       "name": "Supernatural (RomanCrow)",
       "cardNumbers": [],
       "totalQuestions": 20
@@ -85,7 +115,7 @@
       "totalQuestions": 1615
     },
     {
-      "name": "Yoann Gourcuff",
+      "name": "Yoann Gourcuff (Mel0do)",
       "cardNumbers": [],
       "totalQuestions": 20
     }
@@ -17905,35 +17935,35 @@
       "category": 2,
       "question": "Quelle était la profession du père de Yoann Gourcuff ?",
       "answer": "entraîneur et joueur de football",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_1",
       "category": 3,
       "question": "Avec quelle équipe Yoann Gourcuff a été sacré champion de France en 2009 ? ",
       "answer": "Girondins de Bordeaux",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_2",
       "category": 4,
       "question": "Quel était le surnom de Yoann Gourcuff auprès de ses coéquipiers ? ",
       "answer": "Carbo",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_3",
       "category": 1,
       "question": "Quel autre sport aurait pu pratiquer Yoann Gourcuff en tant que pro et qu'il pratique aujourd'hui en amateur ? ",
       "answer": "Tennis",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_4",
       "category": 0,
       "question": "Avec quelle équipe européenne mythique Yoann Gourcuff a il joué ? ",
       "answer": "Milan AC",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_5",
@@ -17943,7 +17973,7 @@
       "alternativeAnswers": [
         "PSG"
       ],
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_6",
@@ -17953,42 +17983,42 @@
       "alternativeAnswers": [
         "Zidane"
       ],
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_7",
       "category": 4,
       "question": "Quelle compétition (à laquelle Yoann Gourcuff à participé), a fortement détériorer l'image du football en France ? ",
       "answer": "Coupe du monde 2010",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_8",
       "category": 1,
       "question": "À quel poste à évolué Yoann Gourcuff ? ",
       "answer": "Milieu",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_9",
       "category": 4,
       "question": "Quelle est la région d'origine de Yoann Gourcuff ?",
       "answer": "Bretagne",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_10",
       "category": 1,
       "question": "Dans combien de clubs français Yoann Gourcuff a il joué en tant que professionnel (senior) ? ",
       "answer": "4",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_11",
       "category": 4,
       "question": "Qu'est ce qui a stoppé la carrière de Yoann Gourcuff ? ",
       "answer": "ses blessures",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_12",
@@ -17998,35 +18028,35 @@
       "alternativeAnswers": [
         "Rennes"
       ],
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_13",
       "category": 1,
       "question": "Combien de buts Yoann Gourcuff a il inscrit avec l'équipe de France depuis sa toute 1ere sélection en moins de 16 ans ? ",
       "answer": "17",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_14",
       "category": 2,
       "question": "quelle était son classement lors du ballon d'or 2009 ? ",
       "answer": "20e",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_15",
       "category": 4,
       "question": "En quelle année sa carrière à t'elle pris fin ? ",
       "answer": "2019",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_16",
       "category": 0,
       "question": "quelle était sa qualité principale sur le terrain ? ",
       "answer": "sa technique",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_17",
@@ -18036,14 +18066,14 @@
       "alternativeAnswers": [
         "Mel0do"
       ],
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_0",
       "category": 5,
       "question": "Contre quelle équipe internationale Yoann Gourcuff a il marqué son 1er but avec l'équipe de France en 2008 ?",
       "answer": "Roumanie",
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "yoann_gourcuff_quiz_1",
@@ -18053,7 +18083,7 @@
       "alternativeAnswers": [
         "Ferri. Karine Ferri"
       ],
-      "boxName": "Yoann Gourcuff"
+      "boxName": "Yoann Gourcuff (Mel0do)"
     },
     {
       "id": "1768137817071uz2ldd77b",
@@ -32990,6 +33020,1893 @@
       "boxName": "Poirot (RomanCrow)",
       "questionType": "free_text",
       "difficulty": "medium"
+    },
+    {
+      "id": "17706366282012wfocdbbm",
+      "question": "Qui a peint Les Tournesols ?",
+      "answer": "Van Gogh",
+      "category": 4,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Seurat",
+        "Redon",
+        "Van Gogh",
+        "Cézanne"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17706366282103zoe9cvf8",
+      "question": "Pour un peintre, quelles sont les couleurs appelées couleurs « primaires » ou « fondamentales » ?",
+      "answer": "rouge, bleu, jaune",
+      "category": 5,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "rouge, bleu, jaune",
+        "rouge, jaune, vert",
+        "vert, jaune, bleu",
+        "noir, blanc"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636628215nn3scpbje",
+      "question": "L’Acropole domine :",
+      "answer": "Athènes",
+      "category": 5,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Athènes",
+        "Rome",
+        "Olympie",
+        "Jérusalem"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17706366282204vw9iu1n3",
+      "question": "À quel peintre du XIXe siècle doit-on Le Déjeuner sur l’herbe en 1863 ?",
+      "answer": "Édouard Manet",
+      "category": 4,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Édouard Manet",
+        "Camille Pissarro",
+        "Edgar Degas"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636628225yuvyom54x",
+      "question": "La fondation Guggenheim n’a pas ouvert de musée à :",
+      "answer": "Buenos Aires",
+      "category": 0,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Bilbao",
+        "Abou Dhabi",
+        "Venise",
+        "Buenos Aires"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636628230pzuyj1oof",
+      "question": "Qui a peint La Naissance de Vénus ?",
+      "answer": "Botticelli",
+      "category": 3,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Raphaël",
+        "Botticelli",
+        "Léonard de Vinci",
+        "Michel-Ange"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636628234rfjrppktd",
+      "question": "On doit la statue de la Liberté à New York à :",
+      "answer": "Bartholdi",
+      "category": 4,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Rodin",
+        "Rude",
+        "Bartholdi"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636628240ewjwt95g3",
+      "question": "Impression, soleil levant est le titre d’un tableau qui a marqué le début de l’impressionnisme en peinture. Qui était son auteur ?",
+      "answer": "Claude Monet",
+      "category": 1,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Paul Cézanne",
+        "Alfred Sisley",
+        "Auguste Renoir",
+        "Claude Monet"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636628244aa3bry9sg",
+      "question": "Le Penseur est une œuvre en bronze de :",
+      "answer": "Auguste Rodin",
+      "category": 0,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Auguste Rodin",
+        "Camille Claudel",
+        "Aristide Maillol",
+        "Antoine Bourdelle"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636628249ke43ttmku",
+      "question": "Parmi les monuments suivants, lequel ne figure pas parmi les Sept Merveilles du monde ?",
+      "answer": "La tour de Pise",
+      "category": 5,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "La tour de Pise",
+        "Le colosse de Rhodes",
+        "La statue de Zeus à Olympie",
+        "Le phare d’Alexandrie"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636628253d8wj43vwb",
+      "question": "Quel roi français fut le mécène de Léonard de Vinci ?",
+      "answer": "François Ier",
+      "category": 4,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Louis XIV",
+        "Charles IX",
+        "Henri III",
+        "François Ier"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636628259l4c1g4rwi",
+      "question": "Sur quelle place parisienne se trouve l’Obélisque ?",
+      "answer": "sur la place de la Concorde",
+      "category": 0,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "sur la place de la Concorde",
+        "sur la place de la Bastille",
+        "sur la place Vendôme",
+        "sur la place de la Nation"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636628263ta5je3bdd",
+      "question": "Parmi ces œuvres laquelle Picasso a-t-il peint ?",
+      "answer": "Les Demoiselles d’Avignon",
+      "category": 4,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Les Demoiselles d’Avignon",
+        "Les Demoiselles de Rochefort",
+        "Persistance de la mémoire",
+        "Le Cri"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636628268wxb517nr7",
+      "question": "Parmi ces associations « musées-villes », laquelle est inexacte ?",
+      "answer": "le musée du Prado à Corfou",
+      "category": 1,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "l’Ermitage à Saint-Pétersbourg",
+        "la galerie des Offices à Florence",
+        "le musée du Prado à Corfou",
+        "le musée Guggenheim à New York"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636628273b9kje7ofs",
+      "question": "À quel type de monument romain correspondait à l’origine le bâtiment appelé aujourd’hui « le Colisée » ?",
+      "answer": "C’était un amphithéâtre.",
+      "category": 2,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "C’était un bâtiment d’habitation.",
+        "C’était une scène politique.",
+        "C’était un temple religieux.",
+        "C’était un amphithéâtre."
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17706366282789ag5q6g2p",
+      "question": "Au cours des années 1950 le « pop art » naît :",
+      "answer": "en Grande-Bretagne",
+      "category": 3,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "en Grande-Bretagne",
+        "aux États-Unis",
+        "en France",
+        "en Allemagne"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17706366282829kgqu9gvp",
+      "question": "Qui est l’architecte de la pyramide du Louvre ?",
+      "answer": "Ieoh Ming Pei",
+      "category": 1,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Ieoh Ming Pei",
+        "Oscar Niemeyer",
+        "Ludwig Mies van der Rohe",
+        "Jean Nouvel"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636628287agbrfvhba",
+      "question": "Quel est le grand bâtiment, dont la forme ressemble à un coquillage pour les uns ou à un voilier pour les autres, que l’on peut voir dans la baie de Sydney, en Australie ?",
+      "answer": "l’opéra",
+      "category": 5,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la gare maritime",
+        "la piscine olympique",
+        "l’aquarium",
+        "l’opéra"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17706366282919aefpwpzz",
+      "question": "Le Manneken-Pis est une sculpture ornant une fontaine de :",
+      "answer": "Bruxelles",
+      "category": 4,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Bruges",
+        "Liège",
+        "Bruxelles",
+        "Anvers"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636628296h523o62em",
+      "question": "Quel peintre fait partie du mouvement naïf ?",
+      "answer": "Le Douanier Rousseau",
+      "category": 1,
+      "boxName": "Quiz FTP Art #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Sisley",
+        "Le Douanier Rousseau",
+        "Monet",
+        "Fragonard"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636681184gxo7cx04d",
+      "question": "Qui a peint le plafond de l’Opéra de Paris en 1964 ?",
+      "answer": "Chagall",
+      "category": 2,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Chagall",
+        "Picasso",
+        "Braque",
+        "Klimt"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636681193m5bnyz7lt",
+      "question": "Le peintre Rubens était d’origine :",
+      "answer": "flamande",
+      "category": 4,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "russe",
+        "allemande",
+        "française",
+        "flamande"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636681198icwum6qq3",
+      "question": "Où se trouve la pyramide de Khéops ?",
+      "answer": "à Gizeh",
+      "category": 3,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "à Abou Simbel",
+        "à Gizeh",
+        "à Assouan"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636681203s2m5u520d",
+      "question": "La Renaissance correspond :",
+      "answer": "aux XVe et XVIe siècles",
+      "category": 3,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "aux XIe et XIIe siècles",
+        "aux XIIIe et XIVe siècles",
+        "aux XVe et XVIe siècles",
+        "aux XVIIe et XVIIIe siècles"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636681209y1uga2dwv",
+      "question": "Parmi ces termes, lequel ne concerne pas la sculpture ?",
+      "answer": "enluminure",
+      "category": 4,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "ronde-bosse",
+        "entaille",
+        "relief",
+        "enluminure"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636681214a5parj79l",
+      "question": "La Tapisserie de Bayeux retrace :",
+      "answer": "la conquête de l’Angleterre",
+      "category": 3,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "l’embarquement pour Cythère",
+        "la conquête de l’Angleterre",
+        "le règne de la reine Mathilde",
+        "le sacre d’Éric le Rouge"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636681218wf7d4s6io",
+      "question": "Parmi ces peintres, lequel n’est pas un impressionniste ?",
+      "answer": "Gustave Courbet",
+      "category": 0,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Claude Monet",
+        "Auguste Renoir",
+        "Gustave Courbet",
+        "Camille Pissarro"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636681224965xrg8vl",
+      "question": "Quel artiste emballe le Pont-Neuf comme un paquet-cadeau en 1985 ?",
+      "answer": "Christo",
+      "category": 0,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "César",
+        "Christo",
+        "Jean Nouvel",
+        "Buren"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17706366812292e2cmm5l0",
+      "question": "Le peintre français Pierre Bonnard (1867-1947) a fait partie du groupe :",
+      "answer": "des nabis",
+      "category": 0,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "des expressionnistes",
+        "des surréalistes",
+        "des nabis"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636681233yxwvnaxnb",
+      "question": "Qui a construit une maison très originale surnommée le Palais idéal ?",
+      "answer": "le Facteur Cheval",
+      "category": 5,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Oscar Niemeyer",
+        "Ieoh Ming Pei",
+        "Gianni Drago",
+        "le Facteur Cheval"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636681238di7tip3hc",
+      "question": "Quel peintre est célèbre pour ses tableaux sur les danseuses ?",
+      "answer": "Degas",
+      "category": 5,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Degas",
+        "Picasso",
+        "Klimt",
+        "Seurat"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636681243ftvnf6bdo",
+      "question": "Quel monument fut construit à Paris pour l’Exposition universelle de 1889 ?",
+      "answer": "la tour Eiffel",
+      "category": 4,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la colonne de Juillet",
+        "la tour Eiffel",
+        "l’Arc de Triomphe",
+        "le Sacré-Cœur"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636681248vsbnxa6zk",
+      "question": "En peinture, qu’est-ce qu’une « nature morte » ?",
+      "answer": "un tableau représentant un ensemble d’éléments inanimés (fruits, fleurs) ou de cadavres d’animaux",
+      "category": 2,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "un tableau représentant un ensemble d’éléments inanimés (fruits, fleurs) ou de cadavres d’animaux",
+        "un tableau représentant un paysage en hiver",
+        "un tableau représentant une personne décédée",
+        "un tableau qui ne se vend pas"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636681253ob1pkgv0g",
+      "question": "Une antenne du Louvre a ouvert en décembre 2012 à :",
+      "answer": "Lens",
+      "category": 1,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Marseille",
+        "Metz",
+        "Dubaï",
+        "Lens"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636681258iixbfl5sc",
+      "question": "Comment appelle-t-on l’art du pliage de papier au Japon ?",
+      "answer": "Origami",
+      "category": 3,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Kabuki",
+        "Bento",
+        "Origami",
+        "Kobudo"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17706366812632lhkk4js6",
+      "question": "Dans quelle ville le peintre Claude Monet a-t-il créé son jardin ?",
+      "answer": "Giverny",
+      "category": 4,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Cheverny",
+        "Isigny",
+        "Giverny",
+        "Givry"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636681267vr5q3nco4",
+      "question": "Quel art d’origine italienne et qui se développe sur tout le continent au XVIIe siècle insiste sur les courbes et la surcharge décorative ?",
+      "answer": "l’art baroque",
+      "category": 3,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "l’art roman",
+        "l’art gothique",
+        "l’art baroque"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17706366812736za108e58",
+      "question": "L’ancienne cité de gouvernement des princes arabes, l’Alhambra, peut se visiter :",
+      "answer": "à Grenade",
+      "category": 3,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "à Cordoue",
+        "à Séville",
+        "à Madrid",
+        "à Grenade"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17706366812776sac1alk5",
+      "question": "Qui a réalisé les célèbres sculptures appelées Nanas ?",
+      "answer": "Niki de Saint Phalle",
+      "category": 5,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Jean Tinguely",
+        "Niki de Saint Phalle",
+        "Marcel Duchamp",
+        "Louise Bourgeois"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636681282qqh0049yp",
+      "question": "Comment appelle-t-on un monument mégalithique formé d’une pierre levée ?",
+      "answer": "un menhir",
+      "category": 3,
+      "boxName": "Quiz FTP Art #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "un dolmen",
+        "un menhir",
+        "un cairn",
+        "un cromlech"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636736712658wm65q4",
+      "question": "Qui joue aux côtés d’Omar Sy dans le film Intouchables ?",
+      "answer": "François Cluzet",
+      "category": 1,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Kad Merad",
+        "Daniel Auteuil",
+        "François Cluzet",
+        "Guillaume Canet"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17706367367209mz3snt2h",
+      "question": "« Oublie que t’as aucune chance, vas-y, fonce. On ne sait jamais, sur un malentendu ça peut marcher ». De quel film est tirée cette réplique ?",
+      "answer": "Les Bronzés font du ski",
+      "category": 3,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Les Bronzés",
+        "Les Bronzés font du ski",
+        "Les Bronzés, amis pour la vie"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17706367367265fdrtmhty",
+      "question": "Qui est le point commun entre Léon et Le Cinquième Élément ?",
+      "answer": "Gary Oldman",
+      "category": 2,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Scarlett Johansson",
+        "Jean Reno",
+        "Mila Jovovich",
+        "Gary Oldman"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636736730bsvqt43rh",
+      "question": "Dans Titanic, Leonardo DiCaprio interprète le rôle :",
+      "answer": "d’un artiste fauché, passager de la 3e classe",
+      "category": 5,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "d’un riche aristocrate",
+        "d’un marin en service sur le paquebot",
+        "d’un prisonnier libéré partant faire fortune en Amérique",
+        "d’un artiste fauché, passager de la 3e classe"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17706367367355sojash0p",
+      "question": "Quel est le titre du premier James Bond ?",
+      "answer": "James Bond contre Dr No",
+      "category": 4,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "James Bond contre Dr No",
+        "Bons Baisers de Russie",
+        "Goldfinger",
+        "On ne vit que deux fois"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636736740zjryi32np",
+      "question": "À quel mouvement du cinéma est rattaché Les Quatre Cents Coups de François Truffaut ?",
+      "answer": "la nouvelle vague",
+      "category": 3,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le néo-réalisme",
+        "la nouvelle vague",
+        "l’expressionnisme",
+        "le surréalisme"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636736745dut0xcu41",
+      "question": "Quelle est la nationalité de Cécile de France dans L’Auberge espagnole ?",
+      "answer": "belge",
+      "category": 1,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "suisse",
+        "française",
+        "belge",
+        "québécoise"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636736750w3tnd2k0r",
+      "question": "Qu’arrive-t-il à James Stewart dans La vie est belle de Frank Capra ?",
+      "answer": "Il n’existe plus.",
+      "category": 1,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Il n’existe plus.",
+        "Il se noie.",
+        "Il meurt de faim."
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636736755ilqx1sj8f",
+      "question": "Quel est le titre du premier film parlant ?",
+      "answer": "Le Chanteur de jazz",
+      "category": 1,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Le Chanteur de jazz",
+        "Nosferatu le vampire",
+        "Le Septième Ciel",
+        "La Veuve joyeuse"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636736761lathsu5w8",
+      "question": "Quel est l’auteur le plus souvent adapté au cinéma ?",
+      "answer": "William Shakespeare",
+      "category": 2,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "William Shakespeare",
+        "Victor Hugo",
+        "Molière"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17706367367661kknm52nj",
+      "question": "Dans quelle station de sports d’hiver se déroulent les aventures des Bronzés font du ski ?",
+      "answer": "Val d’Isère",
+      "category": 1,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Chamonix",
+        "Val d’Isère",
+        "L’Alpe d’Huez",
+        "Megève"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636736771jegtbftja",
+      "question": "Quel est le premier film dans lequel Jean-Paul Belmondo est apparu ?",
+      "answer": "Les Copains du dimanche",
+      "category": 0,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Les Copains du dimanche",
+        "À bout de souffle",
+        "Borsalino",
+        "Le Magnifique"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636736776afnpllfsm",
+      "question": "Lequel de ces acteurs a, le premier, connu la célébrité en jouant le rôle de Dracula ?",
+      "answer": "Béla Lugosi",
+      "category": 3,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Christopher Lee",
+        "Béla Lugosi",
+        "Gary Oldman",
+        "Bram Stoker"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17706367367815k6wt0d4l",
+      "question": "Lequel de ces trois réalisateurs réalisa La Dolce Vita ?",
+      "answer": "Fellini",
+      "category": 5,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Rossellini",
+        "Fellini",
+        "Visconti"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17706367367858pmkbv1hg",
+      "question": "En quelle année est sorti Le Dictateur, célèbre film de Charlie Chaplin ?",
+      "answer": "1940",
+      "category": 4,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "1940",
+        "1942",
+        "1944",
+        "1946"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636736791v2upqmbbi",
+      "question": "Qui interprète le personnage de Madame Bovary dans le film éponyme de Claude Chabrol de 1991 ?",
+      "answer": "Isabelle Huppert",
+      "category": 2,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Catherine Deneuve",
+        "Isabelle Huppert",
+        "Fanny Ardant",
+        "Sandrine Bonnaire"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636736796vthdbbhex",
+      "question": "En 1976, quel acteur présidait la première cérémonie des Césars du cinéma ?",
+      "answer": "Jean Gabin",
+      "category": 2,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Lino Ventura",
+        "Yves Montand",
+        "Jean Gabin",
+        "Jean Marais"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636736801qyfd7hogt",
+      "question": "Qui ne joue pas dans le film Chantons sous la pluie ?",
+      "answer": "Fred Astaire",
+      "category": 5,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Debby Reynolds",
+        "Fred Astaire",
+        "Donald O’Connor",
+        "Gene Kelly"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636736805rng19ej4h",
+      "question": "Le film Monsieur Aznavour, sorti en 2024, a été écrit et réalisé par Mehdi Idir et…",
+      "answer": "Grand Corps Malade",
+      "category": 5,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Jamel Debbouze",
+        "Grand Corps Malade",
+        "Patrick Bruel",
+        "Eddy de Pretto"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636736811qcjpdyux8",
+      "question": "Qui a reçu le César du meilleur acteur en 2025 ?",
+      "answer": "Karim Leklou",
+      "category": 3,
+      "boxName": "Quiz FTP Ciné #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Karim Leklou",
+        "Pierre Niney",
+        "Tahar Rahim",
+        "François Civil"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636773930p4ymgia42",
+      "question": "Quatre films – quatre réalisateurs. Une de ces quatre propositions est incorrecte. Laquelle ?",
+      "answer": "Le Fabuleux Destin d’Amélie Poulain. Réalisateur : Bruno Podalydès",
+      "category": 1,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "La Chambre du fils. Réalisateur : Nanni Moretti",
+        "Cet amour-là. Réalisatrice : Josée Dayan",
+        "Le Fabuleux Destin d’Amélie Poulain. Réalisateur : Bruno Podalydès",
+        "8 femmes. Réalisateur : François Ozon"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636773939xs6qutpuk",
+      "question": "Le dernier film de la trilogie tirée du roman de Tolkien, Le Seigneur des anneaux, s’appelle :",
+      "answer": "Le Retour du roi",
+      "category": 5,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Le Retour du roi",
+        "La Communauté de l’anneau",
+        "Les Deux Tours",
+        "La Guerre des étoiles"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636773944vugwlovr0",
+      "question": "Le meilleur film distingué lors du festival de Berlin reçoit un :",
+      "answer": "Ours d’or",
+      "category": 2,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "César",
+        "Lion d’or",
+        "Oscar",
+        "Ours d’or"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636773950897er97gv",
+      "question": "Quel milieu professionnel est tourné en dérision dans le film Le Diable s’habille en Prada ?",
+      "answer": "la mode",
+      "category": 5,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la mode",
+        "l’enseignement",
+        "la musique",
+        "la cuisine"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17706367739540vgrc6apg",
+      "question": "Qui a une « gueule d’atmosphère » dans le film Hôtel du Nord ?",
+      "answer": "Arletty",
+      "category": 4,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Arletty",
+        "Annabella",
+        "Paulette Dubost",
+        "Dora Doll"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17706367739593n9wcuzga",
+      "question": "Qui joue le rôle principal dans Casablanca, aux côtés d’Ingrid Bergman ?",
+      "answer": "Humphrey Bogart",
+      "category": 1,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "William Forsythe",
+        "James Stewart",
+        "Humphrey Bogart",
+        "Henry Fonda"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636773965cham82o9t",
+      "question": "Quelle actrice dénonça les stéréotypes dégradants d’Hollywood envers les peuples natifs américains lors de la 45e cérémonie des Oscars, en 1973 ?",
+      "answer": "Sacheen Littlefeather",
+      "category": 3,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Jane Fonda",
+        "Meryl Streep",
+        "Faye Dunaway",
+        "Sacheen Littlefeather"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636773969ob7s4kgr4",
+      "question": "Aux côtés de quel acteur américain Robert Redford connaît-il son premier grand succès au cinéma en 1969 avec le film Butch Cassidy et le Kid ?",
+      "answer": "Paul Newman",
+      "category": 0,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Clint Eastwood",
+        "Marlon Brando",
+        "Robert Mitchum",
+        "Paul Newman"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17706367739745uxog9vme",
+      "question": "Parmi les propositions suivantes, laquelle n’est pas le nom d’un bateau apparaissant dans la franchise « Pirates des Caraïbes » ?",
+      "answer": "Repulse",
+      "category": 5,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "L’Intercepteur",
+        "Black Pearl",
+        "L’Impératrice",
+        "Repulse"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636773980imbr2v0rj",
+      "question": "Parle avec elle est un film de :",
+      "answer": "Pedro Almodóvar",
+      "category": 1,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Luc Besson",
+        "Pedro Almodóvar",
+        "Woody Allen",
+        "Martin Scorsese"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636773984ptyjvueec",
+      "question": "La Marche de l’empereur est :",
+      "answer": "un documentaire animalier traitant de la vie des manchots",
+      "category": 0,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "un documentaire animalier traitant de la vie des manchots",
+        "un film historique sur Napoléon",
+        "un dessin animé japonais sur la vie de l’empereur Hirohito"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636773989dmv8r1vuk",
+      "question": "Le Bal des vampires a été réalisé par :",
+      "answer": "Roman Polanski",
+      "category": 4,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Alfred Hitchcock",
+        "Roman Polanski",
+        "George A. Romero",
+        "George Lucas"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636773995tzhmx0wh6",
+      "question": "Parmi ces actrices, laquelle n’a jamais interprété Jeanne d’Arc ?",
+      "answer": "Jeanne Moreau",
+      "category": 0,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Ingrid Bergman",
+        "Sandrine Bonnaire",
+        "Jeanne Moreau",
+        "Mila Jovovich"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636774000c0v96t7yw",
+      "question": "Dans Kill Bill de Quentin Tarantino, combien de temps la mariée (Beatrix Kiddo) reste-t-elle dans le coma ?",
+      "answer": "4 ans",
+      "category": 1,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "9 mois",
+        "1 an",
+        "4 ans",
+        "7 ans"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636774005jd89njlxv",
+      "question": "En quelle année le film La Planète des singes est-il apparu sur les écrans pour la première fois ?",
+      "answer": "1968",
+      "category": 0,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "1968",
+        "1972",
+        "1976",
+        "1982"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636774010iktes3oyq",
+      "question": "Quel est le premier film dans lequel Jamel Debbouze a joué ?",
+      "answer": "Zonzon",
+      "category": 3,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Le Fabuleux Destin d’Amélie Poulain",
+        "Zonzon",
+        "Le Ciel, les Oiseaux et… ta mère !",
+        "Astérix et Obélix : Mission Cléopâtre"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636774015pl6753cry",
+      "question": "Quel acteur joue le personnage de Néo dans Matrix ?",
+      "answer": "Keanu Reeves",
+      "category": 5,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Keanu Reeves",
+        "Laurence Fishburne",
+        "Pierce Brosnan",
+        "Johnny Depp"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636774020imsz33bsf",
+      "question": "Steven Spielberg n’a pas réalisé :",
+      "answer": "La Guerre des étoiles",
+      "category": 0,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "E.T. l’extraterrestre",
+        "Jurassic Park",
+        "La Guerre des étoiles",
+        "Les Dents de la mer"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636774025e2ao3wlb7",
+      "question": "Quel est le personnage le plus souvent filmé ?",
+      "answer": "Sherlock Holmes",
+      "category": 3,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Dracula",
+        "Jésus-Christ",
+        "Napoléon",
+        "Sherlock Holmes"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636774030mzpe3ie0d",
+      "question": "Qui donne la réplique à Vivien Leigh dans Autant en emporte le vent ?",
+      "answer": "Clark Gable",
+      "category": 4,
+      "boxName": "Quiz FTP Ciné #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Cary Grant",
+        "Clark Gable",
+        "James Stewart",
+        "Montgomery Clift"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636868929ujyyti5ys",
+      "question": "Pourquoi le 1er mai est-il férié ?",
+      "answer": "pour célébrer la fête du travail",
+      "category": 3,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "pour célébrer la fête du travail",
+        "pour célébrer le muguet",
+        "pour célébrer la fin de la Première Guerre mondiale",
+        "pour célébrer la fin de la Seconde Guerre mondiale"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636868940zm3v2dj8q",
+      "question": "Quelle est la plus ancienne émission toujours diffusée à la télévision française ?",
+      "answer": "« Le Jour du Seigneur »",
+      "category": 2,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "« Des chiffres et des lettres »",
+        "« Thalassa »",
+        "« Automoto »",
+        "« Le Jour du Seigneur »"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636868945xvw263967",
+      "question": "Le ferroutage est :",
+      "answer": "le transport par train de camions avec chauffeur",
+      "category": 2,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le transport par train de camions avec chauffeur",
+        "le transport aérien de marchandises",
+        "le transport par train de conteneurs",
+        "le transport par minéraliers"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17706368689515myug0svb",
+      "question": "Combien de campings environ la France compte-t-elle environ en 2025 ?",
+      "answer": "8 400",
+      "category": 2,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "5 400",
+        "6 400",
+        "7 400",
+        "8 400"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636868957xt9sszx1i",
+      "question": "En quelle année a été instauré le passage à l’heure d’été chaque année en France ?",
+      "answer": "1976",
+      "category": 1,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "1996",
+        "1971",
+        "1976",
+        "1981"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636868962ekzbinm0x",
+      "question": "Selon la dernière étude en date de l’Insee publiée en 2022, la fonction publique compte :",
+      "answer": "5,36 millions de salariés",
+      "category": 4,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "4,48 millions de salariés",
+        "5,36 millions de salariés",
+        "6,48 millions de salariés",
+        "7,48 millions de salariés"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636868968aytk9mmcm",
+      "question": "On appelle un débardeur un « marcel » parce que :",
+      "answer": "C’était le nom de la marque qui le commercialisait",
+      "category": 0,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "C’était le nom de la marque qui le commercialisait",
+        "C’était le prénom masculin le plus porté au moment de sa création",
+        "Le boxeur Marcel Cerdan en fit la publicité",
+        "C’était le prénom du fils du créateur du débardeur"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636868974d70lxc5vg",
+      "question": "Qui est secrétaire général de l’Onu au 1er octobre 2025 ?",
+      "answer": "António Gutteres",
+      "category": 2,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Boutros Boutros-Ghali",
+        "Kofi Annan",
+        "Ban Ki-moon",
+        "António Gutteres"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636868981kitsjfajv",
+      "question": "Pour être admis à se présenter à un concours de la fonction publique, il faut notamment :",
+      "answer": "être ressortissant de l’un des États membres de l’Union européenne, jouir de l’intégralité de ses droits civiques",
+      "category": 1,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "être de nationalité française, jouir de l’intégralité de ses droits civiques",
+        "être de nationalité française, avoir fait son service militaire",
+        "être ressortissant de l’un des États membres de l’Union européenne, jouir de l’intégralité de ses droits civiques",
+        "être ressortissant de l’un des États membres de l’Union européenne, avoir fait son service militaire"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636868986rs6jdf8ys",
+      "question": "Quel nom de fromage n’est pas lié à son lieu de fabrication ?",
+      "answer": "Brillat-savarin",
+      "category": 1,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Brillat-savarin",
+        "Abondance",
+        "Chaource",
+        "Roquefort"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636868991t7pv4fdha",
+      "question": "Qui peut délivrer un permis d’inhumer ?",
+      "answer": "Le maire",
+      "category": 3,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Le médecin",
+        "Le service des pompes funèbres",
+        "Le maire",
+        "Le préfet"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636868997wf9u92y32",
+      "question": "Le 20 janvier 2021, Joe Biden est devenu devenu le … président des États-Unis :",
+      "answer": "46e",
+      "category": 4,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "45e",
+        "46e",
+        "47e",
+        "48e"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636869002f7nlwoq8f",
+      "question": "Associez les plats suivants à leur région d’origine :",
+      "answer": "A/IV - B/III - C/II - D/I",
+      "category": 0,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "A/II - B/IV - C/I - D/III",
+        "A/IV - B/III - C/II - D/I",
+        "A/IV - B/I - C/II - D/III",
+        "A/II - B/III - C/IV - D/I"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636869008sub14avh6",
+      "question": "En 1932, qui inventa le vrai pastis de Marseille que l’on boit (avec modération) avec cinq volumes d’eau ?",
+      "answer": "Paul Ricard",
+      "category": 2,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Paul Ricard",
+        "Jacques Pastis",
+        "Jean-Pierre Pernod",
+        "Michel Kelfert"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636869015v2zed2jus",
+      "question": "La loi sur l’adaptation de la société au vieillissement a été publiée au Journal officiel du 29 décembre 2015. Entre autres mesures, ce texte crée un « droit au répit » pour les proches aidants et réforme l’APA. Que signifie ce sigle ?",
+      "answer": "Allocation personnalisée d’autonomie",
+      "category": 3,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Aide personnelle d’autonomie",
+        "Allocation personnelle alternative",
+        "Allocation personnalisée d’autonomie"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636869020d8ozlxl1b",
+      "question": "Que signifie « www » ?",
+      "answer": "World Wide Web",
+      "category": 1,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Wild Web World",
+        "World’s West Web",
+        "World’s War Web",
+        "World Wide Web"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636869026hbj2n5ekn",
+      "question": "Quelle est l’épice la plus chère aujourd’hui ?",
+      "answer": "le safran",
+      "category": 0,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le safran",
+        "la coriandre",
+        "le pavot",
+        "la cardamome"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636869032cvd3qopdy",
+      "question": "Selon le calendrier chinois, 2025 est l’année du :",
+      "answer": "serpent",
+      "category": 0,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "cheval",
+        "buffle",
+        "serpent",
+        "dragon"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636869037d4v9em6yt",
+      "question": "En France, quelle ville centralise toutes les lettres adressées au Père Noël ?",
+      "answer": "Libourne",
+      "category": 5,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Lille",
+        "Libourne",
+        "Paris",
+        "Strasbourg"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636869042s255z8ljq",
+      "question": "Quelle affirmation concernant Simone Veil est fausse ?",
+      "answer": "Elle a été ministre de la Justice de Valéry Giscard d’Estaing",
+      "category": 0,
+      "boxName": "Quiz FTP Societé #1",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Elle a été membre de l’Académie française",
+        "Elle a été la première présidente du Parlement européen",
+        "Elle a été membre du Conseil constitutionnel",
+        "Elle a été ministre de la Justice de Valéry Giscard d’Estaing"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "177063691311423e1tf6up",
+      "question": "En quelle matière est la chaussure de Cendrillon ?",
+      "answer": "en fourrure",
+      "category": 1,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "en verre",
+        "en fourrure",
+        "en tissu",
+        "en cuir"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636913123c06trye8p",
+      "question": "Quel jour a eu lieu la fusillade dans les locaux du journal Charlie Hebdo ?",
+      "answer": "7 janvier 2015",
+      "category": 1,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "5 janvier 2015",
+        "6 janvier 2015",
+        "7 janvier 2015",
+        "8 janvier 2015"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17706369131293tdja1xrl",
+      "question": "Dans quelle ville a été créée La Marseillaise ?",
+      "answer": "Strasbourg",
+      "category": 0,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Marseille",
+        "Paris",
+        "Lille",
+        "Strasbourg"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636913134ptd6dbzut",
+      "question": "Au 1er janvier 2025, quel pourcentage de femmes y a-t-il en prison (chiffres du ministère de la Justice) ?",
+      "answer": "3,7 %",
+      "category": 2,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "3,7 %",
+        "5,7 %",
+        "7,7 %",
+        "9,7 %"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636913139admm9rn0w",
+      "question": "Que signifie lol ?",
+      "answer": "laughing out loud",
+      "category": 4,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "love of life",
+        "lack of love",
+        "laughing out loud",
+        "lots of laughs"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636913144aqvvwdgfj",
+      "question": "Quelle ville allemande est considérée comme le « berceau de l’automobile » ?",
+      "answer": "Stuttgart",
+      "category": 5,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Nuremberg",
+        "Leipzig",
+        "Stuttgart",
+        "Munich"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636913150rfdonr56q",
+      "question": "En cas d’importante brûlure cutanée, il faut en premier lieu :",
+      "answer": "placer la lésion sous un robinet d’eau froide durant plusieurs minutes",
+      "category": 1,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "couvrir la lésion avec de la gaze",
+        "placer la lésion sous un robinet d’eau froide durant plusieurs minutes",
+        "recouvrir de beurre ou de tout autre produit gras"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636913155rl3t9cxks",
+      "question": "Combien de vélos environ sont vendus en France chaque année ?",
+      "answer": "3 millions",
+      "category": 3,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "1 million",
+        "2 millions",
+        "3 millions",
+        "4 millions"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "177063691315965mis5iks",
+      "question": "Quelle ville est connue pour ses nougats ?",
+      "answer": "Montélimar",
+      "category": 0,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Aix-en-Provence",
+        "Cambrai",
+        "Apt",
+        "Montélimar"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636913164eru2ls4t9",
+      "question": "Qui a inventé la porcelaine ?",
+      "answer": "les Chinois",
+      "category": 4,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "les Japonais",
+        "les Arabes",
+        "les Perses",
+        "les Chinois"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636913170k07yxpo5d",
+      "question": "« Pour la patrie, les sciences et la gloire ». À qui appartient cette devise ?",
+      "answer": "à l’École polytechnique",
+      "category": 0,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "à l’École polytechnique",
+        "à l’École normale supérieure",
+        "à Sciences Po Paris",
+        "à l’ENA"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636913175mi6491vr5",
+      "question": "On reconnaît les noms irlandais ou écossais à la présence du mot « Mac » suivi d’un nom propre ; que signifie ce mot ?",
+      "answer": "Cela veut dire « fils de »",
+      "category": 5,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Il indique une origine géographique",
+        "C’est un signe de noblesse ancienne qui signifie « clan »",
+        "Cela veut dire « fils de »"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770636913180nugslsihl",
+      "question": "Les produits issus du commerce équitable portent le label international :",
+      "answer": "Max Havelaar",
+      "category": 1,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "rouge",
+        "Max Havelaar",
+        "AB"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636913186r7drc7wxf",
+      "question": "Les bateaux-mouches s’appellent ainsi car :",
+      "answer": "ils furent construits dans un quartier de Lyon qui s’appelait la Mouche",
+      "category": 4,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "leur inventeur s’appelait Mouche",
+        "ils furent construits dans un quartier de Lyon qui s’appelait la Mouche",
+        "les premiers étaient de véritables repères à mouches"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636913191ixzm9k5n8",
+      "question": "Dans la série « Les Simpson », quel est le nom du père ?",
+      "answer": "Homer",
+      "category": 5,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Bart",
+        "Homer",
+        "Springfield",
+        "Ned"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636913196a9672rehm",
+      "question": "L’Union Jack est le nom :",
+      "answer": "du drapeau britannique",
+      "category": 5,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "du drapeau australien",
+        "du drapeau néo-zélandais",
+        "du drapeau américain",
+        "du drapeau britannique"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770636913202uj58l61zv",
+      "question": "Quelle est la distance moyenne entre la Terre et le Soleil ?",
+      "answer": "Environ 150 millions de kilomètres",
+      "category": 2,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Environ 1 million de kilomètres",
+        "Environ 150 millions de kilomètres",
+        "Environ 15 millions de kilomètres",
+        "Environ 1 milliard de kilomètres"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770636913207ju0cs3cos",
+      "question": "Le salut officiel des Tibétains s’effectue la langue tirée.",
+      "answer": "vrai",
+      "category": 1,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "vrai",
+        "faux"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770636913212d3s9rc12e",
+      "question": "Qui a succédé à Christine Lagarde à la tête du FMI en décembre 2019 ?",
+      "answer": "Kristalina Georgieva",
+      "category": 2,
+      "boxName": "Quiz FTP Societé #2",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Élisabeth Guigou",
+        "David Lipton",
+        "Kristalina Georgieva",
+        "David Cameron"
+      ],
+      "qcmCorrectIndex": 2
     }
   ]
 }
