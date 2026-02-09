@@ -455,7 +455,9 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
         question = qMatch[1].trim();
       } else if (altMatch) {
         // ALT: doit être testé avant optMatch (car "A:" matcherait aussi)
-        alternativeAnswers.push(altMatch[1].trim());
+        // Support virgules : "ALT: réponse1, réponse2" → 2 alternatives
+        const parts = altMatch[1].split(',').map(s => s.trim()).filter(Boolean);
+        alternativeAnswers.push(...parts);
       } else if (rMatch) {
         answer = rMatch[1].trim();
       } else if (optMatch) {

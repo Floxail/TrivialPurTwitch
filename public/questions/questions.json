@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-02-09T16:23:38.994Z",
+  "exportDate": "2026-02-09T17:42:45.640Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -32830,7 +32830,9 @@
       "question": "en quelle décennie à été écrit Hercule Poirot quitte la scène ?",
       "answer": "les années 40",
       "alternativeAnswers": [
-        "40's ; 1940, les années quarante"
+        "40's",
+        "1940",
+        "les années quarante"
       ],
       "category": 3,
       "boxName": "Poirot (RomanCrow)",
@@ -32895,7 +32897,8 @@
       "question": "comment s'appelle l'inspecteur de Scotland yard ayant souvent affaire à Poirot ?",
       "answer": "James Japp",
       "alternativeAnswers": [
-        "l'inspecteur-chef James Japp ; L'inspecteur Japp"
+        "l'inspecteur-chef James Japp",
+        "L'inspecteur Japp"
       ],
       "category": 0,
       "boxName": "Poirot (RomanCrow)",
@@ -32919,7 +32922,11 @@
       "question": "contrairement à la croyance populaire, le Pokémon Canarticho ne se ballade pas avec un poireaux. Quel est donc ce mystérieux végétal ?",
       "answer": "de la ciboule",
       "alternativeAnswers": [
-        "cive ; cébette ; oignon d'hiver ; oignon vert ; oignon-pays"
+        "cive",
+        "cébette",
+        "oignon d'hiver",
+        "oignon vert",
+        "oignon-pays"
       ],
       "category": 4,
       "boxName": "Poirot (RomanCrow)",
