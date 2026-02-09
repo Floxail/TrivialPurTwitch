@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Button, Form, Modal, Badge, Alert } from 'react-bootstrap';
 import { Question, QuestionType, TrivialCategory, categoryNames } from './store/questions-store';
 
+// Labels et limites QCM
+const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+const QCM_MIN_OPTIONS = 2;
+const QCM_MAX_OPTIONS = 6;
+
 // ============================================================
 // Types
 // ============================================================
@@ -125,7 +130,7 @@ const defaultFormData: QuestionFormData = {
   cardNumber: undefined,
   difficulty: 'medium',
   questionType: QuestionType.FREE_TEXT,
-  qcmOptions: ['', '', '', ''],
+  qcmOptions: ['', ''],
   qcmCorrectIndex: 0,
 };
 
@@ -152,7 +157,7 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
           cardNumber: editingQuestion.cardNumber,
           difficulty: editingQuestion.difficulty || 'medium',
           questionType: editingQuestion.questionType || QuestionType.FREE_TEXT,
-          qcmOptions: editingQuestion.qcmOptions || ['', '', '', ''],
+          qcmOptions: editingQuestion.qcmOptions || ['', ''],
           qcmCorrectIndex: editingQuestion.qcmCorrectIndex ?? 0,
         });
       } else {
@@ -170,8 +175,12 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
     // Valider QCM
     if (formData.questionType === QuestionType.QCM) {
       const filledOptions = formData.qcmOptions.filter(o => o.trim().length > 0);
-      if (filledOptions.length !== 4) {
-        alert('⚠️ Pour une question QCM, les 4 options doivent être remplies');
+      if (filledOptions.length < QCM_MIN_OPTIONS) {
+        alert(`⚠️ Pour une question QCM, il faut au moins ${QCM_MIN_OPTIONS} options remplies`);
+        return;
+      }
+      if (filledOptions.length !== formData.qcmOptions.length) {
+        alert('⚠️ Toutes les options doivent être remplies. Supprimez les options vides.');
         return;
       }
     }
@@ -223,7 +232,7 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
               >
                 📋 QCM
                 <div style={{ fontSize: '11px', marginTop: '3px' }}>
-                  4 choix (A, B, C, D)
+                  2 à 6 choix (A-F)
                 </div>
               </Button>
             </div>
@@ -296,12 +305,52 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
           {/* Options QCM */}
           {formData.questionType === QuestionType.QCM && (
             <div className="p-3 mb-3" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '10px', border: '2px solid #ff60b7' }}>
-              <h6 className="mb-3">📋 Options QCM</h6>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6 className="mb-0">📋 Options QCM ({formData.qcmOptions.length} options)</h6>
+                <div className="d-flex gap-1">
+                  <Button
+                    type="button"
+                    variant="outline-danger"
+                    size="sm"
+                    disabled={formData.qcmOptions.length <= QCM_MIN_OPTIONS}
+                    onClick={() => {
+                      const newOptions = formData.qcmOptions.slice(0, -1);
+                      const newCorrectIndex = formData.qcmCorrectIndex >= newOptions.length
+                        ? 0
+                        : formData.qcmCorrectIndex;
+                      setFormData({
+                        ...formData,
+                        qcmOptions: newOptions,
+                        qcmCorrectIndex: newCorrectIndex,
+                        answer: newOptions[newCorrectIndex] || formData.answer
+                      });
+                    }}
+                    title="Supprimer la dernière option"
+                  >
+                    − Option
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline-success"
+                    size="sm"
+                    disabled={formData.qcmOptions.length >= QCM_MAX_OPTIONS}
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        qcmOptions: [...formData.qcmOptions, '']
+                      });
+                    }}
+                    title="Ajouter une option"
+                  >
+                    + Option
+                  </Button>
+                </div>
+              </div>
               <p className="text-muted small mb-3">
-                Les viewers répondront avec A, B, C ou D dans le chat
+                Les viewers répondront avec {formData.qcmOptions.map((_, i) => QCM_LABELS[i]).join(', ')} dans le chat
               </p>
-              {['A', 'B', 'C', 'D'].map((letter, index) => (
-                <Form.Group key={letter} className="mb-2">
+              {formData.qcmOptions.map((option, index) => (
+                <Form.Group key={index} className="mb-2">
                   <div className="d-flex align-items-center gap-2">
                     <Form.Check
                       type="radio"
@@ -317,12 +366,12 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
                       title="Réponse correcte"
                     />
                     <span style={{ fontWeight: 'bold', color: formData.qcmCorrectIndex === index ? '#4CAF50' : 'inherit', minWidth: '25px' }}>
-                      {letter})
+                      {QCM_LABELS[index]})
                     </span>
                     <Form.Control
                       type="text"
-                      placeholder={`Option ${letter}`}
-                      value={formData.qcmOptions[index]}
+                      placeholder={`Option ${QCM_LABELS[index]}`}
+                      value={option}
                       onChange={(e) => {
                         const newOptions = [...formData.qcmOptions];
                         newOptions[index] = e.target.value;
@@ -385,8 +434,6 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
 
   // Séparer les blocs par les lignes "Q:" (chaque bloc commence par Q:)
   const blocks = text.split(/\n(?=Q\s*:)/i).filter(b => b.trim().length > 0);
-
-  const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
   for (let i = 0; i < blocks.length; i++) {
     const block = blocks[i].trim();

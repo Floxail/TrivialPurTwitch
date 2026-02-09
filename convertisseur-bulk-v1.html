@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajout en masse - TrivialPurTwitch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --spot-color: #1ed760;
+            --bg-gradient-start: #f8f9fa;
+            --bg-gradient-end: #e9ecef;
+            --container-bg: white;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #adadad;
+            --input-bg: white;
+            --card-bg: #e4e4e4;
+            --stats-bg: #f5f5f5;
+            --info-bg: #e3f2fd;
+            --info-border: #2196f3;
+            --info-text: #1976d2;
+            --header-color: #d1d1d1;
+            --header-body-color: #555555;
+            --panel-bg: #e4e4e4;
+            --success-bg: #d4edda;
+            --success-text: #155724;
+            --warning-bg: #fff3cd;
+            --warning-text: #856404;
+            --danger-bg: #f8d7da;
+            --danger-text: #721c24;
+            --qcm-accent: #9c27b0;
+        }
+
+        [data-theme="dark"] {
+            --spot-color: #fa17a3;
+            --bg-gradient-start: #18191a;
+            --bg-gradient-end: #18191a;
+            --container-bg: #242526;
+            --text-primary: #e0e0e0;
+            --text-secondary: #999999;
+            --border-color: #413c3c;
+            --input-bg: #242526;
+            --card-bg: #242526;
+            --stats-bg: #242526;
+            --info-bg: #242526;
+            --info-border: #ff60b7;
+            --info-text: #fc8ce3;
+            --header-color: #0e0f0f;
+            --header-body-color: #5e5e5e;
+            --panel-bg: #2d2e2f;
+            --success-bg: #1e4620;
+            --success-text: #81C784;
+            --warning-bg: #4a3f1f;
+            --warning-text: #FFD54F;
+            --danger-bg: #4a1f1f;
+            --danger-text: #ef9a9a;
+            --qcm-accent: #ce93d8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--header-color);
+            color: var(--header-body-color);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            color: var(--header-body-color);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: var(--spot-color);
+            border: 2px solid var(--spot-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 999rem;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        /* Config section */
+        .config-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--spot-color);
+        }
+
+        [data-theme="dark"] input::placeholder,
+        [data-theme="dark"] textarea::placeholder {
+            color: #999999;
+            opacity: 1;
+        }
+
+        textarea {
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Switch toggle */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--border-color);
+            transition: 0.3s;
+            border-radius: 26px;
+            border: none;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .switch input:checked + .slider {
+            background: var(--spot-color);
+        }
+
+        .switch input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .switch-label {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .switch-hint {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+        }
+
+        /* Info box */
+        .info-box {
+            background: var(--info-bg);
+            border: 2px solid var(--info-border);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h4 {
+            color: var(--info-text);
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: var(--text-primary);
+            font-size: 0.95em;
+        }
+
+        .info-box code {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .info-box code {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .info-box pre {
+            color: var(--text-primary);
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 5px;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        [data-theme="dark"] .info-box pre {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .info-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        /* Buttons */
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            flex: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--spot-color) 0%, #19b34d 100%);
+        }
+
+        [data-theme="dark"] .btn-primary {
+            background: linear-gradient(135deg, var(--spot-color) 0%, #c91285 100%);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 5px 15px rgba(30, 215, 96, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--spot-color);
+            color: var(--spot-color);
+            flex: none;
+            padding: 8px 18px;
+            font-size: 14px;
+        }
+
+        .btn-outline:hover:not(:disabled) {
+            background: var(--spot-color);
+            color: white;
+            box-shadow: 0 5px 15px rgba(30, 215, 96, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stats-card {
+            background: var(--stats-bg);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            text-align: center;
+        }
+
+        .stats-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--spot-color);
+        }
+
+        .stats-label {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            margin-top: 3px;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .alert-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid var(--success-text);
+        }
+
+        .alert-warning {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            border: 1px solid var(--warning-text);
+        }
+
+        .alert-danger {
+            background: var(--danger-bg);
+            color: var(--danger-text);
+            border: 1px solid var(--danger-text);
+        }
+
+        /* Preview section */
+        .preview-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            background: var(--panel-bg);
+        }
+
+        .preview-item {
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--spot-color);
+            font-size: 0.9em;
+            color: var(--text-primary);
+        }
+
+        .preview-item.qcm {
+            border-left-color: var(--qcm-accent);
+        }
+
+        .preview-item strong {
+            color: var(--text-primary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: white;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .badge-qcm {
+            background: var(--qcm-accent);
+        }
+
+        .badge-free {
+            background: #2196f3;
+        }
+
+        .correct-answer {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .qcm-option {
+            margin-left: 15px;
+            line-height: 1.6;
+        }
+
+        .alt-answers {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* JSON output */
+        .json-section {
+            margin-top: 25px;
+        }
+
+        .json-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .json-output {
+            width: 100%;
+            min-height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+            background: var(--panel-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .json-output:focus {
+            outline: none;
+            border-color: var(--spot-color);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            color: var(--spot-color);
+            border-bottom-color: var(--spot-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .config-section {
+                grid-template-columns: 1fr;
+            }
+            .info-columns {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.3em;
+            }
+            .theme-toggle {
+                position: static;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <div class="header">
+            <h1>Ajout en masse - TrivialPurTwitch</h1>
+            <p>Convertissez vos questions (texte libre + QCM) en JSON importable dans l'app</p>
+            <button class="theme-toggle" onclick="toggleTheme()">Mode Clair</button>
+        </div>
+
+        <div class="content">
+            <!-- Info -->
+            <div class="info-box">
+                <h4>Format attendu</h4>
+                <p>Collez vos questions ci-dessous. Les deux formats sont supportes et peuvent etre melanges :</p>
+                <div class="info-columns">
+                    <div>
+                        <p><strong>Texte libre :</strong></p>
+                        <pre>Q: Qui a peint la Joconde ?
+R: Leonard de Vinci
+ALT: De Vinci
+ALT: Leonard</pre>
+                    </div>
+                    <div>
+                        <p><strong>QCM (choix multiples) :</strong></p>
+                        <pre>Q: Capitale de la France ?
+A: Lyon
+B: Paris
+C: Marseille
+D: Bordeaux
+R: B</pre>
+                    </div>
+                </div>
+                <p style="margin-top: 10px;">Separez chaque question par une <strong>ligne vide</strong>. <code>ALT:</code> est optionnel (plusieurs possibles). QCM : 2 a 6 options (A-F).</p>
+            </div>
+
+            <!-- Configuration -->
+            <div class="config-section">
+                <div class="form-group">
+                    <label for="boxName">Nom de la boite *</label>
+                    <input type="text" id="boxName" placeholder="Ex: Culture Generale, Cinema 2025..." value="Ma Boite">
+                </div>
+                <div class="form-group">
+                    <label for="difficulty">Difficulte</label>
+                    <select id="difficulty">
+                        <option value="easy">Facile</option>
+                        <option value="medium" selected>Moyen</option>
+                        <option value="hard">Difficile</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="switch-container">
+                <label class="switch">
+                    <input type="checkbox" id="randomCategories" checked>
+                    <span class="slider"></span>
+                </label>
+                <div>
+                    <span class="switch-label">Categories aleatoires</span><br>
+                    <span class="switch-hint">Chaque question sera assignee a une categorie Trivial Pursuit aleatoire</span>
+                </div>
+            </div>
+
+            <!-- Category selector (shown only when random is off) -->
+            <div class="form-group" id="fixedCategoryGroup" style="display: none;">
+                <label for="fixedCategory">Categorie fixe</label>
+                <select id="fixedCategory">
+                    <option value="0">Geographie</option>
+                    <option value="1">Divertissement</option>
+                    <option value="2">Histoire</option>
+                    <option value="3">Arts & Litterature</option>
+                    <option value="4">Sciences & Nature</option>
+                    <option value="5">Sports & Loisirs</option>
+                </select>
+            </div>
+
+            <!-- Textarea -->
+            <div class="form-group">
+                <label for="questionsInput">Questions (format Q:/R:/ALT: ou QCM A:/B:/C:/D:)</label>
+                <textarea id="questionsInput" rows="14" placeholder="Q: Quelle est la capitale de la France ?
+A: Lyon
+B: Paris
+C: Marseille
+D: Bordeaux
+R: B
+
+Q: Qui a peint la Joconde ?
+R: Leonard de Vinci
+ALT: De Vinci
+ALT: Leonard de Vinci"></textarea>
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="previewBtn" onclick="doPreview()" disabled>Previsualiser</button>
+                <button class="btn btn-primary" id="convertBtn" onclick="doConvert()" disabled style="flex: 1;">Convertir en JSON</button>
+                <button class="btn btn-danger" onclick="doClear()" style="flex: none; padding: 12px 20px;">Effacer</button>
+            </div>
+
+            <!-- Preview -->
+            <div id="previewSection" style="display: none; margin-top: 20px;">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('preview', this)">Apercu</button>
+                    <button class="tab" onclick="switchTab('json', this)">JSON</button>
+                </div>
+
+                <!-- Tab: Preview -->
+                <div id="tabPreview" class="tab-content active">
+                    <div id="previewAlerts"></div>
+                    <div id="previewStats" class="stats-grid" style="display: none;"></div>
+                    <div id="previewList" class="preview-container" style="display: none;"></div>
+                </div>
+
+                <!-- Tab: JSON -->
+                <div id="tabJson" class="tab-content">
+                    <textarea id="jsonOutput" class="json-output" readonly></textarea>
+                    <div class="btn-container">
+                        <button class="btn btn-secondary" onclick="copyJSON()">Copier</button>
+                        <button class="btn btn-primary" onclick="downloadJSON()">Telecharger le JSON</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // Constants
+        // ============================================================
+        const CATEGORY_NAMES = [
+            'Geographie',
+            'Divertissement',
+            'Histoire',
+            'Arts & Litterature',
+            'Sciences & Nature',
+            'Sports & Loisirs'
+        ];
+
+        const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+        let lastParsed = null;
+        let lastJSON = null;
+
+        // ============================================================
+        // Theme
+        // ============================================================
+        function toggleTheme() {
+            const body = document.body;
+            const current = body.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            document.querySelector('.theme-toggle').textContent = next === 'dark' ? 'Mode Clair' : 'Mode Sombre';
+        }
+
+        // ============================================================
+        // Toggle random categories
+        // ============================================================
+        document.getElementById('randomCategories').addEventListener('change', function () {
+            document.getElementById('fixedCategoryGroup').style.display = this.checked ? 'none' : 'block';
+        });
+
+        // ============================================================
+        // Enable/disable buttons based on textarea content
+        // ============================================================
+        document.getElementById('questionsInput').addEventListener('input', function () {
+            const hasText = this.value.trim().length > 0;
+            document.getElementById('previewBtn').disabled = !hasText;
+            document.getElementById('convertBtn').disabled = !hasText;
+        });
+
+        // ============================================================
+        // Parser (same logic as BulkAddModal in the React app)
+        // ============================================================
+        function parseBulkQuestions(text) {
+            const questions = [];
+            const errors = [];
+
+            // Split blocks by lines starting with Q:
+            const blocks = text.split(/\n(?=Q\s*:)/i).filter(b => b.trim().length > 0);
+
+            for (let i = 0; i < blocks.length; i++) {
+                const block = blocks[i].trim();
+                const lines = block.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+                let question = '';
+                let answer = '';
+                const alternativeAnswers = [];
+                const qcmOptions = {};
+
+                for (const line of lines) {
+                    const qMatch = line.match(/^Q\s*:\s*(.+)/i);
+                    const rMatch = line.match(/^R\s*:\s*(.+)/i);
+                    const altMatch = line.match(/^ALT\s*:\s*(.+)/i);
+                    // Match QCM options: "A: texte", "B: texte", etc. (but NOT ALT:)
+                    const optMatch = line.match(/^([A-F])\s*:\s*(.+)/);
+
+                    if (qMatch) {
+                        question = qMatch[1].trim();
+                    } else if (altMatch) {
+                        // ALT: must be tested before optMatch (because "A:" would also match)
+                        alternativeAnswers.push(altMatch[1].trim());
+                    } else if (rMatch) {
+                        answer = rMatch[1].trim();
+                    } else if (optMatch) {
+                        qcmOptions[optMatch[1]] = optMatch[2].trim();
+                    }
+                }
+
+                if (!question && !answer) {
+                    continue;
+                }
+
+                if (!question) {
+                    errors.push('Bloc ' + (i + 1) + ' : question manquante (Q: ...)');
+                    continue;
+                }
+
+                if (!answer) {
+                    errors.push('Bloc ' + (i + 1) + ' : reponse manquante (R: ...) pour "' + question.substring(0, 40) + '..."');
+                    continue;
+                }
+
+                // Detect QCM: at least 2 options A-F and answer is a single letter
+                const optionKeys = QCM_LABELS.filter(l => qcmOptions[l]);
+                const answerUpper = answer.toUpperCase();
+                const isQcm = optionKeys.length >= 2 && QCM_LABELS.includes(answerUpper) && qcmOptions[answerUpper];
+
+                if (isQcm) {
+                    const orderedOptions = optionKeys.map(l => qcmOptions[l]);
+                    const correctIndex = optionKeys.indexOf(answerUpper);
+
+                    questions.push({
+                        question: question,
+                        answer: qcmOptions[answerUpper],
+                        alternativeAnswers: [],
+                        isQcm: true,
+                        qcmOptions: orderedOptions,
+                        qcmCorrectIndex: correctIndex,
+                    });
+                } else {
+                    questions.push({
+                        question: question,
+                        answer: answer,
+                        alternativeAnswers: alternativeAnswers,
+                        isQcm: false,
+                    });
+                }
+            }
+
+            return { questions, errors };
+        }
+
+        // ============================================================
+        // Generate unique ID (same strategy as the app)
+        // ============================================================
+        function generateId() {
+            return Date.now().toString() + Math.random().toString(36).substring(2, 11);
+        }
+
+        // ============================================================
+        // Build the JSON output (compatible with app import)
+        // ============================================================
+        function buildJSON(parsed) {
+            const boxName = document.getElementById('boxName').value.trim() || 'Ma Boite';
+            const difficulty = document.getElementById('difficulty').value;
+            const randomCat = document.getElementById('randomCategories').checked;
+            const fixedCat = parseInt(document.getElementById('fixedCategory').value);
+
+            const questions = parsed.questions.map(q => {
+                const category = randomCat
+                    ? Math.floor(Math.random() * 6)
+                    : fixedCat;
+
+                const base = {
+                    id: generateId(),
+                    category: category,
+                    question: q.question,
+                    answer: q.answer,
+                    boxName: boxName,
+                    difficulty: difficulty,
+                    questionType: q.isQcm ? 'qcm' : 'free_text',
+                };
+
+                if (q.alternativeAnswers && q.alternativeAnswers.length > 0) {
+                    base.alternativeAnswers = q.alternativeAnswers;
+                }
+
+                if (q.isQcm && q.qcmOptions) {
+                    base.qcmOptions = q.qcmOptions;
+                    base.qcmCorrectIndex = q.qcmCorrectIndex ?? 0;
+                }
+
+                return base;
+            });
+
+            return {
+                questions: questions,
+                boxes: [{ name: boxName }],
+                trivialBoxes: [boxName],
+                exportDate: new Date().toISOString(),
+                version: '2.0',
+            };
+        }
+
+        // ============================================================
+        // Preview
+        // ============================================================
+        function doPreview() {
+            const text = document.getElementById('questionsInput').value;
+            const parsed = parseBulkQuestions(text);
+            lastParsed = parsed;
+
+            document.getElementById('previewSection').style.display = 'block';
+            switchTab('preview', document.querySelector('.tab'));
+
+            const alertsEl = document.getElementById('previewAlerts');
+            const statsEl = document.getElementById('previewStats');
+            const listEl = document.getElementById('previewList');
+
+            alertsEl.innerHTML = '';
+
+            if (parsed.questions.length > 0) {
+                const qcmCount = parsed.questions.filter(q => q.isQcm).length;
+                const freeCount = parsed.questions.length - qcmCount;
+
+                let detail = parsed.questions.length + ' question(s) detectee(s)';
+                if (qcmCount > 0 && freeCount > 0) {
+                    detail += ' (' + qcmCount + ' QCM, ' + freeCount + ' texte libre)';
+                } else if (qcmCount > 0) {
+                    detail += ' (' + qcmCount + ' QCM)';
+                } else {
+                    detail += ' (' + freeCount + ' texte libre)';
+                }
+
+                alertsEl.innerHTML += '<div class="alert alert-success">' + detail + '</div>';
+
+                // Stats
+                statsEl.style.display = 'grid';
+                statsEl.innerHTML = `
+                    <div class="stats-card">
+                        <div class="stats-number">${parsed.questions.length}</div>
+                        <div class="stats-label">Total</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-number">${freeCount}</div>
+                        <div class="stats-label">Texte libre</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-number">${qcmCount}</div>
+                        <div class="stats-label">QCM</div>
+                    </div>
+                `;
+            } else {
+                statsEl.style.display = 'none';
+            }
+
+            if (parsed.errors.length > 0) {
+                alertsEl.innerHTML += '<div class="alert alert-warning">' + parsed.errors.map(e => '<div>' + escapeHtml(e) + '</div>').join('') + '</div>';
+            }
+
+            if (parsed.questions.length === 0 && parsed.errors.length === 0) {
+                alertsEl.innerHTML += '<div class="alert alert-danger">Aucune question detectee. Verifiez le format.</div>';
+            }
+
+            // Render preview list
+            if (parsed.questions.length > 0) {
+                listEl.style.display = 'block';
+                listEl.innerHTML = parsed.questions.map((q, i) => {
+                    let html = '<div class="preview-item' + (q.isQcm ? ' qcm' : '') + '">';
+                    html += '<strong>Q:</strong> ' + escapeHtml(q.question);
+                    html += q.isQcm
+                        ? ' <span class="badge badge-qcm">QCM</span>'
+                        : ' <span class="badge badge-free">Texte</span>';
+                    html += '<br>';
+
+                    if (q.isQcm && q.qcmOptions) {
+                        for (let j = 0; j < q.qcmOptions.length; j++) {
+                            const isCorrect = j === q.qcmCorrectIndex;
+                            html += '<span class="qcm-option' + (isCorrect ? ' correct-answer' : '') + '">';
+                            html += String.fromCharCode(65 + j) + ': ' + escapeHtml(q.qcmOptions[j]);
+                            if (isCorrect) html += ' &#10003;';
+                            html += '</span><br>';
+                        }
+                    } else {
+                        html += '<strong>R:</strong> ' + escapeHtml(q.answer);
+                        if (q.alternativeAnswers && q.alternativeAnswers.length > 0) {
+                            html += '<br><span class="alt-answers">ALT: ' + escapeHtml(q.alternativeAnswers.join(', ')) + '</span>';
+                        }
+                    }
+
+                    html += '</div>';
+                    return html;
+                }).join('');
+            } else {
+                listEl.style.display = 'none';
+            }
+        }
+
+        // ============================================================
+        // Convert to JSON
+        // ============================================================
+        function doConvert() {
+            const text = document.getElementById('questionsInput').value;
+            const parsed = parseBulkQuestions(text);
+            lastParsed = parsed;
+
+            if (parsed.questions.length === 0) {
+                doPreview(); // show errors
+                return;
+            }
+
+            const json = buildJSON(parsed);
+            lastJSON = json;
+
+            document.getElementById('previewSection').style.display = 'block';
+            document.getElementById('jsonOutput').value = JSON.stringify(json, null, 2);
+
+            // Also update preview
+            doPreview();
+
+            // Switch to JSON tab
+            switchTab('json', document.querySelectorAll('.tab')[1]);
+        }
+
+        // ============================================================
+        // Clear
+        // ============================================================
+        function doClear() {
+            document.getElementById('questionsInput').value = '';
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('jsonOutput').value = '';
+            document.getElementById('previewBtn').disabled = true;
+            document.getElementById('convertBtn').disabled = true;
+            lastParsed = null;
+            lastJSON = null;
+        }
+
+        // ============================================================
+        // Copy & Download
+        // ============================================================
+        function copyJSON() {
+            const el = document.getElementById('jsonOutput');
+            if (!el.value) return;
+
+            navigator.clipboard.writeText(el.value).then(() => {
+                alert('JSON copie dans le presse-papier !');
+            }).catch(() => {
+                el.select();
+                document.execCommand('copy');
+                alert('JSON copie dans le presse-papier !');
+            });
+        }
+
+        function downloadJSON() {
+            const jsonText = document.getElementById('jsonOutput').value;
+            if (!jsonText) return;
+
+            const boxName = document.getElementById('boxName').value.trim() || 'ma-boite';
+            const filename = 'questions-' + boxName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now() + '.json';
+
+            const blob = new Blob([jsonText], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // ============================================================
+        // Tabs
+        // ============================================================
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            btn.classList.add('active');
+            if (name === 'preview') {
+                document.getElementById('tabPreview').classList.add('active');
+            } else {
+                document.getElementById('tabJson').classList.add('active');
+            }
+        }
+
+        // ============================================================
+        // Helpers
+        // ============================================================
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

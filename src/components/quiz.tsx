@@ -18,7 +18,7 @@ let twitchCallback: (nick: string, tid: string, msg: string) => void = () => {};
 const SCORE_CMD_DELAY = 2000;
 
 // Labels pour les options QCM
-const QCM_LABELS = ['A', 'B', 'C', 'D'];
+const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 const Quiz = () => {
 	const twitchClient = useRef<Client | null>(null);
@@ -69,7 +69,7 @@ const Quiz = () => {
 
 	// Vérifie si la question actuelle est un QCM
 	const isQcmQuestion = currentQuestion?.questionType === QuestionType.QCM &&
-		currentQuestion?.qcmOptions && currentQuestion.qcmOptions.length === 4;
+		currentQuestion?.qcmOptions && currentQuestion.qcmOptions.length >= 2;
 
 	useEffect(() => {
 		if (twitchNick && twitchToken) {
@@ -360,9 +360,12 @@ const Quiz = () => {
 
 				const answer = message.trim().toUpperCase();
 				const correctIndex = currentActiveQuestion.qcmCorrectIndex;
+				const numOptions = currentActiveQuestion.qcmOptions.length;
 
-				// Vérifier si c'est une réponse QCM valide (A, B, C, D ou 1, 2, 3, 4)
-				const isValidQcmAnswer = QCM_LABELS.includes(answer) || ['1', '2', '3', '4'].includes(answer);
+				// Vérifier si c'est une réponse QCM valide (lettres ou chiffres selon le nombre d'options)
+				const validLabels = QCM_LABELS.slice(0, numOptions);
+				const validNumbers = Array.from({ length: numOptions }, (_, i) => String(i + 1));
+				const isValidQcmAnswer = validLabels.includes(answer) || validNumbers.includes(answer);
 
 				if (isValidQcmAnswer) {
 					// En QCM, un viewer ne peut répondre qu'UNE SEULE FOIS (pas de seconde chance)
@@ -828,33 +831,55 @@ const Quiz = () => {
 
 										{/* Options QCM */}
 										{isQcmQuestion && currentQuestion.qcmOptions && !questionRevealed && (
-											<div className="qcm-options mt-4" style={{ width: '100%', maxWidth: '600px' }}>
+											<div className="qcm-options mt-4" style={{ width: '100%', maxWidth: '700px' }}>
 												<div className="row g-3">
-													{currentQuestion.qcmOptions.map((option, index) => (
-														<div key={index} className="col-6">
-															<div style={{
-																backgroundColor: 'rgba(122, 122, 122, 0.89)',
-																borderRadius: '12px',
-																padding: '18px 20px',
-																fontSize: '17px',
-																display: 'flex',
-																alignItems: 'center',
-																gap: '10px'
-															}}>
-																<span style={{
-																	color: '#ff60b7',
-																	fontWeight: 'bold',
-																	fontSize: '19px',
-																	minWidth: '20px'
-																}}>{QCM_LABELS[index]}</span>
-																<span style={{ color: 'var(--text-color)' }}>-</span>
-																<span>{option}</span>
+													{currentQuestion.qcmOptions.map((option, index) => {
+														const optionCount = currentQuestion.qcmOptions!.length;
+														let colClass: string;
+														if (optionCount <= 2) {
+															colClass = 'col-6';
+														} else if (optionCount === 3) {
+															colClass = 'col-4';
+														} else if (optionCount === 4) {
+															colClass = 'col-6';
+														} else if (optionCount === 5) {
+															colClass = index < 3 ? 'col-4' : 'col-6';
+														} else {
+															colClass = 'col-4';
+														}
+														return (
+															<div key={index} className={colClass}>
+																<div style={{
+																	backgroundColor: 'rgba(122, 122, 122, 0.89)',
+																	borderRadius: '12px',
+																	padding: '18px 20px',
+																	fontSize: '17px',
+																	display: 'flex',
+																	alignItems: 'center',
+																	gap: '10px'
+																}}>
+																	<span style={{
+																		color: '#ff60b7',
+																		fontWeight: 'bold',
+																		fontSize: '19px',
+																		minWidth: '20px'
+																	}}>{QCM_LABELS[index]}</span>
+																	<span style={{ color: 'var(--text-color)' }}>-</span>
+																	<span>{option}</span>
+																</div>
 															</div>
-														</div>
-													))}
+														);
+													})}
 												</div>
 												<p className="text-center mt-3 text-muted" style={{ fontSize: '14px' }}>
-													Répondez avec <strong>A</strong>, <strong>B</strong>, <strong>C</strong> ou <strong>D</strong> dans le chat
+													Répondez avec{' '}
+													{currentQuestion.qcmOptions.map((_, i) => (
+														<span key={i}>
+															{i > 0 && (i === currentQuestion.qcmOptions!.length - 1 ? ' ou ' : ', ')}
+															<strong>{QCM_LABELS[i]}</strong>
+														</span>
+													))}{' '}
+													dans le chat
 												</p>
 											</div>
 										)}
