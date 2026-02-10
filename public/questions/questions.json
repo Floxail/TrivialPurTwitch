@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-02-10T17:53:35.714Z",
+  "exportDate": "2026-02-10T18:02:47.479Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -86,6 +86,21 @@
     },
     {
       "name": "Quiz FPT Ciné #3",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FPT Societé #3",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FPT Societé #4",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FPT Societé #5",
       "cardNumbers": [],
       "totalQuestions": 20
     },
@@ -36360,6 +36375,956 @@
         "Le parc Montiel"
       ],
       "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17707464874078teeh5tc0",
+      "question": "Quel est l’autre nom de l’École polytechnique ?",
+      "answer": "X",
+      "category": 1,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "X",
+        "Saint-Cyr",
+        "Y",
+        "Ena"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746487418j5rx5irjh",
+      "question": "À partir de quoi fabrique-t-on le chocolat ?",
+      "answer": "à partir de la fève de cacao",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "à partir de lait de noisette et de sucre",
+        "à partir de la fève de cacao",
+        "à partir du fruit du chocolatier"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746487424kvsn43bz0",
+      "question": "Parmi ces pierres précieuses, laquelle est de couleur bleue ?",
+      "answer": "saphir",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "rubis",
+        "saphir",
+        "émeraude",
+        "améthyste"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746487429cfpfdh5sl",
+      "question": "Par coutume, à quelle date les habitants du Québec ont-ils l’habitude de tous déménager le même jour ?",
+      "answer": "1er juillet",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "1er juillet",
+        "1er avril",
+        "1er janvier",
+        "1er septembre"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746487436aikvb8bgk",
+      "question": "Quel homme politique n’est resté ministre de la Justice qu’un mois et quatre jours dans le premier gouvernement d’Emmanuel Macron du 17 mai au 19 juin 2017 ?",
+      "answer": "François Bayrou",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Gérard Collomb",
+        "Jean-Yves Le Drian",
+        "Bruno Le Maire",
+        "François Bayrou"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770746487442f8uqlsbsh",
+      "question": "Qui peut délivrer un permis d’inhumer ?",
+      "answer": "le maire",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le maire",
+        "un médecin",
+        "le service des pompes funèbres",
+        "un commissaire de police"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746487447c80602jd3",
+      "question": "Quel est le pays d’origine de la danse du tango ?",
+      "answer": "l’Argentine",
+      "category": 0,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "l’Espagne",
+        "l’Argentine",
+        "le Brésil",
+        "le Portugal"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746487453cwk67gfwp",
+      "question": "Qu’est-ce que le MLF ?",
+      "answer": "le Mouvement de libération des femmes",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la Marche vers la liberté des femmes",
+        "le Mouvement de liberté des filles",
+        "le Mouvement de libération des femmes"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707464874591ybltci8u",
+      "question": "Un robinet qui fuit goutte à goutte pendant une journée entraîne une perte de :",
+      "answer": "50 litres",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "5 litres",
+        "25 litres",
+        "50 litres",
+        "100 litres"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770746487465prhogfzpb",
+      "question": "D’où vient le nom de la marque de véhicules Mercedes ?",
+      "answer": "du prénom de la fille du constructeur de la marque",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "du prénom de la femme du constructeur de la marque",
+        "du nom du chien du directeur général de la marque",
+        "du prénom de la fille du constructeur de la marque",
+        "du nom de la ville où est né le constructeur de la marque"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770746487470a8dyos225",
+      "question": "Parmi ces quatre stations de radio, laquelle est l’intruse ?",
+      "answer": "Europe 1",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Fun Radio",
+        "Europe 1",
+        "NRJ",
+        "Skyrock"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17707464874763w8qfz0bq",
+      "question": "Quel milliardaire a été le premier à effectuer un vol dans l’espace le 11 juillet 2021 ?",
+      "answer": "Richard Branson",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Elon Musk",
+        "Bill Gates",
+        "Jeff Bezos",
+        "Richard Branson"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770746487482xkng37mb1",
+      "question": "La blonde d’Aquitaine est :",
+      "answer": "une race de vache",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "une couleur de teinture pour cheveux",
+        "une race de vache",
+        "une bière belge",
+        "une variété de prune"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746487488m0eu3keka",
+      "question": "Quel est le nom du village imaginaire écrit sur la boîte de jeu Loups-Garous et dans lequel se déroule l’action ?",
+      "answer": "Louvia",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Thiercelieux",
+        "Lycanthropia",
+        "Louvia",
+        "Crocsville"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770746487493mccawiwms",
+      "question": "Combien de journalistes sont morts dans le monde en 2024 dans l’exercice de leurs fonctions ?",
+      "answer": "68",
+      "category": 0,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "43",
+        "57",
+        "68",
+        "82"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707464875000zy1fj56g",
+      "question": "Associez les adjectifs qualificatifs suivants aux pays auxquels ils se rapportent :",
+      "answer": "A/III - B/I - C/IV - D/II",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "A/IV - B/III - C/I - D/II",
+        "A/II - B/IV - C/III - D/I",
+        "A/I - B/II - C/IV - D/III",
+        "A/III - B/I - C/IV - D/II"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770746487506e0pc1df7u",
+      "question": "Qu’est-ce que le Brexit ?",
+      "answer": "la sortie du Royaume-Uni de l’Union européenne",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la sortie du Royaume-Uni de l’Union européenne",
+        "une sorte de biscuit suisse",
+        "un sport de glisse",
+        "le surnom donné à Boris Johnson, le Premier ministre du Royaume-Uni"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746487512qshtf89ha",
+      "question": "La série Soda dépeignait avec humour la vie quotidienne :",
+      "answer": "d’un adolescent, de ses amis et de sa famille",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "d’un adolescent, de ses amis et de sa famille",
+        "des employés d’une entreprise autour de la machine à café",
+        "du roi Arthur et de sa cour",
+        "d’un couple"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746487518t4cd40bci",
+      "question": "Le 30 janvier 2017, Iris Mittenaere est élue :",
+      "answer": "Miss Univers",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Miss France",
+        "Miss Univers",
+        "Miss Monde",
+        "Miss Galaxie"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17707464875249p84sitta",
+      "question": "Sur quel fronton est inscrite la devise « Aux grands hommes, la patrie reconnaissante » ?",
+      "answer": "le Panthéon",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le Panthéon",
+        "l’université Panthéon-Assas de Paris",
+        "l’hôtel des Invalides à Paris"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746530174mfhblvtx6",
+      "question": "Quel est l’autre nom de l’École polytechnique ?",
+      "answer": "X",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "X",
+        "Saint-Cyr",
+        "Y",
+        "Ena"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17707465301830mpdc2fde",
+      "question": "À partir de quoi fabrique-t-on le chocolat ?",
+      "answer": "à partir de la fève de cacao",
+      "category": 0,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "à partir de lait de noisette et de sucre",
+        "à partir de la fève de cacao",
+        "à partir du fruit du chocolatier"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746530190qw9jgvpcf",
+      "question": "Parmi ces pierres précieuses, laquelle est de couleur bleue ?",
+      "answer": "saphir",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "rubis",
+        "saphir",
+        "émeraude",
+        "améthyste"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746530196du9bofaf4",
+      "question": "Par coutume, à quelle date les habitants du Québec ont-ils l’habitude de tous déménager le même jour ?",
+      "answer": "1er juillet",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "1er juillet",
+        "1er avril",
+        "1er janvier",
+        "1er septembre"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746530202zx43w838d",
+      "question": "Quel homme politique n’est resté ministre de la Justice qu’un mois et quatre jours dans le premier gouvernement d’Emmanuel Macron du 17 mai au 19 juin 2017 ?",
+      "answer": "François Bayrou",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Gérard Collomb",
+        "Jean-Yves Le Drian",
+        "Bruno Le Maire",
+        "François Bayrou"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17707465302089ntb085xh",
+      "question": "Qui peut délivrer un permis d’inhumer ?",
+      "answer": "le maire",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le maire",
+        "un médecin",
+        "le service des pompes funèbres",
+        "un commissaire de police"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746530214k16qhqjaw",
+      "question": "Quel est le pays d’origine de la danse du tango ?",
+      "answer": "l’Argentine",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "l’Espagne",
+        "l’Argentine",
+        "le Brésil",
+        "le Portugal"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746530219gl2gcfqv7",
+      "question": "Qu’est-ce que le MLF ?",
+      "answer": "le Mouvement de libération des femmes",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la Marche vers la liberté des femmes",
+        "le Mouvement de liberté des filles",
+        "le Mouvement de libération des femmes"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707465302256syapneyl",
+      "question": "Un robinet qui fuit goutte à goutte pendant une journée entraîne une perte de :",
+      "answer": "50 litres",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "5 litres",
+        "25 litres",
+        "50 litres",
+        "100 litres"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770746530231w6q8cj1eg",
+      "question": "D’où vient le nom de la marque de véhicules Mercedes ?",
+      "answer": "du prénom de la fille du constructeur de la marque",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "du prénom de la femme du constructeur de la marque",
+        "du nom du chien du directeur général de la marque",
+        "du prénom de la fille du constructeur de la marque",
+        "du nom de la ville où est né le constructeur de la marque"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707465302373x8p8d1sa",
+      "question": "Parmi ces quatre stations de radio, laquelle est l’intruse ?",
+      "answer": "Europe 1",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Fun Radio",
+        "Europe 1",
+        "NRJ",
+        "Skyrock"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17707465302432dnaja502",
+      "question": "Quel milliardaire a été le premier à effectuer un vol dans l’espace le 11 juillet 2021 ?",
+      "answer": "Richard Branson",
+      "category": 1,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Elon Musk",
+        "Bill Gates",
+        "Jeff Bezos",
+        "Richard Branson"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17707465302508cqhyn0w5",
+      "question": "La blonde d’Aquitaine est :",
+      "answer": "une race de vache",
+      "category": 0,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "une couleur de teinture pour cheveux",
+        "une race de vache",
+        "une bière belge",
+        "une variété de prune"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746530256t0jqp1qls",
+      "question": "Quel est le nom du village imaginaire écrit sur la boîte de jeu Loups-Garous et dans lequel se déroule l’action ?",
+      "answer": "Louvia",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Thiercelieux",
+        "Lycanthropia",
+        "Louvia",
+        "Crocsville"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770746530262u2ocwcyus",
+      "question": "Combien de journalistes sont morts dans le monde en 2024 dans l’exercice de leurs fonctions ?",
+      "answer": "68",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "43",
+        "57",
+        "68",
+        "82"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770746530268k20xvt4uf",
+      "question": "Associez les adjectifs qualificatifs suivants aux pays auxquels ils se rapportent :",
+      "answer": "A/III - B/I - C/IV - D/II",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "A/IV - B/III - C/I - D/II",
+        "A/II - B/IV - C/III - D/I",
+        "A/I - B/II - C/IV - D/III",
+        "A/III - B/I - C/IV - D/II"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770746530273uexwu56i6",
+      "question": "Qu’est-ce que le Brexit ?",
+      "answer": "la sortie du Royaume-Uni de l’Union européenne",
+      "category": 0,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la sortie du Royaume-Uni de l’Union européenne",
+        "une sorte de biscuit suisse",
+        "un sport de glisse",
+        "le surnom donné à Boris Johnson, le Premier ministre du Royaume-Uni"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746530280s6pkgdrjw",
+      "question": "La série Soda dépeignait avec humour la vie quotidienne :",
+      "answer": "d’un adolescent, de ses amis et de sa famille",
+      "category": 1,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "d’un adolescent, de ses amis et de sa famille",
+        "des employés d’une entreprise autour de la machine à café",
+        "du roi Arthur et de sa cour",
+        "d’un couple"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746530286wz9g8hp9k",
+      "question": "Le 30 janvier 2017, Iris Mittenaere est élue :",
+      "answer": "Miss Univers",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Miss France",
+        "Miss Univers",
+        "Miss Monde",
+        "Miss Galaxie"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17707465302926qt60sg8y",
+      "question": "Sur quel fronton est inscrite la devise « Aux grands hommes, la patrie reconnaissante » ?",
+      "answer": "le Panthéon",
+      "category": 0,
+      "boxName": "Quiz FPT Societé #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le Panthéon",
+        "l’université Panthéon-Assas de Paris",
+        "l’hôtel des Invalides à Paris"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746561418ybut5b5wk",
+      "question": "Qu’est-ce qu’une sitcom ?",
+      "answer": "un feuilleton télévisé comique",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "un feuilleton télévisé sentimental",
+        "une comédie musicale américaine",
+        "un feuilleton télévisé comique",
+        "une série télévisée à suspense"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770746561427zubfruqp8",
+      "question": "Les attentats du 13 novembre 2015 ont été les plus meurtriers en France depuis la Seconde Guerre mondiale.",
+      "answer": "vrai",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "vrai",
+        "faux"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17707465614336hrgcle7x",
+      "question": "Comment s’appelait le dinosaure vert, cousin de Casimir dans l’émission « L’Île aux enfants » ?",
+      "answer": "Hippolyte",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Léonard",
+        "Hippolyte",
+        "Norbert",
+        "François"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746561439n8a3oumar",
+      "question": "Dans quel pays ne conduit-on pas à gauche ?",
+      "answer": "Chine",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Japon",
+        "Chine",
+        "Australie",
+        "Thaïlande"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746561446lejeob4r1",
+      "question": "Qu’est-il interdit de faire en France depuis le 1er juillet 2015 ?",
+      "answer": "téléphoner au volant via les oreillettes",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "écouter de la musique via un poste radio",
+        "téléphoner au volant via le Bluetooth",
+        "écouter de la musique via des écouteurs",
+        "téléphoner au volant via les oreillettes"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770746561452a7lrah43y",
+      "question": "Selon une étude de l’Insee, combien de mariages ont été célébrés en France en 2024 ?",
+      "answer": "242 000",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "132 000",
+        "242 000",
+        "192 000",
+        "282 000"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17707465614581xf04iuso",
+      "question": "Pourquoi le 8 mai est-il férié ?",
+      "answer": "pour célébrer la fin de la Seconde Guerre mondiale",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "pour célébrer la fête du travail",
+        "pour célébrer le muguet",
+        "pour célébrer la fin de la Première Guerre mondiale",
+        "pour célébrer la fin de la Seconde Guerre mondiale"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770746561464he2oswdhv",
+      "question": "Selon l’Organisation internationale du travail, combien d’enfants travaillent dans le monde ?",
+      "answer": "168 millions",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "98 millions",
+        "138 millions",
+        "168 millions",
+        "218 millions"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707465614706akds0bs9",
+      "question": "Quel est le nom du jeu où il faut aligner 7 cartes identiques pour gagner ?",
+      "answer": "la Canasta",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la Canasta",
+        "le Rami",
+        "le Mistigri",
+        "la Bataille"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746561476wbb2zxenw",
+      "question": "Quel vin ne provient pas du vignoble bordelais ?",
+      "answer": "le chablis",
+      "category": 0,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le graves",
+        "le médoc",
+        "le chablis",
+        "le sauternes"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770746561481k76zs72gy",
+      "question": "Combien recense-t-on d’associations en France ?",
+      "answer": "1 400 000",
+      "category": 1,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "1 400 000",
+        "840 000",
+        "470 000",
+        "190 000"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17707465614877oy3atls2",
+      "question": "Combien de jours Thomas Pesquet a passé à bord de la Station spatiale internationale ?",
+      "answer": "196 jours",
+      "category": 1,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "99 jours",
+        "112 jours",
+        "137 jours",
+        "196 jours"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770746561494zioukg6qt",
+      "question": "Le premier métier exercé par François Hollande était fleuriste.",
+      "answer": "faux",
+      "category": 1,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "vrai",
+        "faux"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746561499qu2hr4lvw",
+      "question": "Fromage produit dans l’Aveyron, il est issu du lait de brebis, l’une de ses couleurs provient de moisissures et son nom est celui d’une ville.",
+      "answer": "Roquefort",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Roquefort",
+        "Bleu d’Auvergne",
+        "Fourme d’Ambert",
+        "Munster"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770746561506shrz1mucr",
+      "question": "Bocuse, Robuchon, Ducasse sont des noms de :",
+      "answer": "chefs cuisiniers",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "villes",
+        "fromages",
+        "designers",
+        "chefs cuisiniers"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17707465615119d3puekhw",
+      "question": "Dans la série américaine « The Big Bang Theory », qui est le colocataire de Sheldon ?",
+      "answer": "Leonard",
+      "category": 4,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Rajesh",
+        "Leonard",
+        "Penny",
+        "Howard"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746561517neps42s8a",
+      "question": "En France, quel pourcentage de la population vit sous le seuil de pauvreté ?",
+      "answer": "18,5 %",
+      "category": 2,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "4 %",
+        "7 %",
+        "11 %",
+        "18,5 %"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770746561524t3jrjdw3m",
+      "question": "Pour les 10 ans de mariage, on fête les noces de ?",
+      "answer": "d’étain",
+      "category": 5,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "porcelaine",
+        "d’étain",
+        "coton",
+        "de perle"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770746561530mnvcn86or",
+      "question": "Combien de Français sont propriétaires de leur logement au 1er janvier 2025 ?",
+      "answer": "57,4 %",
+      "category": 0,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "37,4 %",
+        "47,4 %",
+        "57,4 %",
+        "67,4 %"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770746561536ou2gshpc6",
+      "question": "Combien les Français ont-ils de jours fériés dans l’année ?",
+      "answer": "11",
+      "category": 3,
+      "boxName": "Quiz FPT Societé #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "9",
+        "11",
+        "13",
+        "15"
+      ],
+      "qcmCorrectIndex": 1
     }
   ]
 }
