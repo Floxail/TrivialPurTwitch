@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-02-09T17:42:45.640Z",
+  "exportDate": "2026-02-10T17:53:35.714Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -70,6 +70,26 @@
       "totalQuestions": 20
     },
     {
+      "name": "Quiz FPT Art #3",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FPT Art #4",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FPT Art #5",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
+      "name": "Quiz FPT Ciné #3",
+      "cardNumbers": [],
+      "totalQuestions": 20
+    },
+    {
       "name": "Quiz FTP Art #1",
       "cardNumbers": [],
       "totalQuestions": 20
@@ -113,6 +133,11 @@
       "name": "Vieweurs",
       "cardNumbers": [],
       "totalQuestions": 1615
+    },
+    {
+      "name": "Watersport (RomanCrow)",
+      "cardNumbers": [],
+      "totalQuestions": 10
     },
     {
       "name": "Yoann Gourcuff (Mel0do)",
@@ -34914,6 +34939,1427 @@
         "David Cameron"
       ],
       "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732756244f2gc0v92k",
+      "question": "Combien de toiles Van Gogh a-t-il vendues de son vivant ?",
+      "answer": "une",
+      "category": 0,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "aucune",
+        "une",
+        "deux",
+        "trois"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770732756254kjcd6snof",
+      "question": "Que trouve-t-on de célèbre à Épidaure ?",
+      "answer": "un théâtre",
+      "category": 3,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "un stade",
+        "un champ de bataille",
+        "des arènes",
+        "un théâtre"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732756260yzopwhnz0",
+      "question": "La Goulue, représentée dans les peintures d’Henri de Toulouse-Lautrec, était :",
+      "answer": "danseuse au Moulin-Rouge",
+      "category": 1,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "acrobate à la Foire du Trône",
+        "chanteuse au Moulin de la Galette",
+        "danseuse au Moulin-Rouge",
+        "prostituée à Pigalle"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707327562653oyeozod9",
+      "question": "Lequel de ces musées ne se situe pas à Istanbul ?",
+      "answer": "le Panthéon",
+      "category": 5,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le palais de Topkapi",
+        "la basilique Sainte-Sophie",
+        "le Panthéon"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732756272kbu37ldzk",
+      "question": "La Joconde, peinte par Léonard de Vinci, fut commandée par Francesco del Giocondo, mais ne fut pas achetée par lui. Pourquoi ?",
+      "answer": "Le tableau ne lui plut pas et il refusa de le payer.",
+      "category": 2,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Léonard de Vinci refusa de s’en séparer.",
+        "Francesco del Giocondo est mort avant que la toile ne soit terminée.",
+        "Le tableau ne lui plut pas et il refusa de le payer.",
+        "Francesco del Giocondo avait répudié sa femme entre-temps."
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732756276fe7ev82ye",
+      "question": "Les premières peintures rupestres du paléolithique datent de :",
+      "answer": "35 000 ans",
+      "category": 3,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "35 000 ans",
+        "25 000 ans",
+        "15 000 ans",
+        "5 000 ans"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732756283nkzgbi71n",
+      "question": "Quel est le musée le plus visité du monde ?",
+      "answer": "le Musée du Louvre à Paris",
+      "category": 1,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le Metropolitan Museum of Art à New York",
+        "le British Museum à Londres",
+        "le Musée d’art moderne (le MoMA) à New York",
+        "le Musée du Louvre à Paris"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17707327562876n9qbivln",
+      "question": "La Vénus de Milo :",
+      "answer": "n’a aucun bras",
+      "category": 2,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "n’a qu’un bras gauche",
+        "n’a qu’un bras droit",
+        "n’a aucun bras"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707327562945ysght5wa",
+      "question": "Le « dripping », qui consiste à égoutter la peinture au-dessus d’une toile, est un procédé utilisé par :",
+      "answer": "Jackson Pollock",
+      "category": 1,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Jackson Pollock",
+        "Frank Stella",
+        "Andy Warhol",
+        "Le Douanier Rousseau"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732756298mtl7fk8xy",
+      "question": "La foire internationale d’art contemporain (FIAC) est une manifestation d’art contemporain qui se déroule tous les ans à Paris depuis :",
+      "answer": "1974",
+      "category": 2,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "1974",
+        "1984",
+        "1994",
+        "2004"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732756305ih7jw52t4",
+      "question": "Pour quel type de peintures William Turner est-il connu ?",
+      "answer": "des paysages",
+      "category": 2,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "des portraits",
+        "des graffitis",
+        "des scènes de chasse",
+        "des paysages"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17707327563109480wbovd",
+      "question": "Parmi ces quatre grands monuments du XXe siècle, lequel est antérieur à 1970 ?",
+      "answer": "le Parlement de Brasilia",
+      "category": 3,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la grande arche de la Défense",
+        "la pyramide du Louvre",
+        "le Parlement de Brasilia",
+        "le World Trade Center"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732756315eacj5nsz1",
+      "question": "Quel musée parisien est situé sur les vestiges de thermes gallo-romains et se concentre sur l’art du Moyen Âge ?",
+      "answer": "le musée de Cluny",
+      "category": 0,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le musée de Cluny",
+        "le musée Carnavalet",
+        "le musée d’Orsay"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732756321ltozit3df",
+      "question": "Pourquoi la tour de Pise est-elle penchée ?",
+      "answer": "à cause d’un défaut dans les fondations",
+      "category": 3,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "à cause d’un tremblement de terre",
+        "à cause d’un défaut dans les fondations",
+        "à cause d’une tentative de destruction manquée de la part des Barbares au moment de la chute de l’Empire romain",
+        "à cause des galeries creusées par une invasion de taupes au Moyen Âge"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770732756327jbzwj8obm",
+      "question": "Qui était Robert Doisneau ?",
+      "answer": "un photographe",
+      "category": 2,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "un sculpteur",
+        "un peintre",
+        "un architecte",
+        "un photographe"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732756333ttuvvtxp3",
+      "question": "Au Pérou, le Machu Picchu est un site archéologique :",
+      "answer": "inca",
+      "category": 4,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "aztèque",
+        "maya",
+        "inca"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732756339mac5pw46a",
+      "question": "Le Baiser est un tableau de :",
+      "answer": "Gustav Klimt",
+      "category": 2,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Francisco Goya",
+        "Paul Gauguin",
+        "Ingres",
+        "Gustav Klimt"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732756344ldaji8dlw",
+      "question": "En 1985, Jack Lang, alors ministre de la Culture en France, commande à un sculpteur la réalisation d’une œuvre destinée au jardin du Palais-Royal, à Paris. Qui était cet artiste ?",
+      "answer": "Daniel Buren",
+      "category": 3,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Alberto Giacometti",
+        "Alexander Calder",
+        "Daniel Buren",
+        "Niki de Saint Phalle"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732756350dbpwqazxv",
+      "question": "Quel peintre n’a pas pu rencontrer les trois autres ?",
+      "answer": "Nicolas Poussin",
+      "category": 0,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Édouard Manet",
+        "Paul Cézanne",
+        "Pierre-Auguste Renoir",
+        "Nicolas Poussin"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732756355iz43to08d",
+      "question": "Le premier gratte-ciel à ossature métallique, construit en 1883, fut :",
+      "answer": "le Chicago Home Insurance Building",
+      "category": 1,
+      "boxName": "Quiz FPT Art #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le Chrysler Building",
+        "l’Empire State Building",
+        "le Chicago Home Insurance Building"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732860136g7f2fzsb7",
+      "question": "Que représente la toile Guernica peinte par Picasso ?",
+      "answer": "un bombardement nazi",
+      "category": 2,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "un soulèvement espagnol",
+        "une attaque de la flotte de Mussolini",
+        "un bombardement nazi",
+        "une manifestation nationaliste"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "177073286014642joujc3b",
+      "question": "Quel musée parisien est consacré à l’art de la seconde moitié du XIXe siècle ?",
+      "answer": "le musée d’Orsay",
+      "category": 4,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le musée du Louvre",
+        "le musée d’Orsay",
+        "le centre Georges-Pompidou",
+        "le musée du quai Branly"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770732860152aftezwjae",
+      "question": "En France, dans le domaine de la peinture, quel est le principal représentant du style rococo ?",
+      "answer": "Antoine Watteau",
+      "category": 1,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Antoine Watteau",
+        "Joan Miró",
+        "Giuseppe Arcimboldo",
+        "Henri Matisse"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732860158vtdcbmjbp",
+      "question": "La cathédrale Notre-Dame de Paris est commencée dans un style gothique sous Louis VII. Combien de temps dura sa construction ?",
+      "answer": "182 ans",
+      "category": 2,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "23 ans",
+        "79 ans",
+        "138 ans",
+        "182 ans"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732860165mcvam28h1",
+      "question": "La Vénus de Milo peut être admirée :",
+      "answer": "au musée du Louvre à Paris",
+      "category": 0,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "au musée du Louvre à Paris",
+        "au musée du Prado à Madrid",
+        "au musée des Offices à Florence",
+        "au Musée national archéologique d’Athènes"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732860169vb4whw0sk",
+      "question": "Qu’est-ce que le Taj Mahal ?",
+      "answer": "un mausolée",
+      "category": 0,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "une statue",
+        "un musée",
+        "une pierre précieuse",
+        "un mausolée"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732860176x6bnsf0yp",
+      "question": "Le métro de Paris a été conçu par :",
+      "answer": "Fulgence Bienvenüe",
+      "category": 3,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Frédéric Auguste Bartholdi",
+        "Louis Lépine",
+        "Fulgence Bienvenüe",
+        "Ferdinand de Lesseps"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707328601802n9wgtrpq",
+      "question": "Classez les périodes artistiques suivantes dans l’ordre chronologique :",
+      "answer": "4 - 2 - 1 - 3 - 5",
+      "category": 5,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "2 - 4 - 1 - 5 - 3",
+        "4 - 1 - 2 - 3 - 5",
+        "3 - 2 - 1 - 4 - 5",
+        "4 - 2 - 1 - 3 - 5"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732860186827kesv1v",
+      "question": "Une statue de Voltaire assis orne la Comédie-Française. Qui en est l’auteur ?",
+      "answer": "Jean-Antoine Houdon",
+      "category": 1,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Jean-Baptiste Carpeaux",
+        "Jean-Antoine Houdon",
+        "Clodion",
+        "François Rude"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770732860191kzmw1si4l",
+      "question": "Quel peintre a travaillé au décor du plafond de la chapelle Sixtine ?",
+      "answer": "Michel-Ange",
+      "category": 4,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Michel-Ange",
+        "Raphaël",
+        "Véronèse",
+        "Léonard de Vinci"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732860197pvq0hxcx6",
+      "question": "L’architecte français Jean Nouvel a réalisé :",
+      "answer": "l’Institut du monde arabe",
+      "category": 5,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "l’Institut du monde arabe",
+        "l’Opéra Bastille",
+        "la Géode"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17707328602021as2cx4v9",
+      "question": "Les Compressions sont des œuvres réalisées par :",
+      "answer": "César",
+      "category": 5,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Buren",
+        "Picasso",
+        "Christo",
+        "César"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17707328602087qtg54n3u",
+      "question": "Le sculpteur pressenti à l’origine pour exécuter les quatre bas-reliefs de l’arc de triomphe de l’Étoile n’en réalisa qu’un, Le Départ des volontaires en 1792 dit La Marseillaise. Il s’agissait de :",
+      "answer": "François Rude",
+      "category": 5,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Pierre-Jean David",
+        "Jean-Antoine Houdon",
+        "François Rude"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732860213mdjr4zmzk",
+      "question": "Quelle affirmation concernant Francisco Goya est fausse ?",
+      "answer": "il a peint Le Baiser",
+      "category": 1,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "il était de nationalité espagnole",
+        "il a peint La Duchesse d’Albe",
+        "il a peint Le Baiser",
+        "il a été un des précurseurs du romantisme"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707328602181o8p08i94",
+      "question": "Le tableau Le Moulin de la Galette est de :",
+      "answer": "Henri de Toulouse-Lautrec",
+      "category": 5,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Auguste Renoir",
+        "Paul Klee",
+        "Henri de Toulouse-Lautrec",
+        "Jean-François Millet"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732860224y4js0pq6o",
+      "question": "L’Académie des beaux-arts, dont l’origine remonte à 1648, est organisée en huit sections. Quelle section n’existe pas ?",
+      "answer": "littérature et beaux-arts",
+      "category": 1,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "composition musicale",
+        "photographie",
+        "littérature et beaux-arts",
+        "architecture"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732860230dpah33vio",
+      "question": "Le Palais du Louvre n’a jamais été :",
+      "answer": "un hôtel de ville",
+      "category": 0,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "un hôtel de ville",
+        "un ministère",
+        "un musée",
+        "une résidence royale"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "177073286023531dh9j562",
+      "question": "La Cité interdite est située :",
+      "answer": "en Chine",
+      "category": 5,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "au Cambodge",
+        "en Inde",
+        "en Chine",
+        "au Japon"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732860241r45xayv5k",
+      "question": "À quel siècle appartiennent les peintres primitifs flamands ?",
+      "answer": "XVe siècle",
+      "category": 1,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "XVe siècle",
+        "XVIIe siècle",
+        "XIXe siècle"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732860246wg8tnxqo8",
+      "question": "La basilique de la Sagrada Familia de Gaudí se trouve à :",
+      "answer": "Barcelone",
+      "category": 1,
+      "boxName": "Quiz FPT Art #4",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Barcelone",
+        "Madrid",
+        "Valence",
+        "Séville"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732965726j0xectbn8",
+      "question": "Qui a peint le tableau Le Déjeuner des canotiers ?",
+      "answer": "Pierre-Auguste Renoir",
+      "category": 3,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Pierre-Auguste Renoir",
+        "Claude Monet",
+        "Édouard Manet",
+        "Paul Gauguin"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732965736bakb1qhc3",
+      "question": "Un seul de ces monuments n’a pas été construit lors de l’occupation de la Gaule par les Romains. Lequel ?",
+      "answer": "le pont d’Avignon",
+      "category": 5,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le trophée d’Auguste",
+        "le pont du Gard",
+        "la Maison carrée à Nîmes",
+        "le pont d’Avignon"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732965743pgbk8xh0z",
+      "question": "El Greco, peintre à Venise et à Tolède, était d’origine :",
+      "answer": "grecque",
+      "category": 1,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "grecque",
+        "italienne",
+        "espagnole",
+        "portugaise"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732965749nt000mgeh",
+      "question": "Andy Warhol (1928-1987), peintre américain, a été à l’origine du mouvement artistique intitulé :",
+      "answer": "Pop art",
+      "category": 1,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Trash art",
+        "Pop art",
+        "Op art"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "177073296575609qdnj4d0",
+      "question": "Phidias, sculpteur du Ve siècle avant J.-C., a sculpté :",
+      "answer": "les parties sculptées du Parthénon",
+      "category": 1,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "les parties sculptées du Parthénon",
+        "la Vénus de Milo",
+        "le Colosse de Rhodes",
+        "la Victoire de Samothrace"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732965761dg3clt97t",
+      "question": "De quand datent la plupart des châteaux de la Loire ?",
+      "answer": "de la Renaissance",
+      "category": 3,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "du Moyen Âge",
+        "de la Renaissance",
+        "du XVIIe siècle"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770732965769t13laj2h6",
+      "question": "Le Musée du quai Branly est un musée :",
+      "answer": "des arts et civilisations d’Afrique, d’Asie, d’Océanie et des Amériques",
+      "category": 0,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "d’art moderne",
+        "de l’histoire de la ville de Paris",
+        "de la peinture et sculpture occidentale des XIXe et XXe siècles",
+        "des arts et civilisations d’Afrique, d’Asie, d’Océanie et des Amériques"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "17707329657753173kflin",
+      "question": "Quelle est la hauteur de la statue de la Liberté (sans le socle) ?",
+      "answer": "46 mètres",
+      "category": 3,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "46 mètres",
+        "86 mètres",
+        "106 mètres",
+        "126 mètres"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732965781tmn2knzk9",
+      "question": "Jean-Baptiste Pigalle (1714-1785), dont le nom a été donné à un quartier de Paris, était :",
+      "answer": "un sculpteur",
+      "category": 3,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "un architecte",
+        "un peintre",
+        "un sculpteur",
+        "un photographe"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707329657880te9gataq",
+      "question": "Qui a pris la célèbre photo en noir et blanc d’un couple s’embrassant devant l’hôtel de ville de Paris ?",
+      "answer": "Robert Doisneau",
+      "category": 4,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Henri Cartier-Bresson",
+        "Robert Doisneau",
+        "Jacques-Henri Lartigue",
+        "Helmut Newton"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770732965793v7cveoqzy",
+      "question": "Comment s’appelait la femme de Salvador Dalí ?",
+      "answer": "Gala",
+      "category": 3,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Gala",
+        "Galathée",
+        "Dhalia",
+        "Garance"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732965800412o7xl76",
+      "question": "La place Stanislas se trouve :",
+      "answer": "à Nancy",
+      "category": 1,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "à Lyon",
+        "à Montpellier",
+        "à Nice",
+        "à Nancy"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732965807rflkqhxip",
+      "question": "Qui a peint Le Radeau de la Méduse ?",
+      "answer": "Géricault",
+      "category": 2,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Delacroix",
+        "Matisse",
+        "Géricault"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707329658132w4rpvzw1",
+      "question": "Quel architecte a construit, au centre du Brésil, la nouvelle capitale Brasilia ?",
+      "answer": "Oscar Niemeyer",
+      "category": 3,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Ludwig Mies van der Rohe",
+        "Oscar Niemeyer",
+        "Bernard Zehrfuss"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17707329658190uazoht64",
+      "question": "Le tombeau de Napoléon se trouve :",
+      "answer": "à l’hôtel des Invalides",
+      "category": 4,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "à l’hôtel des Invalides",
+        "au Panthéon",
+        "sur l’île d’Elbe",
+        "à Sainte-Hélène"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770732965827t2on0rezk",
+      "question": "À quelle époque le style rococo a-t-il connu son apogée ?",
+      "answer": "au XVIIIe siècle",
+      "category": 4,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "au XVIe siècle",
+        "au XVIIe siècle",
+        "au XVIIIe siècle",
+        "au XIXe siècle"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770732965833man29wst0",
+      "question": "Quel artiste du XXe siècle est célèbre pour ses tableaux pop art façon bandes dessinées ?",
+      "answer": "Roy Lichtenstein",
+      "category": 4,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Jackson Pollock",
+        "Keith Haring",
+        "Norman Rockwell",
+        "Roy Lichtenstein"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770732965840i29ge1cn0",
+      "question": "Parmi ces tableaux, lequel est d’Eugène Delacroix (1789-1863) ?",
+      "answer": "La Liberté guidant le peuple",
+      "category": 4,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "La Sibylle de Lybie",
+        "La Liberté guidant le peuple",
+        "Les Demoiselles d’Avignon",
+        "Le Radeau de la Méduse"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770732965846s6fsoytg8",
+      "question": "Le pont du Golden Gate se situe à :",
+      "answer": "San Francisco",
+      "category": 5,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Los Angeles",
+        "San Francisco",
+        "New York",
+        "Miami"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17707329658523k28s4sio",
+      "question": "La Joconde est la pièce majeure du musée :",
+      "answer": "du Louvre à Paris",
+      "category": 1,
+      "boxName": "Quiz FPT Art #5",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "du Prado à Madrid",
+        "de l’Ermitage à Saint-Pétersbourg",
+        "Borghese à Rome",
+        "du Louvre à Paris"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770733028937tm2t7sf2i",
+      "question": "Qui est l’acteur principal de La Haine ?",
+      "answer": "Vincent Cassel",
+      "category": 5,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Roger Hanin",
+        "Vincent Cassel",
+        "Mathieu Kassovitz",
+        "Samy Naceri"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770733028946cb4hwik4o",
+      "question": "Qui jouait le rôle d’Al Capone dans Les Incorruptibles de Brian De Palma ?",
+      "answer": "Robert De Niro",
+      "category": 4,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Robert De Niro",
+        "Joe Pesci",
+        "Al Pacino",
+        "Sean Connery"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770733028953mjz9mu0z2",
+      "question": "Après L’Auberge espagnole et Les Poupées russes, quel film réalisé par Cédric Klapisch en 2013 complète sa trilogie ?",
+      "answer": "Casse-tête chinois",
+      "category": 0,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "La Douche écossaise",
+        "Filer à l’anglaise",
+        "Casse-tête chinois",
+        "Mon oncle d’Amérique"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770733028958cafb11hv8",
+      "question": "Qui a fondé la Cinémathèque française ?",
+      "answer": "Henri Langlois",
+      "category": 0,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Pierre Tchernia",
+        "Louis Malle",
+        "Lino Ventura",
+        "Henri Langlois"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770733028964vdwo0kw70",
+      "question": "Dans le film Les Choristes, quel acteur interprète un professeur de musique dans un centre de rééducation pour mineurs ?",
+      "answer": "Gérard Jugnot",
+      "category": 5,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Gérard Jugnot",
+        "Jean-Baptiste Maunier",
+        "François Berléand",
+        "Kad Merad"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770733028970jpjdmnjjo",
+      "question": "Qui a composé la musique du film Il était une fois dans l’Ouest ?",
+      "answer": "Ennio Morricone",
+      "category": 2,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Sergio Leone",
+        "Maurice Jarre",
+        "Ennio Morricone",
+        "Éric Serra"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707330289763s1i1yity",
+      "question": "À propos du festival de Cannes, laquelle de ces assertions est inexacte ?",
+      "answer": "Aucune femme réalisatrice n’a obtenu la Palme d’or",
+      "category": 0,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Aucune femme réalisatrice n’a obtenu la Palme d’or",
+        "Le festival a été créé en 1946",
+        "La Palme d’or est fabriquée à partir d’un lingot d’or",
+        "Il n’y eut pas de prix en 1968"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17707330289810dk2fwzag",
+      "question": "Qui joue Henri de Navarre dans le film La Reine Margot ?",
+      "answer": "Daniel Auteuil",
+      "category": 0,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Jean-Hugues Anglade",
+        "Vincent Perez",
+        "Daniel Auteuil",
+        "Pascal Greggory"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770733028987dbx5e4sih",
+      "question": "Le film Gandhi de Richard Attenborough détient un record de figurants pour la scène des funérailles. Combien en comptait-il ?",
+      "answer": "300 000 figurants",
+      "category": 1,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "3 000 figurants",
+        "30 000 figurants",
+        "300 000 figurants",
+        "3 000 000 de figurants"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707330289936ahhazh1z",
+      "question": "Où a lieu le Festival international du film fantastique ?",
+      "answer": "Avoriaz",
+      "category": 4,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Cannes",
+        "Avoriaz",
+        "Cabourg",
+        "Clermont-Ferrand"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770733028998n4re93x8a",
+      "question": "Qui est la partenaire de Tobey Maguire dans le film Spider-Man ?",
+      "answer": "Kirsten Dunst",
+      "category": 5,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Jennifer Lopez",
+        "Scarlett Johansson",
+        "Dakota Fanning",
+        "Kirsten Dunst"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770733029004yicwbwxtn",
+      "question": "Dans le film de Francis Veber Le Dîner de cons, François Pignon est interprété par :",
+      "answer": "Jacques Villeret",
+      "category": 2,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Daniel Prévost",
+        "Thierry Lhermitte",
+        "Jacques Villeret",
+        "Francis Huster"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "17707330290091ufjpo39r",
+      "question": "La Mort aux trousses d’Alfred Hitchcock est un film :",
+      "answer": "d’espionnage",
+      "category": 1,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "fantastique",
+        "d’épouvante",
+        "d’espionnage",
+        "musical"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "177073302901609yqo89gv",
+      "question": "« Les cons, ça ose tout. C’est même à ça qu’on les reconnaît. » De quel film est tirée cette réplique ?",
+      "answer": "Les Tontons flingueurs",
+      "category": 0,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Le Cave se rebiffe",
+        "Mélodie en sous-sol",
+        "Les Tontons flingueurs",
+        "Les Quatre Cents Coups"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770733029021g8kai94ai",
+      "question": "Dans combien de films Romy Schneider a-t-elle incarné Sissi ?",
+      "answer": "3",
+      "category": 5,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770733029027eli43mrl5",
+      "question": "Le film d’Étienne Chatiliez racontant la saga des Groseille et des Le Quesnoy est :",
+      "answer": "La Vie est un long fleuve tranquille",
+      "category": 3,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "La Vie est un long fleuve tranquille",
+        "Tatie Danielle",
+        "Le Bonheur est dans le pré",
+        "Un air de famille"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "17707330290333prrcbyaz",
+      "question": "Quand a été tourné Le Vol du rapide, premier western de l’histoire du cinéma ?",
+      "answer": "1903",
+      "category": 3,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "1903",
+        "1911",
+        "1917",
+        "1922"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770733029038anp3jcjgn",
+      "question": "Qui est le réalisateur du film Au revoir les enfants ?",
+      "answer": "Louis Malle",
+      "category": 2,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Maurice Pialat",
+        "Claude Miller",
+        "Jacques Doillon",
+        "Louis Malle"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770733029044gc8h2szpy",
+      "question": "Quel film de Stanley Kubrick retrace la perversité de jeunes Anglais livrés à une ultra-violence ?",
+      "answer": "Orange mécanique",
+      "category": 2,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Barry Lyndon",
+        "Les Sentiers de la gloire",
+        "Orange mécanique",
+        "2001 : l’Odyssée de l’espace"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770733029049e0a4oc3jy",
+      "question": "Quel film a obtenu le César du meilleur film français en 2025 ?",
+      "answer": "Emilia Perez",
+      "category": 0,
+      "boxName": "Quiz FPT Ciné #3",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Le Comte de Monte-Cristo",
+        "Emilia Perez",
+        "En fanfare",
+        "L’Histoire de Souleymane"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17707330633460nyp53mo5",
+      "question": "Avec quoi ce pratique le WaterJump ?",
+      "answer": "un vélo, ou des rollers",
+      "category": 4,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "une pelleteuse ou un tractopelle",
+        "un overboard ou une tyrolienne",
+        "une voiturette de golf ou une cadillac",
+        "un vélo, ou des rollers"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770733063356ed1mm2zql",
+      "question": "quand à été crée le Waterjump ?",
+      "answer": "en 1984",
+      "category": 5,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "en 1984",
+        "Jamais, c'est pas un vrai sport ça",
+        "en l'an 0",
+        "en 1815, pour faire oublié Waterloo"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770733063362trm3kbgft",
+      "question": "Qui est la personne à l'origine du concept ?",
+      "answer": "René Nicolas",
+      "category": 0,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Bernard Montiel",
+        "René Nicolas",
+        "Proxima",
+        "Napoléon Bonaparte"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770733063368ow267gkw5",
+      "question": "selon sous le soleil, combien coûte le materiel de waterjump",
+      "answer": "la somme faramineuse de 1600€",
+      "category": 2,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "la bagatelle de 12 franc 6 sous",
+        "un petit 8000 Dollars",
+        "la somme faramineuse de 1600€",
+        "un rein et la compassion de Louis, c'est pour ça qu'il est pas sympa"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1770733063374l0z1s2quy",
+      "question": "Quel est le meilleur spot pour observer du waterjump en mangeant une délicieuse pizza à la paella ?",
+      "answer": "La pizerria du vieux port, lieu de rassemblement officiel des Caribou",
+      "category": 1,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Le Saint tropez, bar numéro de Saint tropez selon un gars qu'on a croisé qu'une fois",
+        "La place des Lices, là ou on fait les meilleures tournois de pétanque",
+        "Chez Monsieur Moustache, le BG il a canalsat et une super cuisine",
+        "La pizerria du vieux port, lieu de rassemblement officiel des Caribou"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770733063379rsb046prj",
+      "question": "En vrai, combien ça coute de regarder du Waterjump ?",
+      "answer": "5000 petits soleil",
+      "category": 5,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "5000 petits soleil",
+        "rien, l'accès à la culture ça doit être gratuit bon sang de bonsoir",
+        "un rein",
+        "le prix d'une pizza à la paëlla"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1770733063386lnvjazuhn",
+      "question": "Quelle ville organise le Geneva Jump ?",
+      "answer": "Genève",
+      "category": 5,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Lausanne",
+        "Paris, Taxas",
+        "La motte sur Beuveron",
+        "Genève"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1770733063391s94dns68v",
+      "question": "De quelle couleur est la moto cross rouge de Louis dans la saison 2 de \"sous le soleil\" ? (oui ça n'a aucun rapport mais vas y, faut le faire 10 questions sur le waterjump)",
+      "answer": "Rouge",
+      "category": 0,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "free_text",
+      "difficulty": "medium"
+    },
+    {
+      "id": "1770733063397yqhquzmb4",
+      "question": "Mais pourquoi ?",
+      "answer": "à l'origine, c'était pour que les Skieurs puissent pratiquer, mais sans vélo c'est moins rigolo",
+      "category": 0,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "Parce que c'est rigolo de faire plouf en vélo",
+        "à l'origine, c'était pour que les Skieurs puissent pratiquer, mais sans vélo c'est moins rigolo",
+        "et pourquoi pas ?",
+        "parce que la série Sous le soleil avait désespérément besoin d'un truc hype et cool pour les jeuns"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1770733063403lamjtn83a",
+      "question": "comment s'appelle le premiers parc de waterjump ouvert en 2002 ?",
+      "answer": "le parc de Tignes",
+      "category": 3,
+      "boxName": "Watersport (RomanCrow)",
+      "questionType": "qcm",
+      "difficulty": "medium",
+      "qcmOptions": [
+        "le parc de Tignes",
+        "le parc des Tiges",
+        "Le parc Asterix, meilleur parc de France et de loin",
+        "Le parc Montiel"
+      ],
+      "qcmCorrectIndex": 0
     }
   ]
 }
