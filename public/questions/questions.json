@@ -10419,6 +10419,9 @@
       "category": 4,
       "question": "Que signifie la queue dressée d'un cerf de Virginie ?",
       "answer": "Qu'il sent un danger",
+      "alternativeAnswers": [
+        "peur", "danger"
+      ],
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -11183,6 +11186,9 @@
       "category": 5,
       "question": "Comment les derniers concurrents des Foulées du Gois finissent-ils leur course ?",
       "answer": "À la nage",
+      "alternativeAnswers": [
+        "nage", "nageant" 
+      ],
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },
@@ -11494,6 +11500,9 @@
       "category": 5,
       "question": "En 2013, quelle équipe LeBron James a-t-il menée aux finales NBA ?",
       "answer": "Les Heat de Miami",
+      "alternativeAnswers": [
+        "Miami", "miami Heat"
+      ],
       "difficulty": "medium",
       "boxName": "Vieweurs"
     },

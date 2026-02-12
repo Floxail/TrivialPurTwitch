@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { cleanValueLight, removeArticles, sorensenDiceScore } from 'helpers';
-import { useEffect, useRef, useState } from 'react';
-import { Button, ProgressBar, Modal, Form, Alert } from 'react-bootstrap';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { Button, Modal, Form, Alert } from 'react-bootstrap';
 import { Client, Options } from 'tmi.js';
 import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
@@ -610,7 +610,15 @@ const Quiz = () => {
 		questionRevealedRef.current = true;
 	};
 
-	const progressPercent = (timeLeft / questionTimeLimit) * 100;
+	// Timer circulaire : calcul du cercle SVG
+	const timerRadius = 54;
+	const timerCircumference = 2 * Math.PI * timerRadius;
+	const timerColor = useMemo(() => {
+		const pct = (timeLeft / questionTimeLimit) * 100;
+		if (pct > 50) return '#4CAF50';
+		if (pct > 25) return '#FFC107';
+		return '#dc3545';
+	}, [timeLeft, questionTimeLimit]);
 
 	// Vérifie si le mode cumulatif est actif
 
@@ -805,12 +813,37 @@ const Quiz = () => {
 										)}
 									</div>
 
-									<ProgressBar
-										now={progressPercent}
-										variant={progressPercent > 50 ? 'success' : progressPercent > 25 ? 'warning' : 'danger'}
-										style={{ height: '30px', fontSize: '18px' }}
-										label={`${timeLeft}s`}
-									/>
+									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+										<svg width="130" height="130" viewBox="0 0 120 120" style={{ transform: 'rotate(-90deg)' }}>
+											{/* Cercle de fond */}
+											<circle
+												cx="60" cy="60" r={timerRadius}
+												fill="none"
+												stroke="rgba(255,255,255,0.1)"
+												strokeWidth="8"
+											/>
+											{/* Cercle animé */}
+											<circle
+												cx="60" cy="60" r={timerRadius}
+												fill="none"
+												stroke={timerColor}
+												strokeWidth="8"
+												strokeLinecap="round"
+												strokeDasharray={timerCircumference}
+												strokeDashoffset={timerCircumference * (1 - timeLeft / questionTimeLimit)}
+												style={{ transition: 'stroke-dashoffset 1s linear, stroke 0.5s ease' }}
+											/>
+										</svg>
+										<span style={{
+											position: 'absolute',
+											fontSize: '32px',
+											fontWeight: 'bold',
+											color: timerColor,
+											transition: 'color 0.5s ease'
+										}}>
+											{timeLeft}s
+										</span>
+									</div>
 									</div>
 
 									{/* Question */}

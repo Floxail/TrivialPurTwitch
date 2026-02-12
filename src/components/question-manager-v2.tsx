@@ -487,7 +487,7 @@ const QuestionManager = () => {
   };
 
   // Ajout en masse de questions
-  const handleBulkAddSubmit = (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean) => {
+  const handleBulkAddSubmit = (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean, fixedCategory?: TrivialCategory) => {
     const categoryValues = Object.values(TrivialCategory).filter(v => typeof v === 'number') as TrivialCategory[];
     let added = 0;
     let qcmCount = 0;
@@ -495,7 +495,7 @@ const QuestionManager = () => {
     for (const q of questions) {
       const category = randomCategories
         ? categoryValues[Math.floor(Math.random() * categoryValues.length)]
-        : TrivialCategory.Geography;
+        : (fixedCategory ?? TrivialCategory.Geography);
 
       const newQuestion: Question = {
         id: Date.now().toString() + Math.random().toString(36).substring(2, 11),

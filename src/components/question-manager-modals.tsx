@@ -61,7 +61,7 @@ export interface ParsedBulkQuestion {
 interface BulkAddModalProps {
   show: boolean;
   onHide: () => void;
-  onSubmit: (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean) => void;
+  onSubmit: (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean, fixedCategory?: TrivialCategory) => void;
   boxes: { name: string }[];
   defaultBoxName: string;
 }
@@ -409,10 +409,6 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
 });
 
 // ============================================================
-// BulkActionsModal - Modal pour actions de masse
-// ============================================================
-
-// ============================================================
 // BulkAddModal - Modal pour ajouter plusieurs questions en masse
 // ============================================================
 
@@ -514,13 +510,16 @@ export const BulkAddModal: React.FC<BulkAddModalProps> = React.memo(({
   const [text, setText] = useState('');
   const [boxName, setBoxName] = useState('');
   const [randomCategories, setRandomCategories] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<TrivialCategory>(TrivialCategory.Geography);
   const [preview, setPreview] = useState<{ questions: ParsedBulkQuestion[]; errors: string[] } | null>(null);
+
 
   useEffect(() => {
     if (show) {
       setText('');
       setBoxName(defaultBoxName);
       setRandomCategories(true);
+      setSelectedCategory(TrivialCategory.Geography);
       setPreview(null);
     }
   }, [show, defaultBoxName]);
@@ -543,7 +542,7 @@ export const BulkAddModal: React.FC<BulkAddModalProps> = React.memo(({
       return;
     }
 
-    onSubmit(result.questions, boxName, randomCategories);
+    onSubmit(result.questions, boxName, randomCategories, randomCategories ? undefined : selectedCategory);
     onHide();
   };
 
@@ -575,9 +574,24 @@ export const BulkAddModal: React.FC<BulkAddModalProps> = React.memo(({
             checked={randomCategories}
             onChange={(e) => setRandomCategories(e.target.checked)}
           />
-          <Form.Text className="text-muted">
-            Chaque question sera assignée à une catégorie Trivial Pursuit aléatoire
-          </Form.Text>
+          {randomCategories ? (
+            <Form.Text className="text-muted">
+              Chaque question sera assignée à une catégorie Trivial Pursuit aléatoire
+            </Form.Text>
+          ) : (
+            <div className="mt-2 p-2" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <Form.Label className="small mb-1">Catégorie pour toutes les questions</Form.Label>
+              <Form.Select
+                size="sm"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(parseInt(e.target.value) as TrivialCategory)}
+              >
+                {Object.entries(categoryNames).map(([key, name]) => (
+                  <option key={key} value={key}>{name}</option>
+                ))}
+              </Form.Select>
+            </div>
+          )}
         </Form.Group>
 
         <Form.Group className="mb-3">
