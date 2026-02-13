@@ -204,6 +204,7 @@ const QuestionManagerTerminal = () => {
 
   useEffect(() => {
     globalStore.setSubtitle('DATA.TERMINAL.QUESTIONS');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ═════════════════════════════════════════════════════════════════════════

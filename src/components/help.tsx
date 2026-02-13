@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Modal } from 'react-bootstrap';
 import { useSettingsStore } from './store/settings-store';
 
@@ -9,9 +8,9 @@ const Help = ({ show, onClose }: any) => {
   return (
     <Modal show={show} centered size="lg" dialogClassName="help-modal">
       <Modal.Body>
-        <strong>TrivialPurTwitch</strong> is made by <strong>Floxail</strong> (<a href="https://bsky.app/profile/floxail.bsky.social" target="_blank">@floxail.bsky.social</a>) and is <strong><a href="https://github.com/Floxail/TrivialPurTwitch" target="_blank">open-source</a></strong>
+        <strong>TrivialPurTwitch</strong> is made by <strong>Floxail</strong> (<a href="https://bsky.app/profile/floxail.bsky.social" target="_blank" rel="noreferrer">@floxail.bsky.social</a>) and is <strong><a href="https://github.com/Floxail/TrivialPurTwitch" target="_blank" rel="noreferrer">open-source</a></strong>
         <br />
-        is a fork of <strong><a href="https://github.com/s-vivien/BlindTesTwitch" target="_blank">BlindTesTwitch</a></strong> From <strong>Neumann</strong>
+        is a fork of <strong><a href="https://github.com/s-vivien/BlindTesTwitch" target="_blank" rel="noreferrer">BlindTesTwitch</a></strong> From <strong>Neumann</strong>
         <br />
         <br />
         <h2>Points de chaîne (pour le streamer)</h2>

@@ -31,6 +31,7 @@ function App() {
 
 	useEffect(() => {
 		authStore.validateTwitchOAuthToken();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// Migration automatique au premier chargement
@@ -73,6 +74,7 @@ useEffect(() => {
 
   // Nettoyer l'intervalle quand le composant est démonté
   return () => clearInterval(syncInterval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
 	useEffect(() => {
@@ -86,6 +88,7 @@ useEffect(() => {
 			setView(<Quiz />);
 	 		navigate('/quiz');
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [navigate, authStore, settingsStore]);
 
 	const onPopupClose = () => {

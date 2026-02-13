@@ -12,6 +12,7 @@ const Login = () => {
 
   useEffect(() => {
     globalStore.setSubtitle('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const twitchLogin = async () => {

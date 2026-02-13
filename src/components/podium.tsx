@@ -112,7 +112,7 @@ const Podium = ({ onClose }: any) => {
           <motion.div
             animate={{ rotate: [0, 5, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }}
             transition={{ delay: Math.random() * 2, repeat: Infinity, duration: 2, ease: 'easeInOut' }}>
-            <img style={{ width: '5rem', filter: 'drop-shadow(5px 5px 3px #222)' }} src={`${process.env.PUBLIC_URL}/${svg}.svg`}></img>
+            <img style={{ width: '5rem', filter: 'drop-shadow(5px 5px 3px #222)' }} src={`${process.env.PUBLIC_URL}/${svg}.svg`} alt={subtext}></img>
           </motion.div>
           <span style={{ fontWeight: 'bold', fontSize: 'larger' }}>{subtext}</span>
         </motion.div>

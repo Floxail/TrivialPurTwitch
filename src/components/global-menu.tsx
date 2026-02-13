@@ -69,7 +69,7 @@ const GlobalMenu = () => {
           <Dropdown.Item as="button" onClick={onHelpClick}><FontAwesomeIcon icon={['fas', 'question-circle']} size="lg" /> Help</Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item as="button" onClick={onChangelogClick}><FontAwesomeIcon icon={['fas', 'book']} size="lg" /> Changelog</Dropdown.Item>
-          <Dropdown.Item as="button"><a style={{ color: 'inherit' }} href="https://ko-fi.com/floxail" target="_blank"><FontAwesomeIcon icon={['fas', 'heart']} color="red" size="lg" /> Support me</a></Dropdown.Item>
+          <Dropdown.Item as="button"><a style={{ color: 'inherit' }} href="https://ko-fi.com/floxail" target="_blank" rel="noreferrer"><FontAwesomeIcon icon={['fas', 'heart']} color="red" size="lg" /> Support me</a></Dropdown.Item>
           <Dropdown.Item as="button" onClick={onLogoutClick}><FontAwesomeIcon icon={['fas', 'sign-out-alt']} size="lg" /> Logout</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
