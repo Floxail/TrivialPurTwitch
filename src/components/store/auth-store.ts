@@ -45,6 +45,7 @@ const isLegacyToken = (token: string): boolean => {
   try {
     const decoded = atob(token);
     // If decoded string has control characters or is mostly non-printable, it's obfuscated
+    // eslint-disable-next-line no-control-regex
     const hasBinaryChars = /[\x00-\x1F]/.test(decoded);
     if (hasBinaryChars) {
       // This is likely an obfuscated token (XOR produces binary chars)

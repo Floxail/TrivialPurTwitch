@@ -16,7 +16,7 @@ const Settings = () => {
   const questionsStore = useQuestionsStore();
   const backupFileInputRef = useRef<HTMLInputElement>(null);
 
-  const [validated, setValidated] = useState(false);
+  const [validated] = useState(false);
   const [chatNotifications, setChatNotifications] = useState<boolean>(settingsStore.chatNotifications);
   const [addEveryUser, setAddEveryUser] = useState<boolean>(settingsStore.addEveryUser);
   const [acceptanceDelay, setAcceptanceDelay] = useState<number>(settingsStore.acceptanceDelay);
@@ -28,6 +28,7 @@ const Settings = () => {
 
   useEffect(() => {
     globalStore.setSubtitle('Settings');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submit = (e: any) => {

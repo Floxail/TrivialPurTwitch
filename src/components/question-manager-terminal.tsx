@@ -387,24 +387,24 @@ const QuestionManagerTerminal = () => {
         }
 
         if (data.boxes && Array.isArray(data.boxes)) {
-          data.boxes.forEach((box: any) => {
+          for (const box of data.boxes) {
             if (!questionsStore.boxes.find((b) => b.name === box.name)) {
               questionsStore.addBox(box.name);
               totalBoxesAdded++;
             }
-          });
+          }
         }
 
         if (data.trivialBoxes && Array.isArray(data.trivialBoxes)) {
-          data.trivialBoxes.forEach((boxName: string) => {
+          for (const boxName of data.trivialBoxes) {
             if (!questionsStore.boxes.find((b) => b.name === boxName)) {
               questionsStore.addBox(boxName);
               totalBoxesAdded++;
             }
-          });
+          }
         }
 
-        data.questions.forEach((q: any) => {
+        for (const q of data.questions) {
           const normalizedQuestion: Question = {
             ...q,
             boxName: q.boxName || q.trivialBox || 'Sans boîte',
@@ -426,7 +426,7 @@ const QuestionManagerTerminal = () => {
           } else {
             totalSkipped++;
           }
-        });
+        }
       } catch (error) {
         errorFiles.push(
           `${file.name}: ${error instanceof Error ? error.message : 'UNKNOWN ERROR'}`

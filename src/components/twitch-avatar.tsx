@@ -3,7 +3,7 @@ import React from 'react';
 
 const TwitchAvatar = ({ tid, avatar, className }: any) => {
   if (avatar) {
-    return <img className={className} src={avatar} onError={({ currentTarget }) => {
+    return <img className={className} src={avatar} alt="Avatar" onError={({ currentTarget }) => {
       currentTarget.onerror = null;
       currentTarget.src = '/TrivialPurTwitch/avatar.png';
     }} style={{ backgroundColor: colors[(+tid) % colors.length] }}>

@@ -79,6 +79,7 @@ const Quiz = () => {
 				twitchDisconnection();
 			};
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [twitchNick, twitchToken]);
 
 	useEffect(() => {
@@ -101,6 +102,7 @@ const Quiz = () => {
 				clearInterval(questionTimer.current);
 			}
 		};
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [activeQuiz?.currentQuestionIndex]);
 
 	const twitchDisconnection = () => {
