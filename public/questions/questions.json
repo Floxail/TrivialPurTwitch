@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-02-13T13:53:11.108Z",
+  "exportDate": "2026-02-13T18:06:21.094Z",
   "boxes": [
     {
       "name": "Cinéma 91",
@@ -83,6 +83,11 @@
       "name": "Poirot (RomanCrow)",
       "cardNumbers": [],
       "totalQuestions": 20
+    },
+    {
+      "name": "QCM Cécité",
+      "cardNumbers": [],
+      "totalQuestions": 10
     },
     {
       "name": "QCM Facile",
@@ -46598,6 +46603,166 @@
         "avec le poing"
       ],
       "qcmCorrectIndex": 1
+    },
+    {
+      "id": "17710058580575dgefx620",
+      "category": 4,
+      "question": "Comment s'appelle le système d'écriture utilisée par certaines personnes non et mal-voyantes ?",
+      "answer": "Le braille",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Le barillet",
+        "Le braille",
+        "Le barilla",
+        "Le blblblblbl"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1771005858057rpuybwijk",
+      "category": 4,
+      "question": "Qui est l'inventeur du système d'écriture et de lecture pour les personnes non et mal-voyantes ?",
+      "answer": "Louis Braille",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Louis Braille",
+        "Louis XIV",
+        "Louis de l'Agence",
+        "Louis Sarkozy"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1771005858057fhe7697g8",
+      "category": 2,
+      "question": "Comment s'opère l'écriture spécifique aux personnes non et mal-voyantes ?",
+      "answer": "Par 9 trous",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Par 12 traits",
+        "Par 9 trous",
+        "Par 6 points",
+        "Par 26 lettres en relief"
+      ],
+      "qcmCorrectIndex": 1
+    },
+    {
+      "id": "1771005858057h89n8d9h7",
+      "category": 4,
+      "question": "Parmi ces personnes laquelle n'a pas été atteinte de cécité ?",
+      "answer": "Charles Darwin",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Claude Monet",
+        "Joseph Pulitzer",
+        "Homère",
+        "Charles Darwin"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1771005858057b3vakmz4q",
+      "category": 2,
+      "question": "quelle terme est utilisée par l'OMS pour désigné la non voyance complète ?",
+      "answer": "cécité légale",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "cécité légale",
+        "cécité totale",
+        "cécité absolue",
+        "cécité licite"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "177100585805717bqclane",
+      "category": 1,
+      "question": "Quel animal est associé à la cécité ?",
+      "answer": "la taupe",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "la loutre",
+        "l'écureuil",
+        "la taupe",
+        "le panda roux (trop mignon ou quoi ?)"
+      ],
+      "qcmCorrectIndex": 2
+    },
+    {
+      "id": "1771005858057ntedjv16a",
+      "category": 1,
+      "question": "Quelle outil est utilisé pour les déplacements ?",
+      "answer": "la canne blanche",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "la canne blanche",
+        "la béquille jaune",
+        "le bâton bleu",
+        "le relai rouge"
+      ],
+      "qcmCorrectIndex": 0
+    },
+    {
+      "id": "1771005858057vcuj4ejdf",
+      "category": 1,
+      "question": "Quelle race de chien peut être guide ?",
+      "answer": "Les 3 et bien + bien encore",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "Le berger",
+        "Le Labrador",
+        "le Golden",
+        "Les 3 et bien + bien encore"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "1771005858057hd6afbtml",
+      "category": 4,
+      "question": "A quoi peut être due la cécité ?",
+      "answer": "Les 3 sont bonnes ainsi que pleins d'autres situations : maladie congénitale, infection, maladie dégénérative, malformation, (...)",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "une maladie génétique",
+        "Un accident de vie",
+        "Une suroxygénation",
+        "Les 3 sont bonnes ainsi que pleins d'autres situations : maladie congénitale, infection, maladie dégénérative, malformation, (...)"
+      ],
+      "qcmCorrectIndex": 3
+    },
+    {
+      "id": "177100585805707ijoect8",
+      "category": 0,
+      "question": "Quelle type de machine permet d'ecrire en écriture spécifique ?",
+      "answer": "la Perkins",
+      "boxName": "QCM Cécité",
+      "difficulty": "medium",
+      "questionType": "qcm",
+      "qcmOptions": [
+        "L'Acrobat",
+        "Le Transformer",
+        "la Perkins",
+        "le clavier velotype"
+      ],
+      "qcmCorrectIndex": 2
     }
   ]
 }

@@ -1,0 +1,6 @@
+{
+  "buildCommand": "PUBLIC_URL=/ yarn build",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
