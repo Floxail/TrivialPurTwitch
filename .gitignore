@@ -29,3 +29,4 @@ yarn-error.log*
 .ipynb_checkpoints
 .~*
 CLAUDE.md
+MIGRATION-VERCEL.md
