@@ -34,7 +34,7 @@ export const cleanValueLight = (value: string) => {
     .replaceAll(/^[!?]+/g, '')
     .replaceAll(/ [!?]+/g, ' ')
     .replaceAll(/[!?]+ /g, ' ')
-    .replaceAll(/[¿¡*,.'':_/\-]/g, '')
+    .replaceAll(/[¿¡*,.'':_/-]/g, '')
     .replaceAll('œ', 'oe')
     .replaceAll(/[$]/g, 's')
     .replaceAll(/[ø]/g, 'o')
