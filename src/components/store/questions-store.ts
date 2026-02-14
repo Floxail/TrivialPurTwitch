@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { loadQuestionsFromGitHub, mergeQuestionsFromGitHub } from '../../services/github-data-service';
+import { loadQuestionsFromAPI, mergeQuestionsFromGitHub } from '../../services/github-data-service';
 
 const localStorageKey: string = 'quiz_questions_storage_v2';
 
@@ -448,7 +448,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         try {
           set({ syncStatus: 'loading' });
 
-          const githubData = await loadQuestionsFromGitHub();
+          const githubData = await loadQuestionsFromAPI();
 
           if (!githubData) {
             set({ syncStatus: 'error' });

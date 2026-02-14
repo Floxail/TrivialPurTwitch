@@ -1,4 +1,25 @@
-// Service pour charger les questions depuis GitHub
+// Service pour charger les questions depuis l'API Turso (avec fallback GitHub)
+
+// Priorité 1 : API Turso (via Vercel serverless)
+// Priorité 2 : GitHub Raw
+// Priorité 3 : Build local
+export const loadQuestionsFromAPI = async (): Promise<any> => {
+  try {
+    const response = await fetch(`/api/questions?t=${Date.now()}`);
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`✅ Questions chargées depuis l'API Turso (${data.questions.length})`);
+      return data;
+    }
+  } catch (apiError) {
+    console.warn('⚠️ API Turso indisponible, fallback vers GitHub raw', apiError);
+  }
+
+  // Fallback vers GitHub
+  return loadQuestionsFromGitHub();
+};
+
+// Fallback : charger depuis GitHub raw ou build local
 export const loadQuestionsFromGitHub = async (): Promise<any> => {
   try {
     // Essayer d'abord depuis GitHub raw (toujours à jour)

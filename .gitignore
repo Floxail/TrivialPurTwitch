@@ -30,3 +30,5 @@ yarn-error.log*
 .~*
 CLAUDE.md
 MIGRATION-VERCEL.md
+.vercel
+.env*.local
