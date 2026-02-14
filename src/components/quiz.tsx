@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { cleanValueLight, removeArticles, sorensenDiceScore } from 'helpers';
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { Button, Modal, Form, Alert } from 'react-bootstrap';
 import { Client, Options } from 'tmi.js';
 import { useAuthStore } from './store/auth-store';
@@ -22,7 +22,9 @@ const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 const Quiz = () => {
 	const twitchClient = useRef<Client | null>(null);
-	const questionTimer = useRef<NodeJS.Timeout | null>(null);
+	const questionTimer = useRef<number | null>(null); // requestAnimationFrame ID
+	const timerEndTime = useRef<number>(0); // timestamp de fin du timer
+	const timerCircleRef = useRef<SVGCircleElement | null>(null); // ref directe sur le cercle SVG
 	const scoreCommandTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
 	const delayedScoreCommands = useRef<string[]>([]);
 
@@ -98,9 +100,7 @@ const Quiz = () => {
 		}
 
 		return () => {
-			if (questionTimer.current) {
-				clearInterval(questionTimer.current);
-			}
+			stopTimerLoop();
 		};
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [activeQuiz?.currentQuestionIndex]);
@@ -158,39 +158,60 @@ const Quiz = () => {
 		});
 	};
 
-	const startQuestionTimer = () => {
-		if (questionTimer.current) {
-			clearInterval(questionTimer.current);
+	const stopTimerLoop = useCallback(() => {
+		if (questionTimer.current !== null) {
+			cancelAnimationFrame(questionTimer.current);
+			questionTimer.current = null;
 		}
+	}, []);
+
+	const startQuestionTimer = () => {
+		stopTimerLoop();
 
 		// Réinitialiser les états
 		setTimeLeft(questionTimeLimit);
+		timerEndTime.current = Date.now() + questionTimeLimit * 1000;
 		currentAnswerersRef.current = [];
 		lastAnswerersRef.current = [];
 		qcmAttemptsRef.current = new Set(); // Reset des tentatives QCM
 		setQuestionRevealed(false);
 		questionRevealedRef.current = false;
 
-		// Démarrer le timer
-		questionTimer.current = setInterval(() => {
-			setTimeLeft((prev) => {
-				if (prev <= 1) {
-					if (questionTimer.current) {
-						clearInterval(questionTimer.current);
-					}
-					handleTimeUp();
-					return 0;
-				}
-				return prev - 1;
-			});
-		}, 1000);
+		// Boucle fluide avec requestAnimationFrame
+		const circumference = 2 * Math.PI * 54; // timerRadius
+		const totalMs = questionTimeLimit * 1000;
+
+		const tick = () => {
+			const now = Date.now();
+			const remaining = Math.max(0, timerEndTime.current - now);
+			const progress = remaining / totalMs;
+
+			// Mise à jour directe du SVG (bypass React pour fluidité ~60fps)
+			if (timerCircleRef.current) {
+				timerCircleRef.current.setAttribute(
+					'stroke-dashoffset',
+					String(circumference * (1 - progress))
+				);
+			}
+
+			const secondsLeft = Math.ceil(remaining / 1000);
+			setTimeLeft((prev) => (prev !== secondsLeft ? secondsLeft : prev));
+
+			if (remaining <= 0) {
+				questionTimer.current = null;
+				handleTimeUp();
+				return;
+			}
+
+			questionTimer.current = requestAnimationFrame(tick);
+		};
+
+		questionTimer.current = requestAnimationFrame(tick);
 	};
 
 	const handleTimeUp = () => {
 		// 1. Figer l'état immédiat
-		if (questionTimer.current) {
-			clearInterval(questionTimer.current);
-		}
+		stopTimerLoop();
 
 		// Copie locale des répondants pour figer le tableau à cet instant précis
 		const finalAnswerers = [...currentAnswerersRef.current];
@@ -544,9 +565,7 @@ const Quiz = () => {
 		}
 
 		// 1. Nettoyage de sécurité
-		if (questionTimer.current) {
-			clearInterval(questionTimer.current);
-		}
+		stopTimerLoop();
 
 		// 2. Vérifier s'il reste des questions
 		const storeState = useGameStore.getState();
@@ -595,9 +614,7 @@ const Quiz = () => {
 	};
 
 	const handleRevealAnswer = () => {
-		if (questionTimer.current) {
-			clearInterval(questionTimer.current);
-		}
+		stopTimerLoop();
 
 		if (!questionRevealed) {
 			handleTimeUp();
@@ -605,8 +622,12 @@ const Quiz = () => {
 	};
 
 	const handleSkipQuestion = () => {
-		if (questionTimer.current) {
-			clearInterval(questionTimer.current);
+		stopTimerLoop();
+		if (timerCircleRef.current) {
+			timerCircleRef.current.setAttribute(
+				'stroke-dashoffset',
+				String(2 * Math.PI * 54)
+			);
 		}
 		setQuestionRevealed(true);
 		questionRevealedRef.current = true;
@@ -824,8 +845,9 @@ const Quiz = () => {
 												stroke="rgba(255,255,255,0.1)"
 												strokeWidth="8"
 											/>
-											{/* Cercle animé */}
+											{/* Cercle animé (mis à jour via ref + rAF pour fluidité) */}
 											<circle
+												ref={timerCircleRef}
 												cx="60" cy="60" r={timerRadius}
 												fill="none"
 												stroke={timerColor}
@@ -833,7 +855,7 @@ const Quiz = () => {
 												strokeLinecap="round"
 												strokeDasharray={timerCircumference}
 												strokeDashoffset={timerCircumference * (1 - timeLeft / questionTimeLimit)}
-												style={{ transition: 'stroke-dashoffset 1s linear, stroke 0.5s ease' }}
+												style={{ transition: 'stroke 0.5s ease' }}
 											/>
 										</svg>
 										<span style={{
