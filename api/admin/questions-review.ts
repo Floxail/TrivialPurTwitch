@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
-import { requireAdminAuth, checkRateLimit } from '../_middleware';
+import { requireAdminAuth, checkRateLimit } from '../_utils';
 
 let db: Client;
 function getDb() {
