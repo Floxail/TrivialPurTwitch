@@ -17,7 +17,7 @@ const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
 const QCM_MIN_OPTIONS = 2;
 const QCM_MAX_OPTIONS = 6;
 
-type ContributionMode = 'public' | 'local';
+type ContributionMode = 'local' | 'public';
 
 // ============================================================
 // Parser bulk questions (réutilisé depuis question-manager-modals)
@@ -89,16 +89,18 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
 }
 
 // ============================================================
-// ContributionPage
+// ContributionPage - Accessible à TOUS les utilisateurs
 // ============================================================
 
 const ContributionPage: React.FC = () => {
   const setSubtitle = useGlobalStore((state) => state.setSubtitle);
-  const isAdmin = useAuthStore((state) => state.isAdmin);
+  const twitchNick = useAuthStore((state) => state.twitchNick);
   const boxes = useQuestionsStore((state) => state.boxes);
   const addQuestion = useQuestionsStore((state) => state.addQuestion);
+  const addBox = useQuestionsStore((state) => state.addBox);
 
-  const [mode, setMode] = useState<ContributionMode>('public');
+  // Mode par défaut : local (ma collection)
+  const [mode, setMode] = useState<ContributionMode>('local');
   const [tab, setTab] = useState<'single' | 'bulk'>('single');
 
   // Notifications
@@ -124,14 +126,13 @@ const ContributionPage: React.FC = () => {
   const [bulkPreview, setBulkPreview] = useState<{ questions: ParsedBulkQuestion[]; errors: string[] } | null>(null);
   const [bulkSubmitting, setBulkSubmitting] = useState(false);
 
+  // Nouvelle boîte
+  const [showNewBox, setShowNewBox] = useState(false);
+  const [newBoxName, setNewBoxName] = useState('');
+
   useEffect(() => {
     setSubtitle('Proposer des questions');
   }, [setSubtitle]);
-
-  // Si admin, proposer le mode local par défaut
-  useEffect(() => {
-    if (isAdmin) setMode('local');
-  }, [isAdmin]);
 
   const showSuccess = (msg: string) => {
     setSuccess(msg);
@@ -151,6 +152,19 @@ const ContributionPage: React.FC = () => {
     setQuestionType(QuestionType.FREE_TEXT);
     setQcmOptions(['', '']);
     setQcmCorrectIndex(0);
+  };
+
+  const handleCreateBox = async () => {
+    const name = newBoxName.trim();
+    if (!name) return;
+    if (boxes.find(b => b.name === name)) {
+      showError(`La boîte "${name}" existe déjà`);
+      return;
+    }
+    await addBox(name);
+    setNewBoxName('');
+    setShowNewBox(false);
+    showSuccess(`Boîte "${name}" créée !`);
   };
 
   // ==================== Soumission unique ====================
@@ -179,7 +193,6 @@ const ContributionPage: React.FC = () => {
 
     try {
       if (mode === 'public') {
-        // Soumettre via l'API (modération)
         const payload: SubmitQuestionPayload = {
           question: question.trim(),
           answer: answer.trim(),
@@ -197,7 +210,6 @@ const ContributionPage: React.FC = () => {
         await apiSubmitQuestion(payload);
         showSuccess('Question soumise pour modération !');
       } else {
-        // Ajout local direct
         if (!boxName) {
           showError('Sélectionnez une boîte de destination');
           setSubmitting(false);
@@ -218,7 +230,7 @@ const ContributionPage: React.FC = () => {
           newQuestion.qcmCorrectIndex = qcmCorrectIndex;
         }
         addQuestion(newQuestion);
-        showSuccess('Question ajoutée localement !');
+        showSuccess('Question ajoutée à ta collection locale !');
       }
       resetSingleForm();
     } catch (err: any) {
@@ -299,7 +311,7 @@ const ContributionPage: React.FC = () => {
         qcmCount > 0 ? `${qcmCount} QCM` : '',
       ].filter(Boolean).join(', ');
 
-      showSuccess(`${count} question(s) ${mode === 'public' ? 'soumises pour modération' : 'ajoutées localement'} (${details})`);
+      showSuccess(`${count} question(s) ${mode === 'public' ? 'soumises pour modération' : 'ajoutées à ta collection'} (${details})`);
       setBulkText('');
       setBulkPreview(null);
     } catch (err: any) {
@@ -309,75 +321,122 @@ const ContributionPage: React.FC = () => {
     }
   };
 
+  const isLocal = mode === 'local';
+  const isPublic = mode === 'public';
+
   return (
     <div className="p-3" style={{ maxWidth: '800px', margin: '0 auto' }}>
       <h2>
-        <FontAwesomeIcon icon={['fas', 'plus-circle']} className="me-2" />
+        <FontAwesomeIcon icon={['fas', 'pen']} className="me-2" />
         Proposer des questions
       </h2>
 
       {success && <Alert variant="success" dismissible onClose={() => setSuccess('')}>{success}</Alert>}
       {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
 
-      {/* Sélecteur de mode */}
-      <div className="d-flex gap-2 mb-3 align-items-center flex-wrap">
-        <ButtonGroup size="sm">
+      {/* ========== Sélecteur de mode ========== */}
+      <div className="mb-3">
+        <ButtonGroup className="w-100">
           <Button
-            variant={mode === 'public' ? 'primary' : 'outline-secondary'}
+            variant={isLocal ? 'warning' : 'outline-secondary'}
+            onClick={() => setMode('local')}
+            className="py-2"
+          >
+            <FontAwesomeIcon icon={['fas', 'database']} className="me-2" />
+            <strong>Ma Collection</strong>
+            <div style={{ fontSize: '11px', opacity: 0.85 }}>Stocké localement sur ton navigateur</div>
+          </Button>
+          <Button
+            variant={isPublic ? 'primary' : 'outline-secondary'}
             onClick={() => setMode('public')}
+            className="py-2"
           >
-            <FontAwesomeIcon icon={['fas', 'globe']} className="me-1" />
-            Proposer (modération)
-          </Button>
-          {isAdmin && (
-            <Button
-              variant={mode === 'local' ? 'warning' : 'outline-secondary'}
-              onClick={() => setMode('local')}
-            >
-              <FontAwesomeIcon icon={['fas', 'bolt']} className="me-1" />
-              Ajouter directement
-            </Button>
-          )}
-        </ButtonGroup>
-
-        <ButtonGroup size="sm">
-          <Button
-            variant={tab === 'single' ? 'info' : 'outline-secondary'}
-            onClick={() => setTab('single')}
-          >
-            Question unique
-          </Button>
-          <Button
-            variant={tab === 'bulk' ? 'info' : 'outline-secondary'}
-            onClick={() => setTab('bulk')}
-          >
-            Ajout en masse
+            <FontAwesomeIcon icon={['fas', 'globe']} className="me-2" />
+            <strong>Proposer à la Communauté</strong>
+            <div style={{ fontSize: '11px', opacity: 0.85 }}>Envoyé pour validation par un admin</div>
           </Button>
         </ButtonGroup>
+      </div>
 
-        {mode === 'public' && (
-          <Badge bg="info">Les questions seront vérifiées par un admin</Badge>
+      {/* Badge info mode */}
+      <div className="mb-3">
+        {isLocal && (
+          <Alert variant="warning" className="py-2 mb-0">
+            <FontAwesomeIcon icon={['fas', 'database']} className="me-2" />
+            Les questions seront ajoutées <strong>uniquement dans ton navigateur</strong> ({twitchNick || 'toi'}).
+            Elles ne seront pas visibles par les autres streamers.
+          </Alert>
         )}
-        {mode === 'local' && (
-          <Badge bg="warning" text="dark">Ajout direct (admin)</Badge>
+        {isPublic && (
+          <Alert variant="info" className="py-2 mb-0">
+            <FontAwesomeIcon icon={['fas', 'globe']} className="me-2" />
+            Ta question sera <strong>envoyée à un admin</strong> qui la validera avant de l'ajouter pour tout le monde.
+          </Alert>
         )}
       </div>
+
+      {/* Tabs : Question unique / Ajout en masse */}
+      <ButtonGroup size="sm" className="mb-3">
+        <Button
+          variant={tab === 'single' ? 'info' : 'outline-secondary'}
+          onClick={() => setTab('single')}
+        >
+          Question unique
+        </Button>
+        <Button
+          variant={tab === 'bulk' ? 'info' : 'outline-secondary'}
+          onClick={() => setTab('bulk')}
+        >
+          Ajout en masse
+        </Button>
+      </ButtonGroup>
+
+      {/* ========== Création de boîte (mode local uniquement) ========== */}
+      {isLocal && (
+        <div className="mb-3">
+          {!showNewBox ? (
+            <Button size="sm" variant="outline-success" onClick={() => setShowNewBox(true)}>
+              <FontAwesomeIcon icon={['fas', 'plus']} className="me-1" />
+              Nouvelle boîte
+            </Button>
+          ) : (
+            <div className="d-flex gap-2 align-items-center">
+              <Form.Control
+                size="sm"
+                type="text"
+                placeholder="Nom de la boîte (ex: Cinéma 91)"
+                value={newBoxName}
+                onChange={(e) => setNewBoxName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleCreateBox()}
+                autoFocus
+                style={{ maxWidth: '300px' }}
+              />
+              <Button size="sm" variant="success" onClick={handleCreateBox} disabled={!newBoxName.trim()}>
+                Créer
+              </Button>
+              <Button size="sm" variant="outline-secondary" onClick={() => { setShowNewBox(false); setNewBoxName(''); }}>
+                Annuler
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ==================== Tab: Question unique ==================== */}
       {tab === 'single' && (
         <Form onSubmit={handleSingleSubmit}>
-          {/* Boîte (obligatoire en local, optionnel en public) */}
+          {/* Boîte */}
           <Form.Group className="mb-3">
             <Form.Label>
-              Boîte Trivial Pursuit {mode === 'local' ? '*' : '(optionnel)'}
+              Boîte Trivial Pursuit {isLocal ? '*' : '(optionnel)'}
             </Form.Label>
             <Form.Select
-              required={mode === 'local'}
+              required={isLocal}
               value={boxName}
               onChange={(e) => setBoxName(e.target.value)}
             >
               <option value="">
-                {mode === 'public' ? 'L\'admin choisira la boîte' : 'Sélectionner une boîte...'}
+                {isPublic ? "L'admin choisira la boîte" : 'Sélectionner une boîte...'}
               </option>
               {boxes.map(box => (
                 <option key={box.name} value={box.name}>{box.name}</option>
@@ -532,17 +591,17 @@ const ContributionPage: React.FC = () => {
             </div>
           )}
 
-          <Button type="submit" variant={mode === 'public' ? 'primary' : 'warning'} disabled={submitting} className="w-100">
+          <Button type="submit" variant={isLocal ? 'warning' : 'primary'} disabled={submitting} className="w-100">
             {submitting && <Spinner animation="border" size="sm" className="me-2" />}
-            {mode === 'public' ? (
+            {isLocal ? (
               <>
-                <FontAwesomeIcon icon={['fas', 'paper-plane']} className="me-2" />
-                Proposer la question
+                <FontAwesomeIcon icon={['fas', 'plus']} className="me-2" />
+                Ajouter à ma collection
               </>
             ) : (
               <>
-                <FontAwesomeIcon icon={['fas', 'plus']} className="me-2" />
-                Ajouter directement
+                <FontAwesomeIcon icon={['fas', 'paper-plane']} className="me-2" />
+                Proposer la question
               </>
             )}
           </Button>
@@ -553,14 +612,14 @@ const ContributionPage: React.FC = () => {
       {tab === 'bulk' && (
         <div>
           <Form.Group className="mb-3">
-            <Form.Label>Boîte de destination {mode === 'local' ? '*' : '(optionnel)'}</Form.Label>
+            <Form.Label>Boîte de destination {isLocal ? '*' : '(optionnel)'}</Form.Label>
             <Form.Select
-              required={mode === 'local'}
+              required={isLocal}
               value={bulkBox}
               onChange={(e) => setBulkBox(e.target.value)}
             >
               <option value="">
-                {mode === 'public' ? 'L\'admin choisira' : 'Sélectionner...'}
+                {isPublic ? "L'admin choisira" : 'Sélectionner...'}
               </option>
               {boxes.map(box => (
                 <option key={box.name} value={box.name}>{box.name}</option>
@@ -653,21 +712,21 @@ const ContributionPage: React.FC = () => {
           )}
 
           <Button
-            variant={mode === 'public' ? 'primary' : 'warning'}
+            variant={isLocal ? 'warning' : 'primary'}
             disabled={bulkSubmitting || !bulkText.trim()}
             onClick={handleBulkSubmit}
             className="w-100"
           >
             {bulkSubmitting && <Spinner animation="border" size="sm" className="me-2" />}
-            {mode === 'public' ? (
+            {isLocal ? (
               <>
-                <FontAwesomeIcon icon={['fas', 'paper-plane']} className="me-2" />
-                Proposer {bulkPreview ? `(${bulkPreview.questions.length})` : ''} question(s)
+                <FontAwesomeIcon icon={['fas', 'plus']} className="me-2" />
+                Ajouter à ma collection {bulkPreview ? `(${bulkPreview.questions.length})` : ''}
               </>
             ) : (
               <>
-                <FontAwesomeIcon icon={['fas', 'plus']} className="me-2" />
-                Ajouter directement {bulkPreview ? `(${bulkPreview.questions.length})` : ''}
+                <FontAwesomeIcon icon={['fas', 'paper-plane']} className="me-2" />
+                Proposer {bulkPreview ? `(${bulkPreview.questions.length})` : ''} question(s)
               </>
             )}
           </Button>

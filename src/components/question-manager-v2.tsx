@@ -4,7 +4,7 @@ import { Button, Form, Table, Badge, Tabs, Tab, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { categoryColors, categoryNames, Question, QuestionType, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
-import { BoxModal, QuestionModal, BulkActionsModal, BulkAddModal, ParsedBulkQuestion } from './question-manager-modals';
+import { QuestionModal, BulkActionsModal } from './question-manager-modals';
 
 const QuestionManager = () => {
   const navigate = useNavigate();
@@ -17,7 +17,6 @@ const QuestionManager = () => {
   const lastGitHubSync = useQuestionsStore(state => state.lastGitHubSync);
 
   // Actions du store (références stables, ne causent pas de re-render)
-  const addQuestion = useQuestionsStore(state => state.addQuestion);
   const updateQuestion = useQuestionsStore(state => state.updateQuestion);
   const deleteQuestion = useQuestionsStore(state => state.deleteQuestion);
   const bulkAddQuestions = useQuestionsStore(state => state.bulkAddQuestions);
@@ -37,15 +36,10 @@ const QuestionManager = () => {
   const [importError, setImportError] = useState<string>('');
   const [preselectedBoxForModal, setPreselectedBoxForModal] = useState<string>('');
 
-  // Gestion des boîtes
-  const [showBoxModal, setShowBoxModal] = useState(false);
-
   // Sélection multiple
   const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(new Set());
   const [showBulkActionsModal, setShowBulkActionsModal] = useState(false);
   const [bulkAction, setBulkAction] = useState<'delete' | 'move' | null>(null);
-  const [showBulkAddModal, setShowBulkAddModal] = useState(false);
-
   useEffect(() => {
     globalStore.setSubtitle('Gestion des questions');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -364,8 +358,10 @@ const QuestionManager = () => {
     setEditingQuestion(null);
   };
 
-  // Callback pour le QuestionModal
+  // Callback pour le QuestionModal (édition uniquement)
   const handleQuestionSubmit = async (formData: any, isEdit: boolean, editId?: string) => {
+    if (!isEdit || !editId) return;
+
     const alternativeAnswers = formData.alternativeAnswers
       .split(',')
       .map((a: string) => a.trim())
@@ -375,35 +371,18 @@ const QuestionManager = () => {
     const qcmOptions = isQcm ? formData.qcmOptions.filter((o: string) => o.trim().length > 0) : undefined;
     const qcmCorrectIndex = isQcm ? formData.qcmCorrectIndex : undefined;
 
-    if (isEdit && editId) {
-      await updateQuestion(editId, {
-        question: formData.question,
-        answer: formData.answer,
-        alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
-        category: formData.category,
-        boxName: formData.boxName,
-        cardNumber: formData.cardNumber,
-        difficulty: formData.difficulty,
-        questionType: formData.questionType,
-        qcmOptions: qcmOptions,
-        qcmCorrectIndex: qcmCorrectIndex,
-      });
-    } else {
-      const newQuestion: Question = {
-        id: Date.now().toString() + Math.random().toString(36).substring(2, 11),
-        question: formData.question,
-        answer: formData.answer,
-        alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
-        category: formData.category,
-        boxName: formData.boxName,
-        cardNumber: formData.cardNumber,
-        difficulty: formData.difficulty,
-        questionType: formData.questionType,
-        qcmOptions: qcmOptions,
-        qcmCorrectIndex: qcmCorrectIndex,
-      };
-      await addQuestion(newQuestion);
-    }
+    await updateQuestion(editId, {
+      question: formData.question,
+      answer: formData.answer,
+      alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
+      category: formData.category,
+      boxName: formData.boxName,
+      cardNumber: formData.cardNumber,
+      difficulty: formData.difficulty,
+      questionType: formData.questionType,
+      qcmOptions: qcmOptions,
+      qcmCorrectIndex: qcmCorrectIndex,
+    });
 
     handleCloseModal();
   };
@@ -412,12 +391,6 @@ const QuestionManager = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette question ?')) {
       await deleteQuestion(questionId);
     }
-  };
-
-  // Callback pour le BoxModal
-  const handleBoxAdd = async (name: string) => {
-    await addBox(name);
-    setShowBoxModal(false);
   };
 
   const handleDeleteBox = async (boxName: string) => {
@@ -496,41 +469,6 @@ const QuestionManager = () => {
     setShowBulkActionsModal(true);
   };
 
-  // Ajout en masse de questions
-  const handleBulkAddSubmit = async (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean, fixedCategory?: TrivialCategory) => {
-    const categoryValues = Object.values(TrivialCategory).filter(v => typeof v === 'number') as TrivialCategory[];
-    let qcmCount = 0;
-
-    const newQuestions: Question[] = questions.map(q => {
-      const category = randomCategories
-        ? categoryValues[Math.floor(Math.random() * categoryValues.length)]
-        : (fixedCategory ?? TrivialCategory.Geography);
-
-      if (q.isQcm) qcmCount++;
-
-      return {
-        id: Date.now().toString() + Math.random().toString(36).substring(2, 11),
-        question: q.question,
-        answer: q.answer,
-        alternativeAnswers: q.alternativeAnswers.length > 0 ? q.alternativeAnswers : undefined,
-        category,
-        boxName,
-        questionType: q.isQcm ? QuestionType.QCM : QuestionType.FREE_TEXT,
-        difficulty: 'medium' as const,
-        ...(q.isQcm && q.qcmOptions ? {
-          qcmOptions: q.qcmOptions,
-          qcmCorrectIndex: q.qcmCorrectIndex ?? 0,
-        } : {}),
-      };
-    });
-
-    await bulkAddQuestions(newQuestions);
-
-    const detail = qcmCount > 0 ? ` (${qcmCount} QCM, ${newQuestions.length - qcmCount} texte libre)` : '';
-    setImportSuccess(`✅ ${newQuestions.length} question(s) ajoutée(s) en masse dans "${boxName}"${detail}`);
-    setTimeout(() => setImportSuccess(''), 5000);
-  };
-
   return (
     <>
       {/* Alerts pour import */}
@@ -555,13 +493,6 @@ const QuestionManager = () => {
         onChange={handleImport}
       />
 
-      {/* Modal de gestion des boîtes */}
-      <BoxModal
-        show={showBoxModal}
-        onHide={() => setShowBoxModal(false)}
-        onAdd={handleBoxAdd}
-      />
-
       {/* Modal d'édition de question */}
       <QuestionModal
         show={showModal}
@@ -570,15 +501,6 @@ const QuestionManager = () => {
         editingQuestion={editingQuestion}
         boxes={boxesWithStats}
         defaultBoxName={preselectedBoxForModal}
-      />
-
-      {/* Modal d'ajout en masse */}
-      <BulkAddModal
-        show={showBulkAddModal}
-        onHide={() => setShowBulkAddModal(false)}
-        onSubmit={handleBulkAddSubmit}
-        boxes={boxesWithStats}
-        defaultBoxName={selectedBox || boxesWithStats[0]?.name || ''}
       />
 
       {/* Modal d'actions de masse */}
@@ -609,9 +531,6 @@ const QuestionManager = () => {
           </Button>
           <Button variant="info" className="me-2" onClick={() => fileInputRef.current?.click()}>
             <FontAwesomeIcon icon={['fas', 'upload']} /> Importer Questions
-          </Button>
-          <Button variant="outline-primary" onClick={() => setShowBulkAddModal(true)}>
-            <FontAwesomeIcon icon={['fas', 'list']} /> Ajout en masse
           </Button>
         </div>
       </div>
@@ -663,10 +582,7 @@ const QuestionManager = () => {
 
       <Tabs defaultActiveKey="boxes" className="mb-3">
         <Tab eventKey="boxes" title="📦 Boîtes">
-          <div className="mb-3 d-flex justify-content-between">
-            <Button onClick={() => setShowBoxModal(true)}>
-              <FontAwesomeIcon icon={['fas', 'plus']} /> Nouvelle boîte
-            </Button>
+          <div className="mb-3 d-flex justify-content-end">
             <div>
               <Form.Select
                 style={{ width: '250px' }}
@@ -751,16 +667,6 @@ const QuestionManager = () => {
                           })}
                         </div>
 
-                        {/* Bouton pour ajouter une question */}
-                        <Button
-                          size="sm"
-                          variant="outline-primary"
-                          onClick={() => {
-                            handleOpenModal(undefined, box.name);
-                          }}
-                        >
-                          <FontAwesomeIcon icon={['fas', 'plus']} /> Ajouter une question
-                        </Button>
                       </div>
                     </div>
                   </div>
@@ -797,9 +703,6 @@ const QuestionManager = () => {
                 ))}
               </Form.Select>
             </div>
-            <Button onClick={() => handleOpenModal()}>
-              <FontAwesomeIcon icon={['fas', 'plus']} /> Nouvelle question
-            </Button>
           </div>
 
           {/* Barre d'actions de masse */}
