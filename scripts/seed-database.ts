@@ -101,12 +101,34 @@ async function seed() {
   `);
   console.log('✓ Table scores créée');
 
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS pending_questions (
+      id                  TEXT PRIMARY KEY,
+      question            TEXT NOT NULL,
+      answer              TEXT NOT NULL,
+      alternative_answers TEXT,
+      category            INTEGER NOT NULL DEFAULT 0,
+      box_name            TEXT,
+      question_type       TEXT DEFAULT 'free_text',
+      qcm_options         TEXT,
+      qcm_correct_index   INTEGER,
+      submitted_by        TEXT,
+      submitted_by_id     TEXT,
+      status              TEXT DEFAULT 'pending',
+      reviewed_by         TEXT,
+      reviewed_at         TEXT,
+      created_at          TEXT DEFAULT (datetime('now'))
+    )
+  `);
+  console.log('✓ Table pending_questions créée');
+
   // Créer les index
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_questions_box ON questions(box_name)`);
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_questions_category ON questions(category)`);
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_questions_type ON questions(question_type)`);
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_scores_nick ON scores(nick)`);
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_scores_session ON scores(session_id)`);
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_pending_status ON pending_questions(status)`);
   console.log('✓ Index créés');
 
   // Charger les données

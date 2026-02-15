@@ -61,6 +61,7 @@ const GlobalMenu = () => {
         <Dropdown.Toggle as={CustomToggle} />
         <Dropdown.Menu>
           <Dropdown.Item as="button" onClick={() => navigate('/questions')}><FontAwesomeIcon icon={['fas', 'question']} size="lg" /> Questions</Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() => navigate('/admin')}><FontAwesomeIcon icon={['fas', 'lock']} size="lg" /> Admin</Dropdown.Item>
           <Dropdown.Item as="button" onClick={onSettingsClick}><FontAwesomeIcon icon={['fas', 'cog']} size="lg" /> Settings</Dropdown.Item>
           <Dropdown.Item as="button" onClick={(e) => {
             e.stopPropagation();
