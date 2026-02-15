@@ -62,7 +62,7 @@ const GlobalMenu = () => {
         <Dropdown.Toggle as={CustomToggle} />
         <Dropdown.Menu>
           <Dropdown.Item as="button" onClick={() => navigate('/questions')}><FontAwesomeIcon icon={['fas', 'question']} size="lg" /> Questions</Dropdown.Item>
-          <Dropdown.Item as="button" onClick={() => navigate('/contribute')}><FontAwesomeIcon icon={['fas', 'plus-circle']} size="lg" /> Proposer</Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() => navigate('/contribute')}><FontAwesomeIcon icon={['fas', 'pen']} size="lg" /> Proposer</Dropdown.Item>
           <Dropdown.Item as="button" onClick={onSettingsClick}><FontAwesomeIcon icon={['fas', 'cog']} size="lg" /> Settings</Dropdown.Item>
           <Dropdown.Item as="button" onClick={(e) => {
             e.stopPropagation();

@@ -199,13 +199,19 @@ export const useAuthStore = create<AuthData & Actions>()(
           return;
         }
         try {
-          // Appel GET vers l'endpoint admin — si 200, l'utilisateur est admin
+          // Appel GET vers l'endpoint admin — 200 = admin, 401 = pas admin
+          // Les erreurs 500 (ex: table manquante) ne changent pas le statut
           const res = await fetch('/api/admin/questions-review?status=pending&limit=1', {
             headers: { 'Authorization': `Bearer ${token}` },
           });
-          set({ isAdmin: res.ok });
+          if (res.ok) {
+            set({ isAdmin: true });
+          } else if (res.status === 401) {
+            set({ isAdmin: false });
+          }
+          // Sinon (500, etc.) on ne change pas isAdmin
         } catch {
-          set({ isAdmin: false });
+          // Erreur réseau : on ne change pas le statut
         }
       },
       isLoggedIn: (): boolean => {

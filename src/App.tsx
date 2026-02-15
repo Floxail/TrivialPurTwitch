@@ -104,7 +104,7 @@ useEffect(() => {
 			<header className="app-header">
 				<div style={{ position: 'absolute', left: 0, fontSize: '1.3333rem', padding: '4px' }}>
 					<FontAwesomeIcon icon={['fab', 'galactic-republic']} color="var(--spot-color)" size="lg" />
-					<a className="btt" href={process.env.PUBLIC_URL}> <b>T</b>rivial<b>P</b>ur<b>T</b>witch</a>
+					<a className="btt" href="#" onClick={(e) => { e.preventDefault(); navigate('/quiz'); }}> <b>T</b>rivial<b>P</b>ur<b>T</b>witch</a>
 				</div>
 				<div style={{ position: 'absolute', right: 0 }}>
 					{loggedIn &&
