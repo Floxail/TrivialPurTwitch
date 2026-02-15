@@ -84,10 +84,29 @@ async function seed() {
   `);
   console.log('✓ Table questions créée');
 
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS scores (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      twitch_id   TEXT NOT NULL,
+      nick        TEXT NOT NULL,
+      score       INTEGER DEFAULT 0,
+      answers     INTEGER DEFAULT 0,
+      firsts      INTEGER DEFAULT 0,
+      combos      INTEGER DEFAULT 0,
+      fastest     REAL DEFAULT 0,
+      session_id  TEXT,
+      box_name    TEXT,
+      created_at  TEXT DEFAULT (datetime('now'))
+    )
+  `);
+  console.log('✓ Table scores créée');
+
   // Créer les index
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_questions_box ON questions(box_name)`);
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_questions_category ON questions(category)`);
   await db.execute(`CREATE INDEX IF NOT EXISTS idx_questions_type ON questions(question_type)`);
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_scores_nick ON scores(nick)`);
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_scores_session ON scores(session_id)`);
   console.log('✓ Index créés');
 
   // Charger les données

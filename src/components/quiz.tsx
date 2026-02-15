@@ -57,6 +57,8 @@ const Quiz = () => {
 	const currentAnswerersRef = useRef<{ nick: string; isFirst: boolean }[]>([]);
 	// Track des tentatives QCM (un viewer ne peut répondre qu'une seule fois en QCM)
 	const qcmAttemptsRef = useRef<Set<string>>(new Set());
+	// Session ID unique pour la sync des scores vers l'API
+	const sessionIdRef = useRef<string>('');
 
 	// États pour le modal de sélection de quiz
 	const [showModeSelector, setShowModeSelector] = useState(false);
@@ -511,6 +513,9 @@ const Quiz = () => {
 		// Sauvegarder le requester avant de fermer le modal
 		const requester = pendingQuizRequester;
 
+		// Générer un ID unique pour cette session de quiz
+		sessionIdRef.current = `quiz_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+
 		// Démarrer le quiz dans le store
 		gameStore.startQuiz(QuizMode.QUIZ, displayBoxName, questions);
 
@@ -550,6 +555,11 @@ const Quiz = () => {
 
 	// Terminer la session (pour mode cumulatif)
 	const handleEndSession = () => {
+		// Sync scores vers l'API avant de réinitialiser
+		const currentQuiz = useGameStore.getState().activeQuiz;
+		const boxName = currentQuiz?.boxName;
+		usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName);
+
 		setPodiumDisplayed(true);
 		usePlayerStore.getState().clear();
 		if (twitchNick) {
@@ -577,7 +587,10 @@ const Quiz = () => {
 		const totalQuestions = currentQuiz.totalQuestions;
 
 		if (nextIndex >= totalQuestions) {
-			// C'est fini
+			// C'est fini — sync scores vers l'API avant de fermer
+			const boxName = currentQuiz.boxName;
+			usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName);
+
 			gameStore.endQuiz();
 			setPodiumDisplayed(true);
 			if (twitchNick) {

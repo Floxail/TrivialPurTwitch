@@ -1,3 +1,4 @@
+import { apiRecordScores } from 'services/api-scores-service';
 import { getUsers } from 'services/twitch-api';
 import { create } from 'zustand';
 
@@ -60,6 +61,7 @@ type Actions = {
   recordAnswers: (answers: Answer[]) => void;
   getPlayers: (nicks: string[]) => Player[];
   getDeepCopy: () => Record<string, Player>;
+  syncScoresToAPI: (sessionId: string, boxName?: string) => Promise<void>;
 }
 
 const recomputeRanks = (players: Record<string, Player>) => {
@@ -219,6 +221,22 @@ export const usePlayerStore = create<Players & Actions>()(
     },
     getDeepCopy: () => {
       return JSON.parse(JSON.stringify(get().players));
+    },
+    syncScoresToAPI: async (sessionId: string, boxName?: string) => {
+      const players = get().players;
+      const activePlayers = Object.values(players).filter(p => p.score > 0 || p.stats.answers > 0);
+
+      if (activePlayers.length === 0) {
+        console.log('⚠️ Aucun joueur actif à synchroniser');
+        return;
+      }
+
+      try {
+        const result = await apiRecordScores(activePlayers, sessionId, boxName);
+        console.log(`✅ Scores synchronisés : ${result.inserted} joueurs envoyés (session: ${sessionId})`);
+      } catch (err) {
+        console.warn('⚠️ Échec sync scores API, scores conservés localement', err);
+      }
     },
   }),
 );
