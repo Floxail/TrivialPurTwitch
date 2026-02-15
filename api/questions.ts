@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
 import dotenv from 'dotenv';
+import { requireAuth } from './_middleware';
 
-// En dev local, charger les env vars depuis .env.local
 dotenv.config({ path: '.env.local' });
 
 let db: Client;
@@ -16,49 +16,163 @@ function getDb() {
   return db;
 }
 
+/** Transforme une row DB en objet frontend */
+function rowToQuestion(row: any) {
+  return {
+    id: row.id,
+    question: row.question,
+    answer: row.answer,
+    alternativeAnswers: row.alternative_answers
+      ? JSON.parse(row.alternative_answers as string)
+      : undefined,
+    category: row.category,
+    boxName: row.box_name,
+    cardNumber: row.card_number ?? undefined,
+    difficulty: row.difficulty,
+    questionType: row.question_type ?? 'free_text',
+    qcmOptions: row.qcm_options
+      ? JSON.parse(row.qcm_options as string)
+      : undefined,
+    qcmCorrectIndex: row.qcm_correct_index ?? undefined,
+  };
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
   try {
-    const { boxName } = req.query;
+    // ==================== GET ====================
+    if (req.method === 'GET') {
+      const { boxName } = req.query;
 
-    let sql = 'SELECT * FROM questions';
-    const args: any[] = [];
+      let sql = 'SELECT * FROM questions';
+      const args: any[] = [];
 
-    if (boxName && typeof boxName === 'string') {
-      sql += ' WHERE box_name = ?';
-      args.push(boxName);
+      if (boxName && typeof boxName === 'string') {
+        sql += ' WHERE box_name = ?';
+        args.push(boxName);
+      }
+
+      const result = await getDb().execute({ sql, args });
+      const questions = result.rows.map(rowToQuestion);
+
+      return res.status(200).json({ questions });
     }
 
-    const result = await getDb().execute({ sql, args });
+    // ==================== AUTH REQUISE ====================
+    if (!requireAuth(req)) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
-    // Transformer les colonnes DB → format frontend
-    const questions = result.rows.map((row) => ({
-      id: row.id,
-      question: row.question,
-      answer: row.answer,
-      alternativeAnswers: row.alternative_answers
-        ? JSON.parse(row.alternative_answers as string)
-        : undefined,
-      category: row.category,
-      boxName: row.box_name,
-      cardNumber: row.card_number ?? undefined,
-      difficulty: row.difficulty,
-      questionType: row.question_type ?? 'free_text',
-      qcmOptions: row.qcm_options
-        ? JSON.parse(row.qcm_options as string)
-        : undefined,
-      qcmCorrectIndex: row.qcm_correct_index ?? undefined,
-    }));
+    // ==================== POST (créer une question) ====================
+    if (req.method === 'POST') {
+      const q = req.body;
 
-    return res.status(200).json({ questions });
+      if (!q || !q.id || !q.question || !q.answer || !q.boxName) {
+        return res.status(400).json({ error: 'Champs requis manquants: id, question, answer, boxName' });
+      }
+
+      await getDb().execute({
+        sql: `INSERT INTO questions
+              (id, question, answer, alternative_answers, category, box_name,
+               card_number, difficulty, question_type, qcm_options, qcm_correct_index)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        args: [
+          q.id,
+          q.question,
+          q.answer,
+          q.alternativeAnswers ? JSON.stringify(q.alternativeAnswers) : null,
+          q.category ?? 0,
+          q.boxName,
+          q.cardNumber ?? null,
+          q.difficulty ?? 'medium',
+          q.questionType ?? 'free_text',
+          q.qcmOptions ? JSON.stringify(q.qcmOptions) : null,
+          q.qcmCorrectIndex ?? null,
+        ],
+      });
+
+      return res.status(201).json({ success: true, id: q.id });
+    }
+
+    // ==================== PUT (modifier une question) ====================
+    if (req.method === 'PUT') {
+      const { id } = req.query;
+      const updates = req.body;
+
+      if (!id || typeof id !== 'string') {
+        return res.status(400).json({ error: 'ID requis en query param' });
+      }
+
+      if (!updates || Object.keys(updates).length === 0) {
+        return res.status(400).json({ error: 'Aucune mise à jour fournie' });
+      }
+
+      // Construire dynamiquement la requête UPDATE
+      const setClauses: string[] = [];
+      const args: any[] = [];
+
+      const fieldMap: Record<string, string> = {
+        question: 'question',
+        answer: 'answer',
+        alternativeAnswers: 'alternative_answers',
+        category: 'category',
+        boxName: 'box_name',
+        cardNumber: 'card_number',
+        difficulty: 'difficulty',
+        questionType: 'question_type',
+        qcmOptions: 'qcm_options',
+        qcmCorrectIndex: 'qcm_correct_index',
+      };
+
+      for (const [jsField, dbField] of Object.entries(fieldMap)) {
+        if (jsField in updates) {
+          let value = updates[jsField];
+
+          // Sérialiser les champs JSON
+          if ((jsField === 'alternativeAnswers' || jsField === 'qcmOptions') && value) {
+            value = JSON.stringify(value);
+          }
+
+          setClauses.push(`${dbField} = ?`);
+          args.push(value ?? null);
+        }
+      }
+
+      // Toujours mettre à jour updated_at
+      setClauses.push(`updated_at = datetime('now')`);
+
+      args.push(id);
+
+      await getDb().execute({
+        sql: `UPDATE questions SET ${setClauses.join(', ')} WHERE id = ?`,
+        args,
+      });
+
+      return res.status(200).json({ success: true, id });
+    }
+
+    // ==================== DELETE ====================
+    if (req.method === 'DELETE') {
+      const { id } = req.query;
+
+      if (!id || typeof id !== 'string') {
+        return res.status(400).json({ error: 'ID requis en query param' });
+      }
+
+      await getDb().execute({
+        sql: 'DELETE FROM questions WHERE id = ?',
+        args: [id],
+      });
+
+      return res.status(200).json({ success: true, id });
+    }
+
+    return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     console.error('API /questions error:', error);
     return res.status(500).json({ error: 'Internal server error' });

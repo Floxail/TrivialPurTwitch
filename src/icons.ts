@@ -1,7 +1,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { faCheckCircle, faComment, faTimesCircle } from '@fortawesome/free-regular-svg-icons';
-import { faAdjust, faArrowRight, faBars, faBook, faCheck, faChevronLeft, faChevronRight, faCircleInfo, faCog, faCrown, faEllipsis, faExclamationTriangle, faEye, faEyeSlash, faHeart, faList, faLock, faMinus, faMusic, faPause, faPlay, faPlayCircle, faPlus, faQuestion, faQuestionCircle, faSearch, faShuffle, faSignOutAlt, faStepForward, faTimes, faTrash, faVolumeMute, faEdit, faBox, faScroll, faArrowLeft, faDice, faDownload, faUpload, faTrophy, faListOl } from '@fortawesome/free-solid-svg-icons';
+import { faAdjust, faArrowRight, faBars, faBook, faCheck, faChevronLeft, faChevronRight, faCircleInfo, faCog, faCrown, faDatabase, faEllipsis, faExclamationTriangle, faEye, faEyeSlash, faHeart, faKey, faList, faLock, faMinus, faMusic, faPause, faPlay, faPlayCircle, faPlus, faQuestion, faQuestionCircle, faSave, faSearch, faShuffle, faSignOutAlt, faStepForward, faTimes, faTrash, faVolumeMute, faEdit, faBox, faScroll, faArrowLeft, faDice, faDownload, faUpload, faTrophy, faListOl } from '@fortawesome/free-solid-svg-icons';
 
 
 library.add(
@@ -22,11 +22,13 @@ library.add(
   faCog,
   faComment,
   faCrown,
+  faDatabase,
   faEllipsis,
   faExclamationTriangle,
   faEye,
   faEyeSlash,
   faHeart,
+  faKey,
   faList,
   faLock,
   faMinus,
@@ -37,6 +39,7 @@ library.add(
   faPlus,
   faQuestion,
   faQuestionCircle,
+  faSave,
   faSearch,
   faShuffle,
   faSignOutAlt,

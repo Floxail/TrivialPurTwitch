@@ -1,6 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { loadQuestionsFromAPI, mergeQuestionsFromGitHub } from '../../services/github-data-service';
+import {
+  apiCreateQuestion,
+  apiUpdateQuestion,
+  apiDeleteQuestion,
+  apiBulkAddQuestions,
+  apiCreateBox,
+  apiDeleteBox,
+  apiImportQuestions,
+} from '../../services/api-service';
 
 const localStorageKey: string = 'quiz_questions_storage_v2';
 
@@ -85,16 +94,17 @@ type QuestionsActions = {
   backup: () => void;
   clear: () => void;
 
-  // Gestion des questions
-  addQuestion: (question: Question) => void;
-  updateQuestion: (questionId: string, updates: Partial<Question>) => void;
-  deleteQuestion: (questionId: string) => void;
+  // Gestion des questions (async → API + state local)
+  addQuestion: (question: Question) => Promise<void>;
+  updateQuestion: (questionId: string, updates: Partial<Question>) => Promise<void>;
+  deleteQuestion: (questionId: string) => Promise<void>;
+  bulkAddQuestions: (questions: Question[]) => Promise<void>;
 
-  // Gestion des boîtes
+  // Gestion des boîtes (async → API + state local)
   getBoxes: () => TrivialBox[];
   getBoxByName: (boxName: string) => TrivialBox | undefined;
-  addBox: (boxName: string) => void;
-  removeBox: (boxName: string) => void;
+  addBox: (boxName: string) => Promise<void>;
+  removeBox: (boxName: string) => Promise<void>;
   rebuildBoxes: (questions: Question[]) => TrivialBox[];
 
   // Récupération des questions
@@ -120,7 +130,7 @@ type QuestionsActions = {
 
   // Backup complet
   exportFullBackup: () => any;
-  importFullBackup: (backupData: any) => boolean;
+  importFullBackup: (backupData: any) => Promise<boolean>;
 
   // Dédoublonnage
   removeDuplicates: () => number;
@@ -174,7 +184,13 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
       // ========== GESTION DES QUESTIONS ==========
 
-      addQuestion: (question: Question) => {
+      addQuestion: async (question: Question) => {
+        try {
+          await apiCreateQuestion(question);
+        } catch (err) {
+          console.warn('⚠️ API addQuestion échouée, sauvegarde locale uniquement', err);
+        }
+
         const currentQuestions = get().questions;
         const newQuestions = [...currentQuestions, question];
         const boxes = get().rebuildBoxes(newQuestions);
@@ -186,7 +202,13 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         get().backup();
       },
 
-      updateQuestion: (questionId: string, updates: Partial<Question>) => {
+      updateQuestion: async (questionId: string, updates: Partial<Question>) => {
+        try {
+          await apiUpdateQuestion(questionId, updates);
+        } catch (err) {
+          console.warn('⚠️ API updateQuestion échouée, sauvegarde locale uniquement', err);
+        }
+
         const currentQuestions = get().questions;
         const newQuestions = currentQuestions.map((q) =>
           q.id === questionId ? { ...q, ...updates } : q
@@ -200,9 +222,33 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         get().backup();
       },
 
-      deleteQuestion: (questionId: string) => {
+      deleteQuestion: async (questionId: string) => {
+        try {
+          await apiDeleteQuestion(questionId);
+        } catch (err) {
+          console.warn('⚠️ API deleteQuestion échouée, suppression locale uniquement', err);
+        }
+
         const currentQuestions = get().questions;
         const newQuestions = currentQuestions.filter((q) => q.id !== questionId);
+        const boxes = get().rebuildBoxes(newQuestions);
+
+        set({
+          questions: newQuestions,
+          boxes: boxes,
+        });
+        get().backup();
+      },
+
+      bulkAddQuestions: async (questions: Question[]) => {
+        try {
+          await apiBulkAddQuestions(questions);
+        } catch (err) {
+          console.warn('⚠️ API bulkAddQuestions échouée, sauvegarde locale uniquement', err);
+        }
+
+        const currentQuestions = get().questions;
+        const newQuestions = [...currentQuestions, ...questions];
         const boxes = get().rebuildBoxes(newQuestions);
 
         set({
@@ -250,10 +296,16 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         return get().boxes.find((box) => box.name === boxName);
       },
 
-      addBox: (boxName: string) => {
+      addBox: async (boxName: string) => {
         const currentBoxes = get().boxes;
         if (currentBoxes.find((box) => box.name === boxName)) {
           return; // La boîte existe déjà
+        }
+
+        try {
+          await apiCreateBox(boxName);
+        } catch (err) {
+          console.warn('⚠️ API addBox échouée, sauvegarde locale uniquement', err);
         }
 
         const newBox: TrivialBox = {
@@ -266,7 +318,13 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         get().backup();
       },
 
-      removeBox: (boxName: string) => {
+      removeBox: async (boxName: string) => {
+        try {
+          await apiDeleteBox(boxName);
+        } catch (err) {
+          console.warn('⚠️ API removeBox échouée, suppression locale uniquement', err);
+        }
+
         const currentQuestions = get().questions;
         const newQuestions = currentQuestions.filter((q) => q.boxName !== boxName);
         const boxes = get().rebuildBoxes(newQuestions);
@@ -530,7 +588,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         };
       },
 
-      importFullBackup: (backupData: any): boolean => {
+      importFullBackup: async (backupData: any): Promise<boolean> => {
         try {
           // Validation basique
           if (!backupData || !backupData.version) {
@@ -540,11 +598,22 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
           // Restaurer les données du quiz
           if (backupData.quiz) {
-            const boxes = get().rebuildBoxes(backupData.quiz.questions || []);
+            const questions = backupData.quiz.questions || [];
+            const boxes = get().rebuildBoxes(questions);
+
+            // Envoyer à l'API
+            try {
+              await apiImportQuestions({
+                boxes: backupData.quiz.boxes || boxes,
+                questions,
+              });
+            } catch (err) {
+              console.warn('⚠️ API importFullBackup échouée, restauration locale uniquement', err);
+            }
 
             set({
-              questions: backupData.quiz.questions || [],
-              boxes: boxes,
+              questions,
+              boxes,
               cumulativeScoresInCardMode: backupData.quiz.cumulativeScoresInCardMode || false,
               cumulativeScoresInQuizMode: backupData.quiz.cumulativeScoresInQuizMode || false,
               defaultQuizQuestions: backupData.quiz.defaultQuizQuestions || 10,

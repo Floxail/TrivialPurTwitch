@@ -20,6 +20,7 @@ const QuestionManager = () => {
   const addQuestion = useQuestionsStore(state => state.addQuestion);
   const updateQuestion = useQuestionsStore(state => state.updateQuestion);
   const deleteQuestion = useQuestionsStore(state => state.deleteQuestion);
+  const bulkAddQuestions = useQuestionsStore(state => state.bulkAddQuestions);
   const addBox = useQuestionsStore(state => state.addBox);
   const removeBox = useQuestionsStore(state => state.removeBox);
   const getBoxByName = useQuestionsStore(state => state.getBoxByName);
@@ -240,7 +241,7 @@ const QuestionManager = () => {
     let totalImported = 0;
     let totalSkipped = 0;
     let totalBoxesAdded = 0;
-    let errorFiles: string[] = [];
+    const errorFiles: string[] = [];
 
     // Traiter chaque fichier
     for (let i = 0; i < files.length; i++) {
@@ -262,50 +263,58 @@ const QuestionManager = () => {
           continue;
         }
 
-        // Import des boîtes si présentes (v2)
+        // Collecter les boîtes à créer
+        const boxesToAdd: string[] = [];
+
         if (data.boxes && Array.isArray(data.boxes)) {
           for (const box of data.boxes) {
             if (!storeBoxes.find(b => b.name === box.name)) {
-              addBox(box.name);
-              totalBoxesAdded++;
+              boxesToAdd.push(box.name);
             }
           }
         }
 
-        // Import des boîtes depuis trivialBoxes (v1.0)
         if (data.trivialBoxes && Array.isArray(data.trivialBoxes)) {
           for (const boxName of data.trivialBoxes) {
             if (!storeBoxes.find(b => b.name === boxName)) {
-              addBox(boxName);
-              totalBoxesAdded++;
+              boxesToAdd.push(boxName);
             }
           }
         }
 
-        // Import des questions
+        // Créer les boîtes via API
+        for (const name of boxesToAdd) {
+          await addBox(name);
+          totalBoxesAdded++;
+        }
+
+        // Normaliser et filtrer les questions (exclure doublons)
+        const newQuestions: Question[] = [];
         for (const q of data.questions) {
-          // Normaliser le format : v1.0 utilise 'trivialBox', v2.0 utilise 'boxName'
           const normalizedQuestion: Question = {
             ...q,
             boxName: q.boxName || q.trivialBox || 'Sans boîte',
           };
 
-          // Supprimer l'ancien champ trivialBox s'il existe
           if ('trivialBox' in normalizedQuestion) {
             delete (normalizedQuestion as any).trivialBox;
           }
 
-          // Vérifier que la question n'existe pas déjà
           const exists = storeQuestions.find(existing =>
             existing.question === normalizedQuestion.question && existing.boxName === normalizedQuestion.boxName
           );
 
           if (!exists) {
-            addQuestion(normalizedQuestion);
-            totalImported++;
+            newQuestions.push(normalizedQuestion);
           } else {
             totalSkipped++;
           }
+        }
+
+        // Ajout en masse via API
+        if (newQuestions.length > 0) {
+          await bulkAddQuestions(newQuestions);
+          totalImported += newQuestions.length;
         }
 
       } catch (error) {
@@ -356,7 +365,7 @@ const QuestionManager = () => {
   };
 
   // Callback pour le QuestionModal
-  const handleQuestionSubmit = (formData: any, isEdit: boolean, editId?: string) => {
+  const handleQuestionSubmit = async (formData: any, isEdit: boolean, editId?: string) => {
     const alternativeAnswers = formData.alternativeAnswers
       .split(',')
       .map((a: string) => a.trim())
@@ -367,7 +376,7 @@ const QuestionManager = () => {
     const qcmCorrectIndex = isQcm ? formData.qcmCorrectIndex : undefined;
 
     if (isEdit && editId) {
-      updateQuestion(editId, {
+      await updateQuestion(editId, {
         question: formData.question,
         answer: formData.answer,
         alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
@@ -393,25 +402,25 @@ const QuestionManager = () => {
         qcmOptions: qcmOptions,
         qcmCorrectIndex: qcmCorrectIndex,
       };
-      addQuestion(newQuestion);
+      await addQuestion(newQuestion);
     }
 
     handleCloseModal();
   };
 
-  const handleDeleteQuestion = (questionId: string) => {
+  const handleDeleteQuestion = async (questionId: string) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette question ?')) {
-      deleteQuestion(questionId);
+      await deleteQuestion(questionId);
     }
   };
 
   // Callback pour le BoxModal
-  const handleBoxAdd = (name: string) => {
-    addBox(name);
+  const handleBoxAdd = async (name: string) => {
+    await addBox(name);
     setShowBoxModal(false);
   };
 
-  const handleDeleteBox = (boxName: string) => {
+  const handleDeleteBox = async (boxName: string) => {
     const box = getBoxByName(boxName);
     if (!box) return;
 
@@ -419,7 +428,7 @@ const QuestionManager = () => {
       return;
     }
 
-    removeBox(boxName);
+    await removeBox(boxName);
   };
 
   // Fonctions supprimées - mode carte retiré
@@ -446,19 +455,19 @@ const QuestionManager = () => {
     }
   };
 
-  const handleBulkDelete = () => {
+  const handleBulkDelete = async () => {
     if (!window.confirm(`Supprimer ${selectedQuestions.size} question(s) sélectionnée(s) ?`)) {
       return;
     }
 
-    selectedQuestions.forEach(id => {
-      deleteQuestion(id);
-    });
+    const ids = Array.from(selectedQuestions);
+    for (const id of ids) {
+      await deleteQuestion(id);
+    }
 
     // Vérifier si la boîte actuelle est maintenant vide
     const remainingQuestions = getBoxQuestions(selectedBox);
     if (selectedBox && remainingQuestions.length === 0) {
-      // Si la boîte est vide, revenir à "Toutes les boîtes"
       setSelectedBox('');
     }
 
@@ -466,10 +475,11 @@ const QuestionManager = () => {
     setShowBulkActionsModal(false);
   };
 
-  const handleBulkMove = (targetBox: string) => {
-    selectedQuestions.forEach(id => {
-      updateQuestion(id, { boxName: targetBox });
-    });
+  const handleBulkMove = async (targetBox: string) => {
+    const ids = Array.from(selectedQuestions);
+    for (const id of ids) {
+      await updateQuestion(id, { boxName: targetBox });
+    }
 
     // Vérifier si la boîte actuelle est maintenant vide
     const remainingQuestions = getBoxQuestions(selectedBox);
@@ -487,17 +497,18 @@ const QuestionManager = () => {
   };
 
   // Ajout en masse de questions
-  const handleBulkAddSubmit = (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean, fixedCategory?: TrivialCategory) => {
+  const handleBulkAddSubmit = async (questions: ParsedBulkQuestion[], boxName: string, randomCategories: boolean, fixedCategory?: TrivialCategory) => {
     const categoryValues = Object.values(TrivialCategory).filter(v => typeof v === 'number') as TrivialCategory[];
-    let added = 0;
     let qcmCount = 0;
 
-    for (const q of questions) {
+    const newQuestions: Question[] = questions.map(q => {
       const category = randomCategories
         ? categoryValues[Math.floor(Math.random() * categoryValues.length)]
         : (fixedCategory ?? TrivialCategory.Geography);
 
-      const newQuestion: Question = {
+      if (q.isQcm) qcmCount++;
+
+      return {
         id: Date.now().toString() + Math.random().toString(36).substring(2, 11),
         question: q.question,
         answer: q.answer,
@@ -505,20 +516,18 @@ const QuestionManager = () => {
         category,
         boxName,
         questionType: q.isQcm ? QuestionType.QCM : QuestionType.FREE_TEXT,
-        difficulty: 'medium',
+        difficulty: 'medium' as const,
         ...(q.isQcm && q.qcmOptions ? {
           qcmOptions: q.qcmOptions,
           qcmCorrectIndex: q.qcmCorrectIndex ?? 0,
         } : {}),
       };
+    });
 
-      addQuestion(newQuestion);
-      added++;
-      if (q.isQcm) qcmCount++;
-    }
+    await bulkAddQuestions(newQuestions);
 
-    const detail = qcmCount > 0 ? ` (${qcmCount} QCM, ${added - qcmCount} texte libre)` : '';
-    setImportSuccess(`✅ ${added} question(s) ajoutée(s) en masse dans "${boxName}"${detail}`);
+    const detail = qcmCount > 0 ? ` (${qcmCount} QCM, ${newQuestions.length - qcmCount} texte libre)` : '';
+    setImportSuccess(`✅ ${newQuestions.length} question(s) ajoutée(s) en masse dans "${boxName}"${detail}`);
     setTimeout(() => setImportSuccess(''), 5000);
   };
 

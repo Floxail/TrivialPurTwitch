@@ -254,7 +254,7 @@ const QuestionManagerTerminal = () => {
     return duplicates;
   };
 
-  const handleCheckDuplicates = () => {
+  const handleCheckDuplicates = async () => {
     const duplicates = findDuplicates();
 
     if (duplicates.length === 0) {
@@ -280,12 +280,12 @@ const QuestionManagerTerminal = () => {
     }
 
     let removedCount = 0;
-    duplicates.forEach((dup) => {
+    for (const dup of duplicates) {
       for (let i = 1; i < dup.ids.length; i++) {
-        questionsStore.deleteQuestion(dup.ids[i]);
+        await questionsStore.deleteQuestion(dup.ids[i]);
         removedCount++;
       }
-    });
+    }
 
     setImportSuccess(`PURGE COMPLETE: ${removedCount} DUPLICATE(S) REMOVED`);
     setTimeout(() => setImportSuccess(''), 5000);
@@ -389,7 +389,7 @@ const QuestionManagerTerminal = () => {
         if (data.boxes && Array.isArray(data.boxes)) {
           for (const box of data.boxes) {
             if (!questionsStore.boxes.find((b) => b.name === box.name)) {
-              questionsStore.addBox(box.name);
+              await questionsStore.addBox(box.name);
               totalBoxesAdded++;
             }
           }
@@ -398,7 +398,7 @@ const QuestionManagerTerminal = () => {
         if (data.trivialBoxes && Array.isArray(data.trivialBoxes)) {
           for (const boxName of data.trivialBoxes) {
             if (!questionsStore.boxes.find((b) => b.name === boxName)) {
-              questionsStore.addBox(boxName);
+              await questionsStore.addBox(boxName);
               totalBoxesAdded++;
             }
           }
@@ -421,7 +421,7 @@ const QuestionManagerTerminal = () => {
           );
 
           if (!exists) {
-            questionsStore.addQuestion(normalizedQuestion);
+            await questionsStore.addQuestion(normalizedQuestion);
             totalImported++;
           } else {
             totalSkipped++;
@@ -490,7 +490,7 @@ const QuestionManagerTerminal = () => {
     setEditingQuestion(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const alternativeAnswers = formData.alternativeAnswers
@@ -499,7 +499,7 @@ const QuestionManagerTerminal = () => {
       .filter((a) => a.length > 0);
 
     if (editingQuestion) {
-      questionsStore.updateQuestion(editingQuestion.id, {
+      await questionsStore.updateQuestion(editingQuestion.id, {
         question: formData.question,
         answer: formData.answer,
         alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
@@ -519,27 +519,27 @@ const QuestionManagerTerminal = () => {
         cardNumber: formData.cardNumber,
         difficulty: formData.difficulty,
       };
-      questionsStore.addQuestion(newQuestion);
+      await questionsStore.addQuestion(newQuestion);
     }
 
     handleCloseModal();
   };
 
-  const handleDeleteQuestion = (questionId: string) => {
+  const handleDeleteQuestion = async (questionId: string) => {
     if (window.confirm('CONFIRM: DELETE THIS RECORD?')) {
-      questionsStore.deleteQuestion(questionId);
+      await questionsStore.deleteQuestion(questionId);
     }
   };
 
-  const handleAddBox = () => {
+  const handleAddBox = async () => {
     if (newBoxName.trim()) {
-      questionsStore.addBox(newBoxName.trim());
+      await questionsStore.addBox(newBoxName.trim());
       setNewBoxName('');
       setShowBoxModal(false);
     }
   };
 
-  const handleDeleteBox = (boxName: string) => {
+  const handleDeleteBox = async (boxName: string) => {
     const box = questionsStore.getBoxByName(boxName);
     if (!box) return;
 
@@ -551,10 +551,10 @@ const QuestionManagerTerminal = () => {
       return;
     }
 
-    questionsStore.removeBox(boxName);
+    await questionsStore.removeBox(boxName);
   };
 
-  const handleDeleteCard = (boxName: string, cardNumber: number) => {
+  const handleDeleteCard = async (boxName: string, cardNumber: number) => {
     const cardQuestions = questionsStore.getQuestionsByCard(boxName, cardNumber);
 
     if (
@@ -563,9 +563,9 @@ const QuestionManagerTerminal = () => {
       return;
     }
 
-    cardQuestions.forEach((q) => {
-      questionsStore.deleteQuestion(q.id);
-    });
+    for (const q of cardQuestions) {
+      await questionsStore.deleteQuestion(q.id);
+    }
   };
 
   const getCategoryCountsForCard = (
@@ -591,14 +591,15 @@ const QuestionManagerTerminal = () => {
   // BULK ACTIONS
   // ═════════════════════════════════════════════════════════════════════════
 
-  const handleBulkDelete = () => {
+  const handleBulkDelete = async () => {
     if (!window.confirm(`DELETE ${selectedQuestions.size} SELECTED RECORDS?`)) {
       return;
     }
 
-    selectedQuestions.forEach((id) => {
-      questionsStore.deleteQuestion(id);
-    });
+    const ids = Array.from(selectedQuestions);
+    for (const id of ids) {
+      await questionsStore.deleteQuestion(id);
+    }
 
     const remainingQuestions = questionsStore.getQuestionsByBox(selectedBox);
     if (selectedBox && remainingQuestions.length === 0) {
@@ -609,15 +610,16 @@ const QuestionManagerTerminal = () => {
     setShowBulkActionsModal(false);
   };
 
-  const handleBulkMove = () => {
+  const handleBulkMove = async () => {
     if (!bulkMoveTargetBox) {
       alert('SELECT TARGET BOX');
       return;
     }
 
-    selectedQuestions.forEach((id) => {
-      questionsStore.updateQuestion(id, { boxName: bulkMoveTargetBox });
-    });
+    const ids = Array.from(selectedQuestions);
+    for (const id of ids) {
+      await questionsStore.updateQuestion(id, { boxName: bulkMoveTargetBox });
+    }
 
     const remainingQuestions = questionsStore.getQuestionsByBox(selectedBox);
     if (selectedBox && remainingQuestions.length === 0) {
