@@ -11,6 +11,7 @@ import { useSettingsStore } from './store/settings-store';
 const GlobalMenu = () => {
   const navigate = useNavigate();
   const twitchAvatar = useAuthStore((state) => state.twitchAvatar);
+  const isAdmin = useAuthStore((state) => state.isAdmin);
 
 
   const settingsStore = useSettingsStore();
@@ -61,7 +62,7 @@ const GlobalMenu = () => {
         <Dropdown.Toggle as={CustomToggle} />
         <Dropdown.Menu>
           <Dropdown.Item as="button" onClick={() => navigate('/questions')}><FontAwesomeIcon icon={['fas', 'question']} size="lg" /> Questions</Dropdown.Item>
-          <Dropdown.Item as="button" onClick={() => navigate('/admin')}><FontAwesomeIcon icon={['fas', 'lock']} size="lg" /> Admin</Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() => navigate('/contribute')}><FontAwesomeIcon icon={['fas', 'plus-circle']} size="lg" /> Proposer</Dropdown.Item>
           <Dropdown.Item as="button" onClick={onSettingsClick}><FontAwesomeIcon icon={['fas', 'cog']} size="lg" /> Settings</Dropdown.Item>
           <Dropdown.Item as="button" onClick={(e) => {
             e.stopPropagation();
@@ -71,6 +72,10 @@ const GlobalMenu = () => {
           <Dropdown.Divider />
           <Dropdown.Item as="button" onClick={onChangelogClick}><FontAwesomeIcon icon={['fas', 'book']} size="lg" /> Changelog</Dropdown.Item>
           <Dropdown.Item as="button"><a style={{ color: 'inherit' }} href="https://ko-fi.com/floxail" target="_blank" rel="noreferrer"><FontAwesomeIcon icon={['fas', 'heart']} color="red" size="lg" /> Support me</a></Dropdown.Item>
+          <Dropdown.Divider />
+          {isAdmin && (
+            <Dropdown.Item as="button" onClick={() => navigate('/system-mod-portal')}><FontAwesomeIcon icon={['fas', 'lock']} size="lg" /> Modération</Dropdown.Item>
+          )}
           <Dropdown.Item as="button" onClick={onLogoutClick}><FontAwesomeIcon icon={['fas', 'sign-out-alt']} size="lg" /> Logout</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

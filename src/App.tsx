@@ -15,6 +15,7 @@ import Quiz from './components/quiz';
 import QuestionManager from './components/question-manager-v2';
 import QuestionManagerTerminal from './components/question-manager-terminal';
 import AdminDashboard from './components/admin-dashboard';
+import ContributionPage from './components/contribution-page';
 import Convertisseur from './components/convertisseur';
 
 function App() {
@@ -136,7 +137,8 @@ useEffect(() => {
 					<Route path="/questions" element={<QuestionManager />} />
 					<Route path="/questions-terminal" element={<QuestionManagerTerminal />} />
 					<Route path="/convertisseur" element={<Convertisseur />} />
-					<Route path="/admin" element={<AdminDashboard />} />
+					<Route path="/contribute" element={<ContributionPage />} />
+					<Route path="/system-mod-portal" element={<AdminDashboard />} />
 					<Route path="/callback" element={<LoginCallback />} />
 					<Route path="/settings" element={<Settings />} />
 </Routes>

@@ -37,6 +37,10 @@ interface QuestionModalProps {
   editingQuestion: Question | null;
   boxes: { name: string }[];
   defaultBoxName: string;
+  /** Si true, le bouton affiche "Ajouter directement" au lieu de "Proposer" */
+  isAdmin?: boolean;
+  /** Callback alternatif pour soumettre en mode public (modération) */
+  onSubmitPublic?: (data: QuestionFormData) => void;
 }
 
 interface BulkActionsModalProps {
@@ -140,7 +144,9 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
   onSubmit,
   editingQuestion,
   boxes,
-  defaultBoxName
+  defaultBoxName,
+  isAdmin,
+  onSubmitPublic,
 }) => {
   const [formData, setFormData] = useState<QuestionFormData>(defaultFormData);
 
@@ -399,8 +405,20 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
           <Button variant="secondary" onClick={onHide}>
             Annuler
           </Button>
-          <Button variant="primary" type="submit">
-            {editingQuestion ? 'Modifier' : 'Ajouter'}
+          {/* Bouton "Proposer" pour les non-admins (envoi en modération) */}
+          {!editingQuestion && onSubmitPublic && !isAdmin && (
+            <Button variant="outline-primary" type="button" onClick={() => {
+              if (formData.questionType === QuestionType.QCM) {
+                const filledOptions = formData.qcmOptions.filter(o => o.trim().length > 0);
+                if (filledOptions.length < QCM_MIN_OPTIONS || filledOptions.length !== formData.qcmOptions.length) return;
+              }
+              onSubmitPublic(formData);
+            }}>
+              Proposer (modération)
+            </Button>
+          )}
+          <Button variant={isAdmin ? 'warning' : 'primary'} type="submit">
+            {editingQuestion ? 'Modifier' : (isAdmin ? 'Ajouter directement' : 'Ajouter')}
           </Button>
         </Modal.Footer>
       </Form>

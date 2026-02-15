@@ -100,7 +100,9 @@ export type AuthData = {
   twitchOauthToken?: string,        // Now stores obfuscated token
   tokenExpiresAt?: number,          // Timestamp when token expires
   twitchNick?: string,
-  twitchAvatar?: string
+  twitchAvatar?: string,
+  twitchUserId?: string,            // Twitch user ID (pour vérification admin)
+  isAdmin?: boolean,                // true si l'utilisateur est dans ADMIN_TWITCH_IDS
 }
 
 type Actions = {
@@ -112,6 +114,7 @@ type Actions = {
   setTwitchNickAndAvatar: (nick: string, avatar: string) => void;
   isLoggedIn: () => boolean;
   isTokenExpired: () => boolean;
+  checkIsAdmin: () => Promise<void>;  // Vérifie le rôle admin via l'API
 }
 
 export const useAuthStore = create<AuthData & Actions>()(
@@ -121,6 +124,8 @@ export const useAuthStore = create<AuthData & Actions>()(
         set({
           twitchOauthToken: undefined,
           tokenExpiresAt: undefined,
+          twitchUserId: undefined,
+          isAdmin: undefined,
         });
         // Explicitly clear localStorage
         localStorage.removeItem('auth_data');
@@ -169,8 +174,15 @@ export const useAuthStore = create<AuthData & Actions>()(
             } else {
               setDefaultAuth(token);
               response.json().then(body => {
-                getUsers([body['user_id']]).then(response => {
-                  set(() => ({ twitchNick: body['login'], twitchAvatar: response.data.data[0].profile_image_url }));
+                const userId = body['user_id'] as string;
+                getUsers([userId]).then(response => {
+                  set(() => ({
+                    twitchNick: body['login'],
+                    twitchAvatar: response.data.data[0].profile_image_url,
+                    twitchUserId: userId,
+                  }));
+                  // Vérifier le statut admin après avoir récupéré l'userId
+                  get().checkIsAdmin();
                 });
               });
             }
@@ -179,6 +191,22 @@ export const useAuthStore = create<AuthData & Actions>()(
       },
       setTwitchNickAndAvatar: (nick: string, avatar: string) => {
         set(() => ({ twitchNick: nick, twitchAvatar: avatar }));
+      },
+      checkIsAdmin: async () => {
+        const token = get().getTwitchOAuthToken();
+        if (!token) {
+          set({ isAdmin: false });
+          return;
+        }
+        try {
+          // Appel GET vers l'endpoint admin — si 200, l'utilisateur est admin
+          const res = await fetch('/api/admin/questions-review?status=pending&limit=1', {
+            headers: { 'Authorization': `Bearer ${token}` },
+          });
+          set({ isAdmin: res.ok });
+        } catch {
+          set({ isAdmin: false });
+        }
       },
       isLoggedIn: (): boolean => {
         const current = get();
