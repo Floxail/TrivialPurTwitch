@@ -49,9 +49,9 @@ const GlobalMenu = () => {
       <div ref={ref} onClick={(e) => {
         e.preventDefault();
         onClick(e);
-      }} style={{ fontSize: 'large', backgroundColor: 'var(--global-menu-color)', borderRadius: '35px', display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
-        <FontAwesomeIcon icon={['fas', 'bars']} style={{ margin: '0 0.5rem 0 0.75rem', verticalAlign: 'middle' }} />
-        <img src={twitchAvatar} style={{ height: '35px', width: '35px', borderRadius: '50%', objectFit: 'cover' }} alt="Avatar" />
+      }} style={{ fontSize: 'large', backgroundColor: 'var(--lumon-surface, #111820)', border: '1px solid rgba(0, 112, 128, 0.3)', borderRadius: '0', display: 'inline-flex', alignItems: 'center', cursor: 'pointer', padding: '2px' }}>
+        <FontAwesomeIcon icon={['fas', 'bars']} style={{ margin: '0 0.5rem 0 0.75rem', verticalAlign: 'middle', color: 'var(--lumon-cyan)' }} />
+        <img src={twitchAvatar} style={{ height: '35px', width: '35px', borderRadius: '0', objectFit: 'cover', border: '1px solid rgba(0, 240, 255, 0.2)' }} alt="Avatar" />
       </div>
     ),
   );
@@ -64,17 +64,13 @@ const GlobalMenu = () => {
           <Dropdown.Item as="button" onClick={() => navigate('/questions')}><FontAwesomeIcon icon={['fas', 'question']} size="lg" /> Questions</Dropdown.Item>
           <Dropdown.Item as="button" onClick={() => navigate('/contribute')}><FontAwesomeIcon icon={['fas', 'pen']} size="lg" /> Proposer</Dropdown.Item>
           <Dropdown.Item as="button" onClick={onSettingsClick}><FontAwesomeIcon icon={['fas', 'cog']} size="lg" /> Settings</Dropdown.Item>
-          <Dropdown.Item as="button" onClick={(e) => {
-            e.stopPropagation();
-            onSwitchThemeClick();
-          }}><FontAwesomeIcon icon={['fas', 'adjust']} size="lg" /> Switch theme</Dropdown.Item>
           <Dropdown.Item as="button" onClick={onHelpClick}><FontAwesomeIcon icon={['fas', 'question-circle']} size="lg" /> Help</Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item as="button" onClick={onChangelogClick}><FontAwesomeIcon icon={['fas', 'book']} size="lg" /> Changelog</Dropdown.Item>
           <Dropdown.Item as="button"><a style={{ color: 'inherit' }} href="https://ko-fi.com/floxail" target="_blank" rel="noreferrer"><FontAwesomeIcon icon={['fas', 'heart']} color="red" size="lg" /> Support me</a></Dropdown.Item>
           <Dropdown.Divider />
           {isAdmin && (
-            <Dropdown.Item as="button" onClick={() => navigate('/system-mod-portal')}><FontAwesomeIcon icon={['fas', 'lock']} size="lg" /> Modération</Dropdown.Item>
+            <Dropdown.Item as="button" onClick={() => navigate('/system-mod-portal')}><FontAwesomeIcon icon={['fas', 'lock']} size="lg" /> Admin</Dropdown.Item>
           )}
           <Dropdown.Item as="button" onClick={onLogoutClick}><FontAwesomeIcon icon={['fas', 'sign-out-alt']} size="lg" /> Logout</Dropdown.Item>
         </Dropdown.Menu>

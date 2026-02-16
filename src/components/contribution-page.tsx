@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
-import { Alert, Badge, Button, ButtonGroup, Form, Spinner } from 'react-bootstrap';
+import { Form, Spinner } from 'react-bootstrap';
 import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
 import {
@@ -325,83 +325,80 @@ const ContributionPage: React.FC = () => {
   const isPublic = mode === 'public';
 
   return (
-    <div className="p-3" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h2>
+    <div className="lumon-page" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <h2 className="text-glow-cyan mb-3">
         <FontAwesomeIcon icon={['fas', 'pen']} className="me-2" />
         Proposer des questions
       </h2>
 
-      {success && <Alert variant="success" dismissible onClose={() => setSuccess('')}>{success}</Alert>}
-      {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
+      {success && <div className="terminal-alert terminal-alert-success mb-3">{success}</div>}
+      {error && <div className="terminal-alert terminal-alert-danger mb-3">{error}</div>}
 
       {/* ========== Sélecteur de mode ========== */}
-      <div className="mb-3">
-        <ButtonGroup className="w-100">
-          <Button
-            variant={isLocal ? 'warning' : 'outline-secondary'}
-            onClick={() => setMode('local')}
-            className="py-2"
-          >
-            <FontAwesomeIcon icon={['fas', 'database']} className="me-2" />
-            <strong>Ma Collection</strong>
-            <div style={{ fontSize: '11px', opacity: 0.85 }}>Stocké localement sur ton navigateur</div>
-          </Button>
-          <Button
-            variant={isPublic ? 'primary' : 'outline-secondary'}
-            onClick={() => setMode('public')}
-            className="py-2"
-          >
-            <FontAwesomeIcon icon={['fas', 'globe']} className="me-2" />
-            <strong>Proposer à la Communauté</strong>
-            <div style={{ fontSize: '11px', opacity: 0.85 }}>Envoyé pour validation par un admin</div>
-          </Button>
-        </ButtonGroup>
+      <div className="mb-3 d-flex gap-0">
+        <button
+          className={`terminal-btn flex-fill py-2 ${isLocal ? '' : 'terminal-btn-amber'}`}
+          onClick={() => setMode('local')}
+          style={isLocal ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
+        >
+          <FontAwesomeIcon icon={['fas', 'database']} className="me-2" />
+          <strong>Ma Collection</strong>
+          <div className="system-artifact" style={{ fontSize: '10px', marginTop: '2px' }}>Stocké localement sur ton navigateur</div>
+        </button>
+        <button
+          className={`terminal-btn flex-fill py-2 ${isPublic ? '' : 'terminal-btn-amber'}`}
+          onClick={() => setMode('public')}
+          style={isPublic ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
+        >
+          <FontAwesomeIcon icon={['fas', 'globe']} className="me-2" />
+          <strong>Proposer à la Communauté</strong>
+          <div className="system-artifact" style={{ fontSize: '10px', marginTop: '2px' }}>Envoyé pour validation par un admin</div>
+        </button>
       </div>
 
       {/* Badge info mode */}
       <div className="mb-3">
         {isLocal && (
-          <Alert variant="warning" className="py-2 mb-0">
+          <div className="terminal-alert terminal-alert-warning py-2">
             <FontAwesomeIcon icon={['fas', 'database']} className="me-2" />
             Les questions seront ajoutées <strong>uniquement dans ton navigateur</strong> ({twitchNick || 'toi'}).
-            Elles ne seront pas visibles par les autres streamers.
-          </Alert>
+          </div>
         )}
         {isPublic && (
-          <Alert variant="info" className="py-2 mb-0">
+          <div className="terminal-alert terminal-alert-info py-2">
             <FontAwesomeIcon icon={['fas', 'globe']} className="me-2" />
-            Ta question sera <strong>envoyée à un admin</strong> qui la validera avant de l'ajouter pour tout le monde.
-          </Alert>
+            Ta question sera <strong>envoyée à un admin</strong> qui la validera avant de l'ajouter.
+          </div>
         )}
       </div>
 
       {/* Tabs : Question unique / Ajout en masse */}
-      <ButtonGroup size="sm" className="mb-3">
-        <Button
-          variant={tab === 'single' ? 'info' : 'outline-secondary'}
+      <div className="terminal-tabs mb-3">
+        <div
+          className={`terminal-tab ${tab === 'single' ? 'terminal-tab-active' : ''}`}
           onClick={() => setTab('single')}
         >
           Question unique
-        </Button>
-        <Button
-          variant={tab === 'bulk' ? 'info' : 'outline-secondary'}
+        </div>
+        <div
+          className={`terminal-tab ${tab === 'bulk' ? 'terminal-tab-active' : ''}`}
           onClick={() => setTab('bulk')}
         >
           Ajout en masse
-        </Button>
-      </ButtonGroup>
+        </div>
+      </div>
 
       {/* ========== Création de boîte ========== */}
       <div className="mb-3">
         {!showNewBox ? (
-          <Button size="sm" variant="outline-success" onClick={() => setShowNewBox(true)}>
+          <button className="terminal-btn terminal-btn-success terminal-btn-sm" onClick={() => setShowNewBox(true)}>
             <FontAwesomeIcon icon={['fas', 'plus']} className="me-1" />
             Nouvelle boîte
-          </Button>
+          </button>
         ) : (
           <div className="d-flex gap-2 align-items-center">
-            <Form.Control
-              size="sm"
+            <input
+              className="terminal-input terminal-input-box"
               type="text"
               placeholder="Nom de la boîte (ex: Cinéma 91)"
               value={newBoxName}
@@ -410,12 +407,12 @@ const ContributionPage: React.FC = () => {
               autoFocus
               style={{ maxWidth: '300px' }}
             />
-            <Button size="sm" variant="success" onClick={handleCreateBox} disabled={!newBoxName.trim()}>
+            <button className="terminal-btn terminal-btn-success terminal-btn-sm" onClick={handleCreateBox} disabled={!newBoxName.trim()}>
               Créer
-            </Button>
-            <Button size="sm" variant="outline-secondary" onClick={() => { setShowNewBox(false); setNewBoxName(''); }}>
+            </button>
+            <button className="terminal-btn terminal-btn-sm" onClick={() => { setShowNewBox(false); setNewBoxName(''); }}>
               Annuler
-            </Button>
+            </button>
           </div>
         )}
       </div>
@@ -444,24 +441,24 @@ const ContributionPage: React.FC = () => {
 
           {/* Type */}
           <Form.Group className="mb-3">
-            <Form.Label><strong>Type de question *</strong></Form.Label>
+            <Form.Label style={{ color: 'var(--lumon-cyan)', fontFamily: "'Orbitron', sans-serif", fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Type de question *</Form.Label>
             <div className="d-flex gap-2">
-              <Button
+              <button
                 type="button"
-                variant={questionType === QuestionType.FREE_TEXT ? 'primary' : 'outline-primary'}
+                className={`terminal-btn flex-fill ${questionType === QuestionType.FREE_TEXT ? '' : 'terminal-btn-amber'}`}
                 onClick={() => setQuestionType(QuestionType.FREE_TEXT)}
-                className="flex-fill"
+                style={questionType === QuestionType.FREE_TEXT ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
               >
                 Réponse libre
-              </Button>
-              <Button
+              </button>
+              <button
                 type="button"
-                variant={questionType === QuestionType.QCM ? 'primary' : 'outline-primary'}
+                className={`terminal-btn flex-fill ${questionType === QuestionType.QCM ? '' : 'terminal-btn-amber'}`}
                 onClick={() => setQuestionType(QuestionType.QCM)}
-                className="flex-fill"
+                style={questionType === QuestionType.QCM ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
               >
                 QCM (2-6 choix)
-              </Button>
+              </button>
             </div>
           </Form.Group>
 
@@ -518,14 +515,13 @@ const ContributionPage: React.FC = () => {
 
           {/* Options QCM */}
           {questionType === QuestionType.QCM && (
-            <div className="p-3 mb-3" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '10px', border: '2px solid #ff60b7' }}>
+            <div className="terminal-panel border-glow-cyan p-3 mb-3">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="mb-0">Options QCM ({qcmOptions.length})</h6>
+                <span className="text-display-tech" style={{ fontSize: '0.75rem', color: 'var(--lumon-cyan)' }}>Options QCM ({qcmOptions.length})</span>
                 <div className="d-flex gap-1">
-                  <Button
+                  <button
                     type="button"
-                    variant="outline-danger"
-                    size="sm"
+                    className="terminal-btn terminal-btn-danger terminal-btn-sm"
                     disabled={qcmOptions.length <= QCM_MIN_OPTIONS}
                     onClick={() => {
                       const newOpts = qcmOptions.slice(0, -1);
@@ -536,16 +532,15 @@ const ContributionPage: React.FC = () => {
                     }}
                   >
                     − Option
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     type="button"
-                    variant="outline-success"
-                    size="sm"
+                    className="terminal-btn terminal-btn-success terminal-btn-sm"
                     disabled={qcmOptions.length >= QCM_MAX_OPTIONS}
                     onClick={() => setQcmOptions([...qcmOptions, ''])}
                   >
                     + Option
-                  </Button>
+                  </button>
                 </div>
               </div>
               {qcmOptions.map((opt, i) => (
@@ -582,14 +577,19 @@ const ContributionPage: React.FC = () => {
                         borderWidth: qcmCorrectIndex === i ? '2px' : undefined,
                       }}
                     />
-                    {qcmCorrectIndex === i && <Badge bg="success">Correcte</Badge>}
+                    {qcmCorrectIndex === i && <span className="terminal-badge terminal-badge-success">Correcte</span>}
                   </div>
                 </Form.Group>
               ))}
             </div>
           )}
 
-          <Button type="submit" variant={isLocal ? 'warning' : 'primary'} disabled={submitting} className="w-100">
+          <button
+            type="submit"
+            className={`terminal-btn w-100 ${isLocal ? 'terminal-btn-amber' : ''}`}
+            disabled={submitting}
+            style={{ padding: '0.7rem 1rem', fontSize: '0.85rem' }}
+          >
             {submitting && <Spinner animation="border" size="sm" className="me-2" />}
             {isLocal ? (
               <>
@@ -602,7 +602,7 @@ const ContributionPage: React.FC = () => {
                 Proposer la question
               </>
             )}
-          </Button>
+          </button>
         </Form>
       )}
 
@@ -660,27 +660,27 @@ const ContributionPage: React.FC = () => {
           </Form.Group>
 
           <div className="d-flex gap-2 mb-3">
-            <Button variant="outline-info" size="sm" onClick={handleBulkPreview} disabled={!bulkText.trim()}>
+            <button className="terminal-btn terminal-btn-sm" onClick={handleBulkPreview} disabled={!bulkText.trim()}>
               Prévisualiser
-            </Button>
+            </button>
           </div>
 
           {bulkPreview && (
             <div className="mb-3">
               {bulkPreview.questions.length > 0 && (
-                <Alert variant="success">{bulkPreview.questions.length} question(s) détectée(s)</Alert>
+                <div className="terminal-alert terminal-alert-success mb-2">{bulkPreview.questions.length} question(s) détectée(s)</div>
               )}
               {bulkPreview.errors.length > 0 && (
-                <Alert variant="warning">
+                <div className="terminal-alert terminal-alert-warning mb-2">
                   {bulkPreview.errors.map((err, i) => <div key={i}>{err}</div>)}
-                </Alert>
+                </div>
               )}
               {bulkPreview.questions.length > 0 && (
-                <div style={{ maxHeight: '200px', overflowY: 'auto', fontSize: '13px' }}>
+                <div className="terminal-scrollbar" style={{ maxHeight: '200px', overflowY: 'auto', fontSize: '13px' }}>
                   {bulkPreview.questions.map((q, i) => (
-                    <div key={i} className="mb-2 p-2" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '5px' }}>
+                    <div key={i} className="mb-2 p-2 terminal-panel" style={{ fontSize: '0.8rem' }}>
                       <strong>Q:</strong> {q.question}
-                      {q.isQcm && <Badge bg="info" className="ms-2">QCM</Badge>}
+                      {q.isQcm && <span className="terminal-badge terminal-badge-cyan ms-2">QCM</span>}
                       <br />
                       {q.isQcm && q.qcmOptions ? (
                         q.qcmOptions.map((opt, j) => (
@@ -709,11 +709,11 @@ const ContributionPage: React.FC = () => {
             </div>
           )}
 
-          <Button
-            variant={isLocal ? 'warning' : 'primary'}
+          <button
+            className={`terminal-btn w-100 ${isLocal ? 'terminal-btn-amber' : ''}`}
             disabled={bulkSubmitting || !bulkText.trim()}
             onClick={handleBulkSubmit}
-            className="w-100"
+            style={{ padding: '0.7rem 1rem', fontSize: '0.85rem' }}
           >
             {bulkSubmitting && <Spinner animation="border" size="sm" className="me-2" />}
             {isLocal ? (
@@ -727,7 +727,7 @@ const ContributionPage: React.FC = () => {
                 Proposer {bulkPreview ? `(${bulkPreview.questions.length})` : ''} question(s)
               </>
             )}
-          </Button>
+          </button>
         </div>
       )}
     </div>

@@ -5,7 +5,6 @@ import { useGlobalStore } from 'components/store/global-store';
 import { useSettingsStore } from 'components/store/settings-store';
 import { useQuestionsStore } from 'components/store/questions-store';
 import { useEffect, useState } from 'react';
-import { Alert, Button } from 'react-bootstrap';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Login from './components/login';
 import LoginCallback from './components/login-callback';
@@ -101,6 +100,8 @@ useEffect(() => {
 	const loggedIn = authStore.isLoggedIn();
 	return (
 		<>
+			{/* CRT Scanline overlay - Lumon Industries terminal effect */}
+			<div className="crt-overlay" />
 			<header className="app-header">
 				<div style={{ position: 'absolute', left: 0, fontSize: '1.3333rem', padding: '4px' }}>
 					<FontAwesomeIcon icon={['fab', 'galactic-republic']} color="var(--spot-color)" size="lg" />
@@ -118,17 +119,17 @@ useEffect(() => {
 			<div className={'app container'}>
 				{errorMessage &&
 					<div className="alert-modal-bg">
-						<Alert className="alert-modal" variant="danger">
-							<Alert.Heading>Error</Alert.Heading>
+						<div className="alert-modal terminal-alert terminal-alert-danger">
+							<h5 className="text-glow-danger" style={{ fontFamily: "'Orbitron', sans-serif", marginBottom: '1rem' }}>Error</h5>
 							<p>
-								Spotify server returned : {errorMessage}
+								Server returned : {errorMessage}
 							</p>
 							<div className="d-flex justify-content-center">
-								<Button onClick={onPopupClose} variant="outline-danger">
+								<button className="terminal-btn terminal-btn-danger" onClick={onPopupClose}>
 									Close
-								</Button>
+								</button>
 							</div>
-						</Alert>
+						</div>
 					</div>
 				}
 				<Routes>

@@ -5,6 +5,84 @@ const Changelog = ({ show, onClose }: any) => {
   return (
     <Modal scrollable={true} show={show} centered size="lg" dialogClassName="changelog-modal">
       <Modal.Body>
+        <h3><u>16/02/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Page de contribution communautaire</h5>
+        <br />
+        <ul>
+          <li>Nouvelle page <b>/contribute</b> pour proposer des questions</li>
+          <li>Support texte libre et QCM directement depuis l'interface</li>
+          <li>Ajout en masse avec le format Q:/R:/ALT:</li>
+          <li>Les questions proposées sont soumises à modération avant publication</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Dashboard Admin & Modération</h5>
+        <br />
+        <ul>
+          <li>Interface de modération pour les questions proposées par la communauté</li>
+          <li>Approbation, rejet ou modification des questions en attente</li>
+          <li>Choix de la boîte de destination lors de l'approbation</li>
+          <li>Filtres par statut (en attente, approuvées, rejetées)</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Scores persistants & Leaderboard All-time</h5>
+        <br />
+        <ul>
+          <li>Les scores sont désormais sauvegardés côté serveur entre les sessions</li>
+          <li>Nouveau mode <b>All-time</b> dans le leaderboard : classement global tous quiz confondus</li>
+          <li>Statistiques détaillées par joueur (nombre de sessions, historique)</li>
+          <li>Synchronisation automatique des scores en fin de quiz</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
+        <h3><u>09/02/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">QCM Flexible (2-6 options)</h5>
+        <br />
+        <ul>
+          <li>Le QCM supporte maintenant entre 2 et 6 options (A à F)</li>
+          <li>Boutons "+ Option" / "- Option" dans le formulaire de création</li>
+          <li>Grille d'affichage dynamique qui s'adapte au nombre d'options</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Ajout en masse amélioré</h5>
+        <br />
+        <ul>
+          <li>Les réponses alternatives acceptent les virgules : <code>ALT: réponse1, réponse2</code></li>
+          <li>Support QCM dans l'ajout en masse (format A: B: C: D: + R: lettre)</li>
+          <li>Détection automatique du type (texte libre ou QCM)</li>
+          <li>Prévisualisation avant ajout avec badge QCM</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
+        <h3><u>07/02/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Ajout en masse de questions</h5>
+        <br />
+        <ul>
+          <li>Nouvelle modale d'ajout en masse avec format Q:/R:/ALT:</li>
+          <li>Support des deux formats : texte libre et QCM dans le même bloc</li>
+          <li>Catégories aléatoires activables</li>
+          <li>Sélection de la boîte de destination</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
+        <h3><u>31/01/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Mode QCM (Questions à Choix Multiples)</h5>
+        <br />
+        <ul>
+          <li>Nouveau type de question : QCM avec 4 options (A, B, C, D)</li>
+          <li>Les viewers répondent avec la lettre ou le chiffre dans le chat</li>
+          <li>Interface de création/édition QCM dans le gestionnaire</li>
+          <li>Suppression de l'ancien mode "Carte" (6 questions par catégorie)</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
         <h3><u>10/01/2026</u></h3>
         <br />
         <h5 className="h5-with-line">Architecture & Performance</h5>
@@ -37,15 +115,6 @@ const Changelog = ({ show, onClose }: any) => {
         <ul>
           <li>Temps de réponse configurable par question (slider 15-60 secondes)</li>
           <li>Déplacement du backup dans les Settings pour une meilleure organisation</li>
-        </ul>
-        <br />
-        <h5 className="h5-with-line">Outils & Productivité</h5>
-        <br />
-        <ul>
-          <li>Convertisseur de questions intégré en React avec saisie manuelle</li>
-          <li>Accessible directement via le bouton "Ajouter une carte"</li>
-          <li>Modes Carte (6 questions) et Quiz (X questions)</li>
-          <li>Génération de JSON compatible pour import direct</li>
         </ul>
         <br />
         <h5 className="h5-with-line">Corrections de bugs</h5>

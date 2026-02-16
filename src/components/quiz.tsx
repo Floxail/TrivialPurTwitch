@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { cleanValueLight, removeArticles, sorensenDiceScore } from 'helpers';
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { Button, Modal, Form, Alert } from 'react-bootstrap';
+import { Modal, Form } from 'react-bootstrap';
 import { Client, Options } from 'tmi.js';
 import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
@@ -646,14 +646,21 @@ const Quiz = () => {
 		questionRevealedRef.current = true;
 	};
 
-	// Timer circulaire : calcul du cercle SVG
+	// Timer : calcul couleur selon le temps restant
 	const timerRadius = 54;
 	const timerCircumference = 2 * Math.PI * timerRadius;
 	const timerColor = useMemo(() => {
 		const pct = (timeLeft / questionTimeLimit) * 100;
-		if (pct > 50) return '#4CAF50';
-		if (pct > 25) return '#FFC107';
-		return '#dc3545';
+		if (pct > 50) return 'var(--lumon-success, #00FF66)';
+		if (pct > 25) return 'var(--lumon-amber, #FFB000)';
+		return 'var(--lumon-danger, #FF0033)';
+	}, [timeLeft, questionTimeLimit]);
+
+	// Timer urgency class for pulsing effect
+	const timerUrgencyClass = useMemo(() => {
+		const pct = (timeLeft / questionTimeLimit) * 100;
+		if (pct <= 25) return 'timer-critical';
+		return '';
 	}, [timeLeft, questionTimeLimit]);
 
 	// Vérifie si le mode cumulatif est actif
@@ -673,11 +680,11 @@ const Quiz = () => {
 				size="lg"
 			>
 				<Modal.Header closeButton>
-					<Modal.Title>🎲 Configurer le quiz</Modal.Title>
+					<Modal.Title>Configurer le quiz</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<p className="mb-3">
-						<strong>{pendingQuizRequester}</strong> demande un quiz. Configurez les paramètres :
+					<p className="mb-3" style={{ color: 'var(--lumon-text-dim)' }}>
+						<strong style={{ color: 'var(--lumon-cyan)' }}>{pendingQuizRequester}</strong> demande un quiz. Configurez les paramètres :
 					</p>
 
 					{/* Sélection de la boîte */}
@@ -710,7 +717,7 @@ const Quiz = () => {
 								checked={balanceCategories}
 								onChange={(e) => setBalanceCategories(e.target.checked)}
 							/>
-							<Form.Text className="text-muted">
+							<Form.Text style={{ color: 'var(--lumon-text-muted)' }}>
 								{balanceCategories
 									? 'Les questions seront réparties équitablement entre les 6 catégories'
 									: 'Les questions seront choisies aléatoirement sans équilibrage'}
@@ -732,14 +739,14 @@ const Quiz = () => {
 
 					{/* Message d'erreur */}
 					{modeError && (
-						<Alert variant="danger" className="mt-2">
+						<div className="terminal-alert terminal-alert-danger mt-2">
 							{modeError}
-						</Alert>
+						</div>
 					)}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button
-						variant="secondary"
+					<button
+						className="terminal-btn"
 						onClick={() => {
 							setShowModeSelector(false);
 							setSelectedBoxName('');
@@ -748,38 +755,37 @@ const Quiz = () => {
 						}}
 					>
 						Annuler
-					</Button>
-					<Button
-						variant="primary"
+					</button>
+					<button
+						className="terminal-btn terminal-btn-success"
 						onClick={handleStartQuiz}
 						disabled={!selectedBoxName}
 					>
-						🚀 Lancer le quiz
-					</Button>
+						Lancer le quiz
+					</button>
 				</Modal.Footer>
 			</Modal>
 
 			<div id="quiz">
 				<div className="row mb-4">
 					<div className="col-md-8">
-						<div className="p-3 mb-2 bt-left-panel border rounded-3">
+						<div className="terminal-panel terminal-panel-glow scanlines p-3 mb-2">
 							{waitingForRedemption && (
-								<div style={{ margin: 'auto', textAlign: 'center', padding: '50px' }}>
-									<FontAwesomeIcon icon={['fas', 'gift']} size="4x" color="var(--alt-text-color)" />
-									<h3 className="mt-4">En attente...</h3>
+								<div className="lumon-standby">
+									<FontAwesomeIcon icon={['fas', 'gift']} size="4x" className="standby-icon" />
+									<h3 className="mt-4 text-glow-cyan">En attente...</h3>
 									<div className="mt-3">
-										<p className="text-muted">
-											<strong>Pour les viewers :</strong> Utilisez vos <strong>points de chaîne</strong> !
+										<p style={{ color: 'var(--lumon-text-dim)' }}>
+											<strong>Pour les viewers :</strong> Utilisez vos <strong style={{ color: 'var(--lumon-cyan)' }}>points de chaîne</strong> !
 										</p>
-										<p className="text-muted" style={{ fontSize: '14px' }}>
+										<p className="system-artifact" style={{ fontSize: '14px' }}>
 											Entrez le nombre de questions souhaitées
 										</p>
 									</div>
 									<div className="mt-4">
-										<Button
-											variant="primary"
-											size="lg"
-											className="mt-2"
+										<button
+											className="terminal-btn"
+											style={{ fontSize: '0.9rem', padding: '0.7rem 1.5rem' }}
 											onClick={() => {
 												setPendingQuizRequester(twitchNick || 'Streamer');
 												setShowModeSelector(true);
@@ -787,35 +793,28 @@ const Quiz = () => {
 										>
 											<FontAwesomeIcon icon={['fas', 'play']} className="me-2" />
 											Lancer un Quiz
-										</Button>
+										</button>
 
 										{/* Bouton Terminer Session (si mode cumulatif activé) */}
 										{cumulativeScoresInQuizMode && (
-											<Button
-												variant="warning"
-												size="lg"
-												className="mt-2 ms-2"
+											<button
+												className="terminal-btn terminal-btn-amber ms-2"
+												style={{ fontSize: '0.9rem', padding: '0.7rem 1.5rem' }}
 												onClick={handleEndSession}
 											>
 												<FontAwesomeIcon icon={['fas', 'flag-checkered']} className="me-2" />
 												Terminer la session
-											</Button>
+											</button>
 										)}
 									</div>
 									{boxes.length > 0 && (
-										<div className="mt-4 p-3" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '10px', display: 'inline-block' }}>
-											<p className="text-muted mb-2">
-												<strong>📦 Boîtes disponibles :</strong>
+										<div className="mt-4 p-3 terminal-panel" style={{ display: 'inline-block' }}>
+											<p className="mb-2" style={{ color: 'var(--lumon-text-dim)' }}>
+												<strong style={{ color: 'var(--lumon-cyan)' }}>Boîtes disponibles :</strong>
 											</p>
 											<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
 												{boxes.map(b => (
-													<span key={b.name} style={{
-														backgroundColor: '#ff60b7',
-														color: 'white',
-														padding: '4px 12px',
-														borderRadius: '12px',
-														fontSize: '13px'
-													}}>
+													<span key={b.name} className="box-tag-terminal">
 														{b.name}
 													</span>
 												))}
@@ -830,14 +829,17 @@ const Quiz = () => {
 									{/* Catégorie et timer */}
 									<div className="mb-4">
 									<div
-										className="category-badge"
+										className="terminal-badge"
 										style={{
-										backgroundColor: categoryColors[currentQuestion.category],
-										padding: '10px 20px',
-										borderRadius: '20px',
+										backgroundColor: `${categoryColors[currentQuestion.category]}22`,
+										borderColor: categoryColors[currentQuestion.category],
+										color: categoryColors[currentQuestion.category],
+										padding: '8px 20px',
 										display: 'inline-block',
-										color: 'white',
-										fontWeight: 'bold',
+										fontFamily: "'Orbitron', sans-serif",
+										fontSize: '0.75rem',
+										letterSpacing: '0.15em',
+										textTransform: 'uppercase' as const,
 										marginBottom: '15px'
 										}}
 									>
@@ -849,45 +851,88 @@ const Quiz = () => {
 										)}
 									</div>
 
-									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-										<svg width="130" height="130" viewBox="0 0 120 120" style={{ transform: 'rotate(-90deg)' }}>
-											{/* Cercle de fond */}
+									<div className={timerUrgencyClass} style={{
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										margin: '0 auto',
+										position: 'relative',
+										width: '180px',
+										height: '180px',
+									}}>
+										<svg width="180" height="180" viewBox="0 0 180 180" style={{ transform: 'rotate(-90deg)', position: 'absolute' }}>
+											{/* Gauge tick marks */}
+											{Array.from({ length: 24 }).map((_, i) => {
+												const angle = (i * 15) * (Math.PI / 180);
+												const isMajor = i % 6 === 0;
+												const outerR = 86;
+												const innerR = isMajor ? 78 : 81;
+												return (
+													<line
+														key={i}
+														x1={90 + outerR * Math.cos(angle)}
+														y1={90 + outerR * Math.sin(angle)}
+														x2={90 + innerR * Math.cos(angle)}
+														y2={90 + innerR * Math.sin(angle)}
+														stroke="rgba(0, 112, 128, 0.3)"
+														strokeWidth={isMajor ? 2 : 1}
+													/>
+												);
+											})}
+											{/* Background track */}
 											<circle
-												cx="60" cy="60" r={timerRadius}
+												cx="90" cy="90" r={timerRadius}
 												fill="none"
-												stroke="rgba(255,255,255,0.1)"
-												strokeWidth="8"
+												stroke="rgba(0, 112, 128, 0.15)"
+												strokeWidth="6"
 											/>
-											{/* Cercle animé (mis à jour via ref + rAF pour fluidité) */}
+											{/* Progress ring (rAF-driven) */}
 											<circle
 												ref={timerCircleRef}
-												cx="60" cy="60" r={timerRadius}
+												cx="90" cy="90" r={timerRadius}
 												fill="none"
 												stroke={timerColor}
-												strokeWidth="8"
+												strokeWidth="6"
 												strokeLinecap="round"
 												strokeDasharray={timerCircumference}
 												strokeDashoffset={timerCircumference * (1 - timeLeft / questionTimeLimit)}
-												style={{ transition: 'stroke 0.5s ease' }}
+												style={{
+													transition: 'stroke 0.5s ease',
+													filter: `drop-shadow(0 0 6px ${timerColor})`,
+												}}
 											/>
 										</svg>
-										<span style={{
-											position: 'absolute',
-											fontSize: '32px',
-											fontWeight: 'bold',
-											color: timerColor,
-											transition: 'color 0.5s ease'
-										}}>
-											{timeLeft}s
-										</span>
+										{/* Center number */}
+										<div style={{ textAlign: 'center', zIndex: 1 }}>
+											<div style={{
+												fontFamily: "'Orbitron', sans-serif",
+												fontSize: '3.2rem',
+												fontWeight: 900,
+												letterSpacing: '0.05em',
+												lineHeight: 1,
+												color: timerColor,
+												transition: 'color 0.5s ease',
+												textShadow: `0 0 12px ${timerColor}, 0 0 24px ${timerColor}40`,
+											}}>
+												{timeLeft}
+											</div>
+											<div style={{
+												fontFamily: "'Share Tech Mono', monospace",
+												fontSize: '0.55rem',
+												color: 'var(--lumon-text-muted)',
+												textTransform: 'uppercase' as const,
+												letterSpacing: '0.25em',
+												marginTop: '4px',
+											}}>
+												sec
+											</div>
+										</div>
 									</div>
 									</div>
 
 									{/* Question */}
-									<div className="question-box" style={{
-										backgroundColor: 'var(--panel-bg)',
+									<div className="question-box terminal-panel border-glow-cyan" style={{
 										padding: '30px',
-										borderRadius: '10px',
 										marginBottom: '20px',
 										minHeight: '150px',
 										display: 'flex',
@@ -895,7 +940,13 @@ const Quiz = () => {
 										alignItems: 'center',
 										justifyContent: 'center'
 									}}>
-										<h2 style={{ textAlign: 'center', margin: 0 }}>
+										<h2 className="phosphor-text typewriter-wrap" key={activeQuiz.currentQuestionIndex} style={{
+											textAlign: 'center',
+											margin: 0,
+											fontFamily: "'Orbitron', sans-serif",
+											fontSize: '1.4rem',
+											letterSpacing: '0.05em'
+										}}>
 											{currentQuestion.question}
 										</h2>
 
@@ -919,29 +970,16 @@ const Quiz = () => {
 														}
 														return (
 															<div key={index} className={colClass}>
-																<div style={{
-																	backgroundColor: 'rgba(122, 122, 122, 0.89)',
-																	borderRadius: '12px',
-																	padding: '18px 20px',
-																	fontSize: '17px',
-																	display: 'flex',
-																	alignItems: 'center',
-																	gap: '10px'
-																}}>
-																	<span style={{
-																		color: '#ff60b7',
-																		fontWeight: 'bold',
-																		fontSize: '19px',
-																		minWidth: '20px'
-																	}}>{QCM_LABELS[index]}</span>
-																	<span style={{ color: 'var(--text-color)' }}>-</span>
-																	<span>{option}</span>
+																<div className="qcm-option-terminal">
+																	<span className="qcm-label">{QCM_LABELS[index]}</span>
+																	<span style={{ color: 'var(--lumon-text-dim)' }}>—</span>
+																	<span style={{ color: 'var(--lumon-text)' }}>{option}</span>
 																</div>
 															</div>
 														);
 													})}
 												</div>
-												<p className="text-center mt-3 text-muted" style={{ fontSize: '14px' }}>
+												<p className="text-center mt-3 system-artifact" style={{ fontSize: '12px', opacity: 0.7 }}>
 													Répondez avec{' '}
 													{currentQuestion.qcmOptions.map((_, i) => (
 														<span key={i}>
@@ -957,15 +995,10 @@ const Quiz = () => {
 
 									{/* Réponse révélée */}
 									{questionRevealed && (
-										<div className="answer-box" style={{
-											backgroundColor: 'var(--icon-green-color)',
-											padding: '20px',
-											borderRadius: '10px',
-											marginBottom: '20px',
-											textAlign: 'center',
-											color: 'white'
+										<div className="answer-box-terminal" style={{
+											marginBottom: '20px'
 										}}>
-											<h3>
+											<h3 style={{ margin: 0 }}>
 												✅ {isQcmQuestion && currentQuestion.qcmCorrectIndex !== undefined
 													? `${QCM_LABELS[currentQuestion.qcmCorrectIndex]} - ${currentQuestion.answer}`
 													: currentQuestion.answer}
@@ -976,20 +1009,16 @@ const Quiz = () => {
 									{/* Liste des joueurs ayant répondu - seulement après révélation */}
 									{questionRevealed && lastAnswerersRef.current.length > 0 && (
 										<div className="answerers-list" style={{ marginTop: '20px' }}>
-											<h5>Ont répondu correctement :</h5>
-											<div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+											<h5 className="text-display-tech" style={{ fontSize: '0.8rem', color: 'var(--lumon-cyan)' }}>
+												Ont répondu correctement :
+											</h5>
+											<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
 												{lastAnswerersRef.current.map((answerer) => (
 													<span
 														key={answerer.nick}
-														style={{
-															backgroundColor: answerer.isFirst ? '#FF9800' : 'var(--panel-bg)',
-															color: answerer.isFirst ? 'black' : 'inherit',
-															padding: '5px 15px',
-															borderRadius: '15px',
-															fontWeight: answerer.isFirst ? 'bold' : 'normal'
-														}}
+														className={answerer.isFirst ? 'answerer-chip answerer-chip-first' : 'answerer-chip'}
 													>
-														{answerer.isFirst && '🥇 '}{answerer.nick}
+														{answerer.isFirst && '★ '}{answerer.nick}
 													</span>
 												))}
 											</div>
@@ -1004,49 +1033,44 @@ const Quiz = () => {
 						<div id="player" className="mb-2 player" style={{ display: 'flex' }}>
 							{activeQuiz && (
 								<>
-									<Button
-										className="col-sm"
+									<button
+										className="terminal-btn col-sm"
 										id="nextButton"
 										disabled={!questionRevealed}
-										type="submit"
-										size="sm"
 										onClick={handleNextQuestion}
 									>
 										{activeQuiz.currentQuestionIndex + 1 >= activeQuiz.totalQuestions ? (
 											<>
-												<FontAwesomeIcon icon={['fas', 'trophy']} color="#ff60b7" size="lg" />
-												<b>PODIUM</b>
+												<FontAwesomeIcon icon={['fas', 'trophy']} className="me-1" />
+												PODIUM
 											</>
 										) : (
 											<>
-												<FontAwesomeIcon icon={['fas', 'step-forward']} color="#ff60b7" size="lg" />
-												<b>SUIVANT</b>
+												<FontAwesomeIcon icon={['fas', 'step-forward']} className="me-1" />
+												SUIVANT
 											</>
 										)}
-									</Button>
+									</button>
 									&nbsp;
-									<Button
-										className="col-sm"
+									<button
+										className="terminal-btn terminal-btn-amber col-sm"
 										id="revealButton"
 										disabled={questionRevealed}
-										type="submit"
-										size="sm"
 										onClick={handleRevealAnswer}
 									>
-										<FontAwesomeIcon icon={['fas', 'eye']} color="#ff60b7" size="lg" />
-										<b>RÉVÉLER</b>
-									</Button>
+										<FontAwesomeIcon icon={['fas', 'eye']} className="me-1" />
+										RÉVÉLER
+									</button>
 									&nbsp;
-									<Button
+									<button
+										className="terminal-btn terminal-btn-danger terminal-btn-sm"
 										id="skipButton"
 										disabled={questionRevealed}
-										type="submit"
-										size="sm"
 										onClick={handleSkipQuestion}
 										style={{ width: '35px' }}
 									>
-										<FontAwesomeIcon icon={['fas', 'step-forward']} size="lg" />
-									</Button>
+										<FontAwesomeIcon icon={['fas', 'step-forward']} />
+									</button>
 								</>
 							)}
 						</div>

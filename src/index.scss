@@ -4,108 +4,368 @@ $btn-transition: none;
 
 @import '~bootstrap/scss/bootstrap';
 
+// ==================================== LUMON TERMINAL THEME
+// All modes forced to dark terminal aesthetic
+
 :root {
-  --spot-color: #ff60b7;
-  --spot-color-hover: #ff7ac5;
-  --spot-color-dark: #d94d9a;
-  --icon-blue-color: #367ac2;
-  --icon-green-color: #18ad1d;
-  --icon-red-color: #f34a4a;
+  --spot-color: #00F0FF;
+  --spot-color-hover: #33F5FF;
+  --spot-color-dark: #007080;
+  --icon-blue-color: #00F0FF;
+  --icon-green-color: #00FF66;
+  --icon-red-color: #FF0033;
+
+  // Force terminal dark mode everywhere
+  --bs-body-bg: #04080F;
+  --bs-body-color: #F0F0F0;
+  --bs-border-color: rgba(0, 112, 128, 0.3);
+  --alt-text-color: #8892A0;
+  --header-color: #000B0F;
+  --header-body-color: #8892A0;
+  --disabled-text: #4A5568;
+  --panel-bg: #0A1015;
+  --global-menu-color: #111820;
+  --text-color: #F0F0F0;
 }
 
-// Style global des boutons - hover et active en rose
+// Global body - terminal background
+body {
+  background-color: #04080F !important;
+  color: #F0F0F0 !important;
+}
+
+// Style global des boutons - terminal cyan hover
 .btn {
-  transition: all 0.2s ease;
+  transition: all 150ms ease;
+  border-radius: 0 !important;
+  font-family: 'Share Tech Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
 
   &:hover:not(:disabled) {
     background-color: var(--spot-color) !important;
     border-color: var(--spot-color) !important;
-    color: white !important;
-    box-shadow: 0 0 10px rgba(255, 96, 183, 0.4);
+    color: #000B0F !important;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
   }
 
   &:active:not(:disabled),
   &.active:not(:disabled) {
     background-color: var(--spot-color-dark) !important;
     border-color: var(--spot-color-dark) !important;
-    color: white !important;
-    box-shadow: 0 0 15px rgba(255, 96, 183, 0.5);
+    color: #F0F0F0 !important;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
   }
 
   &:focus:not(:disabled) {
-    box-shadow: 0 0 0 0.2rem rgba(255, 96, 183, 0.35);
+    box-shadow: 0 0 0 0.15rem rgba(0, 240, 255, 0.3);
   }
 }
 
-// Boutons outline - style spécial
+// Boutons outline - terminal style
 .btn-outline-primary,
 .btn-outline-secondary,
 .btn-outline-success,
 .btn-outline-danger,
 .btn-outline-warning,
 .btn-outline-info {
+  border-color: rgba(0, 112, 128, 0.5);
+  color: #F0F0F0;
+
   &:hover:not(:disabled) {
     background-color: var(--spot-color) !important;
     border-color: var(--spot-color) !important;
-    color: white !important;
+    color: #000B0F !important;
   }
 
   &.active:not(:disabled) {
     background-color: var(--spot-color) !important;
     border-color: var(--spot-color) !important;
-    color: white !important;
+    color: #000B0F !important;
   }
 }
 
-// ==================================== light
+// Bootstrap form controls → terminal style
+.form-control,
+.form-select {
+  background-color: rgba(0, 11, 15, 0.5) !important;
+  border: 1px solid rgba(0, 112, 128, 0.3) !important;
+  border-radius: 0 !important;
+  color: #F0F0F0 !important;
+  font-family: 'Share Tech Mono', monospace;
 
+  &:focus {
+    border-color: #00F0FF !important;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.2) !important;
+  }
+
+  &::placeholder {
+    color: #4A5568 !important;
+  }
+}
+
+.form-select option {
+  background-color: #04080F;
+  color: #F0F0F0;
+}
+
+.form-label {
+  color: #00F0FF;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.form-check-input {
+  background-color: transparent !important;
+  border: 1px solid rgba(0, 112, 128, 0.5) !important;
+  border-radius: 0 !important;
+
+  &:checked {
+    background-color: #00F0FF !important;
+    border-color: #00F0FF !important;
+  }
+
+  &:focus {
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.3) !important;
+  }
+}
+
+// Bootstrap alerts → terminal style
+.alert {
+  border-radius: 0 !important;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.875rem;
+  border-width: 1px;
+}
+
+.alert-success {
+  background-color: rgba(0, 255, 102, 0.05) !important;
+  border-color: #00FF66 !important;
+  color: #00FF66 !important;
+}
+
+.alert-danger {
+  background-color: rgba(255, 0, 51, 0.05) !important;
+  border-color: #FF0033 !important;
+  color: #FF0033 !important;
+}
+
+.alert-warning {
+  background-color: rgba(255, 176, 0, 0.05) !important;
+  border-color: #805800 !important;
+  color: #FFB000 !important;
+}
+
+.alert-info {
+  background-color: rgba(0, 240, 255, 0.05) !important;
+  border-color: #007080 !important;
+  color: #00F0FF !important;
+}
+
+// Bootstrap badges → terminal style
+.badge {
+  border-radius: 0 !important;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: normal;
+}
+
+// Bootstrap modals → terminal style
+.modal-content {
+  background-color: #04080F !important;
+  border: 1px solid rgba(0, 112, 128, 0.4) !important;
+  border-radius: 0 !important;
+  color: #F0F0F0;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0, 112, 128, 0.3) !important;
+
+  .modal-title {
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 1rem;
+    color: #00F0FF;
+  }
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(0, 112, 128, 0.2) !important;
+}
+
+.btn-close {
+  filter: invert(1) !important;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// Bootstrap tables → terminal style
+.table {
+  color: #F0F0F0 !important;
+  border-color: rgba(0, 112, 128, 0.15) !important;
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(0, 240, 255, 0.02);
+  --bs-table-hover-bg: rgba(0, 240, 255, 0.05);
+
+  thead th {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #00F0FF;
+    border-bottom-color: rgba(0, 112, 128, 0.3) !important;
+  }
+}
+
+// Bootstrap cards → terminal panel
+.card {
+  background-color: #0A1015 !important;
+  border: 1px solid rgba(0, 112, 128, 0.3) !important;
+  border-radius: 0 !important;
+  color: #F0F0F0;
+}
+
+.card-header {
+  background-color: rgba(0, 240, 255, 0.03) !important;
+  border-bottom: 1px solid rgba(0, 112, 128, 0.3) !important;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  color: #00F0FF;
+}
+
+// Bootstrap nav/tabs → terminal tabs
+.nav-tabs {
+  border-bottom-color: rgba(0, 112, 128, 0.3) !important;
+
+  .nav-link {
+    border-radius: 0 !important;
+    color: #8892A0;
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    border-color: transparent !important;
+
+    &:hover {
+      color: #00F0FF;
+      border-color: transparent !important;
+    }
+
+    &.active {
+      color: #00F0FF !important;
+      background-color: transparent !important;
+      border-bottom: 2px solid #00F0FF !important;
+    }
+  }
+}
+
+// Dropdown menus → terminal style
+.dropdown-menu {
+  background-color: #04080F !important;
+  border: 1px solid rgba(0, 112, 128, 0.3) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+}
+
+.dropdown-item {
+  color: #F0F0F0 !important;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+
+  &:hover, &:focus {
+    background-color: rgba(0, 240, 255, 0.1) !important;
+    color: #00F0FF !important;
+  }
+
+  &.active, &:active {
+    background-color: rgba(0, 240, 255, 0.15) !important;
+    color: #00F0FF !important;
+  }
+}
+
+.dropdown-divider {
+  border-color: rgba(0, 112, 128, 0.2) !important;
+}
+
+// Scrollbar global
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000B0F;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #007080;
+  border-radius: 0;
+
+  &:hover {
+    background: #00F0FF;
+  }
+}
+
+// Force dark for both modes
 @include color-mode(light) {
-
-  --bs-border-color: #adadad;
-  --bs-dropdown-link-active-bg: #3c3e41;
+  --bs-body-bg: #04080F;
+  --bs-body-color: #F0F0F0;
+  --bs-border-color: rgba(0, 112, 128, 0.3);
+  --alt-text-color: #8892A0;
+  --header-color: #000B0F;
+  --header-body-color: #8892A0;
+  --disabled-text: #4A5568;
+  --panel-bg: #0A1015;
+  --global-menu-color: #111820;
 
   .dropdown-menu {
-    --bs-dropdown-link-active-color: none;
-    --bs-dropdown-link-active-bg: none;
+    --bs-dropdown-link-active-color: #00F0FF;
+    --bs-dropdown-link-active-bg: rgba(0, 240, 255, 0.15);
   }
 
-  $button-color: #747474;
+  $button-color: #111820;
 
   .btn-primary {
-    @include button-variant($button-color, $button-color);
+    @include button-variant($button-color, rgba(0, 112, 128, 0.3));
+    color: #00F0FF;
   }
-
-  --alt-text-color: #7a7a7a;
-  --header-color: #d1d1d1;
-  --header-body-color: #555555;
-  --disabled-text: #b1b1b1;
-  --panel-bg: #e4e4e4;
-  --global-menu-color: #8d8d8d;
 }
-
-// ==================================== dark
 
 @include color-mode(dark) {
-  --bs-body-bg: #18191a;
-  --bs-border-color: #413c3c;
+  --bs-body-bg: #04080F;
+  --bs-body-color: #F0F0F0;
+  --bs-border-color: rgba(0, 112, 128, 0.3);
 
   .dropdown-menu {
-    --bs-dropdown-link-active-color: none;
-    --bs-dropdown-link-active-bg: none;
+    --bs-dropdown-link-active-color: #00F0FF;
+    --bs-dropdown-link-active-bg: rgba(0, 240, 255, 0.15);
   }
 
-  $button-color: #5e5e5e;
+  $button-color: #111820;
 
   .btn-primary {
-    @include button-variant($button-color, $button-color);
+    @include button-variant($button-color, rgba(0, 112, 128, 0.3));
+    color: #00F0FF;
   }
 
-  --alt-text-color: #999999;
-  --header-color: #0e0f0f;
-  --header-body-color: #5e5e5e;
-  --disabled-text: #686868;
-  --panel-bg: #242526;
-  --global-menu-color: #363636;
+  --alt-text-color: #8892A0;
+  --header-color: #000B0F;
+  --header-body-color: #8892A0;
+  --disabled-text: #4A5568;
+  --panel-bg: #0A1015;
+  --global-menu-color: #111820;
 }
 
 @import "global.scss";

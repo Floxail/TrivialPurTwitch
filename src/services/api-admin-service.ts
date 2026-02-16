@@ -51,7 +51,12 @@ export async function apiGetPendingQuestions(
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || `Erreur ${res.status}`);
   }
-  return res.json();
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Réponse invalide du serveur (non-JSON). L'API est-elle disponible ?`);
+  }
 }
 
 /**
@@ -70,7 +75,12 @@ export async function apiApproveQuestion(
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || `Erreur ${res.status}`);
   }
-  return res.json();
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Réponse invalide du serveur (non-JSON)`);
+  }
 }
 
 /**
@@ -85,7 +95,12 @@ export async function apiRejectQuestion(id: string): Promise<{ success: boolean 
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || `Erreur ${res.status}`);
   }
-  return res.json();
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Réponse invalide du serveur (non-JSON)`);
+  }
 }
 
 /**
@@ -104,5 +119,10 @@ export async function apiEditPendingQuestion(
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || `Erreur ${res.status}`);
   }
-  return res.json();
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Réponse invalide du serveur (non-JSON)`);
+  }
 }

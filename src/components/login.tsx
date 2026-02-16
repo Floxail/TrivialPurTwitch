@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect } from 'react';
-import { Button } from 'react-bootstrap';
 import { getAppHomeURL } from '../helpers';
 import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
@@ -42,33 +41,30 @@ const Login = () => {
 
   const LoginButton = (props: LoginButtonProps) => {
     return (
-      <Button 
-        id={props.appName + 'LoginButton'} 
-        disabled={props.loggedIn} 
-        style={{ display: 'block', margin: '5px auto', width: '20rem' }} 
-        variant={props.loggedIn ? 'outline-success' : 'secondary'} 
-        size="lg" 
-        onClick={props.onClick}
+      <button
+        id={props.appName + 'LoginButton'}
+        disabled={props.loggedIn}
+        className={`terminal-btn ${props.loggedIn ? 'terminal-btn-success' : ''}`}
+        style={{ display: 'block', margin: '5px auto', width: '20rem', fontSize: '0.9rem', padding: '0.75rem 1.5rem' }}
+        onClick={() => props.onClick()}
       >
-        <>
-          {!props.loggedIn && <>Log in {props.appName}</>}
-          {props.loggedIn && <><FontAwesomeIcon icon={['far', 'check-circle']} /> Logged in {props.appName}</>}
-          &nbsp;{props.icon}
-        </>
-      </Button>
+        {!props.loggedIn && <>Log in {props.appName}</>}
+        {props.loggedIn && <><FontAwesomeIcon icon={['far', 'check-circle']} /> Logged in {props.appName}</>}
+        &nbsp;{props.icon}
+      </button>
     );
   };
 
   return (
     <>
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h2>🎲 QuizTwitch</h2>
-        <p className="text-muted">Connectez-vous avec Twitch pour commencer</p>
+        <h2 className="text-glow-cyan" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: '0.15em' }}>QUIZTWITCH</h2>
+        <p style={{ color: 'var(--lumon-text-dim)', fontFamily: "'Share Tech Mono', monospace", marginTop: '1rem' }}>Connectez-vous avec Twitch pour commencer</p>
       </div>
-      <LoginButton 
-        loggedIn={authStore.isLoggedIn()} 
-        appName="Twitch" 
-        onClick={twitchLogin} 
+      <LoginButton
+        loggedIn={authStore.isLoggedIn()}
+        appName="Twitch"
+        onClick={twitchLogin}
         icon={twitchIcon}
       />
     </>

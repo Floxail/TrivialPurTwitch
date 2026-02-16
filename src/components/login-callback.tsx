@@ -47,9 +47,9 @@ const LoginCallback = () => {
 
   if (error) {
     return (
-      <div style={{ textAlign: 'center', marginTop: '50px', color: '#ff6b6b' }}>
+      <div style={{ textAlign: 'center', marginTop: '50px', color: 'var(--lumon-danger, #FF0033)', fontFamily: "'Share Tech Mono', monospace" }}>
         <p>{error}</p>
-        <p>Redirection...</p>
+        <p style={{ color: 'var(--lumon-text-dim, #8892A0)' }}>Redirection...</p>
       </div>
     );
   }

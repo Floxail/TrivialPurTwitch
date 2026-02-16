@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, ButtonGroup, FormControl } from 'react-bootstrap';
+import { FormControl } from 'react-bootstrap';
 import { apiGetLeaderboard, LeaderboardEntry } from 'services/api-scores-service';
 import { usePlayerStore } from './store/player-store';
 import TwitchAvatar from './twitch-avatar';
@@ -120,33 +120,35 @@ const Leaderboard = memo(() => {
   };
 
   return (
-    <div id="leaderboard" className="p-3 bt-panel border rounded-3">
+    <div id="leaderboard" className="p-3 terminal-panel terminal-panel-glow">
       <div className="d-flex gap-2 mb-2 align-items-center">
         <FormControl value={nickFilter} type="text" role="searchbox" placeholder="Nick filter" size="sm" onChange={onNickFilterChange} style={{ flex: 1 }} />
-        <ButtonGroup size="sm">
-          <Button
-            variant={mode === 'session' ? 'primary' : 'outline-secondary'}
+        <div className="d-flex gap-1">
+          <button
+            className={`terminal-btn terminal-btn-sm${mode === 'session' ? '' : ''}`}
+            style={mode === 'session' ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
             onClick={() => setMode('session')}
           >
             Session
-          </Button>
-          <Button
-            variant={mode === 'alltime' ? 'primary' : 'outline-secondary'}
+          </button>
+          <button
+            className={`terminal-btn terminal-btn-sm`}
+            style={mode === 'alltime' ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
             onClick={() => { setMode('alltime'); }}
           >
             <FontAwesomeIcon icon={['fas', 'trophy']} className="me-1" />
             All-time
-          </Button>
-        </ButtonGroup>
+          </button>
+        </div>
       </div>
 
       {mode === 'alltime' && allTimeLoading && (
-        <div className="text-center text-muted py-2">Chargement...</div>
+        <div className="text-center py-2" style={{ color: 'var(--lumon-text-dim)' }}>Chargement...</div>
       )}
       {mode === 'alltime' && allTimeError && (
-        <div className="text-center text-danger py-2">
+        <div className="text-center py-2" style={{ color: 'var(--lumon-danger)' }}>
           {allTimeError}
-          <Button size="sm" variant="link" onClick={loadAllTime}>Réessayer</Button>
+          <button className="terminal-btn terminal-btn-sm ms-2" onClick={loadAllTime}>Réessayer</button>
         </div>
       )}
 
@@ -184,12 +186,12 @@ const Leaderboard = memo(() => {
                 <span className="leaderboard-nick">{sc.nick}</span>
                 {mode === 'session' && (
                   <div className="leaderboard-buttons">
-                    <Button type="submit" size="sm" onClick={() => addPointToPlayer(sc.nick, -1)}>
+                    <button className="terminal-btn terminal-btn-sm terminal-btn-danger" onClick={() => addPointToPlayer(sc.nick, -1)}>
                       <FontAwesomeIcon icon={['fas', 'minus']} size="lg" />
-                    </Button>
-                    <Button type="submit" size="sm" onClick={() => addPointToPlayer(sc.nick, 1)}>
+                    </button>
+                    <button className="terminal-btn terminal-btn-sm terminal-btn-success" onClick={() => addPointToPlayer(sc.nick, 1)}>
                       <FontAwesomeIcon icon={['fas', 'plus']} size="lg" />
-                    </Button>
+                    </button>
                   </div>
                 )}
               </td>
@@ -198,7 +200,7 @@ const Leaderboard = memo(() => {
               </td>
               {mode === 'alltime' && (
                 <td style={{ textAlign: 'center' }}>
-                  <span className="text-muted">{sc.sessions}</span>
+                  <span style={{ color: 'var(--lumon-text-dim)' }}>{sc.sessions}</span>
                 </td>
               )}
             </motion.tr>
@@ -214,10 +216,10 @@ const Leaderboard = memo(() => {
 
       {mode === 'alltime' && !allTimeLoading && !allTimeError && allTimeData.length > 0 && (
         <div className="text-center mt-2">
-          <Button size="sm" variant="outline-secondary" onClick={loadAllTime}>
+          <button className="terminal-btn terminal-btn-sm" onClick={loadAllTime}>
             <FontAwesomeIcon icon={['fas', 'shuffle']} className="me-1" />
             Rafraîchir
-          </Button>
+          </button>
         </div>
       )}
     </div>

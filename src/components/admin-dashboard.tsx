@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Badge, Button, ButtonGroup, Form, Modal, Spinner, Table } from 'react-bootstrap';
+import { Form, Modal, Spinner } from 'react-bootstrap';
 import {
   apiApproveQuestion,
   apiEditPendingQuestion,
@@ -203,72 +203,74 @@ const AdminDashboard = () => {
   const pendingCount = useMemo(() => pendingQuestions.length, [pendingQuestions]);
 
   return (
-    <div className="p-3">
-      <h2>
+    <div className="lumon-page">
+      <h2 className="text-glow-cyan mb-3">
         <FontAwesomeIcon icon={['fas', 'list']} className="me-2" />
-        Modération des questions
+        Moderation des questions
         {pendingCount > 0 && (
-          <Badge bg="warning" className="ms-2">{pendingCount}</Badge>
+          <span className="terminal-badge terminal-badge-amber ms-2">{pendingCount}</span>
         )}
       </h2>
 
-      {successMessage && <Alert variant="success" dismissible onClose={() => setSuccessMessage('')}>{successMessage}</Alert>}
-      {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
+      {successMessage && <div className="terminal-alert terminal-alert-success mb-3">{successMessage}</div>}
+      {error && <div className="terminal-alert terminal-alert-danger mb-3">{error}</div>}
 
       {/* Filtres */}
-      <div className="d-flex gap-2 mb-3 align-items-center">
-        <ButtonGroup size="sm">
-          <Button
-            variant={filterStatus === 'pending' ? 'warning' : 'outline-secondary'}
+      <div className="d-flex gap-2 mb-3 align-items-center flex-wrap">
+        <div className="terminal-tabs" style={{ borderBottom: 'none' }}>
+          <div
+            className={`terminal-tab ${filterStatus === 'pending' ? 'terminal-tab-active' : ''}`}
             onClick={() => setFilterStatus('pending')}
           >
             En attente
-          </Button>
-          <Button
-            variant={filterStatus === 'approved' ? 'success' : 'outline-secondary'}
+          </div>
+          <div
+            className={`terminal-tab ${filterStatus === 'approved' ? 'terminal-tab-active' : ''}`}
             onClick={() => setFilterStatus('approved')}
+            style={filterStatus === 'approved' ? { color: 'var(--lumon-success)', borderBottomColor: 'var(--lumon-success)' } : {}}
           >
             Approuvées
-          </Button>
-          <Button
-            variant={filterStatus === 'rejected' ? 'danger' : 'outline-secondary'}
+          </div>
+          <div
+            className={`terminal-tab ${filterStatus === 'rejected' ? 'terminal-tab-active' : ''}`}
             onClick={() => setFilterStatus('rejected')}
+            style={filterStatus === 'rejected' ? { color: 'var(--lumon-danger)', borderBottomColor: 'var(--lumon-danger)' } : {}}
           >
             Rejetées
-          </Button>
-        </ButtonGroup>
+          </div>
+        </div>
 
-        <Button size="sm" variant="outline-primary" onClick={loadQuestions} disabled={loading}>
+        <button className="terminal-btn terminal-btn-sm" onClick={loadQuestions} disabled={loading}>
           <FontAwesomeIcon icon={['fas', 'shuffle']} className="me-1" />
           Rafraîchir
-        </Button>
+        </button>
 
         {filterStatus === 'pending' && pendingCount > 0 && (
-          <Button size="sm" variant="success" onClick={handleApproveAll}>
+          <button className="terminal-btn terminal-btn-success terminal-btn-sm" onClick={handleApproveAll}>
             <FontAwesomeIcon icon={['fas', 'check']} className="me-1" />
             Tout approuver
-          </Button>
+          </button>
         )}
       </div>
 
       {/* Loading */}
       {loading && (
-        <div className="text-center py-4">
+        <div className="text-center py-4" style={{ color: 'var(--lumon-cyan)' }}>
           <Spinner animation="border" size="sm" className="me-2" />
-          Chargement...
+          <span className="system-artifact" style={{ opacity: 1 }}>Chargement des données...</span>
         </div>
       )}
 
       {/* Liste vide */}
       {!loading && pendingQuestions.length === 0 && (
-        <div className="text-center text-muted py-4">
+        <div className="text-center py-4 system-artifact" style={{ fontSize: '0.8rem', opacity: 0.7 }}>
           Aucune question {filterStatus === 'pending' ? 'en attente' : filterStatus === 'approved' ? 'approuvée' : 'rejetée'}
         </div>
       )}
 
       {/* Tableau des questions */}
       {!loading && pendingQuestions.length > 0 && (
-        <Table striped hover responsive size="sm">
+        <table className="terminal-table" style={{ width: '100%' }}>
           <thead>
             <tr>
               <th style={{ width: '5%' }}>Type</th>
@@ -285,9 +287,9 @@ const AdminDashboard = () => {
               <tr key={q.id}>
                 <td>
                   {q.questionType === 'qcm' ? (
-                    <Badge bg="info">QCM</Badge>
+                    <span className="terminal-badge terminal-badge-cyan">QCM</span>
                   ) : (
-                    <Badge bg="secondary">Texte</Badge>
+                    <span className="terminal-badge" style={{ borderColor: 'var(--lumon-text-muted)', color: 'var(--lumon-text-dim)' }}>Texte</span>
                   )}
                 </td>
                 <td>
@@ -295,10 +297,10 @@ const AdminDashboard = () => {
                   {q.questionType === 'qcm' && q.qcmOptions && (
                     <div className="mt-1">
                       {q.qcmOptions.map((opt, i) => (
-                        <span key={i} className="me-2">
-                          <Badge bg={i === q.qcmCorrectIndex ? 'success' : 'outline-secondary'} className="me-1">
+                        <span key={i} className="me-2" style={{ fontSize: '0.8rem' }}>
+                          <span className={`terminal-badge ${i === q.qcmCorrectIndex ? 'terminal-badge-success' : ''}`} style={{ marginRight: '4px' }}>
                             {QCM_LABELS[i]}
-                          </Badge>
+                          </span>
                           {opt}
                         </span>
                       ))}
@@ -306,7 +308,7 @@ const AdminDashboard = () => {
                   )}
                 </td>
                 <td>
-                  <span style={{ color: 'var(--bs-success)' }}>{q.answer}</span>
+                  <span style={{ color: 'var(--lumon-success)' }}>{q.answer}</span>
                   {q.alternativeAnswers && q.alternativeAnswers.length > 0 && (
                     <div className="text-muted small">
                       ALT: {q.alternativeAnswers.join(', ')}
@@ -321,83 +323,76 @@ const AdminDashboard = () => {
                 <td>
                   <div className="d-flex gap-1 flex-wrap">
                     {/* Bouton éditer (tous les onglets) */}
-                    <Button
-                      size="sm"
-                      variant="outline-primary"
+                    <button
+                      className="terminal-btn terminal-btn-sm"
                       disabled={processingIds.has(q.id)}
                       onClick={() => openEditModal(q)}
                       title="Modifier"
                     >
                       <FontAwesomeIcon icon={['fas', 'pen']} />
-                    </Button>
+                    </button>
 
                     {/* Actions selon le statut actuel */}
                     {filterStatus === 'pending' && (
                       <>
-                        <Button
-                          size="sm"
-                          variant="success"
+                        <button
+                          className="terminal-btn terminal-btn-success terminal-btn-sm"
                           disabled={processingIds.has(q.id)}
                           onClick={() => handleQuickApprove(q)}
                           title="Approuver"
                         >
                           <FontAwesomeIcon icon={['fas', 'check']} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="danger"
+                        </button>
+                        <button
+                          className="terminal-btn terminal-btn-danger terminal-btn-sm"
                           disabled={processingIds.has(q.id)}
                           onClick={() => handleReject(q.id)}
                           title="Rejeter"
                         >
                           <FontAwesomeIcon icon={['fas', 'times']} />
-                        </Button>
+                        </button>
                       </>
                     )}
 
                     {filterStatus === 'approved' && (
                       <>
-                        <Button
-                          size="sm"
-                          variant="outline-warning"
+                        <button
+                          className="terminal-btn terminal-btn-amber terminal-btn-sm"
                           disabled={processingIds.has(q.id)}
                           onClick={() => handleChangeStatus(q.id, 'pending')}
                           title="Remettre en attente"
                         >
                           <FontAwesomeIcon icon={['fas', 'clock']} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline-danger"
+                        </button>
+                        <button
+                          className="terminal-btn terminal-btn-danger terminal-btn-sm"
                           disabled={processingIds.has(q.id)}
                           onClick={() => handleChangeStatus(q.id, 'rejected')}
                           title="Rejeter"
                         >
                           <FontAwesomeIcon icon={['fas', 'times']} />
-                        </Button>
+                        </button>
                       </>
                     )}
 
                     {filterStatus === 'rejected' && (
                       <>
-                        <Button
-                          size="sm"
-                          variant="outline-warning"
+                        <button
+                          className="terminal-btn terminal-btn-amber terminal-btn-sm"
                           disabled={processingIds.has(q.id)}
                           onClick={() => handleChangeStatus(q.id, 'pending')}
                           title="Remettre en attente"
                         >
                           <FontAwesomeIcon icon={['fas', 'clock']} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline-success"
+                        </button>
+                        <button
+                          className="terminal-btn terminal-btn-success terminal-btn-sm"
                           disabled={processingIds.has(q.id)}
                           onClick={() => handleQuickApprove(q)}
                           title="Approuver"
                         >
                           <FontAwesomeIcon icon={['fas', 'check']} />
-                        </Button>
+                        </button>
                       </>
                     )}
                   </div>
@@ -405,7 +400,7 @@ const AdminDashboard = () => {
               </tr>
             ))}
           </tbody>
-        </Table>
+        </table>
       )}
 
       {/* Modal de sélection de boîte pour approbation */}
@@ -428,15 +423,15 @@ const AdminDashboard = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setApproveModal(null)}>Annuler</Button>
-            <Button
-              variant="success"
+            <button className="terminal-btn terminal-btn-sm" onClick={() => setApproveModal(null)}>Annuler</button>
+            <button
+              className="terminal-btn terminal-btn-success terminal-btn-sm"
               disabled={!approveBox}
               onClick={() => doApprove(approveModal.id, approveBox)}
             >
               <FontAwesomeIcon icon={['fas', 'check']} className="me-1" />
               Approuver
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
       )}
@@ -452,24 +447,22 @@ const AdminDashboard = () => {
             <Form.Group className="mb-3">
               <Form.Label><strong>Type</strong></Form.Label>
               <div className="d-flex gap-2">
-                <Button
+                <button
                   type="button"
-                  size="sm"
-                  variant={editForm.questionType === 'free_text' ? 'primary' : 'outline-primary'}
+                  className={`terminal-btn terminal-btn-sm flex-fill ${editForm.questionType === 'free_text' ? '' : 'terminal-btn-amber'}`}
                   onClick={() => setEditForm(f => ({ ...f, questionType: 'free_text' }))}
-                  className="flex-fill"
+                  style={editForm.questionType === 'free_text' ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
                 >
                   Réponse libre
-                </Button>
-                <Button
+                </button>
+                <button
                   type="button"
-                  size="sm"
-                  variant={editForm.questionType === 'qcm' ? 'primary' : 'outline-primary'}
+                  className={`terminal-btn terminal-btn-sm flex-fill ${editForm.questionType === 'qcm' ? '' : 'terminal-btn-amber'}`}
                   onClick={() => setEditForm(f => ({ ...f, questionType: 'qcm' }))}
-                  className="flex-fill"
+                  style={editForm.questionType === 'qcm' ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
                 >
                   QCM
-                </Button>
+                </button>
               </div>
             </Form.Group>
 
@@ -509,14 +502,13 @@ const AdminDashboard = () => {
 
             {/* Options QCM */}
             {editForm.questionType === 'qcm' && (
-              <div className="p-3 mb-3" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '10px', border: '2px solid #ff60b7' }}>
+              <div className="terminal-panel border-glow-cyan p-3 mb-3">
                 <div className="d-flex justify-content-between align-items-center mb-2">
-                  <strong>Options QCM ({editForm.qcmOptions.length})</strong>
+                  <span className="text-display-tech" style={{ fontSize: '0.75rem', color: 'var(--lumon-cyan)' }}>Options QCM ({editForm.qcmOptions.length})</span>
                   <div className="d-flex gap-1">
-                    <Button
+                    <button
                       type="button"
-                      variant="outline-danger"
-                      size="sm"
+                      className="terminal-btn terminal-btn-danger terminal-btn-sm"
                       disabled={editForm.qcmOptions.length <= QCM_MIN_OPTIONS}
                       onClick={() => {
                         const newOpts = editForm.qcmOptions.slice(0, -1);
@@ -525,16 +517,15 @@ const AdminDashboard = () => {
                       }}
                     >
                       − Option
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       type="button"
-                      variant="outline-success"
-                      size="sm"
+                      className="terminal-btn terminal-btn-success terminal-btn-sm"
                       disabled={editForm.qcmOptions.length >= QCM_MAX_OPTIONS}
                       onClick={() => setEditForm(f => ({ ...f, qcmOptions: [...f.qcmOptions, ''] }))}
                     >
                       + Option
-                    </Button>
+                    </button>
                   </div>
                 </div>
                 {editForm.qcmOptions.map((opt, i) => (
@@ -577,7 +568,7 @@ const AdminDashboard = () => {
                         borderWidth: editForm.qcmCorrectIndex === i ? '2px' : undefined,
                       }}
                     />
-                    {editForm.qcmCorrectIndex === i && <Badge bg="success">Correcte</Badge>}
+                    {editForm.qcmCorrectIndex === i && <span className="terminal-badge terminal-badge-success">Correcte</span>}
                   </div>
                 ))}
               </div>
@@ -611,16 +602,16 @@ const AdminDashboard = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setEditModal(null)}>Annuler</Button>
-            <Button
-              variant="primary"
+            <button className="terminal-btn terminal-btn-sm" onClick={() => setEditModal(null)}>Annuler</button>
+            <button
+              className="terminal-btn terminal-btn-success terminal-btn-sm"
               disabled={editSaving || !editForm.question.trim() || !editForm.answer.trim()}
               onClick={handleEditSave}
             >
               {editSaving && <Spinner animation="border" size="sm" className="me-2" />}
               <FontAwesomeIcon icon={['fas', 'save']} className="me-1" />
               Enregistrer
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
       )}
