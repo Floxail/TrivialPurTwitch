@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
-import { checkRateLimit } from './_utils';
+import { checkRateLimit } from './_utils.js';
 
 let db: Client;
 function getDb() {
@@ -34,7 +34,7 @@ async function validateTwitchUser(req: VercelRequest): Promise<{ userId: string;
     });
     if (!response.ok) return null;
 
-    const data = await response.json();
+    const data: any = await response.json();
     if (!data.user_id) return null;
 
     return { userId: data.user_id, login: data.login };

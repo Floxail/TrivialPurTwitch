@@ -60,7 +60,7 @@ export async function requireAdminAuth(req: VercelRequest): Promise<{ userId: st
       return null;
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
     const userId = data.user_id as string;
     const login = data.login as string;
 

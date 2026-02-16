@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
 import dotenv from 'dotenv';
-import { requireAuth } from './_utils';
+import { requireAuth } from './_utils.js';
 
 dotenv.config({ path: '.env.local' });
 

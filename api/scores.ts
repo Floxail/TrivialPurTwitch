@@ -1,6 +1,6 @@
 import { createClient } from '@libsql/client';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAuth } from './_utils';
+import { requireAuth } from './_utils.js';
 
 const db = createClient({
   url: process.env.TURSO_DATABASE_URL!,
