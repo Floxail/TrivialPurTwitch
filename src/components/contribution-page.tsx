@@ -391,36 +391,34 @@ const ContributionPage: React.FC = () => {
         </Button>
       </ButtonGroup>
 
-      {/* ========== Création de boîte (mode local uniquement) ========== */}
-      {isLocal && (
-        <div className="mb-3">
-          {!showNewBox ? (
-            <Button size="sm" variant="outline-success" onClick={() => setShowNewBox(true)}>
-              <FontAwesomeIcon icon={['fas', 'plus']} className="me-1" />
-              Nouvelle boîte
+      {/* ========== Création de boîte ========== */}
+      <div className="mb-3">
+        {!showNewBox ? (
+          <Button size="sm" variant="outline-success" onClick={() => setShowNewBox(true)}>
+            <FontAwesomeIcon icon={['fas', 'plus']} className="me-1" />
+            Nouvelle boîte
+          </Button>
+        ) : (
+          <div className="d-flex gap-2 align-items-center">
+            <Form.Control
+              size="sm"
+              type="text"
+              placeholder="Nom de la boîte (ex: Cinéma 91)"
+              value={newBoxName}
+              onChange={(e) => setNewBoxName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleCreateBox()}
+              autoFocus
+              style={{ maxWidth: '300px' }}
+            />
+            <Button size="sm" variant="success" onClick={handleCreateBox} disabled={!newBoxName.trim()}>
+              Créer
             </Button>
-          ) : (
-            <div className="d-flex gap-2 align-items-center">
-              <Form.Control
-                size="sm"
-                type="text"
-                placeholder="Nom de la boîte (ex: Cinéma 91)"
-                value={newBoxName}
-                onChange={(e) => setNewBoxName(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleCreateBox()}
-                autoFocus
-                style={{ maxWidth: '300px' }}
-              />
-              <Button size="sm" variant="success" onClick={handleCreateBox} disabled={!newBoxName.trim()}>
-                Créer
-              </Button>
-              <Button size="sm" variant="outline-secondary" onClick={() => { setShowNewBox(false); setNewBoxName(''); }}>
-                Annuler
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
+            <Button size="sm" variant="outline-secondary" onClick={() => { setShowNewBox(false); setNewBoxName(''); }}>
+              Annuler
+            </Button>
+          </div>
+        )}
+      </div>
 
       {/* ==================== Tab: Question unique ==================== */}
       {tab === 'single' && (
