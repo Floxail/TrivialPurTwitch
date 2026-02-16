@@ -3,14 +3,17 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Badge, Button, ButtonGroup, Form, Modal, Spinner, Table } from 'react-bootstrap';
 import {
   apiApproveQuestion,
+  apiEditPendingQuestion,
   apiGetPendingQuestions,
   apiRejectQuestion,
   PendingQuestion,
 } from 'services/api-admin-service';
-import { useQuestionsStore } from './store/questions-store';
+import { categoryNames, TrivialCategory, QuestionType, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
 
 const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+const QCM_MIN_OPTIONS = 2;
+const QCM_MAX_OPTIONS = 6;
 
 const AdminDashboard = () => {
   const setSubtitle = useGlobalStore((state) => state.setSubtitle);
@@ -26,7 +29,21 @@ const AdminDashboard = () => {
   const [approveModal, setApproveModal] = useState<PendingQuestion | null>(null);
   const [approveBox, setApproveBox] = useState('');
 
-  // Actions en cours (pour désactiver les boutons)
+  // Modal d'édition
+  const [editModal, setEditModal] = useState<PendingQuestion | null>(null);
+  const [editForm, setEditForm] = useState({
+    question: '',
+    answer: '',
+    alternativeAnswers: '',
+    category: 0 as TrivialCategory,
+    boxName: '',
+    questionType: 'free_text' as string,
+    qcmOptions: ['', ''] as string[],
+    qcmCorrectIndex: 0,
+  });
+  const [editSaving, setEditSaving] = useState(false);
+
+  // Actions en cours
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -55,12 +72,11 @@ const AdminDashboard = () => {
     setTimeout(() => setSuccessMessage(''), 3000);
   };
 
-  // Approuver directement (avec boîte par défaut)
+  // ==================== Approuver ====================
   const handleQuickApprove = async (q: PendingQuestion) => {
     if (q.boxName) {
       await doApprove(q.id, q.boxName);
     } else {
-      // Ouvrir la modal pour choisir la boîte
       setApproveModal(q);
       setApproveBox(boxes.length > 0 ? boxes[0].name : '');
     }
@@ -84,6 +100,7 @@ const AdminDashboard = () => {
     }
   };
 
+  // ==================== Rejeter ====================
   const handleReject = async (id: string) => {
     setProcessingIds(prev => new Set(prev).add(id));
     try {
@@ -101,6 +118,26 @@ const AdminDashboard = () => {
     }
   };
 
+  // ==================== Changer le statut ====================
+  const handleChangeStatus = async (id: string, newStatus: 'pending' | 'approved' | 'rejected') => {
+    setProcessingIds(prev => new Set(prev).add(id));
+    try {
+      await apiEditPendingQuestion(id, { status: newStatus });
+      setPendingQuestions(prev => prev.filter(q => q.id !== id));
+      const labels = { pending: 'En attente', approved: 'Approuvée', rejected: 'Rejetée' };
+      showSuccess(`Statut changé → ${labels[newStatus]}`);
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors du changement de statut');
+    } finally {
+      setProcessingIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
+  };
+
+  // ==================== Tout approuver ====================
   const handleApproveAll = async () => {
     if (!window.confirm(`Approuver les ${pendingQuestions.length} questions en attente ?`)) return;
     const defaultBox = boxes.length > 0 ? boxes[0].name : 'Propositions';
@@ -110,9 +147,60 @@ const AdminDashboard = () => {
     }
   };
 
-  const pendingCount = useMemo(() =>
-    pendingQuestions.length,
-  [pendingQuestions]);
+  // ==================== Édition ====================
+  const openEditModal = (q: PendingQuestion) => {
+    setEditModal(q);
+    setEditForm({
+      question: q.question,
+      answer: q.answer,
+      alternativeAnswers: q.alternativeAnswers?.join(', ') || '',
+      category: q.category as TrivialCategory,
+      boxName: q.boxName || '',
+      questionType: q.questionType || 'free_text',
+      qcmOptions: q.qcmOptions && q.qcmOptions.length >= 2 ? [...q.qcmOptions] : ['', ''],
+      qcmCorrectIndex: q.qcmCorrectIndex ?? 0,
+    });
+  };
+
+  const handleEditSave = async () => {
+    if (!editModal) return;
+    setEditSaving(true);
+    try {
+      const isQcm = editForm.questionType === 'qcm';
+      const altArr = editForm.alternativeAnswers.split(',').map(s => s.trim()).filter(Boolean);
+
+      const updates: Partial<PendingQuestion> = {
+        question: editForm.question,
+        answer: editForm.answer,
+        alternativeAnswers: altArr.length > 0 ? altArr : undefined,
+        category: editForm.category,
+        boxName: editForm.boxName || undefined,
+        questionType: editForm.questionType,
+      };
+
+      if (isQcm) {
+        updates.qcmOptions = editForm.qcmOptions.filter(o => o.trim());
+        updates.qcmCorrectIndex = editForm.qcmCorrectIndex;
+        updates.answer = editForm.qcmOptions[editForm.qcmCorrectIndex] || editForm.answer;
+      }
+
+      await apiEditPendingQuestion(editModal.id, updates);
+
+      // Mettre à jour localement
+      setPendingQuestions(prev => prev.map(q =>
+        q.id === editModal.id ? { ...q, ...updates } : q
+      ));
+
+      showSuccess('Question modifiée');
+      setEditModal(null);
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors de la modification');
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  const pendingCount = useMemo(() => pendingQuestions.length, [pendingQuestions]);
 
   return (
     <div className="p-3">
@@ -184,13 +272,12 @@ const AdminDashboard = () => {
           <thead>
             <tr>
               <th style={{ width: '5%' }}>Type</th>
-              <th style={{ width: '30%' }}>Question</th>
-              <th style={{ width: '20%' }}>Réponse</th>
+              <th style={{ width: '28%' }}>Question</th>
+              <th style={{ width: '18%' }}>Réponse</th>
               <th style={{ width: '10%' }}>Boîte</th>
-              <th style={{ width: '12%' }}>Proposé par</th>
-              <th style={{ width: '10%' }}>Date</th>
-              {filterStatus === 'pending' && <th style={{ width: '13%' }}>Actions</th>}
-              {filterStatus !== 'pending' && <th style={{ width: '13%' }}>Modéré par</th>}
+              <th style={{ width: '10%' }}>Proposé par</th>
+              <th style={{ width: '9%' }}>Date</th>
+              <th style={{ width: '20%' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -231,33 +318,90 @@ const AdminDashboard = () => {
                 <td className="text-muted small">
                   {q.createdAt ? new Date(q.createdAt).toLocaleDateString('fr-FR') : '—'}
                 </td>
-                {filterStatus === 'pending' && (
-                  <td>
-                    <div className="d-flex gap-1">
-                      <Button
-                        size="sm"
-                        variant="success"
-                        disabled={processingIds.has(q.id)}
-                        onClick={() => handleQuickApprove(q)}
-                        title="Approuver"
-                      >
-                        <FontAwesomeIcon icon={['fas', 'check']} />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        disabled={processingIds.has(q.id)}
-                        onClick={() => handleReject(q.id)}
-                        title="Rejeter"
-                      >
-                        <FontAwesomeIcon icon={['fas', 'times']} />
-                      </Button>
-                    </div>
-                  </td>
-                )}
-                {filterStatus !== 'pending' && (
-                  <td className="text-muted small">{q.reviewedBy || '—'}</td>
-                )}
+                <td>
+                  <div className="d-flex gap-1 flex-wrap">
+                    {/* Bouton éditer (tous les onglets) */}
+                    <Button
+                      size="sm"
+                      variant="outline-primary"
+                      disabled={processingIds.has(q.id)}
+                      onClick={() => openEditModal(q)}
+                      title="Modifier"
+                    >
+                      <FontAwesomeIcon icon={['fas', 'pen']} />
+                    </Button>
+
+                    {/* Actions selon le statut actuel */}
+                    {filterStatus === 'pending' && (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="success"
+                          disabled={processingIds.has(q.id)}
+                          onClick={() => handleQuickApprove(q)}
+                          title="Approuver"
+                        >
+                          <FontAwesomeIcon icon={['fas', 'check']} />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="danger"
+                          disabled={processingIds.has(q.id)}
+                          onClick={() => handleReject(q.id)}
+                          title="Rejeter"
+                        >
+                          <FontAwesomeIcon icon={['fas', 'times']} />
+                        </Button>
+                      </>
+                    )}
+
+                    {filterStatus === 'approved' && (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="outline-warning"
+                          disabled={processingIds.has(q.id)}
+                          onClick={() => handleChangeStatus(q.id, 'pending')}
+                          title="Remettre en attente"
+                        >
+                          <FontAwesomeIcon icon={['fas', 'clock']} />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline-danger"
+                          disabled={processingIds.has(q.id)}
+                          onClick={() => handleChangeStatus(q.id, 'rejected')}
+                          title="Rejeter"
+                        >
+                          <FontAwesomeIcon icon={['fas', 'times']} />
+                        </Button>
+                      </>
+                    )}
+
+                    {filterStatus === 'rejected' && (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="outline-warning"
+                          disabled={processingIds.has(q.id)}
+                          onClick={() => handleChangeStatus(q.id, 'pending')}
+                          title="Remettre en attente"
+                        >
+                          <FontAwesomeIcon icon={['fas', 'clock']} />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline-success"
+                          disabled={processingIds.has(q.id)}
+                          onClick={() => handleQuickApprove(q)}
+                          title="Approuver"
+                        >
+                          <FontAwesomeIcon icon={['fas', 'check']} />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -292,6 +436,190 @@ const AdminDashboard = () => {
             >
               <FontAwesomeIcon icon={['fas', 'check']} className="me-1" />
               Approuver
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {/* Modal d'édition de question */}
+      {editModal && (
+        <Modal show onHide={() => setEditModal(null)} centered size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>Modifier la question</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {/* Type de question */}
+            <Form.Group className="mb-3">
+              <Form.Label><strong>Type</strong></Form.Label>
+              <div className="d-flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={editForm.questionType === 'free_text' ? 'primary' : 'outline-primary'}
+                  onClick={() => setEditForm(f => ({ ...f, questionType: 'free_text' }))}
+                  className="flex-fill"
+                >
+                  Réponse libre
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={editForm.questionType === 'qcm' ? 'primary' : 'outline-primary'}
+                  onClick={() => setEditForm(f => ({ ...f, questionType: 'qcm' }))}
+                  className="flex-fill"
+                >
+                  QCM
+                </Button>
+              </div>
+            </Form.Group>
+
+            {/* Question */}
+            <Form.Group className="mb-3">
+              <Form.Label>Question *</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={2}
+                value={editForm.question}
+                onChange={(e) => setEditForm(f => ({ ...f, question: e.target.value }))}
+              />
+            </Form.Group>
+
+            {/* Réponse */}
+            <Form.Group className="mb-3">
+              <Form.Label>Réponse *</Form.Label>
+              <Form.Control
+                type="text"
+                value={editForm.answer}
+                onChange={(e) => setEditForm(f => ({ ...f, answer: e.target.value }))}
+              />
+            </Form.Group>
+
+            {/* Alternatives (texte libre) */}
+            {editForm.questionType === 'free_text' && (
+              <Form.Group className="mb-3">
+                <Form.Label>Réponses alternatives</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Séparées par des virgules"
+                  value={editForm.alternativeAnswers}
+                  onChange={(e) => setEditForm(f => ({ ...f, alternativeAnswers: e.target.value }))}
+                />
+              </Form.Group>
+            )}
+
+            {/* Options QCM */}
+            {editForm.questionType === 'qcm' && (
+              <div className="p-3 mb-3" style={{ backgroundColor: 'var(--panel-bg)', borderRadius: '10px', border: '2px solid #ff60b7' }}>
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <strong>Options QCM ({editForm.qcmOptions.length})</strong>
+                  <div className="d-flex gap-1">
+                    <Button
+                      type="button"
+                      variant="outline-danger"
+                      size="sm"
+                      disabled={editForm.qcmOptions.length <= QCM_MIN_OPTIONS}
+                      onClick={() => {
+                        const newOpts = editForm.qcmOptions.slice(0, -1);
+                        const newIdx = editForm.qcmCorrectIndex >= newOpts.length ? 0 : editForm.qcmCorrectIndex;
+                        setEditForm(f => ({ ...f, qcmOptions: newOpts, qcmCorrectIndex: newIdx }));
+                      }}
+                    >
+                      − Option
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline-success"
+                      size="sm"
+                      disabled={editForm.qcmOptions.length >= QCM_MAX_OPTIONS}
+                      onClick={() => setEditForm(f => ({ ...f, qcmOptions: [...f.qcmOptions, ''] }))}
+                    >
+                      + Option
+                    </Button>
+                  </div>
+                </div>
+                {editForm.qcmOptions.map((opt, i) => (
+                  <div key={i} className="d-flex align-items-center gap-2 mb-2">
+                    <Form.Check
+                      type="radio"
+                      name="editQcmCorrect"
+                      checked={editForm.qcmCorrectIndex === i}
+                      onChange={() => {
+                        setEditForm(f => ({
+                          ...f,
+                          qcmCorrectIndex: i,
+                          answer: f.qcmOptions[i] || f.answer,
+                        }));
+                      }}
+                    />
+                    <span style={{
+                      fontWeight: 'bold',
+                      color: editForm.qcmCorrectIndex === i ? '#4CAF50' : 'inherit',
+                      minWidth: '25px',
+                    }}>
+                      {QCM_LABELS[i]})
+                    </span>
+                    <Form.Control
+                      type="text"
+                      size="sm"
+                      placeholder={`Option ${QCM_LABELS[i]}`}
+                      value={opt}
+                      onChange={(e) => {
+                        const newOpts = [...editForm.qcmOptions];
+                        newOpts[i] = e.target.value;
+                        setEditForm(f => ({
+                          ...f,
+                          qcmOptions: newOpts,
+                          answer: f.qcmCorrectIndex === i ? e.target.value : f.answer,
+                        }));
+                      }}
+                      style={{
+                        borderColor: editForm.qcmCorrectIndex === i ? '#4CAF50' : undefined,
+                        borderWidth: editForm.qcmCorrectIndex === i ? '2px' : undefined,
+                      }}
+                    />
+                    {editForm.qcmCorrectIndex === i && <Badge bg="success">Correcte</Badge>}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Catégorie */}
+            <Form.Group className="mb-3">
+              <Form.Label>Catégorie</Form.Label>
+              <Form.Select
+                value={editForm.category}
+                onChange={(e) => setEditForm(f => ({ ...f, category: parseInt(e.target.value) as TrivialCategory }))}
+              >
+                {Object.entries(categoryNames).map(([key, name]) => (
+                  <option key={key} value={key}>{name}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            {/* Boîte */}
+            <Form.Group className="mb-3">
+              <Form.Label>Boîte</Form.Label>
+              <Form.Select
+                value={editForm.boxName}
+                onChange={(e) => setEditForm(f => ({ ...f, boxName: e.target.value }))}
+              >
+                <option value="">Aucune (l'admin choisira)</option>
+                {boxes.map(box => (
+                  <option key={box.name} value={box.name}>{box.name}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setEditModal(null)}>Annuler</Button>
+            <Button
+              variant="primary"
+              disabled={editSaving || !editForm.question.trim() || !editForm.answer.trim()}
+              onClick={handleEditSave}
+            >
+              {editSaving && <Spinner animation="border" size="sm" className="me-2" />}
+              <FontAwesomeIcon icon={['fas', 'save']} className="me-1" />
+              Enregistrer
             </Button>
           </Modal.Footer>
         </Modal>

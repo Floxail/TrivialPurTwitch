@@ -125,7 +125,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ success: true, id, action: 'approved', boxName: targetBox });
     }
 
-    // ==================== PUT : Modifier avant approbation ====================
+    // ==================== PUT : Modifier une question (tout statut) ====================
     if (req.method === 'PUT') {
       const { id } = req.query;
       const updates = req.body;
@@ -146,6 +146,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         questionType: 'question_type',
         qcmOptions: 'qcm_options',
         qcmCorrectIndex: 'qcm_correct_index',
+        status: 'status',
       };
 
       for (const [jsField, dbField] of Object.entries(fieldMap)) {
@@ -159,6 +160,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
       }
 
+      // Si changement de statut, mettre à jour reviewed_by et reviewed_at
+      if ('status' in updates) {
+        setClauses.push('reviewed_by = ?');
+        args.push(admin.login);
+        setClauses.push("reviewed_at = datetime('now')");
+      }
+
       if (setClauses.length === 0) {
         return res.status(400).json({ error: 'Aucune modification fournie' });
       }
@@ -166,7 +174,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       args.push(id);
 
       await getDb().execute({
-        sql: `UPDATE pending_questions SET ${setClauses.join(', ')} WHERE id = ? AND status = 'pending'`,
+        sql: `UPDATE pending_questions SET ${setClauses.join(', ')} WHERE id = ?`,
         args,
       });
 
