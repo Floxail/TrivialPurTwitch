@@ -8,7 +8,7 @@ import {
   apiRejectQuestion,
   PendingQuestion,
 } from 'services/api-admin-service';
-import { categoryNames, TrivialCategory, QuestionType, useQuestionsStore } from './store/questions-store';
+import { categoryNames, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
 
 const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
