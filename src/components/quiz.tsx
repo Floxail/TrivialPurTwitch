@@ -1125,7 +1125,7 @@ const Quiz = () => {
 													<div className="report-options-list">
 														{([
 															{ reason: 'question_incorrecte' as ReportReason, label: 'Question incorrecte' },
-															{ reason: 'reponse_non_accpeter' as ReportReason, label: 'Réponses non accepté' },
+															{ reason: 'reponse_non_accepter' as ReportReason, label: 'Réponses non accepté' },
 															{ reason: 'categorie_incorrecte' as ReportReason, label: 'Mauvaise catégorie' },
 															{ reason: 'question_obsolete' as ReportReason, label: 'Question obsolète' },
 														]).map(({ reason, label }) => (
