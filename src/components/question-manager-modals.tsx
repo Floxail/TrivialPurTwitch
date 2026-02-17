@@ -457,10 +457,17 @@ C: Marseille
 D: Bordeaux
 R: B
 
+Q: Lesquels sont des langages de programmation ?
+A: Python
+B: Cobra
+C: Java
+D: Espresso
+R: A,C
+
 Q: Qui a peint la Joconde ?
 R: Léonard de Vinci
 ALT: Leonard de Vinci
-ALT: De Vinci`;
+ALT: De Vinci , vinci`;
 
 function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; errors: string[] } {
   const questions: ParsedBulkQuestion[] = [];
@@ -513,23 +520,27 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
       continue;
     }
 
-    // Détecter si c'est un QCM : au moins 2 options A-F et réponse = une lettre
+    // Détecter si c'est un QCM : au moins 2 options A-F et réponse = lettre(s) valide(s)
     const optionKeys = QCM_LABELS.filter(l => qcmOptions[l]);
-    const answerUpper = answer.toUpperCase();
-    const isQcm = optionKeys.length >= 2 && QCM_LABELS.includes(answerUpper) && qcmOptions[answerUpper];
+    // Extraire les lettres de la réponse : "B,D" / "BD" / "B D" / "B, D" → ['B', 'D']
+    const answerLetters = answer.toUpperCase().split(/[\s,]+/).join('').split('').filter(c => QCM_LABELS.includes(c));
+    const uniqueAnswerLetters = Array.from(new Set(answerLetters));
+    const isQcm = optionKeys.length >= 2 && uniqueAnswerLetters.length > 0
+      && uniqueAnswerLetters.every(l => qcmOptions[l]);
 
     if (isQcm) {
       const orderedOptions = optionKeys.map(l => qcmOptions[l]);
-      const correctIndex = optionKeys.indexOf(answerUpper);
+      const correctIndexes = uniqueAnswerLetters.map(l => optionKeys.indexOf(l)).filter(i => i >= 0).sort();
+      const answerText = correctIndexes.map(i => orderedOptions[i]).join(', ');
 
       questions.push({
         question,
-        answer: qcmOptions[answerUpper],
+        answer: answerText,
         alternativeAnswers: [],
         isQcm: true,
         qcmOptions: orderedOptions,
-        qcmCorrectIndex: correctIndex,
-        qcmCorrectIndexes: [correctIndex],
+        qcmCorrectIndex: correctIndexes[0],
+        qcmCorrectIndexes: correctIndexes,
       });
     } else {
       questions.push({ question, answer, alternativeAnswers });
@@ -649,7 +660,7 @@ export const BulkAddModal: React.FC<BulkAddModalProps> = React.memo(({
           <Form.Text className="text-muted">
             Séparez chaque question par une ligne vide.<br />
             <strong>Texte libre :</strong> <code>Q:</code> question, <code>R:</code> réponse, <code>ALT:</code> alternative (optionnel)<br />
-            <strong>QCM :</strong> <code>Q:</code> question, <code>A:</code> <code>B:</code> <code>C:</code> <code>D:</code> options, <code>R:</code> lettre correcte (ex: B)
+            <strong>QCM :</strong> <code>Q:</code> question, <code>A:</code> <code>B:</code> <code>C:</code> <code>D:</code> options, <code>R:</code> lettre(s) correcte(s) (ex: B ou A,C)
           </Form.Text>
         </Form.Group>
 
