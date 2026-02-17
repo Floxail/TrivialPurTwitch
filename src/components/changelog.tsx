@@ -5,6 +5,36 @@ const Changelog = ({ show, onClose }: any) => {
   return (
     <Modal scrollable={true} show={show} centered size="lg" dialogClassName="changelog-modal">
       <Modal.Body>
+        <h3><u>17/02/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">QCM Réponses multiples</h5>
+        <br />
+        <ul>
+          <li>Les QCM peuvent désormais avoir <b>plusieurs bonnes réponses</b></li>
+          <li>Les viewers répondent avec les lettres correctes dans le chat (ex: <code>A,C</code> ou <code>AC</code>)</li>
+          <li>Indication visuelle quand un QCM a plusieurs réponses attendues</li>
+          <li>Checkboxes dans les formulaires de création/édition au lieu de boutons radio</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Signalement de questions</h5>
+        <br />
+        <ul>
+          <li>Bouton de signalement (drapeau) après la révélation de la réponse</li>
+          <li>4 raisons : question incorrecte, réponses manquantes, mauvaise catégorie, question obsolète</li>
+          <li>Les signalements sont visibles et gérables dans le dashboard admin</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Effet MDR (Macro Data Refinement) sur les boîtes</h5>
+        <br />
+        <ul>
+          <li>Effet <b>fisheye / loupe</b> sur les noms de boîtes en page d'accueil</li>
+          <li>Zoom élastique sur la boîte survolée, zoom léger sur les voisines</li>
+          <li>Micro-tremblement et bordure pulsante style Severance</li>
+          <li>Crop marks aux 4 coins, curseur viseur (crosshair)</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
         <h3><u>16/02/2026</u></h3>
         <br />
         <h5 className="h5-with-line">Page de contribution communautaire</h5>
