@@ -23,7 +23,7 @@ function getAdminHeaders(): Record<string, string> {
 
 export type ReportReason =
   | 'question_incorrecte'
-  | 'reponse_manquante'
+  | 'reponse_non_accpeter'
   | 'categorie_incorrecte'
   | 'question_obsolete';
 

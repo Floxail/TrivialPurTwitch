@@ -83,7 +83,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const validReasons = [
       'question_incorrecte',
-      'reponse_manquante',
+      'reponse_non_accpeter',
       'categorie_incorrecte',
       'question_obsolete',
     ];
