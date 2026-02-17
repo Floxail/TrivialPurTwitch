@@ -25,10 +25,6 @@ const GlobalMenu = () => {
     navigate('/settings');
   };
 
-  const onSwitchThemeClick = () => {
-    settingsStore.toggleTheme();
-  };
-
   const onHelpClick = () => {
     setHelpDisplayed(true);
   };
