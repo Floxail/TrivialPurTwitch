@@ -74,7 +74,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(401).json({ error: 'Token Twitch invalide' });
     }
 
-    const { questionId, questionText, reason } = req.body || {};
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const { questionId, questionText, reason } = body;
 
     if (!questionId || !questionText || !reason) {
       return res.status(400).json({ error: 'questionId, questionText et reason sont requis' });
@@ -133,7 +134,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const admin = await requireAdminAuth(req);
     if (!admin) return res.status(401).json({ error: 'Unauthorized' });
 
-    const { reportId } = req.body || {};
+    const putBody = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const { reportId } = putBody;
     if (!reportId) return res.status(400).json({ error: 'reportId requis' });
 
     await database.execute({
@@ -149,12 +151,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const admin = await requireAdminAuth(req);
     if (!admin) return res.status(401).json({ error: 'Unauthorized' });
 
-    const { reportId } = req.body || {};
-    if (!reportId) return res.status(400).json({ error: 'reportId requis' });
+    const delBody = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const { reportId: delReportId } = delBody;
+    if (!delReportId) return res.status(400).json({ error: 'reportId requis' });
 
     await database.execute({
       sql: `DELETE FROM question_reports WHERE id = ?`,
-      args: [reportId],
+      args: [delReportId],
     });
 
     return res.status(200).json({ success: true });
