@@ -60,7 +60,8 @@ export type Question = {
   // Champs QCM
   questionType?: QuestionType; // Par défaut FREE_TEXT si non spécifié
   qcmOptions?: string[]; // 2-6 options (A à F)
-  qcmCorrectIndex?: number; // Index de la bonne réponse (0 à options.length-1)
+  qcmCorrectIndex?: number; // Index de la bonne réponse (legacy, single answer)
+  qcmCorrectIndexes?: number[]; // Index des bonnes réponses (multi-réponses)
 };
 
 // Structure d'une boîte (contient plusieurs cartes)

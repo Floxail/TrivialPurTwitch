@@ -370,6 +370,7 @@ const QuestionManager = () => {
     const isQcm = formData.questionType === QuestionType.QCM;
     const qcmOptions = isQcm ? formData.qcmOptions.filter((o: string) => o.trim().length > 0) : undefined;
     const qcmCorrectIndex = isQcm ? formData.qcmCorrectIndex : undefined;
+    const qcmCorrectIndexes = isQcm ? formData.qcmCorrectIndexes : undefined;
 
     await updateQuestion(editId, {
       question: formData.question,
@@ -382,6 +383,7 @@ const QuestionManager = () => {
       questionType: formData.questionType,
       qcmOptions: qcmOptions,
       qcmCorrectIndex: qcmCorrectIndex,
+      qcmCorrectIndexes: qcmCorrectIndexes,
     });
 
     handleCloseModal();

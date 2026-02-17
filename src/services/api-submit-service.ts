@@ -22,6 +22,7 @@ export interface SubmitQuestionPayload {
   questionType?: 'free_text' | 'qcm';
   qcmOptions?: string[];
   qcmCorrectIndex?: number;
+  qcmCorrectIndexes?: number[];
 }
 
 export async function apiSubmitQuestion(

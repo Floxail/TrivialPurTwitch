@@ -10,6 +10,12 @@ import {
 } from 'services/api-admin-service';
 import { categoryNames, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
+import {
+  apiGetReports,
+  apiResolveReport,
+  apiDeleteReport,
+  type QuestionReport,
+} from 'services/api-reports-service';
 
 const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
 const QCM_MIN_OPTIONS = 2;
@@ -40,11 +46,17 @@ const AdminDashboard = () => {
     questionType: 'free_text' as string,
     qcmOptions: ['', ''] as string[],
     qcmCorrectIndex: 0,
+    qcmCorrectIndexes: [0] as number[],
   });
   const [editSaving, setEditSaving] = useState(false);
 
   // Actions en cours
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
+
+  // Signalements
+  const [reports, setReports] = useState<QuestionReport[]>([]);
+  const [reportsLoading, setReportsLoading] = useState(true);
+  const [reportsFilter, setReportsFilter] = useState<'pending' | 'resolved'>('pending');
 
   useEffect(() => {
     setSubtitle('Admin - Modération');
@@ -159,6 +171,7 @@ const AdminDashboard = () => {
       questionType: q.questionType || 'free_text',
       qcmOptions: q.qcmOptions && q.qcmOptions.length >= 2 ? [...q.qcmOptions] : ['', ''],
       qcmCorrectIndex: q.qcmCorrectIndex ?? 0,
+      qcmCorrectIndexes: q.qcmCorrectIndexes ?? (q.qcmCorrectIndex !== undefined ? [q.qcmCorrectIndex] : [0]),
     });
   };
 
@@ -180,8 +193,9 @@ const AdminDashboard = () => {
 
       if (isQcm) {
         updates.qcmOptions = editForm.qcmOptions.filter(o => o.trim());
-        updates.qcmCorrectIndex = editForm.qcmCorrectIndex;
-        updates.answer = editForm.qcmOptions[editForm.qcmCorrectIndex] || editForm.answer;
+        updates.qcmCorrectIndex = editForm.qcmCorrectIndexes[0];
+        updates.qcmCorrectIndexes = editForm.qcmCorrectIndexes;
+        updates.answer = editForm.qcmCorrectIndexes.map(i => editForm.qcmOptions[i]).filter(Boolean).join(', ');
       }
 
       await apiEditPendingQuestion(editModal.id, updates);
@@ -197,6 +211,56 @@ const AdminDashboard = () => {
       setError(err.message || 'Erreur lors de la modification');
     } finally {
       setEditSaving(false);
+    }
+  };
+
+  // ==================== Signalements ====================
+  const loadReports = useCallback(async () => {
+    setReportsLoading(true);
+    try {
+      const data = await apiGetReports(reportsFilter);
+      setReports(data);
+    } catch {
+      // silently fail — reports are secondary
+    } finally {
+      setReportsLoading(false);
+    }
+  }, [reportsFilter]);
+
+  useEffect(() => {
+    loadReports();
+  }, [loadReports]);
+
+  const REASON_LABELS: Record<string, string> = {
+    question_incorrecte: 'Question incorrecte',
+    reponse_manquante: 'Réponses non accepté',
+    categorie_incorrecte: 'Catégorie incorrecte',
+    question_obsolete: 'Question obsolète',
+  };
+
+  const handleResolveReport = async (reportId: string) => {
+    setProcessingIds(prev => new Set(prev).add(reportId));
+    try {
+      await apiResolveReport(reportId);
+      setReports(prev => prev.filter(r => r.id !== reportId));
+      showSuccess('Signalement marqué comme traité');
+    } catch (err: any) {
+      setError(err.message || 'Erreur');
+    } finally {
+      setProcessingIds(prev => { const n = new Set(prev); n.delete(reportId); return n; });
+    }
+  };
+
+  const handleDeleteReport = async (reportId: string) => {
+    setProcessingIds(prev => new Set(prev).add(reportId));
+    try {
+      await apiDeleteReport(reportId);
+      setReports(prev => prev.filter(r => r.id !== reportId));
+      showSuccess('Signalement supprimé');
+    } catch (err: any) {
+      setError(err.message || 'Erreur');
+    } finally {
+      setProcessingIds(prev => { const n = new Set(prev); n.delete(reportId); return n; });
     }
   };
 
@@ -296,14 +360,17 @@ const AdminDashboard = () => {
                   <strong>{q.question}</strong>
                   {q.questionType === 'qcm' && q.qcmOptions && (
                     <div className="mt-1">
-                      {q.qcmOptions.map((opt, i) => (
-                        <span key={i} className="me-2" style={{ fontSize: '0.8rem' }}>
-                          <span className={`terminal-badge ${i === q.qcmCorrectIndex ? 'terminal-badge-success' : ''}`} style={{ marginRight: '4px' }}>
-                            {QCM_LABELS[i]}
+                      {q.qcmOptions.map((opt, i) => {
+                        const isCorrectDisplay = (q.qcmCorrectIndexes || (q.qcmCorrectIndex !== undefined ? [q.qcmCorrectIndex] : [])).includes(i);
+                        return (
+                          <span key={i} className="me-2" style={{ fontSize: '0.8rem' }}>
+                            <span className={`terminal-badge ${isCorrectDisplay ? 'terminal-badge-success' : ''}`} style={{ marginRight: '4px' }}>
+                              {QCM_LABELS[i]}
+                            </span>
+                            {opt}
                           </span>
-                          {opt}
-                        </span>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </td>
@@ -436,6 +503,107 @@ const AdminDashboard = () => {
         </Modal>
       )}
 
+      {/* ═══════════════════════════════════════════════════════════════
+         SECTION SIGNALEMENTS
+         ═══════════════════════════════════════════════════════════════ */}
+      <hr style={{ borderColor: 'var(--lumon-border)', margin: '40px 0 30px' }} />
+
+      <h2 className="text-glow-cyan mb-3">
+        <FontAwesomeIcon icon={['fas', 'flag']} className="me-2" />
+        Signalements
+        {reportsFilter === 'pending' && reports.length > 0 && (
+          <span className="terminal-badge terminal-badge-amber ms-2">{reports.length}</span>
+        )}
+      </h2>
+
+      <div className="d-flex gap-2 mb-3 align-items-center flex-wrap">
+        <div className="terminal-tabs" style={{ borderBottom: 'none' }}>
+          <div
+            className={`terminal-tab ${reportsFilter === 'pending' ? 'terminal-tab-active' : ''}`}
+            onClick={() => setReportsFilter('pending')}
+          >
+            En attente
+          </div>
+          <div
+            className={`terminal-tab ${reportsFilter === 'resolved' ? 'terminal-tab-active' : ''}`}
+            onClick={() => setReportsFilter('resolved')}
+            style={reportsFilter === 'resolved' ? { color: 'var(--lumon-success)', borderBottomColor: 'var(--lumon-success)' } : {}}
+          >
+            Traités
+          </div>
+        </div>
+        <button className="terminal-btn terminal-btn-sm" onClick={loadReports} disabled={reportsLoading}>
+          <FontAwesomeIcon icon={['fas', 'shuffle']} className="me-1" />
+          Rafraîchir
+        </button>
+      </div>
+
+      {reportsLoading && (
+        <div className="text-center py-4" style={{ color: 'var(--lumon-cyan)' }}>
+          <Spinner animation="border" size="sm" className="me-2" />
+          <span className="system-artifact" style={{ opacity: 1 }}>Chargement...</span>
+        </div>
+      )}
+
+      {!reportsLoading && reports.length === 0 && (
+        <div className="text-center py-4 system-artifact" style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+          Aucun signalement {reportsFilter === 'pending' ? 'en attente' : 'traité'}
+        </div>
+      )}
+
+      {!reportsLoading && reports.length > 0 && (
+        <table className="terminal-table" style={{ width: '100%' }}>
+          <thead>
+            <tr>
+              <th style={{ width: '30%' }}>Question</th>
+              <th style={{ width: '20%' }}>Raison</th>
+              <th style={{ width: '12%' }}>Signalé par</th>
+              <th style={{ width: '13%' }}>Date</th>
+              <th style={{ width: '25%' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reports.map(report => (
+              <tr key={report.id}>
+                <td style={{ fontSize: '0.8rem' }}>{report.questionText}</td>
+                <td>
+                  <span className="terminal-badge terminal-badge-amber" style={{ fontSize: '0.7rem' }}>
+                    {REASON_LABELS[report.reason] || report.reason}
+                  </span>
+                </td>
+                <td style={{ fontSize: '0.8rem' }}>{report.reportedBy}</td>
+                <td style={{ fontSize: '0.75rem', opacity: 0.7 }}>
+                  {report.createdAt ? new Date(report.createdAt).toLocaleDateString('fr-FR') : '—'}
+                </td>
+                <td>
+                  <div className="d-flex gap-1">
+                    {reportsFilter === 'pending' && (
+                      <button
+                        className="terminal-btn terminal-btn-success terminal-btn-sm"
+                        disabled={processingIds.has(report.id)}
+                        onClick={() => handleResolveReport(report.id)}
+                        title="Marquer comme traité"
+                      >
+                        <FontAwesomeIcon icon={['fas', 'check']} className="me-1" />
+                        Traité
+                      </button>
+                    )}
+                    <button
+                      className="terminal-btn terminal-btn-danger terminal-btn-sm"
+                      disabled={processingIds.has(report.id)}
+                      onClick={() => handleDeleteReport(report.id)}
+                      title="Supprimer le signalement"
+                    >
+                      <FontAwesomeIcon icon={['fas', 'trash']} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
       {/* Modal d'édition de question */}
       {editModal && (
         <Modal show onHide={() => setEditModal(null)} centered size="lg">
@@ -512,8 +680,15 @@ const AdminDashboard = () => {
                       disabled={editForm.qcmOptions.length <= QCM_MIN_OPTIONS}
                       onClick={() => {
                         const newOpts = editForm.qcmOptions.slice(0, -1);
-                        const newIdx = editForm.qcmCorrectIndex >= newOpts.length ? 0 : editForm.qcmCorrectIndex;
-                        setEditForm(f => ({ ...f, qcmOptions: newOpts, qcmCorrectIndex: newIdx }));
+                        const newIdxs = editForm.qcmCorrectIndexes.filter(i => i < newOpts.length);
+                        if (newIdxs.length === 0) newIdxs.push(0);
+                        setEditForm(f => ({
+                          ...f,
+                          qcmOptions: newOpts,
+                          qcmCorrectIndex: newIdxs[0],
+                          qcmCorrectIndexes: newIdxs,
+                          answer: newIdxs.map(i => newOpts[i]).filter(Boolean).join(', '),
+                        }));
                       }}
                     >
                       − Option
@@ -528,49 +703,59 @@ const AdminDashboard = () => {
                     </button>
                   </div>
                 </div>
-                {editForm.qcmOptions.map((opt, i) => (
-                  <div key={i} className="d-flex align-items-center gap-2 mb-2">
-                    <Form.Check
-                      type="radio"
-                      name="editQcmCorrect"
-                      checked={editForm.qcmCorrectIndex === i}
-                      onChange={() => {
-                        setEditForm(f => ({
-                          ...f,
-                          qcmCorrectIndex: i,
-                          answer: f.qcmOptions[i] || f.answer,
-                        }));
-                      }}
-                    />
-                    <span style={{
-                      fontWeight: 'bold',
-                      color: editForm.qcmCorrectIndex === i ? '#4CAF50' : 'inherit',
-                      minWidth: '25px',
-                    }}>
-                      {QCM_LABELS[i]})
-                    </span>
-                    <Form.Control
-                      type="text"
-                      size="sm"
-                      placeholder={`Option ${QCM_LABELS[i]}`}
-                      value={opt}
-                      onChange={(e) => {
-                        const newOpts = [...editForm.qcmOptions];
-                        newOpts[i] = e.target.value;
-                        setEditForm(f => ({
-                          ...f,
-                          qcmOptions: newOpts,
-                          answer: f.qcmCorrectIndex === i ? e.target.value : f.answer,
-                        }));
-                      }}
-                      style={{
-                        borderColor: editForm.qcmCorrectIndex === i ? '#4CAF50' : undefined,
-                        borderWidth: editForm.qcmCorrectIndex === i ? '2px' : undefined,
-                      }}
-                    />
-                    {editForm.qcmCorrectIndex === i && <span className="terminal-badge terminal-badge-success">Correcte</span>}
-                  </div>
-                ))}
+                {editForm.qcmOptions.map((opt, i) => {
+                  const isCorrectEdit = editForm.qcmCorrectIndexes.includes(i);
+                  return (
+                    <div key={i} className="d-flex align-items-center gap-2 mb-2">
+                      <Form.Check
+                        type="checkbox"
+                        checked={isCorrectEdit}
+                        onChange={() => {
+                          let newIdxs: number[];
+                          if (isCorrectEdit) {
+                            newIdxs = editForm.qcmCorrectIndexes.filter(idx => idx !== i);
+                            if (newIdxs.length === 0) return;
+                          } else {
+                            newIdxs = [...editForm.qcmCorrectIndexes, i].sort();
+                          }
+                          setEditForm(f => ({
+                            ...f,
+                            qcmCorrectIndex: newIdxs[0],
+                            qcmCorrectIndexes: newIdxs,
+                            answer: newIdxs.map(idx => f.qcmOptions[idx]).filter(Boolean).join(', '),
+                          }));
+                        }}
+                      />
+                      <span style={{
+                        fontWeight: 'bold',
+                        color: isCorrectEdit ? '#4CAF50' : 'inherit',
+                        minWidth: '25px',
+                      }}>
+                        {QCM_LABELS[i]})
+                      </span>
+                      <Form.Control
+                        type="text"
+                        size="sm"
+                        placeholder={`Option ${QCM_LABELS[i]}`}
+                        value={opt}
+                        onChange={(e) => {
+                          const newOpts = [...editForm.qcmOptions];
+                          newOpts[i] = e.target.value;
+                          setEditForm(f => ({
+                            ...f,
+                            qcmOptions: newOpts,
+                            answer: f.qcmCorrectIndexes.map(idx => idx === i ? e.target.value : newOpts[idx]).filter(Boolean).join(', '),
+                          }));
+                        }}
+                        style={{
+                          borderColor: isCorrectEdit ? '#4CAF50' : undefined,
+                          borderWidth: isCorrectEdit ? '2px' : undefined,
+                        }}
+                      />
+                      {isCorrectEdit && <span className="terminal-badge terminal-badge-success">Correcte</span>}
+                    </div>
+                  );
+                })}
               </div>
             )}
 

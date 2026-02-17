@@ -11,6 +11,7 @@ import { categoryColors, categoryNames, QuestionType, useQuestionsStore } from '
 import { QuizMode, useGameStore } from './store/game-store';
 import Podium from './podium';
 import Leaderboard from './leaderboard';
+import { apiCreateReport, type ReportReason } from 'services/api-reports-service';
 
 
 let twitchCallback: (nick: string, tid: string, msg: string) => void = () => {};
@@ -67,6 +68,50 @@ const Quiz = () => {
 	const [quizQuestionCount, setQuizQuestionCount] = useState<number>(10);
 	const [modeError, setModeError] = useState<string>('');
 	const [balanceCategories, setBalanceCategories] = useState<boolean>(true); // Mode couleurs équilibrées
+
+	// Report system
+	const [showReportMenu, setShowReportMenu] = useState(false);
+	const [reportSent, setReportSent] = useState(false);
+	const [reportError, setReportError] = useState('');
+
+	// MDR fisheye effect
+	const [mdrHoveredIndex, setMdrHoveredIndex] = useState<number | null>(null);
+	const mdrContainerRef = useRef<HTMLDivElement>(null);
+	const mdrItemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+	const mdrNeighborIndices = useMemo(() => {
+		if (mdrHoveredIndex === null || !mdrContainerRef.current) return new Set<number>();
+		const neighbors = new Set<number>();
+		const hoveredEl = mdrItemRefs.current[mdrHoveredIndex];
+		if (!hoveredEl) return neighbors;
+
+		const hoveredRect = hoveredEl.getBoundingClientRect();
+		const hCenterX = hoveredRect.left + hoveredRect.width / 2;
+		const hCenterY = hoveredRect.top + hoveredRect.height / 2;
+
+		for (let i = 0; i < mdrItemRefs.current.length; i++) {
+			if (i === mdrHoveredIndex) continue;
+			const el = mdrItemRefs.current[i];
+			if (!el) continue;
+			const rect = el.getBoundingClientRect();
+			const cx = rect.left + rect.width / 2;
+			const cy = rect.top + rect.height / 2;
+			const dx = Math.abs(cx - hCenterX);
+			const dy = Math.abs(cy - hCenterY);
+			// Neighbor = adjacent horizontally (within ~1.5x width) or vertically (within ~1.5x height)
+			if (dx < hoveredRect.width * 1.8 && dy < hoveredRect.height * 1.8) {
+				neighbors.add(i);
+			}
+		}
+		return neighbors;
+	}, [mdrHoveredIndex]);
+
+	const getMdrClass = useCallback((index: number) => {
+		if (mdrHoveredIndex === null) return '';
+		if (index === mdrHoveredIndex) return 'mdr-focused';
+		if (mdrNeighborIndices.has(index)) return 'mdr-neighbor';
+		return 'mdr-dimmed';
+	}, [mdrHoveredIndex, mdrNeighborIndices]);
 
 	const activeQuiz = gameStore.activeQuiz;
 	const currentQuestion = activeQuiz?.questions[activeQuiz.currentQuestionIndex];
@@ -249,14 +294,20 @@ const Quiz = () => {
 			const safeQuestion = currentQuizState?.questions[currentQuizState.currentQuestionIndex];
 
 			if (finalAnswerers.length > 0) {
-				const answerText = safeQuestion?.questionType === QuestionType.QCM && safeQuestion?.qcmCorrectIndex !== undefined
-					? `${QCM_LABELS[safeQuestion.qcmCorrectIndex]} - ${safeQuestion?.answer}`
+				const answerText = safeQuestion?.questionType === QuestionType.QCM
+					? (() => {
+						const idxs = safeQuestion.qcmCorrectIndexes ?? (safeQuestion.qcmCorrectIndex !== undefined ? [safeQuestion.qcmCorrectIndex] : []);
+						return idxs.map(i => `${QCM_LABELS[i]} - ${safeQuestion.qcmOptions?.[i] || ''}`).join(', ');
+					})()
 					: safeQuestion?.answer;
 				const msg = `✅ Bonne réponse : ${answerText}! Bravo à ${finalAnswerers.slice(0, 5).map(a => a.nick).join(', ')}${finalAnswerers.length > 5 ? ', ...' : ''}`;
 				twitchClient.current?.say(twitchNick, msg);
 			} else {
-				const answerText = safeQuestion?.questionType === QuestionType.QCM && safeQuestion?.qcmCorrectIndex !== undefined
-					? `${QCM_LABELS[safeQuestion.qcmCorrectIndex]} - ${safeQuestion?.answer}`
+				const answerText = safeQuestion?.questionType === QuestionType.QCM
+					? (() => {
+						const idxs = safeQuestion.qcmCorrectIndexes ?? (safeQuestion.qcmCorrectIndex !== undefined ? [safeQuestion.qcmCorrectIndex] : []);
+						return idxs.map(i => `${QCM_LABELS[i]} - ${safeQuestion.qcmOptions?.[i] || ''}`).join(', ');
+					})()
 					: safeQuestion?.answer;
 				twitchClient.current?.say(twitchNick, `⏱️ Temps écoulé ! La réponse était : ${answerText}`);
 			}
@@ -378,34 +429,49 @@ const Quiz = () => {
 
 			let isCorrect = false;
 
-			// Mode QCM : vérifier si la réponse est A, B, C ou D
+			// Mode QCM : vérifier si la réponse est A, B, C ou D (ou multi-réponses)
 			if (currentActiveQuestion.questionType === QuestionType.QCM &&
 				currentActiveQuestion.qcmOptions &&
-				currentActiveQuestion.qcmCorrectIndex !== undefined) {
+				(currentActiveQuestion.qcmCorrectIndexes || currentActiveQuestion.qcmCorrectIndex !== undefined)) {
 
-				const answer = message.trim().toUpperCase();
-				const correctIndex = currentActiveQuestion.qcmCorrectIndex;
+				const rawAnswer = message.trim().toUpperCase();
+				const correctIndexes = currentActiveQuestion.qcmCorrectIndexes
+					?? (currentActiveQuestion.qcmCorrectIndex !== undefined ? [currentActiveQuestion.qcmCorrectIndex] : []);
 				const numOptions = currentActiveQuestion.qcmOptions.length;
-
-				// Vérifier si c'est une réponse QCM valide (lettres ou chiffres selon le nombre d'options)
 				const validLabels = QCM_LABELS.slice(0, numOptions);
 				const validNumbers = Array.from({ length: numOptions }, (_, i) => String(i + 1));
-				const isValidQcmAnswer = validLabels.includes(answer) || validNumbers.includes(answer);
 
-				if (isValidQcmAnswer) {
-					// En QCM, un viewer ne peut répondre qu'UNE SEULE FOIS (pas de seconde chance)
-					if (qcmAttemptsRef.current.has(nick)) {
-						return; // Déjà tenté, ignorer
-					}
-					// Enregistrer la tentative
-					qcmAttemptsRef.current.add(nick);
+				// Parser les réponses multiples : "A,C" ou "AC" ou "A C" ou "1,3"
+				const answerLetters = rawAnswer
+					.split(/[\s,]+/)
+					.join('')
+					.split('')
+					.filter((ch, i, arr) => arr.indexOf(ch) === i); // dédupliquer
 
-					// Vérifier si c'est la bonne réponse
-					if (answer === QCM_LABELS[correctIndex] || answer === String(correctIndex + 1)) {
-						isCorrect = true;
-					}
+				// Convertir chiffres en lettres si besoin
+				const normalizedAnswers = answerLetters.map(ch => {
+					if (validNumbers.includes(ch)) return QCM_LABELS[parseInt(ch) - 1];
+					return ch;
+				}).filter(ch => validLabels.includes(ch));
+
+				// Ignorer si aucune lettre QCM valide
+				if (normalizedAnswers.length === 0) return;
+
+				// En QCM, un viewer ne peut répondre qu'UNE SEULE FOIS
+				if (qcmAttemptsRef.current.has(nick)) {
+					return;
 				}
-				// Si ce n'est pas une réponse QCM valide, on ignore silencieusement
+				qcmAttemptsRef.current.add(nick);
+
+				// Vérifier : les lettres données doivent correspondre exactement aux bonnes réponses
+				const correctLabels = correctIndexes.map(i => QCM_LABELS[i]).sort();
+				const givenLabels = [...normalizedAnswers].sort();
+
+				if (correctLabels.length === givenLabels.length &&
+					correctLabels.every((l, i) => l === givenLabels[i])) {
+					isCorrect = true;
+				}
+				// Si ce n'est pas correct, on ne fait rien (tentative unique)
 			} else {
 				// Mode réponse libre (comportement existant)
 				const proposition = cleanValueLight(message);
@@ -599,7 +665,11 @@ const Quiz = () => {
 			return;
 		}
 
-		// 3. Transition
+		// 3. Reset report state & transition
+		setShowReportMenu(false);
+		setReportSent(false);
+		setReportError('');
+
 		setTimeout(() => {
 			gameStore.nextQuestion();
 
@@ -812,11 +882,22 @@ const Quiz = () => {
 											<p className="mb-2" style={{ color: 'var(--lumon-text-dim)' }}>
 												<strong style={{ color: 'var(--lumon-cyan)' }}>Boîtes disponibles :</strong>
 											</p>
-											<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-												{boxes.map(b => (
-													<span key={b.name} className="box-tag-terminal">
+											<div
+												className="mdr-data-point-container"
+												ref={mdrContainerRef}
+												onMouseLeave={() => setMdrHoveredIndex(null)}
+											>
+												{boxes.map((b, i) => (
+													<div
+														key={b.name}
+														ref={el => { mdrItemRefs.current[i] = el; }}
+														className={`mdr-data-point ${getMdrClass(i)}`}
+														onMouseEnter={() => setMdrHoveredIndex(i)}
+													>
+														<span className="mdr-corner-tr" />
+														<span className="mdr-corner-bl" />
 														{b.name}
-													</span>
+													</div>
 												))}
 											</div>
 										</div>
@@ -980,14 +1061,20 @@ const Quiz = () => {
 													})}
 												</div>
 												<p className="text-center mt-3 system-artifact" style={{ fontSize: '12px', opacity: 0.7 }}>
-													Répondez avec{' '}
-													{currentQuestion.qcmOptions.map((_, i) => (
-														<span key={i}>
-															{i > 0 && (i === currentQuestion.qcmOptions!.length - 1 ? ' ou ' : ', ')}
-															<strong>{QCM_LABELS[i]}</strong>
-														</span>
-													))}{' '}
-													dans le chat
+													{(() => {
+														const correctCount = (currentQuestion.qcmCorrectIndexes ?? (currentQuestion.qcmCorrectIndex !== undefined ? [currentQuestion.qcmCorrectIndex] : [])).length;
+														if (correctCount > 1) {
+															return <>Répondez avec les <strong>{correctCount} lettres</strong> correctes (ex: A,C) dans le chat</>;
+														}
+														return <>Répondez avec{' '}
+															{currentQuestion.qcmOptions!.map((_, i) => (
+																<span key={i}>
+																	{i > 0 && (i === currentQuestion.qcmOptions!.length - 1 ? ' ou ' : ', ')}
+																	<strong>{QCM_LABELS[i]}</strong>
+																</span>
+															))}{' '}
+															dans le chat</>;
+													})()}
 												</p>
 											</div>
 										)}
@@ -999,10 +1086,73 @@ const Quiz = () => {
 											marginBottom: '20px'
 										}}>
 											<h3 style={{ margin: 0 }}>
-												✅ {isQcmQuestion && currentQuestion.qcmCorrectIndex !== undefined
-													? `${QCM_LABELS[currentQuestion.qcmCorrectIndex]} - ${currentQuestion.answer}`
+												✅ {isQcmQuestion && (currentQuestion.qcmCorrectIndexes || currentQuestion.qcmCorrectIndex !== undefined)
+													? (() => {
+														const idxs = currentQuestion.qcmCorrectIndexes
+															?? (currentQuestion.qcmCorrectIndex !== undefined ? [currentQuestion.qcmCorrectIndex] : []);
+														return idxs.map(i => `${QCM_LABELS[i]} - ${currentQuestion.qcmOptions?.[i] || ''}`).join(', ');
+													})()
 													: currentQuestion.answer}
 											</h3>
+										</div>
+									)}
+
+									{/* Bouton de signalement — après révélation */}
+									{questionRevealed && currentQuestion && (
+										<div className="report-section">
+											{reportSent ? (
+												<div className="report-feedback report-feedback-success">
+													<FontAwesomeIcon icon={['fas', 'check']} /> Signalement envoyé
+												</div>
+											) : reportError ? (
+												<div className="report-feedback report-feedback-error">{reportError}</div>
+											) : !showReportMenu ? (
+												<div className="report-flag-row">
+													<button
+														className="report-flag-btn"
+														onClick={() => setShowReportMenu(true)}
+													>
+														<FontAwesomeIcon icon={['fas', 'flag']} />
+														<span className="report-flag-label">Signaler</span>
+													</button>
+												</div>
+											) : (
+												<div className="report-options">
+													<div className="report-options-header">
+														<span>Signaler cette question</span>
+														<button className="report-close-btn" onClick={() => setShowReportMenu(false)}>✕</button>
+													</div>
+													<div className="report-options-list">
+														{([
+															{ reason: 'question_incorrecte' as ReportReason, label: 'Question incorrecte' },
+															{ reason: 'reponse_non_accpeter' as ReportReason, label: 'Réponses non accepté' },
+															{ reason: 'categorie_incorrecte' as ReportReason, label: 'Mauvaise catégorie' },
+															{ reason: 'question_obsolete' as ReportReason, label: 'Question obsolète' },
+														]).map(({ reason, label }) => (
+															<button
+																key={reason}
+																className="report-option-btn"
+																onClick={async () => {
+																	try {
+																		await apiCreateReport({
+																			questionId: currentQuestion.id,
+																			questionText: currentQuestion.question,
+																			reason,
+																		});
+																		setShowReportMenu(false);
+																		setReportSent(true);
+																	} catch (err: any) {
+																		setReportError(err.message || 'Erreur lors du signalement');
+																		setShowReportMenu(false);
+																	}
+																}}
+															>
+																{label}
+															</button>
+														))}
+													</div>
+												</div>
+											)}
 										</div>
 									)}
 

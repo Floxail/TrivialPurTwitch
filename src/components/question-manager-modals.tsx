@@ -28,6 +28,7 @@ interface QuestionFormData {
   questionType: QuestionType;
   qcmOptions: string[];
   qcmCorrectIndex: number;
+  qcmCorrectIndexes: number[];
 }
 
 interface QuestionModalProps {
@@ -60,6 +61,7 @@ export interface ParsedBulkQuestion {
   isQcm?: boolean;
   qcmOptions?: string[];
   qcmCorrectIndex?: number;
+  qcmCorrectIndexes?: number[];
 }
 
 interface BulkAddModalProps {
@@ -136,6 +138,7 @@ const defaultFormData: QuestionFormData = {
   questionType: QuestionType.FREE_TEXT,
   qcmOptions: ['', ''],
   qcmCorrectIndex: 0,
+  qcmCorrectIndexes: [0],
 };
 
 export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
@@ -165,6 +168,7 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
           questionType: editingQuestion.questionType || QuestionType.FREE_TEXT,
           qcmOptions: editingQuestion.qcmOptions || ['', ''],
           qcmCorrectIndex: editingQuestion.qcmCorrectIndex ?? 0,
+          qcmCorrectIndexes: editingQuestion.qcmCorrectIndexes ?? (editingQuestion.qcmCorrectIndex !== undefined ? [editingQuestion.qcmCorrectIndex] : [0]),
         });
       } else {
         setFormData({
@@ -321,14 +325,16 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
                     disabled={formData.qcmOptions.length <= QCM_MIN_OPTIONS}
                     onClick={() => {
                       const newOptions = formData.qcmOptions.slice(0, -1);
-                      const newCorrectIndex = formData.qcmCorrectIndex >= newOptions.length
-                        ? 0
-                        : formData.qcmCorrectIndex;
+                      const newCorrectIndexes = formData.qcmCorrectIndexes
+                        .filter(i => i < newOptions.length);
+                      if (newCorrectIndexes.length === 0) newCorrectIndexes.push(0);
+                      const newAnswer = newCorrectIndexes.map(i => newOptions[i]).filter(Boolean).join(', ');
                       setFormData({
                         ...formData,
                         qcmOptions: newOptions,
-                        qcmCorrectIndex: newCorrectIndex,
-                        answer: newOptions[newCorrectIndex] || formData.answer
+                        qcmCorrectIndex: newCorrectIndexes[0],
+                        qcmCorrectIndexes: newCorrectIndexes,
+                        answer: newAnswer || formData.answer
                       });
                     }}
                     title="Supprimer la dernière option"
@@ -353,50 +359,64 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
                 </div>
               </div>
               <p className="text-muted small mb-3">
-                Les viewers répondront avec {formData.qcmOptions.map((_, i) => QCM_LABELS[i]).join(', ')} dans le chat
+                {formData.qcmCorrectIndexes.length > 1
+                  ? `Les viewers répondront avec les lettres correctes (ex: ${formData.qcmCorrectIndexes.map(i => QCM_LABELS[i]).join(',')}) dans le chat`
+                  : `Les viewers répondront avec ${formData.qcmOptions.map((_, i) => QCM_LABELS[i]).join(', ')} dans le chat`
+                }
               </p>
-              {formData.qcmOptions.map((option, index) => (
-                <Form.Group key={index} className="mb-2">
-                  <div className="d-flex align-items-center gap-2">
-                    <Form.Check
-                      type="radio"
-                      name="qcmCorrect"
-                      checked={formData.qcmCorrectIndex === index}
-                      onChange={() => {
-                        setFormData({
-                          ...formData,
-                          qcmCorrectIndex: index,
-                          answer: formData.qcmOptions[index] || formData.answer
-                        });
-                      }}
-                      title="Réponse correcte"
-                    />
-                    <span style={{ fontWeight: 'bold', color: formData.qcmCorrectIndex === index ? '#4CAF50' : 'inherit', minWidth: '25px' }}>
-                      {QCM_LABELS[index]})
-                    </span>
-                    <Form.Control
-                      type="text"
-                      placeholder={`Option ${QCM_LABELS[index]}`}
-                      value={option}
-                      onChange={(e) => {
-                        const newOptions = [...formData.qcmOptions];
-                        newOptions[index] = e.target.value;
-                        const newAnswer = formData.qcmCorrectIndex === index ? e.target.value : formData.answer;
-                        setFormData({ ...formData, qcmOptions: newOptions, answer: newAnswer });
-                      }}
-                      style={{
-                        borderColor: formData.qcmCorrectIndex === index ? '#4CAF50' : undefined,
-                        borderWidth: formData.qcmCorrectIndex === index ? '2px' : undefined
-                      }}
-                    />
-                    {formData.qcmCorrectIndex === index && (
-                      <Badge bg="success">✓ Correcte</Badge>
-                    )}
-                  </div>
-                </Form.Group>
-              ))}
+              {formData.qcmOptions.map((option, index) => {
+                const isCorrect = formData.qcmCorrectIndexes.includes(index);
+                return (
+                  <Form.Group key={index} className="mb-2">
+                    <div className="d-flex align-items-center gap-2">
+                      <Form.Check
+                        type="checkbox"
+                        checked={isCorrect}
+                        onChange={() => {
+                          let newIndexes: number[];
+                          if (isCorrect) {
+                            newIndexes = formData.qcmCorrectIndexes.filter(i => i !== index);
+                            if (newIndexes.length === 0) return; // Au moins 1 réponse correcte
+                          } else {
+                            newIndexes = [...formData.qcmCorrectIndexes, index].sort();
+                          }
+                          const newAnswer = newIndexes.map(i => formData.qcmOptions[i]).filter(Boolean).join(', ');
+                          setFormData({
+                            ...formData,
+                            qcmCorrectIndex: newIndexes[0],
+                            qcmCorrectIndexes: newIndexes,
+                            answer: newAnswer || formData.answer
+                          });
+                        }}
+                        title="Réponse correcte"
+                      />
+                      <span style={{ fontWeight: 'bold', color: isCorrect ? '#4CAF50' : 'inherit', minWidth: '25px' }}>
+                        {QCM_LABELS[index]})
+                      </span>
+                      <Form.Control
+                        type="text"
+                        placeholder={`Option ${QCM_LABELS[index]}`}
+                        value={option}
+                        onChange={(e) => {
+                          const newOptions = [...formData.qcmOptions];
+                          newOptions[index] = e.target.value;
+                          const newAnswer = formData.qcmCorrectIndexes.map(i => newOptions[i]).filter(Boolean).join(', ');
+                          setFormData({ ...formData, qcmOptions: newOptions, answer: newAnswer });
+                        }}
+                        style={{
+                          borderColor: isCorrect ? '#4CAF50' : undefined,
+                          borderWidth: isCorrect ? '2px' : undefined
+                        }}
+                      />
+                      {isCorrect && (
+                        <Badge bg="success">&#10003; Correcte</Badge>
+                      )}
+                    </div>
+                  </Form.Group>
+                );
+              })}
               <Form.Text className="text-muted">
-                Sélectionnez le bouton radio pour indiquer la bonne réponse
+                Cochez les cases pour indiquer les bonnes réponses (une ou plusieurs)
               </Form.Text>
             </div>
           )}
@@ -509,6 +529,7 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
         isQcm: true,
         qcmOptions: orderedOptions,
         qcmCorrectIndex: correctIndex,
+        qcmCorrectIndexes: [correctIndex],
       });
     } else {
       questions.push({ question, answer, alternativeAnswers });
@@ -659,15 +680,18 @@ export const BulkAddModal: React.FC<BulkAddModalProps> = React.memo(({
                     <br />
                     {q.isQcm && q.qcmOptions ? (
                       <>
-                        {q.qcmOptions.map((opt, j) => (
-                          <span key={j}>
-                            <span style={{ color: j === q.qcmCorrectIndex ? '#4CAF50' : 'inherit', fontWeight: j === q.qcmCorrectIndex ? 'bold' : 'normal' }}>
-                              {String.fromCharCode(65 + j)}: {opt}
-                              {j === q.qcmCorrectIndex && ' \u2713'}
+                        {q.qcmOptions.map((opt, j) => {
+                          const isCorrectPreview = (q.qcmCorrectIndexes || [q.qcmCorrectIndex]).includes(j);
+                          return (
+                            <span key={j}>
+                              <span style={{ color: isCorrectPreview ? '#4CAF50' : 'inherit', fontWeight: isCorrectPreview ? 'bold' : 'normal' }}>
+                                {String.fromCharCode(65 + j)}: {opt}
+                                {isCorrectPreview && ' \u2713'}
+                              </span>
+                              <br />
                             </span>
-                            <br />
-                          </span>
-                        ))}
+                          );
+                        })}
                       </>
                     ) : (
                       <>

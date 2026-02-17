@@ -27,6 +27,7 @@ export type PendingQuestion = {
   questionType: string;
   qcmOptions?: string[];
   qcmCorrectIndex?: number;
+  qcmCorrectIndexes?: number[];
   submittedBy?: string;
   submittedById?: string;
   status: 'pending' | 'approved' | 'rejected';

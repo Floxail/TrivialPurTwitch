@@ -115,7 +115,8 @@ const ContributionPage: React.FC = () => {
   const [boxName, setBoxName] = useState('');
   const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.FREE_TEXT);
   const [qcmOptions, setQcmOptions] = useState<string[]>(['', '']);
-  const [qcmCorrectIndex, setQcmCorrectIndex] = useState(0);
+  const [, setQcmCorrectIndex] = useState(0);
+  const [qcmCorrectIndexes, setQcmCorrectIndexes] = useState<number[]>([0]);
   const [submitting, setSubmitting] = useState(false);
 
   // Bulk
@@ -152,6 +153,7 @@ const ContributionPage: React.FC = () => {
     setQuestionType(QuestionType.FREE_TEXT);
     setQcmOptions(['', '']);
     setQcmCorrectIndex(0);
+    setQcmCorrectIndexes([0]);
   };
 
   const handleCreateBox = async () => {
@@ -205,7 +207,8 @@ const ContributionPage: React.FC = () => {
         }
         if (questionType === QuestionType.QCM) {
           payload.qcmOptions = qcmOptions;
-          payload.qcmCorrectIndex = qcmCorrectIndex;
+          payload.qcmCorrectIndex = qcmCorrectIndexes[0];
+          payload.qcmCorrectIndexes = qcmCorrectIndexes;
         }
         await apiSubmitQuestion(payload);
         showSuccess('Question soumise pour modération !');
@@ -227,7 +230,8 @@ const ContributionPage: React.FC = () => {
         };
         if (questionType === QuestionType.QCM) {
           newQuestion.qcmOptions = qcmOptions;
-          newQuestion.qcmCorrectIndex = qcmCorrectIndex;
+          newQuestion.qcmCorrectIndex = qcmCorrectIndexes[0];
+          newQuestion.qcmCorrectIndexes = qcmCorrectIndexes;
         }
         addQuestion(newQuestion);
         showSuccess('Question ajoutée à ta collection locale !');
@@ -525,10 +529,12 @@ const ContributionPage: React.FC = () => {
                     disabled={qcmOptions.length <= QCM_MIN_OPTIONS}
                     onClick={() => {
                       const newOpts = qcmOptions.slice(0, -1);
-                      const newIdx = qcmCorrectIndex >= newOpts.length ? 0 : qcmCorrectIndex;
+                      const newIdxs = qcmCorrectIndexes.filter(i => i < newOpts.length);
+                      if (newIdxs.length === 0) newIdxs.push(0);
                       setQcmOptions(newOpts);
-                      setQcmCorrectIndex(newIdx);
-                      if (newIdx !== qcmCorrectIndex) setAnswer(newOpts[newIdx] || answer);
+                      setQcmCorrectIndex(newIdxs[0]);
+                      setQcmCorrectIndexes(newIdxs);
+                      setAnswer(newIdxs.map(i => newOpts[i]).filter(Boolean).join(', '));
                     }}
                   >
                     − Option
@@ -543,44 +549,54 @@ const ContributionPage: React.FC = () => {
                   </button>
                 </div>
               </div>
-              {qcmOptions.map((opt, i) => (
-                <Form.Group key={i} className="mb-2">
-                  <div className="d-flex align-items-center gap-2">
-                    <Form.Check
-                      type="radio"
-                      name="qcmCorrect"
-                      checked={qcmCorrectIndex === i}
-                      onChange={() => {
-                        setQcmCorrectIndex(i);
-                        setAnswer(qcmOptions[i] || answer);
-                      }}
-                    />
-                    <span style={{
-                      fontWeight: 'bold',
-                      color: qcmCorrectIndex === i ? '#4CAF50' : 'inherit',
-                      minWidth: '25px'
-                    }}>
-                      {QCM_LABELS[i]})
-                    </span>
-                    <Form.Control
-                      type="text"
-                      placeholder={`Option ${QCM_LABELS[i]}`}
-                      value={opt}
-                      onChange={(e) => {
-                        const newOpts = [...qcmOptions];
-                        newOpts[i] = e.target.value;
-                        setQcmOptions(newOpts);
-                        if (qcmCorrectIndex === i) setAnswer(e.target.value);
-                      }}
-                      style={{
-                        borderColor: qcmCorrectIndex === i ? '#4CAF50' : undefined,
-                        borderWidth: qcmCorrectIndex === i ? '2px' : undefined,
-                      }}
-                    />
-                    {qcmCorrectIndex === i && <span className="terminal-badge terminal-badge-success">Correcte</span>}
-                  </div>
-                </Form.Group>
-              ))}
+              {qcmOptions.map((opt, i) => {
+                const isCorrect = qcmCorrectIndexes.includes(i);
+                return (
+                  <Form.Group key={i} className="mb-2">
+                    <div className="d-flex align-items-center gap-2">
+                      <Form.Check
+                        type="checkbox"
+                        checked={isCorrect}
+                        onChange={() => {
+                          let newIdxs: number[];
+                          if (isCorrect) {
+                            newIdxs = qcmCorrectIndexes.filter(idx => idx !== i);
+                            if (newIdxs.length === 0) return;
+                          } else {
+                            newIdxs = [...qcmCorrectIndexes, i].sort();
+                          }
+                          setQcmCorrectIndex(newIdxs[0]);
+                          setQcmCorrectIndexes(newIdxs);
+                          setAnswer(newIdxs.map(idx => qcmOptions[idx]).filter(Boolean).join(', '));
+                        }}
+                      />
+                      <span style={{
+                        fontWeight: 'bold',
+                        color: isCorrect ? '#4CAF50' : 'inherit',
+                        minWidth: '25px'
+                      }}>
+                        {QCM_LABELS[i]})
+                      </span>
+                      <Form.Control
+                        type="text"
+                        placeholder={`Option ${QCM_LABELS[i]}`}
+                        value={opt}
+                        onChange={(e) => {
+                          const newOpts = [...qcmOptions];
+                          newOpts[i] = e.target.value;
+                          setQcmOptions(newOpts);
+                          setAnswer(qcmCorrectIndexes.map(idx => idx === i ? e.target.value : newOpts[idx]).filter(Boolean).join(', '));
+                        }}
+                        style={{
+                          borderColor: isCorrect ? '#4CAF50' : undefined,
+                          borderWidth: isCorrect ? '2px' : undefined,
+                        }}
+                      />
+                      {isCorrect && <span className="terminal-badge terminal-badge-success">Correcte</span>}
+                    </div>
+                  </Form.Group>
+                );
+              })}
             </div>
           )}
 
