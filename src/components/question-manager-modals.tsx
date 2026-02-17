@@ -450,11 +450,9 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
 // BulkAddModal - Modal pour ajouter plusieurs questions en masse
 // ============================================================
 
-const BULK_ADD_PLACEHOLDER = `Q: Quelle est la capitale de la France ?
-A: Lyon
-B: Paris
-C: Marseille
-D: Bordeaux
+const BULK_ADD_PLACEHOLDER = `Q: Paris est la capitale de la France ?
+A: FAUX
+B: VRAIS
 R: B
 
 Q: Lesquels sont des langages de programmation ?

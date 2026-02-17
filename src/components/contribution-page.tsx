@@ -664,11 +664,23 @@ const ContributionPage: React.FC = () => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Questions (format Q:/R:/ALT: ou QCM A:/B:/C:/D:)</Form.Label>
+            <Form.Label>Questions (format Q:/R:/ALT: ou QCM A:/B:/.../F:)</Form.Label>
             <Form.Control
               as="textarea"
               rows={12}
-              placeholder={`Q: Quelle est la capitale de la France ?\nA: Lyon\nB: Paris\nC: Marseille\nD: Bordeaux\nR: B\n\nQ: Qui a peint la Joconde ?\nR: Léonard de Vinci\nALT: De Vinci`}
+              placeholder={`Q: Paris est la capitale de la France ?\n
+                A: FAUX\n
+                B: VRAIS\n
+                R: B\n\n
+                Q: Lesquels sont des langages de programmation ?\n
+                A: Python\n
+                B: Cobra\n
+                C: Java\n
+                D: Espresso\n
+                R: A,C\n\n
+                Q: Qui a peint la Joconde ?\n
+                R: Léonard de Vinci\n
+                ALT: De Vinci, Vinci, etc..`}
               value={bulkText}
               onChange={(e) => { setBulkText(e.target.value); setBulkPreview(null); }}
               style={{ fontFamily: 'monospace', fontSize: '13px' }}
