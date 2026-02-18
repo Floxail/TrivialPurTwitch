@@ -5,7 +5,8 @@
       "Bash(npx tailwindcss:*)",
       "Bash(python:*)",
       "Bash(npx tsc:*)",
-      "Bash(npx react-scripts build:*)"
+      "Bash(npx react-scripts build:*)",
+      "Bash(yarn install:*)"
     ]
   }
 }
