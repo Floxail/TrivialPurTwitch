@@ -16,6 +16,7 @@ import QuestionManagerTerminal from './components/question-manager-terminal';
 import AdminDashboard from './components/admin-dashboard';
 import ContributionPage from './components/contribution-page';
 import Convertisseur from './components/convertisseur';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
 	const navigate = useNavigate();
@@ -144,6 +145,7 @@ useEffect(() => {
 					<Route path="/settings" element={<Settings />} />
 </Routes>
 			</div>
+		<Analytics />
 		</>
 	);
 }
