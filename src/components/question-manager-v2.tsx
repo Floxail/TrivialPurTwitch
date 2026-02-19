@@ -14,7 +14,7 @@ const QuestionManager = () => {
   const storeQuestions = useQuestionsStore(state => state.questions);
   const storeBoxes = useQuestionsStore(state => state.boxes);
   const syncStatus = useQuestionsStore(state => state.syncStatus);
-  const lastGitHubSync = useQuestionsStore(state => state.lastGitHubSync);
+  const lastDBSync = useQuestionsStore(state => state.lastDBSync);
 
   // Actions du store (références stables, ne causent pas de re-render)
   const updateQuestion = useQuestionsStore(state => state.updateQuestion);
@@ -23,7 +23,7 @@ const QuestionManager = () => {
   const addBox = useQuestionsStore(state => state.addBox);
   const removeBox = useQuestionsStore(state => state.removeBox);
   const getBoxByName = useQuestionsStore(state => state.getBoxByName);
-  const loadFromGitHub = useQuestionsStore(state => state.loadFromGitHub);
+  const syncFromDB = useQuestionsStore(state => state.syncFromDB);
   const removeDuplicates = useQuestionsStore(state => state.removeDuplicates);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -136,15 +136,15 @@ const QuestionManager = () => {
     return 'à l\'instant';
   };
 
-  // Synchronisation depuis GitHub
-  const handleSyncFromGitHub = async () => {
+  // Synchronisation depuis la BD Turso
+  const handleSyncFromDB = async () => {
     try {
-      setImportSuccess('🔄 Synchronisation avec GitHub en cours...');
-      await loadFromGitHub();
-      setImportSuccess('✅ Synchronisation GitHub réussie !');
+      setImportSuccess('🔄 Synchronisation avec la base de données en cours...');
+      await syncFromDB();
+      setImportSuccess('✅ Synchronisation BD réussie !');
       setTimeout(() => setImportSuccess(''), 5000);
     } catch (error) {
-      setImportError('❌ Erreur lors de la synchronisation GitHub');
+      setImportError('❌ Erreur lors de la synchronisation BD');
       setTimeout(() => setImportError(''), 5000);
     }
   };
@@ -522,8 +522,8 @@ const QuestionManager = () => {
           <FontAwesomeIcon icon={['fas', 'arrow-left']} /> Retour au quiz
         </Button>
         <div>
-          <Button variant="primary" className="me-2" onClick={handleSyncFromGitHub}>
-            <FontAwesomeIcon icon={['fas', 'sync']} /> Sync GitHub
+          <Button variant="primary" className="me-2" onClick={handleSyncFromDB}>
+            <FontAwesomeIcon icon={['fas', 'sync']} /> Sync BD
           </Button>
           <Button variant="warning" className="me-2" onClick={handleCheckDuplicates}>
             <FontAwesomeIcon icon={['fas', 'search']} /> Vérifier doublons
@@ -551,7 +551,7 @@ const QuestionManager = () => {
               {syncStatus === 'success' && (
                 <>
                   <FontAwesomeIcon icon={['fas', 'check-circle']} className="me-2" />
-                  <strong>Synchronisé avec GitHub</strong>
+                  <strong>Synchronisé avec la base de données</strong>
                 </>
               )}
               {syncStatus === 'error' && (
@@ -568,13 +568,13 @@ const QuestionManager = () => {
               )}
             </div>
             <div className="text-muted small">
-              {lastGitHubSync && (
+              {lastDBSync && (
                 <>
-                  Dernière sync: {getRelativeTime(lastGitHubSync)}
+                  Dernière sync BD: {getRelativeTime(lastDBSync)}
                   <span className="ms-2">({storeQuestions.length} questions)</span>
                 </>
               )}
-              {!lastGitHubSync && (
+              {!lastDBSync && (
                 <span>Aucune synchronisation effectuée</span>
               )}
             </div>

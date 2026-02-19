@@ -46,33 +46,33 @@ useEffect(() => {
     localStorage.setItem('quiz_migration_v2_done', 'true');
   }
   
-  // AJOUTER ICI : Charger depuis GitHub
-  const lastSync = localStorage.getItem('quiz_last_github_sync');
+  // Charger depuis la BD Turso au démarrage
+  const lastSync = localStorage.getItem('quiz_last_db_sync');
   const now = Date.now();
-  const oneHour = 60 * 60 * 1000; // 1 heure au lieu de 24h
+  const oneHour = 60 * 60 * 1000;
 
-  // Charger depuis GitHub si :
+  // Synchroniser si :
   // - Jamais synchronisé
   // - Dernière sync > 1h
   if (!lastSync || (now - parseInt(lastSync)) > oneHour) {
-    console.log('🔄 Chargement des questions depuis GitHub...');
-    questionsStore.loadFromGitHub().then(() => {
-      localStorage.setItem('quiz_last_github_sync', now.toString());
+    console.log('🔄 Chargement des questions depuis la BD Turso...');
+    questionsStore.syncFromDB().then(() => {
+      localStorage.setItem('quiz_last_db_sync', now.toString());
     });
   }
 
   // Sync périodique en arrière-plan toutes les heures
   const syncInterval = setInterval(() => {
-    const lastSyncTime = localStorage.getItem('quiz_last_github_sync');
+    const lastSyncTime = localStorage.getItem('quiz_last_db_sync');
     const currentTime = Date.now();
 
     if (!lastSyncTime || (currentTime - parseInt(lastSyncTime)) > oneHour) {
-      console.log('🔄 Synchronisation automatique en arrière-plan...');
-      questionsStore.loadFromGitHub().then(() => {
-        localStorage.setItem('quiz_last_github_sync', currentTime.toString());
+      console.log('🔄 Synchronisation automatique en arrière-plan (BD)...');
+      questionsStore.syncFromDB().then(() => {
+        localStorage.setItem('quiz_last_db_sync', currentTime.toString());
       });
     }
-  }, oneHour); // Vérifier toutes les heures
+  }, oneHour);
 
   // Nettoyer l'intervalle quand le composant est démonté
   return () => clearInterval(syncInterval);

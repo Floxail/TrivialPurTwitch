@@ -1,92 +1,65 @@
-// Service pour charger les questions depuis l'API Turso (avec fallback GitHub)
+// Service pour charger les questions depuis l'API Turso (source de vérité unique)
+//
+// Architecture : 1 Vercel + 1 Turso DB partagée entre tous les streamers
+// Priorité 1 : API Turso (/api/questions)
+// Priorité 2 : Build local (filet de sécurité si API totalement down)
+// Priorité 3 : Cache localStorage (géré automatiquement par Zustand persist)
 
-// Priorité 1 : API Turso (via Vercel serverless)
-// Priorité 2 : GitHub Raw
-// Priorité 3 : Build local
 export const loadQuestionsFromAPI = async (): Promise<any> => {
   try {
     const response = await fetch(`/api/questions?t=${Date.now()}`);
     if (response.ok) {
       const data = await response.json();
-      console.log(`✅ Questions chargées depuis l'API Turso (${data.questions.length})`);
+      console.log(`✅ Questions chargées depuis la BD Turso (${data.questions.length})`);
       return data;
     }
   } catch (apiError) {
-    console.warn('⚠️ API Turso indisponible, fallback vers GitHub raw', apiError);
+    console.warn('⚠️ API Turso indisponible, fallback vers build local', apiError);
   }
 
-  // Fallback vers GitHub
-  return loadQuestionsFromGitHub();
-};
-
-// Fallback : charger depuis GitHub raw ou build local
-export const loadQuestionsFromGitHub = async (): Promise<any> => {
+  // Fallback d'urgence : build local bundlé
   try {
-    // Essayer d'abord depuis GitHub raw (toujours à jour)
-    const githubRawUrl = 'https://raw.githubusercontent.com/Floxail/TrivialPurTwitch/master/public/questions/questions.json';
-
-    try {
-      const response = await fetch(`${githubRawUrl}?t=${Date.now()}`);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Questions chargées depuis GitHub raw');
-        return data;
-      }
-    } catch (githubError) {
-      console.warn('⚠️ Impossible de charger depuis GitHub raw, fallback vers build local', githubError);
-    }
-
-    // Fallback : charger depuis le build local
     const response = await fetch(
       `${process.env.PUBLIC_URL}/questions/questions.json?t=${Date.now()}`
     );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (response.ok) {
+      const data = await response.json();
+      console.log('✅ Questions chargées depuis build local (urgence)');
+      return data;
     }
-
-    const data = await response.json();
-    console.log('✅ Questions chargées depuis build local');
-    return data;
-  } catch (error) {
-    console.error('❌ Erreur lors du chargement depuis GitHub:', error);
-    return null;
+  } catch (localError) {
+    console.error('❌ Build local inaccessible:', localError);
   }
+
+  return null;
 };
 
-// Fusionner les questions GitHub avec localStorage
-export const mergeQuestionsFromGitHub = (
-  githubData: any,
+// Fusionner les questions BD avec les questions locales (custom par navigateur)
+export const mergeQuestionsFromDB = (
+  dbData: any,
   localQuestions: any[],
-  previousGithubIds?: Set<string>
+  previousDBIds?: Set<string>
 ): any[] => {
-  if (!githubData || !githubData.questions) {
+  if (!dbData || !dbData.questions) {
     return localQuestions;
   }
 
-  const githubQuestions = githubData.questions;
-  const currentGithubIds = new Set(githubQuestions.map((q: any) => q.id));
+  const dbQuestions = dbData.questions;
+  const currentDBIds = new Set(dbQuestions.map((q: any) => q.id));
 
-  // Déterminer quelles questions locales sont vraiment "locales" (créées manuellement)
-  // On considère qu'une question est locale si :
-  // 1. Elle n'est pas dans GitHub actuellement
-  // 2. Elle n'était pas dans GitHub précédemment (si on a l'historique)
-
+  // Questions locales = questions qui n'ont JAMAIS été dans la BD
+  // (custom privées du streamer, non partagées)
   let localOnlyQuestions;
 
-  if (previousGithubIds) {
-    // Si on a l'historique des IDs GitHub précédents
-    // Les questions vraiment locales sont celles qui n'ont JAMAIS été dans GitHub
+  if (previousDBIds) {
     localOnlyQuestions = localQuestions.filter(q =>
-      !currentGithubIds.has(q.id) && !previousGithubIds.has(q.id)
+      !currentDBIds.has(q.id) && !previousDBIds.has(q.id)
     );
   } else {
-    // Premier chargement : on considère que les questions non-GitHub sont locales
-    localOnlyQuestions = localQuestions.filter(q => !currentGithubIds.has(q.id));
+    localOnlyQuestions = localQuestions.filter(q => !currentDBIds.has(q.id));
   }
 
-  console.log(`🔄 Merge: ${githubQuestions.length} questions GitHub + ${localOnlyQuestions.length} questions locales`);
+  console.log(`🔄 Merge: ${dbQuestions.length} questions BD + ${localOnlyQuestions.length} questions locales`);
 
-  // Retourner : toutes les questions GitHub + questions vraiment locales
-  return [...githubQuestions, ...localOnlyQuestions];
+  return [...dbQuestions, ...localOnlyQuestions];
 };

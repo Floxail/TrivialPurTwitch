@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { loadQuestionsFromAPI, mergeQuestionsFromGitHub } from '../../services/github-data-service';
+import { loadQuestionsFromAPI, mergeQuestionsFromDB } from '../../services/github-data-service';
 import {
   apiCreateQuestion,
   apiUpdateQuestion,
@@ -82,8 +82,8 @@ export class QuestionsData {
   questions: Question[] = [];
   boxes: TrivialBox[] = []; // Liste des boîtes avec leurs cartes
   syncStatus: 'idle' | 'loading' | 'success' | 'error' = 'idle';
-  lastGitHubSync?: string;
-  lastGitHubQuestionIds: string[] = []; // IDs des questions GitHub lors de la dernière sync
+  lastDBSync?: string;
+  lastDBQuestionIds: string[] = []; // IDs des questions BD lors de la dernière sync
 
   // Settings
   cumulativeScoresInCardMode: boolean = false; // Cumuler les scores entre cartes
@@ -126,8 +126,8 @@ type QuestionsActions = {
   // Migration
   migrateFromV1: () => void;
 
-  // Fusionner les questions depuis GitHub
-  loadFromGitHub: () => Promise<void>;
+  // Synchroniser les questions depuis la BD Turso
+  syncFromDB: () => Promise<void>;
 
   // Backup complet
   exportFullBackup: () => any;
@@ -137,14 +137,14 @@ type QuestionsActions = {
   removeDuplicates: () => number;
 };
 
-// Restore persisted state
-const plain: QuestionsData = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
+// Restore persisted state (support ancien champ lastGitHubSync pour migration transparente)
+const plain: any = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
 const restoredState: QuestionsData = {
   questions: plain.questions || [],
   boxes: plain.boxes || [],
   syncStatus: 'idle',
-  lastGitHubSync: plain.lastGitHubSync,
-  lastGitHubQuestionIds: plain.lastGitHubQuestionIds || [],
+  lastDBSync: plain.lastDBSync ?? plain.lastGitHubSync,
+  lastDBQuestionIds: plain.lastDBQuestionIds ?? plain.lastGitHubQuestionIds ?? [],
   cumulativeScoresInCardMode: plain.cumulativeScoresInCardMode || false,
   cumulativeScoresInQuizMode: plain.cumulativeScoresInQuizMode || false,
   defaultQuizQuestions: plain.defaultQuizQuestions || 10,
@@ -160,8 +160,8 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         const toSave = {
           questions: current.questions,
           boxes: current.boxes,
-          lastGitHubSync: current.lastGitHubSync,
-          lastGitHubQuestionIds: current.lastGitHubQuestionIds,
+          lastDBSync: current.lastDBSync,
+          lastDBQuestionIds: current.lastDBQuestionIds,
           cumulativeScoresInCardMode: current.cumulativeScoresInCardMode,
           cumulativeScoresInQuizMode: current.cumulativeScoresInQuizMode,
           defaultQuizQuestions: current.defaultQuizQuestions,
@@ -174,8 +174,8 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           questions: [],
           boxes: [],
           syncStatus: 'idle',
-          lastGitHubSync: undefined,
-          lastGitHubQuestionIds: [],
+          lastDBSync: undefined,
+          lastDBQuestionIds: [],
           cumulativeScoresInCardMode: false,
           cumulativeScoresInQuizMode: false,
           defaultQuizQuestions: 10,
@@ -501,48 +501,48 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         }
       },
 
-      // ========== SYNCHRONISATION GITHUB ==========
+      // ========== SYNCHRONISATION DEPUIS LA BD TURSO ==========
 
-      loadFromGitHub: async () => {
+      syncFromDB: async () => {
         try {
           set({ syncStatus: 'loading' });
 
-          const githubData = await loadQuestionsFromAPI();
+          const dbData = await loadQuestionsFromAPI();
 
-          if (!githubData) {
+          if (!dbData) {
             set({ syncStatus: 'error' });
             return;
           }
 
           const currentQuestions = get().questions;
-          const previousGithubIds = get().lastGitHubQuestionIds.length > 0
-            ? new Set(get().lastGitHubQuestionIds)
+          const previousDBIds = get().lastDBQuestionIds.length > 0
+            ? new Set(get().lastDBQuestionIds)
             : undefined;
 
-          const mergedQuestions = mergeQuestionsFromGitHub(
-            githubData,
+          const mergedQuestions = mergeQuestionsFromDB(
+            dbData,
             currentQuestions,
-            previousGithubIds
+            previousDBIds
           );
 
-          // Sauvegarder les IDs GitHub actuels pour la prochaine sync
-          const currentGithubIds = githubData.questions.map((q: any) => q.id);
+          // Sauvegarder les IDs BD actuels pour la prochaine sync
+          const currentDBIds = dbData.questions.map((q: any) => q.id);
 
           const boxes = get().rebuildBoxes(mergedQuestions);
 
           set({
             questions: mergedQuestions,
-            lastGitHubQuestionIds: currentGithubIds,
+            lastDBQuestionIds: currentDBIds,
             boxes: boxes,
             syncStatus: 'success',
-            lastGitHubSync: new Date().toISOString(),
+            lastDBSync: new Date().toISOString(),
           });
 
           get().backup();
 
-          console.log(`✅ ${mergedQuestions.length} questions chargées depuis GitHub`);
+          console.log(`✅ ${mergedQuestions.length} questions chargées depuis la BD`);
         } catch (error) {
-          console.error('❌ Erreur lors du chargement GitHub:', error);
+          console.error('❌ Erreur lors de la synchronisation BD:', error);
           set({ syncStatus: 'error' });
         }
       },
@@ -685,7 +685,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
       partialize: (state) =>
         Object.fromEntries(
           Object.entries(state).filter(([key]) =>
-            ['questions', 'boxes', 'lastGitHubSync', 'lastGitHubQuestionIds',
+            ['questions', 'boxes', 'lastDBSync', 'lastDBQuestionIds',
              'cumulativeScoresInCardMode', 'cumulativeScoresInQuizMode',
              'defaultQuizQuestions'].includes(key)
           ),

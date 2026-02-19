@@ -292,19 +292,19 @@ const QuestionManagerTerminal = () => {
   };
 
   // ═════════════════════════════════════════════════════════════════════════
-  // GITHUB SYNC
+  // DB SYNC
   // ═════════════════════════════════════════════════════════════════════════
 
   const handleSyncFromGitHub = async () => {
     try {
-      setImportSuccess('INITIATING GITHUB SYNC PROTOCOL...');
-      await questionsStore.loadFromGitHub();
+      setImportSuccess('INITIATING DATABASE SYNC PROTOCOL...');
+      await questionsStore.syncFromDB();
 
       if (questionsStore.syncStatus === 'success') {
-        setImportSuccess('SYNC COMPLETE: DATA ALIGNED WITH REMOTE');
+        setImportSuccess('SYNC COMPLETE: DATA ALIGNED WITH DATABASE');
         setTimeout(() => setImportSuccess(''), 5000);
       } else {
-        setImportError('SYNC FAILURE: UNABLE TO REACH REMOTE');
+        setImportError('SYNC FAILURE: UNABLE TO REACH DATABASE');
         setTimeout(() => setImportError(''), 5000);
       }
     } catch (error) {
@@ -725,7 +725,7 @@ const QuestionManagerTerminal = () => {
         {/* Sync Status */}
         <SyncStatusIndicator
           status={questionsStore.syncStatus}
-          lastSync={questionsStore.lastGitHubSync}
+          lastSync={questionsStore.lastDBSync}
           totalQuestions={questionsStore.questions.length}
         />
       </header>
