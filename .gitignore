@@ -32,3 +32,4 @@ CLAUDE.md
 MIGRATION-VERCEL.md
 .vercel
 .env*.local
+.claude
