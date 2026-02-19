@@ -48,6 +48,7 @@ import {
   useQuestionsStore,
 } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
+import { useAuthStore } from './store/auth-store';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CATEGORY STYLING UTILITIES
@@ -169,6 +170,7 @@ const QuestionManagerTerminal = () => {
   const navigate = useNavigate();
   const globalStore = useGlobalStore();
   const questionsStore = useQuestionsStore();
+  const isAdmin = useAuthStore(state => state.isAdmin);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // UI State
@@ -816,12 +818,14 @@ const QuestionManagerTerminal = () => {
                   className="relative"
                   glow
                   actions={
-                    <TerminalButton
-                      size="sm"
-                      variant="danger"
-                      icon={<Trash2 size={12} />}
-                      onClick={() => handleDeleteBox(box.name)}
-                    />
+                    isAdmin ? (
+                      <TerminalButton
+                        size="sm"
+                        variant="danger"
+                        icon={<Trash2 size={12} />}
+                        onClick={() => handleDeleteBox(box.name)}
+                      />
+                    ) : undefined
                   }
                 >
                   <CornerDecoration />
@@ -920,19 +924,21 @@ const QuestionManagerTerminal = () => {
                                       </div>
                                     );
                                   })}
-                                  <TerminalButton
-                                    size="sm"
-                                    variant="danger"
-                                    fullWidth
-                                    className="mt-2"
-                                    icon={<Trash2 size={10} />}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleDeleteCard(box.name, cardNum);
-                                    }}
-                                  >
-                                    DELETE
-                                  </TerminalButton>
+                                  {isAdmin && (
+                                    <TerminalButton
+                                      size="sm"
+                                      variant="danger"
+                                      fullWidth
+                                      className="mt-2"
+                                      icon={<Trash2 size={10} />}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteCard(box.name, cardNum);
+                                      }}
+                                    >
+                                      DELETE
+                                    </TerminalButton>
+                                  )}
                                 </motion.div>
                               )}
                             </AnimatePresence>
@@ -1024,17 +1030,19 @@ const QuestionManagerTerminal = () => {
                     >
                       RELOCATE
                     </TerminalButton>
-                    <TerminalButton
-                      size="sm"
-                      variant="danger"
-                      icon={<Trash2 size={12} />}
-                      onClick={() => {
-                        setBulkAction('delete');
-                        setShowBulkActionsModal(true);
-                      }}
-                    >
-                      DELETE
-                    </TerminalButton>
+                    {isAdmin && (
+                      <TerminalButton
+                        size="sm"
+                        variant="danger"
+                        icon={<Trash2 size={12} />}
+                        onClick={() => {
+                          setBulkAction('delete');
+                          setShowBulkActionsModal(true);
+                        }}
+                      >
+                        DELETE
+                      </TerminalButton>
+                    )}
                   </div>
                 </TerminalAlert>
               </motion.div>
@@ -1135,15 +1143,17 @@ const QuestionManagerTerminal = () => {
                       >
                         <Edit3 size={14} />
                       </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteQuestion(q.id);
-                        }}
-                        className="p-1.5 text-lumon-text-dim hover:text-lumon-danger hover:bg-lumon-danger/10 transition-colors"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteQuestion(q.id);
+                          }}
+                          className="p-1.5 text-lumon-text-dim hover:text-lumon-danger hover:bg-lumon-danger/10 transition-colors"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
                     </div>
                   ),
                 },

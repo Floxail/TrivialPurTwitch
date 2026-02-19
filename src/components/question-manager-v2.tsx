@@ -4,6 +4,7 @@ import { Button, Form, Table, Badge, Tabs, Tab, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { categoryColors, categoryNames, Question, QuestionType, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
+import { useAuthStore } from './store/auth-store';
 import { QuestionModal, BulkActionsModal } from './question-manager-modals';
 
 const QuestionManager = () => {
@@ -25,6 +26,7 @@ const QuestionManager = () => {
   const getBoxByName = useQuestionsStore(state => state.getBoxByName);
   const syncFromDB = useQuestionsStore(state => state.syncFromDB);
   const removeDuplicates = useQuestionsStore(state => state.removeDuplicates);
+  const isAdmin = useAuthStore(state => state.isAdmin);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -622,13 +624,15 @@ const QuestionManager = () => {
                           <FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
                           {box.name}
                         </h5>
-                        <Button
-                          size="sm"
-                          variant="outline-danger"
-                          onClick={() => handleDeleteBox(box.name)}
-                        >
-                          <FontAwesomeIcon icon={['fas', 'trash']} />
-                        </Button>
+                        {isAdmin && (
+                          <Button
+                            size="sm"
+                            variant="outline-danger"
+                            onClick={() => handleDeleteBox(box.name)}
+                          >
+                            <FontAwesomeIcon icon={['fas', 'trash']} />
+                          </Button>
+                        )}
                       </div>
                       <div className="card-body">
                         {/* Statistiques */}
@@ -717,9 +721,11 @@ const QuestionManager = () => {
                 <Button size="sm" variant="primary" className="me-2" onClick={() => handleOpenBulkActions('move')}>
                   <FontAwesomeIcon icon={['fas', 'box']} /> Changer de boîte
                 </Button>
-                <Button size="sm" variant="danger" onClick={() => handleOpenBulkActions('delete')}>
-                  <FontAwesomeIcon icon={['fas', 'trash']} /> Supprimer
-                </Button>
+                {isAdmin && (
+                  <Button size="sm" variant="danger" onClick={() => handleOpenBulkActions('delete')}>
+                    <FontAwesomeIcon icon={['fas', 'trash']} /> Supprimer
+                  </Button>
+                )}
               </div>
             </Alert>
           )}
@@ -797,13 +803,15 @@ const QuestionManager = () => {
                       >
                         <FontAwesomeIcon icon={['fas', 'edit']} />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline-danger"
-                        onClick={() => handleDeleteQuestion(question.id)}
-                      >
-                        <FontAwesomeIcon icon={['fas', 'trash']} />
-                      </Button>
+                      {isAdmin && (
+                        <Button
+                          size="sm"
+                          variant="outline-danger"
+                          onClick={() => handleDeleteQuestion(question.id)}
+                        >
+                          <FontAwesomeIcon icon={['fas', 'trash']} />
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}
