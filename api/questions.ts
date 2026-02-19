@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
 import dotenv from 'dotenv';
-import { requireAuth } from './_utils.js';
+import { requireAnyAuth } from './_utils.js';
 
 dotenv.config({ path: '.env.local' });
 
@@ -34,7 +34,22 @@ function rowToQuestion(row: any) {
       ? JSON.parse(row.qcm_options as string)
       : undefined,
     qcmCorrectIndex: row.qcm_correct_index ?? undefined,
+    qcmCorrectIndexes: row.qcm_correct_indexes
+      ? JSON.parse(row.qcm_correct_indexes as string)
+      : undefined,
   };
+}
+
+/** Migration paresseuse : ajoute qcm_correct_indexes si la colonne n'existe pas encore */
+let migrationDone = false;
+async function ensureMigration() {
+  if (migrationDone) return;
+  try {
+    await getDb().execute('ALTER TABLE questions ADD COLUMN qcm_correct_indexes TEXT');
+  } catch (_) {
+    // Colonne déjà présente, on ignore
+  }
+  migrationDone = true;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -45,6 +60,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
+    await ensureMigration();
+
     // ==================== GET ====================
     if (req.method === 'GET') {
       const { boxName } = req.query;
@@ -63,8 +80,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ questions });
     }
 
-    // ==================== AUTH REQUISE ====================
-    if (!requireAuth(req)) {
+    // ==================== AUTH REQUISE (x-api-key OU token Twitch admin) ====================
+    if (!(await requireAnyAuth(req))) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -79,8 +96,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await getDb().execute({
         sql: `INSERT INTO questions
               (id, question, answer, alternative_answers, category, box_name,
-               card_number, difficulty, question_type, qcm_options, qcm_correct_index)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+               card_number, difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         args: [
           q.id,
           q.question,
@@ -93,6 +110,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           q.questionType ?? 'free_text',
           q.qcmOptions ? JSON.stringify(q.qcmOptions) : null,
           q.qcmCorrectIndex ?? null,
+          q.qcmCorrectIndexes ? JSON.stringify(q.qcmCorrectIndexes) : null,
         ],
       });
 
@@ -127,6 +145,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         questionType: 'question_type',
         qcmOptions: 'qcm_options',
         qcmCorrectIndex: 'qcm_correct_index',
+        qcmCorrectIndexes: 'qcm_correct_indexes',
       };
 
       for (const [jsField, dbField] of Object.entries(fieldMap)) {
@@ -134,7 +153,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           let value = updates[jsField];
 
           // Sérialiser les champs JSON
-          if ((jsField === 'alternativeAnswers' || jsField === 'qcmOptions') && value) {
+          if ((jsField === 'alternativeAnswers' || jsField === 'qcmOptions' || jsField === 'qcmCorrectIndexes') && value) {
             value = JSON.stringify(value);
           }
 

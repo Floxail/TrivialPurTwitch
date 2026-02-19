@@ -82,6 +82,16 @@ export async function requireAdminAuth(req: VercelRequest): Promise<{ userId: st
   }
 }
 
+/**
+ * Accepte soit la clé API admin (x-api-key), soit un token Twitch admin (Bearer).
+ * Utilisé pour les endpoints CRUD questions/boxes accessibles aux deux types d'auth.
+ */
+export async function requireAnyAuth(req: VercelRequest): Promise<boolean> {
+  if (requireAuth(req)) return true;
+  const admin = await requireAdminAuth(req);
+  return admin !== null;
+}
+
 // ==================== Rate Limiting simple en mémoire ====================
 
 /**
