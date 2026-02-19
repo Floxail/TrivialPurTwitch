@@ -1,16 +1,25 @@
 /**
- * Service client pour l'API scores (Phase 4 - Scores persistants)
+ * Service client pour l'API scores.
+ * Auth par ordre de priorité :
+ *  1. Token Twitch admin (Bearer) — si l'utilisateur est connecté et admin
+ *  2. Clé API admin (x-api-key) — configurée dans les Settings
  */
+import { useAuthStore } from 'components/store/auth-store';
 
 function getApiKey(): string {
   return localStorage.getItem('admin_api_key') || '';
 }
 
 function authHeaders(): Record<string, string> {
-  return {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'x-api-key': getApiKey(),
   };
+  const twitchToken = useAuthStore.getState().getTwitchOAuthToken();
+  if (twitchToken) {
+    headers['Authorization'] = `Bearer ${twitchToken}`;
+  }
+  return headers;
 }
 
 // ==================== Types ====================

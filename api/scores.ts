@@ -1,6 +1,6 @@
 import { createClient } from '@libsql/client';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAuth } from './_utils.js';
+import { requireAnyTwitchAuth } from './_utils.js';
 
 const db = createClient({
   url: process.env.TURSO_DATABASE_URL!,
@@ -27,7 +27,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // ==================== POST /api/scores ====================
     // Enregistre les scores d'une session de quiz terminée
     if (req.method === 'POST') {
-      if (!requireAuth(req)) {
+      if (!(await requireAnyTwitchAuth(req))) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 

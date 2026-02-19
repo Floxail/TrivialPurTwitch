@@ -92,6 +92,28 @@ export async function requireAnyAuth(req: VercelRequest): Promise<boolean> {
   return admin !== null;
 }
 
+/**
+ * Accepte n'importe quel token Twitch valide (pas forcément admin),
+ * ou la clé API admin en fallback.
+ * Utilisé pour les endpoints accessibles à tous les streamers connectés (ex: scores).
+ */
+export async function requireAnyTwitchAuth(req: VercelRequest): Promise<boolean> {
+  if (requireAuth(req)) return true;
+
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
+
+  const token = authHeader.substring(7);
+  try {
+    const response = await fetch('https://id.twitch.tv/oauth2/validate', {
+      headers: { 'Authorization': `OAuth ${token}` },
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 // ==================== Rate Limiting simple en mémoire ====================
 
 /**
