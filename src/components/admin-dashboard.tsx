@@ -8,7 +8,7 @@ import {
   apiRejectQuestion,
   PendingQuestion,
 } from 'services/api-admin-service';
-import { categoryNames, TrivialCategory, useQuestionsStore } from './store/questions-store';
+import { categoryNames, Question, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
 import {
   apiGetReports,
@@ -24,6 +24,7 @@ const QCM_MAX_OPTIONS = 6;
 const AdminDashboard = () => {
   const setSubtitle = useGlobalStore((state) => state.setSubtitle);
   const boxes = useQuestionsStore((state) => state.boxes);
+  const allQuestions = useQuestionsStore((state) => state.questions);
 
   const [pendingQuestions, setPendingQuestions] = useState<PendingQuestion[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,8 @@ const AdminDashboard = () => {
 
   // Modal d'édition
   const [editModal, setEditModal] = useState<PendingQuestion | null>(null);
+  // Quand non-null, on édite une question principale (signalement) et non une question en attente
+  const [editingMainQuestionId, setEditingMainQuestionId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({
     question: '',
     answer: '',
@@ -198,20 +201,63 @@ const AdminDashboard = () => {
         updates.answer = editForm.qcmCorrectIndexes.map(i => editForm.qcmOptions[i]).filter(Boolean).join(', ');
       }
 
-      await apiEditPendingQuestion(editModal.id, updates);
+      if (editingMainQuestionId) {
+        // Édition d'une question principale (depuis un signalement)
+        await useQuestionsStore.getState().updateQuestion(editingMainQuestionId, updates as Partial<Question>);
+        showSuccess('Question principale modifiée');
+        setEditingMainQuestionId(null);
+      } else {
+        // Édition d'une question en attente de modération
+        await apiEditPendingQuestion(editModal.id, updates);
+        setPendingQuestions(prev => prev.map(q =>
+          q.id === editModal.id ? { ...q, ...updates } : q
+        ));
+        showSuccess('Question modifiée');
+      }
 
-      // Mettre à jour localement
-      setPendingQuestions(prev => prev.map(q =>
-        q.id === editModal.id ? { ...q, ...updates } : q
-      ));
-
-      showSuccess('Question modifiée');
       setEditModal(null);
     } catch (err: any) {
       setError(err.message || 'Erreur lors de la modification');
     } finally {
       setEditSaving(false);
     }
+  };
+
+  // Ouvrir le modal d'édition pour une question principale (depuis un signalement)
+  const openReportEditModal = (report: { questionId: string; questionText: string }) => {
+    const question = allQuestions.find(q => q.id === report.questionId);
+    if (!question) {
+      setError(`Question introuvable dans la base locale (ID: ${report.questionId}). Elle provient peut-être de GitHub — rechargez la page pour la synchroniser.`);
+      return;
+    }
+    setEditingMainQuestionId(question.id);
+    setEditForm({
+      question: question.question,
+      answer: question.answer,
+      alternativeAnswers: question.alternativeAnswers?.join(', ') || '',
+      category: question.category as TrivialCategory,
+      boxName: question.boxName || '',
+      questionType: question.questionType || 'free_text',
+      qcmOptions: question.qcmOptions && question.qcmOptions.length >= 2 ? [...question.qcmOptions] : ['', ''],
+      qcmCorrectIndex: question.qcmCorrectIndex ?? 0,
+      qcmCorrectIndexes: question.qcmCorrectIndexes ?? (question.qcmCorrectIndex !== undefined ? [question.qcmCorrectIndex] : [0]),
+    });
+    // Créer un PendingQuestion factice pour ouvrir le modal existant
+    const fakePending: PendingQuestion = {
+      id: question.id,
+      question: question.question,
+      answer: question.answer,
+      alternativeAnswers: question.alternativeAnswers,
+      category: question.category,
+      boxName: question.boxName,
+      questionType: question.questionType || 'free_text',
+      qcmOptions: question.qcmOptions,
+      qcmCorrectIndex: question.qcmCorrectIndex,
+      qcmCorrectIndexes: question.qcmCorrectIndexes,
+      status: 'approved',
+      createdAt: new Date().toISOString(),
+    };
+    setEditModal(fakePending);
   };
 
   // ==================== Signalements ====================
@@ -233,7 +279,7 @@ const AdminDashboard = () => {
 
   const REASON_LABELS: Record<string, string> = {
     question_incorrecte: 'Question incorrecte',
-    reponse_manquante: 'Réponses non accepté',
+    reponse_non_accepter: 'Réponses non accepté',
     categorie_incorrecte: 'Catégorie incorrecte',
     question_obsolete: 'Question obsolète',
   };
@@ -577,6 +623,14 @@ const AdminDashboard = () => {
                 </td>
                 <td>
                   <div className="d-flex gap-1">
+                    <button
+                      className="terminal-btn terminal-btn-sm"
+                      disabled={processingIds.has(report.id)}
+                      onClick={() => openReportEditModal({ questionId: report.questionId, questionText: report.questionText })}
+                      title="Modifier la question signalée"
+                    >
+                      <FontAwesomeIcon icon={['fas', 'pen']} />
+                    </button>
                     {reportsFilter === 'pending' && (
                       <button
                         className="terminal-btn terminal-btn-success terminal-btn-sm"
@@ -606,9 +660,11 @@ const AdminDashboard = () => {
 
       {/* Modal d'édition de question */}
       {editModal && (
-        <Modal show onHide={() => setEditModal(null)} centered size="lg">
+        <Modal show onHide={() => { setEditModal(null); setEditingMainQuestionId(null); }} centered size="lg">
           <Modal.Header closeButton>
-            <Modal.Title>Modifier la question</Modal.Title>
+            <Modal.Title>
+              {editingMainQuestionId ? 'Modifier la question (depuis signalement)' : 'Modifier la question'}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {/* Type de question */}
@@ -787,7 +843,7 @@ const AdminDashboard = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <button className="terminal-btn terminal-btn-sm" onClick={() => setEditModal(null)}>Annuler</button>
+            <button className="terminal-btn terminal-btn-sm" onClick={() => { setEditModal(null); setEditingMainQuestionId(null); }}>Annuler</button>
             <button
               className="terminal-btn terminal-btn-success terminal-btn-sm"
               disabled={editSaving || !editForm.question.trim() || !editForm.answer.trim()}

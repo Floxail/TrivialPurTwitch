@@ -441,18 +441,26 @@ const Quiz = () => {
 				const validLabels = QCM_LABELS.slice(0, numOptions);
 				const validNumbers = Array.from({ length: numOptions }, (_, i) => String(i + 1));
 
-				// Parser les réponses multiples : "A,C" ou "AC" ou "A C" ou "1,3"
-				const answerLetters = rawAnswer
-					.split(/[\s,]+/)
-					.join('')
-					.split('')
-					.filter((ch, i, arr) => arr.indexOf(ch) === i); // dédupliquer
-
-				// Convertir chiffres en lettres si besoin
-				const normalizedAnswers = answerLetters.map(ch => {
-					if (validNumbers.includes(ch)) return QCM_LABELS[parseInt(ch) - 1];
-					return ch;
-				}).filter(ch => validLabels.includes(ch));
+				// Parser les réponses : "A,C" ou "AC" ou "A C" ou "1,3"
+				// Chaque token (séparé par espace/virgule) doit être entièrement composé de labels QCM
+				// ou être un chiffre valide. Cela évite d'extraire des lettres parasites depuis des
+				// mots commentaires (ex: "B Bravo" → ["B"] et non ["B","A"] car "BRAVO" contient 'A')
+				const tokens = rawAnswer.split(/[\s,]+/).filter(t => t.length > 0);
+				const extracted: string[] = [];
+				for (const token of tokens) {
+					if (validLabels.includes(token)) {
+						// Lettre QCM unique valide (A, B, C...)
+						extracted.push(token);
+					} else if (validNumbers.includes(token)) {
+						// Chiffre valide converti en lettre
+						extracted.push(QCM_LABELS[parseInt(token) - 1]);
+					} else if (token.length > 1 && token.split('').every(ch => validLabels.includes(ch))) {
+						// Concaténation de lettres QCM uniquement (ex: "AC", "BD")
+						token.split('').forEach(ch => extracted.push(ch));
+					}
+					// Tokens avec caractères non-QCM ignorés (mots de commentaire)
+				}
+				const normalizedAnswers = Array.from(new Set(extracted));
 
 				// Ignorer si aucune lettre QCM valide
 				if (normalizedAnswers.length === 0) return;
