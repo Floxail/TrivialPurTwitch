@@ -8,6 +8,7 @@ import {
   apiBulkAddQuestions,
   apiCreateBox,
   apiDeleteBox,
+  apiRenameBox,
   apiImportQuestions,
 } from '../../services/api-service';
 
@@ -106,6 +107,7 @@ type QuestionsActions = {
   getBoxByName: (boxName: string) => TrivialBox | undefined;
   addBox: (boxName: string) => Promise<void>;
   removeBox: (boxName: string) => Promise<void>;
+  renameBox: (oldName: string, newName: string) => Promise<void>;
   rebuildBoxes: (questions: Question[]) => TrivialBox[];
 
   // Récupération des questions
@@ -117,6 +119,7 @@ type QuestionsActions = {
   generateQuizCard: (boxName: string, cardNumber: number) => QuizCard | null;
   generateRandomQuiz: (boxName: string, questionCount: number) => Question[] | null;
   generateRandomQuizAllBoxes: (questionCount: number, balanceCategories?: boolean) => Question[] | null;
+  generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number, balanceCategories?: boolean) => Question[] | null;
 
   // Settings
   setCumulativeScores: (value: boolean) => void;
@@ -337,6 +340,24 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         get().backup();
       },
 
+      renameBox: async (oldName: string, newName: string) => {
+        try {
+          await apiRenameBox(oldName, newName);
+        } catch (err) {
+          console.warn('⚠️ API renameBox échouée, renommage local uniquement', err);
+        }
+
+        const currentQuestions = get().questions.map((q) =>
+          q.boxName === oldName ? { ...q, boxName: newName } : q
+        );
+        const currentBoxes = get().boxes.map((b) =>
+          b.name === oldName ? { ...b, name: newName } : b
+        );
+
+        set({ questions: currentQuestions, boxes: currentBoxes });
+        get().backup();
+      },
+
       // ========== RÉCUPÉRATION DES QUESTIONS ==========
 
       getQuestionsByBox: (boxName: string) => {
@@ -448,6 +469,48 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         }
 
         // Mélanger le résultat final pour varier l'ordre des catégories
+        return result.sort(() => Math.random() - 0.5);
+      },
+
+      generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number, balanceCategories: boolean = false): Question[] | null => {
+        const allQuestions = get().questions.filter((q) => boxNames.includes(q.boxName));
+
+        if (allQuestions.length === 0) {
+          return null;
+        }
+
+        if (!balanceCategories) {
+          const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+          return shuffled.slice(0, Math.min(questionCount, shuffled.length));
+        }
+
+        const byCategory = new Map<TrivialCategory, Question[]>();
+        allQuestions.forEach(q => {
+          if (!byCategory.has(q.category)) byCategory.set(q.category, []);
+          byCategory.get(q.category)!.push(q);
+        });
+        byCategory.forEach((questions, cat) => {
+          byCategory.set(cat, questions.sort(() => Math.random() - 0.5));
+        });
+
+        const result: Question[] = [];
+        let remaining = questionCount;
+        const categories = Array.from(byCategory.keys()).sort(() => Math.random() - 0.5);
+        let catIndex = 0;
+
+        while (remaining > 0 && categories.length > 0) {
+          const cat = categories[catIndex % categories.length];
+          const catQuestions = byCategory.get(cat)!;
+          if (catQuestions.length > 0) {
+            result.push(catQuestions.shift()!);
+            remaining--;
+          } else {
+            categories.splice(catIndex % categories.length, 1);
+            if (categories.length === 0) break;
+          }
+          catIndex++;
+        }
+
         return result.sort(() => Math.random() - 0.5);
       },
 

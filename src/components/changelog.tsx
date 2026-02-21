@@ -5,6 +5,29 @@ const Changelog = ({ show, onClose }: any) => {
   return (
     <Modal scrollable={true} show={show} centered size="lg" dialogClassName="changelog-modal">
       <Modal.Body>
+        <h3><u>21/02/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Sélection de boîte au clic (page Quiz)</h5>
+        <br />
+        <ul>
+          <li>Les boîtes sont maintenant <b>cliquables</b> directement sur la page d'accueil du quiz</li>
+          <li>Card <b>★ TOUTES</b> en premier : sélectionne toutes les boîtes d'un clic</li>
+          <li>Clic sur une boîte quand "Toutes" est actif → isole cette boîte</li>
+          <li>Multi-sélection : clic sur d'autres boîtes pour en ajouter à la sélection</li>
+          <li>Les boîtes sélectionnées restent <b>allumées</b> (glow cyan) entre les quiz</li>
+          <li>Le popup de lancement n'affiche plus le dropdown de boîte — juste le nombre de questions</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Renommer une boîte (Admin)</h5>
+        <br />
+        <ul>
+          <li>Bouton <b>crayon</b> dans l'en-tête de chaque boîte sur la page /questions</li>
+          <li>Le nouveau nom est propagé en base de données (boîte + toutes ses questions)</li>
+          <li>Modale de confirmation avec le nom actuel pré-rempli</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
         <h3><u>17/02/2026</u></h3>
         <br />
         <h5 className="h5-with-line">QCM Réponses multiples</h5>

@@ -6,7 +6,8 @@
       "Bash(python:*)",
       "Bash(npx tsc:*)",
       "Bash(npx react-scripts build:*)",
-      "Bash(yarn install:*)"
+      "Bash(yarn install:*)",
+      "Bash(node -e:*)"
     ]
   }
 }

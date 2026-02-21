@@ -34,6 +34,7 @@
     "zustand": "^5.0.2"
   },
   "scripts": {
+    "postinstall": "node scripts/patch-ajv-keywords.js",
     "start": "react-scripts start",
     "start:https": "host=127.0.0.1 https=true react-scripts start",
     "build": "react-scripts build",

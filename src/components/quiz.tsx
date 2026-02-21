@@ -64,7 +64,8 @@ const Quiz = () => {
 	// États pour le modal de sélection de quiz
 	const [showModeSelector, setShowModeSelector] = useState(false);
 	const [pendingQuizRequester, setPendingQuizRequester] = useState<string>('');
-	const [selectedBoxName, setSelectedBoxName] = useState<string>('');
+	// null = toutes les boîtes sélectionnées, string[] = sélection spécifique
+	const [selectedBoxNames, setSelectedBoxNames] = useState<null | string[]>(null);
 	const [quizQuestionCount, setQuizQuestionCount] = useState<number>(10);
 	const [modeError, setModeError] = useState<string>('');
 	const [balanceCategories, setBalanceCategories] = useState<boolean>(true); // Mode couleurs équilibrées
@@ -106,12 +107,48 @@ const Quiz = () => {
 		return neighbors;
 	}, [mdrHoveredIndex]);
 
-	const getMdrClass = useCallback((index: number) => {
-		if (mdrHoveredIndex === null) return '';
-		if (index === mdrHoveredIndex) return 'mdr-focused';
-		if (mdrNeighborIndices.has(index)) return 'mdr-neighbor';
-		return 'mdr-dimmed';
-	}, [mdrHoveredIndex, mdrNeighborIndices]);
+	const getMdrClass = useCallback((mdrIndex: number) => {
+		// mdrIndex 0 = "Toutes", mdrIndex i+1 = boxes[i]
+		const isSelected = mdrIndex === 0
+			? selectedBoxNames === null
+			: (selectedBoxNames === null || selectedBoxNames.includes(boxes[mdrIndex - 1]?.name ?? ''));
+
+		const hoverClass = mdrHoveredIndex === null ? ''
+			: mdrIndex === mdrHoveredIndex ? 'mdr-focused'
+			: mdrNeighborIndices.has(mdrIndex) ? 'mdr-neighbor'
+			: 'mdr-dimmed';
+
+		const selectionClass = isSelected ? 'mdr-selected' : 'mdr-unselected';
+		return `${hoverClass} ${selectionClass}`.trim();
+	}, [mdrHoveredIndex, mdrNeighborIndices, selectedBoxNames, boxes]);
+
+	const handleBoxClick = useCallback((boxName: string) => {
+		setSelectedBoxNames(prev => {
+			if (prev === null) {
+				// Était "toutes" → switch vers cette boîte uniquement
+				return [boxName];
+			}
+			const isSelected = prev.includes(boxName);
+			if (isSelected && prev.length === 1) {
+				// Dernière boîte sélectionnée → ne pas déselectionner
+				return prev;
+			}
+			if (isSelected) {
+				return prev.filter(n => n !== boxName);
+			}
+			return [...prev, boxName];
+		});
+	}, []);
+
+	// Synchroniser la sélection quand les boîtes changent (après sync DB)
+	useEffect(() => {
+		setSelectedBoxNames(prev => {
+			if (prev === null) return null;
+			const boxNames = new Set(boxes.map(b => b.name));
+			const valid = prev.filter(n => boxNames.has(n));
+			return valid.length > 0 ? valid : null;
+		});
+	}, [boxes]);
 
 	const activeQuiz = gameStore.activeQuiz;
 	const currentQuestion = activeQuiz?.questions[activeQuiz.currentQuestionIndex];
@@ -357,9 +394,9 @@ const Quiz = () => {
 			setQuizQuestionCount(questionCount);
 			setShowModeSelector(true);
 		} else {
-			// L'utilisateur a entré un nom de boîte
+			// L'utilisateur a entré un nom de boîte — pré-sélectionner cette boîte
 			setPendingQuizRequester(nick);
-			setSelectedBoxName(trimmedInput);
+			if (trimmedInput) setSelectedBoxNames([trimmedInput]);
 			setShowModeSelector(true);
 		}
 	};
@@ -404,14 +441,14 @@ const Quiz = () => {
 				// Dernier arg est un nombre
 				const boxName = args.slice(0, -1).join(' ');
 				setPendingQuizRequester(nick);
-				setSelectedBoxName(boxName);
+				if (boxName) setSelectedBoxNames([boxName]);
 				setQuizQuestionCount(questionCount);
 				setShowModeSelector(true);
 			} else {
 				// Pas de nombre = ouvrir le sélecteur avec la boîte pré-remplie
 				const boxName = args.join(' ');
 				setPendingQuizRequester(nick);
-				setSelectedBoxName(boxName);
+				if (boxName) setSelectedBoxNames([boxName]);
 				setShowModeSelector(true);
 			}
 			return;
@@ -558,25 +595,27 @@ const Quiz = () => {
 
 	// Lancer le quiz
 	const handleStartQuiz = () => {
-		if (!selectedBoxName) {
-			alert('⚠️ Veuillez sélectionner une boîte');
-			return;
-		}
-
 		let questions: ReturnType<typeof questionsStore.generateRandomQuiz>;
-		let displayBoxName = selectedBoxName;
+		let displayBoxName: string;
 
-		// Mode "Toutes les boîtes"
-		if (selectedBoxName === '__ALL_BOXES__') {
+		if (selectedBoxNames === null) {
+			// Toutes les boîtes
 			questions = questionsStore.generateRandomQuizAllBoxes(quizQuestionCount, balanceCategories);
 			displayBoxName = balanceCategories ? 'Mix équilibré' : 'Mix aléatoire';
-		} else {
-			const box = questionsStore.getBoxByName(selectedBoxName);
+		} else if (selectedBoxNames.length === 1) {
+			// Une seule boîte
+			const boxName = selectedBoxNames[0];
+			const box = questionsStore.getBoxByName(boxName);
 			if (!box) {
-				setModeError(`❌ La boîte "${selectedBoxName}" n'existe pas`);
+				setModeError(`❌ La boîte "${boxName}" n'existe pas`);
 				return;
 			}
-			questions = questionsStore.generateRandomQuiz(selectedBoxName, quizQuestionCount);
+			questions = questionsStore.generateRandomQuiz(boxName, quizQuestionCount);
+			displayBoxName = boxName;
+		} else {
+			// Sélection multiple
+			questions = questionsStore.generateRandomQuizFromBoxes(selectedBoxNames, quizQuestionCount, balanceCategories);
+			displayBoxName = balanceCategories ? 'Mix sélection équilibré' : 'Mix sélection';
 		}
 
 		if (!questions || questions.length === 0) {
@@ -601,7 +640,6 @@ const Quiz = () => {
 		// Fermer le modal et réinitialiser
 		setShowModeSelector(false);
 		setPendingQuizRequester('');
-		setSelectedBoxName('');
 		setQuizQuestionCount(10);
 		setModeError('');
 
@@ -750,7 +788,6 @@ const Quiz = () => {
 				show={showModeSelector}
 				onHide={() => {
 					setShowModeSelector(false);
-					setSelectedBoxName('');
 					setQuizQuestionCount(10);
 					setModeError('');
 				}}
@@ -765,28 +802,21 @@ const Quiz = () => {
 						<strong style={{ color: 'var(--lumon-cyan)' }}>{pendingQuizRequester}</strong> demande un quiz. Configurez les paramètres :
 					</p>
 
-					{/* Sélection de la boîte */}
-					<Form.Group className="mb-3">
-						<Form.Label>Boîte de questions</Form.Label>
-						<Form.Select
-							value={selectedBoxName}
-							onChange={(e) => {
-								setSelectedBoxName(e.target.value);
-								setModeError('');
-							}}
-						>
-							<option value="">Sélectionner une boîte...</option>
-							<option value="__ALL_BOXES__">Toutes les boîtes (couleurs mélangées)</option>
-							{boxes.map(box => (
-								<option key={box.name} value={box.name}>
-									{box.name} ({box.totalQuestions} questions)
-								</option>
-							))}
-						</Form.Select>
-					</Form.Group>
+					{/* Résumé des boîtes sélectionnées */}
+					<div className="mb-3 p-2" style={{ background: 'rgba(var(--lumon-cyan-rgb), 0.05)', border: '1px solid rgba(var(--lumon-cyan-rgb), 0.2)', borderRadius: '4px' }}>
+						<small style={{ color: 'var(--lumon-text-dim)' }}>Boîtes sélectionnées :</small>
+						<div style={{ color: 'var(--lumon-cyan)', fontSize: '0.85rem', marginTop: '2px' }}>
+							{selectedBoxNames === null
+								? `Toutes les boîtes (${boxes.length})`
+								: selectedBoxNames.length === 1
+									? selectedBoxNames[0]
+									: `${selectedBoxNames.length} boîtes : ${selectedBoxNames.join(', ')}`
+							}
+						</div>
+					</div>
 
-					{/* Option équilibrer les catégories - visible uniquement en mode "Toutes les boîtes" */}
-					{selectedBoxName === '__ALL_BOXES__' && (
+					{/* Option équilibrer les catégories - visible si plusieurs boîtes */}
+					{(selectedBoxNames === null || selectedBoxNames.length > 1) && (
 						<Form.Group className="mb-3">
 							<Form.Check
 								type="switch"
@@ -827,7 +857,6 @@ const Quiz = () => {
 						className="terminal-btn"
 						onClick={() => {
 							setShowModeSelector(false);
-							setSelectedBoxName('');
 							setQuizQuestionCount(10);
 							setModeError('');
 						}}
@@ -837,7 +866,7 @@ const Quiz = () => {
 					<button
 						className="terminal-btn terminal-btn-success"
 						onClick={handleStartQuiz}
-						disabled={!selectedBoxName}
+						disabled={boxes.length === 0 || (selectedBoxNames !== null && selectedBoxNames.length === 0)}
 					>
 						Lancer le quiz
 					</button>
@@ -888,19 +917,35 @@ const Quiz = () => {
 									{boxes.length > 0 && (
 										<div className="mt-4 p-3 terminal-panel" style={{ display: 'inline-block' }}>
 											<p className="mb-2" style={{ color: 'var(--lumon-text-dim)' }}>
-												<strong style={{ color: 'var(--lumon-cyan)' }}>Boîtes disponibles :</strong>
+												<strong style={{ color: 'var(--lumon-cyan)' }}>Boîtes disponibles</strong>
+												<span style={{ color: 'var(--lumon-text-muted)', fontSize: '0.75rem', marginLeft: '8px' }}>
+													— cliquez pour sélectionner
+												</span>
 											</p>
 											<div
 												className="mdr-data-point-container"
 												ref={mdrContainerRef}
 												onMouseLeave={() => setMdrHoveredIndex(null)}
 											>
+												{/* Card "Toutes les boîtes" */}
+												<div
+													ref={el => { mdrItemRefs.current[0] = el; }}
+													className={`mdr-data-point mdr-all-boxes ${getMdrClass(0)}`}
+													onMouseEnter={() => setMdrHoveredIndex(0)}
+													onClick={() => setSelectedBoxNames(prev => prev === null ? [] : null)}
+												>
+													<span className="mdr-corner-tr" />
+													<span className="mdr-corner-bl" />
+													★ TOUTES
+												</div>
+												{/* Boîtes individuelles */}
 												{boxes.map((b, i) => (
 													<div
 														key={b.name}
-														ref={el => { mdrItemRefs.current[i] = el; }}
-														className={`mdr-data-point ${getMdrClass(i)}`}
-														onMouseEnter={() => setMdrHoveredIndex(i)}
+														ref={el => { mdrItemRefs.current[i + 1] = el; }}
+														className={`mdr-data-point ${getMdrClass(i + 1)}`}
+														onMouseEnter={() => setMdrHoveredIndex(i + 1)}
+														onClick={() => handleBoxClick(b.name)}
 													>
 														<span className="mdr-corner-tr" />
 														<span className="mdr-corner-bl" />

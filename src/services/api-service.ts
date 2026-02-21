@@ -121,3 +121,16 @@ export async function apiDeleteBox(name: string): Promise<boolean> {
   }
   return true;
 }
+
+export async function apiRenameBox(oldName: string, newName: string): Promise<boolean> {
+  const res = await fetch('/api/boxes', {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ oldName, newName }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Erreur ${res.status}`);
+  }
+  return true;
+}

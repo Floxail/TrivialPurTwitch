@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { Button, Form, Table, Badge, Tabs, Tab, Alert } from 'react-bootstrap';
+import { Button, Form, Table, Badge, Tabs, Tab, Alert, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { categoryColors, categoryNames, Question, QuestionType, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
@@ -23,6 +23,7 @@ const QuestionManager = () => {
   const bulkAddQuestions = useQuestionsStore(state => state.bulkAddQuestions);
   const addBox = useQuestionsStore(state => state.addBox);
   const removeBox = useQuestionsStore(state => state.removeBox);
+  const renameBox = useQuestionsStore(state => state.renameBox);
   const getBoxByName = useQuestionsStore(state => state.getBoxByName);
   const syncFromDB = useQuestionsStore(state => state.syncFromDB);
   const removeDuplicates = useQuestionsStore(state => state.removeDuplicates);
@@ -42,6 +43,10 @@ const QuestionManager = () => {
   const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(new Set());
   const [showBulkActionsModal, setShowBulkActionsModal] = useState(false);
   const [bulkAction, setBulkAction] = useState<'delete' | 'move' | null>(null);
+
+  // Rename boîte
+  const [renamingBox, setRenamingBox] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState<string>('');
   useEffect(() => {
     globalStore.setSubtitle('Gestion des questions');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -408,6 +413,13 @@ const QuestionManager = () => {
     await removeBox(boxName);
   };
 
+  const handleConfirmRename = async () => {
+    if (!renamingBox || !renameValue.trim() || renameValue.trim() === renamingBox) return;
+    await renameBox(renamingBox, renameValue.trim());
+    setRenamingBox(null);
+    setRenameValue('');
+  };
+
   // Fonctions supprimées - mode carte retiré
   // handleDeleteCard et getCategoryCountsForCard ne sont plus utilisées
 
@@ -496,6 +508,37 @@ const QuestionManager = () => {
         style={{ display: 'none' }}
         onChange={handleImport}
       />
+
+      {/* Modale de renommage de boîte */}
+      <Modal show={renamingBox !== null} onHide={() => { setRenamingBox(null); setRenameValue(''); }} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Renommer la boîte</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Nouveau nom</Form.Label>
+            <Form.Control
+              type="text"
+              value={renameValue}
+              onChange={(e) => setRenameValue(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleConfirmRename(); }}
+              autoFocus
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => { setRenamingBox(null); setRenameValue(''); }}>
+            Annuler
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleConfirmRename}
+            disabled={!renameValue.trim() || renameValue.trim() === renamingBox}
+          >
+            Renommer
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* Modal d'édition de question */}
       <QuestionModal
@@ -625,13 +668,23 @@ const QuestionManager = () => {
                           {box.name}
                         </h5>
                         {isAdmin && (
-                          <Button
-                            size="sm"
-                            variant="outline-danger"
-                            onClick={() => handleDeleteBox(box.name)}
-                          >
-                            <FontAwesomeIcon icon={['fas', 'trash']} />
-                          </Button>
+                          <div className="d-flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline-secondary"
+                              title="Renommer la boîte"
+                              onClick={() => { setRenamingBox(box.name); setRenameValue(box.name); }}
+                            >
+                              <FontAwesomeIcon icon={['fas', 'pen']} />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline-danger"
+                              onClick={() => handleDeleteBox(box.name)}
+                            >
+                              <FontAwesomeIcon icon={['fas', 'trash']} />
+                            </Button>
+                          </div>
                         )}
                       </div>
                       <div className="card-body">

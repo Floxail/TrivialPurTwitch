@@ -1129,14 +1129,14 @@
   color: var(--lumon-cyan-dim);
   padding: 6px 14px;
   position: relative;
-  cursor: crosshair;
+  cursor: pointer;
   transition:
-    transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-    color 0.25s ease,
-    opacity 0.3s ease,
-    text-shadow 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    color 0.35s ease,
+    opacity 0.4s ease,
+    text-shadow 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-size: 0.72rem;
@@ -1238,6 +1238,42 @@
 .mdr-data-point.mdr-dimmed {
   opacity: 0.3;
   color: var(--lumon-text-muted);
+}
+
+/* ── Selected state: permanently lit box ── */
+.mdr-data-point.mdr-selected {
+  color: var(--lumon-cyan);
+  border-color: rgba(var(--lumon-cyan-rgb), 0.5);
+  text-shadow:
+    0 0 5px rgba(var(--lumon-cyan-rgb), 0.4),
+    0 0 10px rgba(var(--lumon-cyan-rgb), 0.2);
+  box-shadow:
+    0 0 6px rgba(var(--lumon-cyan-rgb), 0.15),
+    inset 0 0 4px rgba(var(--lumon-cyan-rgb), 0.06);
+}
+
+/* ── Unselected state: muted box ── */
+.mdr-data-point.mdr-unselected {
+  opacity: 0.3;
+  color: var(--lumon-text-muted);
+  border-color: rgba(var(--lumon-cyan-rgb), 0.05);
+}
+
+/* ── Hover sur boîte désactivée : plus de visibilité ── */
+.mdr-data-point.mdr-unselected.mdr-focused {
+  opacity: 0.75;
+  color: var(--lumon-text-muted);
+  border-color: rgba(var(--lumon-cyan-rgb), 0.25);
+}
+
+.mdr-data-point.mdr-unselected.mdr-neighbor {
+  opacity: 0.5;
+}
+
+/* ── All-boxes card: slightly distinct ── */
+.mdr-data-point.mdr-all-boxes {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
 }
 
 /* ── Animated border pulse on focused box ── */

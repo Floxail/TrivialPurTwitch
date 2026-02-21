@@ -18,8 +18,8 @@ function getDb() {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
@@ -54,6 +54,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
 
       return res.status(201).json({ success: true, name: name.trim() });
+    }
+
+    // ==================== PUT (renommer une boîte) ====================
+    if (req.method === 'PUT') {
+      const { oldName, newName } = req.body;
+
+      if (!oldName || typeof oldName !== 'string' || oldName.trim().length === 0) {
+        return res.status(400).json({ error: 'oldName est requis' });
+      }
+      if (!newName || typeof newName !== 'string' || newName.trim().length === 0) {
+        return res.status(400).json({ error: 'newName est requis' });
+      }
+      if (oldName.trim() === newName.trim()) {
+        return res.status(400).json({ error: 'Le nouveau nom est identique à l\'ancien' });
+      }
+
+      await getDb().batch([
+        {
+          sql: 'UPDATE boxes SET name = ? WHERE name = ?',
+          args: [newName.trim(), oldName.trim()],
+        },
+        {
+          sql: 'UPDATE questions SET box_name = ? WHERE box_name = ?',
+          args: [newName.trim(), oldName.trim()],
+        },
+      ]);
+
+      return res.status(200).json({ success: true, oldName: oldName.trim(), newName: newName.trim() });
     }
 
     // ==================== DELETE (supprimer une boîte + ses questions) ====================
