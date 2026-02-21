@@ -1,11 +1,44 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Button, Form, Table, Badge, Tabs, Tab, Alert, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { categoryColors, categoryNames, Question, QuestionType, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
 import { useAuthStore } from './store/auth-store';
 import { QuestionModal, BulkActionsModal } from './question-manager-modals';
+
+const RenameBoxModal = React.memo(({ boxName, onConfirm, onClose }: {
+  boxName: string;
+  onConfirm: (newName: string) => void;
+  onClose: () => void;
+}) => {
+  const [value, setValue] = useState(boxName);
+  const isValid = value.trim() !== '' && value.trim() !== boxName;
+  const handleConfirm = () => { if (isValid) onConfirm(value.trim()); };
+  return (
+    <Modal show onHide={onClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Renommer la boîte</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form.Group>
+          <Form.Label>Nouveau nom</Form.Label>
+          <Form.Control
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleConfirm(); }}
+            autoFocus
+          />
+        </Form.Group>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>Annuler</Button>
+        <Button variant="primary" onClick={handleConfirm} disabled={!isValid}>Renommer</Button>
+      </Modal.Footer>
+    </Modal>
+  );
+});
 
 const QuestionManager = () => {
   const navigate = useNavigate();
@@ -46,7 +79,6 @@ const QuestionManager = () => {
 
   // Rename boîte
   const [renamingBox, setRenamingBox] = useState<string | null>(null);
-  const [renameValue, setRenameValue] = useState<string>('');
   useEffect(() => {
     globalStore.setSubtitle('Gestion des questions');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -413,11 +445,10 @@ const QuestionManager = () => {
     await removeBox(boxName);
   };
 
-  const handleConfirmRename = async () => {
-    if (!renamingBox || !renameValue.trim() || renameValue.trim() === renamingBox) return;
-    await renameBox(renamingBox, renameValue.trim());
+  const handleConfirmRename = async (newName: string) => {
+    if (!renamingBox) return;
+    await renameBox(renamingBox, newName);
     setRenamingBox(null);
-    setRenameValue('');
   };
 
   // Fonctions supprimées - mode carte retiré
@@ -510,35 +541,13 @@ const QuestionManager = () => {
       />
 
       {/* Modale de renommage de boîte */}
-      <Modal show={renamingBox !== null} onHide={() => { setRenamingBox(null); setRenameValue(''); }} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Renommer la boîte</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group>
-            <Form.Label>Nouveau nom</Form.Label>
-            <Form.Control
-              type="text"
-              value={renameValue}
-              onChange={(e) => setRenameValue(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleConfirmRename(); }}
-              autoFocus
-            />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => { setRenamingBox(null); setRenameValue(''); }}>
-            Annuler
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleConfirmRename}
-            disabled={!renameValue.trim() || renameValue.trim() === renamingBox}
-          >
-            Renommer
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {renamingBox !== null && (
+        <RenameBoxModal
+          boxName={renamingBox}
+          onConfirm={handleConfirmRename}
+          onClose={() => setRenamingBox(null)}
+        />
+      )}
 
       {/* Modal d'édition de question */}
       <QuestionModal
@@ -673,7 +682,7 @@ const QuestionManager = () => {
                               size="sm"
                               variant="outline-secondary"
                               title="Renommer la boîte"
-                              onClick={() => { setRenamingBox(box.name); setRenameValue(box.name); }}
+                              onClick={() => setRenamingBox(box.name)}
                             >
                               <FontAwesomeIcon icon={['fas', 'pen']} />
                             </Button>
