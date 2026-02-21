@@ -13,20 +13,22 @@ const Help = ({ show, onClose }: any) => {
         is a fork of <strong><a href="https://github.com/s-vivien/BlindTesTwitch" target="_blank" rel="noreferrer">BlindTesTwitch</a></strong> From <strong>Neumann</strong>
         <br />
         <br />
-        <h2>Points de chaîne (pour le streamer)</h2>
-        <ul>
-          <li>Ajouter un <strong>points de chaine</strong> personalisés.</li>
-          <li>Nommer et décrire le point de chaîne a votre guise.</li>
-          <li>Mettre un prix qui vous semble correct.</li>
-          <li>Ajouter la demande de saisie de texte pour que les viewers puissent entrer le nombre de questions.</li>
-          <li>Une fois configurer les vieweurs peuvent reclamer un quiz en demandant.</li>
-        </ul>
+
         <h2>Comment Jouer</h2>
         <ul>
           <li><b>Aucune inscription ou condition préalable requise</b> : il suffit de taper dans le chat pour jouer ! Vous serez automatiquement ajouté au classement.</li>
           <li>Il existe une (petite) <b>tolérance aux fautes de frappe</b>, n'hésitez pas à taper rapidement</li>
         </ul>
-        
+        <div className="help-section mb-4">
+        <h2 className="text-primary"><i className="bi bi-lightbulb-fill me-2"></i>Comment proposer des questions ?</h2>
+  <p className="text-muted small">
+    Vous pouvez enrichir la base de données commune pour que vos questions apparaissent en jeu (chez vous et chez les autres streamers).</p><ul><li>
+      <strong>Accès :</strong> Cliquez sur le bouton <strong>"Contribuer"</strong> dans le menu global.</li>
+    <li><strong>Format :</strong> Indiquez une question claire, la bonne réponse, et trois mauvaises réponses crédibles pour le mode QCM.</li>
+    <li><strong>Validation :</strong> Une fois envoyée, votre question est placée en file d'attente. Elle sera relue par un modérateur avant d'être injectée dans la base de données.</li>
+  </ul>
+</div>
+
         <h2>Scoring</h2>
         <ul>
           {
