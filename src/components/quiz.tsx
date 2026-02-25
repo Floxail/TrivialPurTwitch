@@ -125,8 +125,8 @@ const Quiz = () => {
 	const handleBoxClick = useCallback((boxName: string) => {
 		setSelectedBoxNames(prev => {
 			if (prev === null) {
-				// Toutes sélectionnées → déselectionner uniquement cette boîte
-				return boxes.map(b => b.name).filter(n => n !== boxName);
+				// Était "toutes" → switch vers cette boîte uniquement
+				return [boxName];
 			}
 			const isSelected = prev.includes(boxName);
 			if (isSelected && prev.length === 1) {
@@ -138,7 +138,7 @@ const Quiz = () => {
 			}
 			return [...prev, boxName];
 		});
-	}, [boxes]);
+	}, []);
 
 	// Synchroniser la sélection quand les boîtes changent (après sync DB)
 	useEffect(() => {

@@ -261,10 +261,20 @@ const ContributionPage: React.FC = () => {
 
     try {
       let count = 0;
+      // Ordre fixe : Bleu, Rose, Jaune, Marron, Vert, Orange
+      const categoryOrder = [
+        TrivialCategory.Geography,
+        TrivialCategory.Entertainment,
+        TrivialCategory.History,
+        TrivialCategory.Arts,
+        TrivialCategory.Science,
+        TrivialCategory.Sports,
+      ];
+      let catIndex = 0;
 
       for (const q of result.questions) {
         const cat = bulkRandomCat
-          ? (Math.floor(Math.random() * 6) as TrivialCategory)
+          ? categoryOrder[catIndex++ % categoryOrder.length]
           : bulkCategory;
 
         if (mode === 'public') {
