@@ -49,12 +49,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   if (req.method === 'OPTIONS') return res.status(204).end();
 
-  // Rate limiting : 30 requêtes par minute par IP
-  if (checkRateLimit(req, res, 30, 60_000)) return;
-
   // Toutes les actions nécessitent une auth admin Twitch
   const admin = await requireAdminAuth(req);
   if (!admin) {
+    // Rate limiting uniquement pour les non-admins (401)
+    if (checkRateLimit(req, res, 30, 60_000)) return;
     return res.status(401).json({ error: 'Unauthorized — admin Twitch requis' });
   }
 
