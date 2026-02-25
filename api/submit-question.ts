@@ -49,8 +49,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   if (req.method === 'OPTIONS') return res.status(204).end();
 
-  // Rate limiting : 10 soumissions par minute par IP
-  if (checkRateLimit(req, res, 10, 60_000)) return;
+  // Rate limiting : 20 soumissions par minute par IP (bypass si clé admin)
+  const isAdmin = req.headers['x-api-key'] === process.env.ADMIN_API_KEY && !!process.env.ADMIN_API_KEY;
+  if (!isAdmin && checkRateLimit(req, res, 20, 60_000)) return;
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
