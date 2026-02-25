@@ -19,11 +19,6 @@ const getParam = (name: string, value: string) => {
 
 export const colors: string[] = ['#D23F9A', '#7FBB61', '#2C75C2', '#F2A83A', '#6456F1', '#19E3B2', '#FA6B4D', '#8C84D4', '#D3F721', '#4A4A47'];
 
-// light clean + trailing parts (- X || (X))
-export const cleanValue = (value: string) => {
-  return cleanValueLight(value.replaceAll(/ \(.+\).*| \[.+\].*| -.+/g, '')).trim();
-};
-
 // lower-case + remove diacritic + remove some special characters
 export const cleanValueLight = (value: string) => {
   return value
@@ -55,22 +50,6 @@ export const removeArticles = (value: string) => {
     .replace(/^a /i, '')
     .replace(/^an /i, '')
     .trim();
-};
-
-export const specialCharactersAlternatives = new Map<RegExp, string[]>([
-  [/ & /g, [' and ', ' et ']],
-  [/ \+ /g, [' and ', ' et ']],
-  [/^the /g, ['']],
-]);
-
-export const cleanSpoiler = (title: string, artists: string[]) => {
-  let cleaned = title;
-  for (let artist of artists) {
-    var escapedArtist = artist.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    var regExp = new RegExp(` \\(.*${escapedArtist}.*\\)| \\[.*${escapedArtist}.*\\]| - .*${escapedArtist}.*`, 'gi');
-    cleaned = cleaned.replaceAll(regExp, '').trim();
-  }
-  return cleaned;
 };
 
 // ref, input

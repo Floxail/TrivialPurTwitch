@@ -72,12 +72,6 @@ export type TrivialBox = {
   totalQuestions: number; // Nombre total de questions dans cette boîte
 };
 
-// Carte de quiz (mode CARD)
-export type QuizCard = {
-  questions: Question[]; // 6 questions, une par catégorie
-  boxName: string;
-  cardNumber: number;
-};
 
 export class QuestionsData {
   questions: Question[] = [];
@@ -87,8 +81,7 @@ export class QuestionsData {
   lastDBQuestionIds: string[] = []; // IDs des questions BD lors de la dernière sync
 
   // Settings
-  cumulativeScoresInCardMode: boolean = false; // Cumuler les scores entre cartes
-  cumulativeScoresInQuizMode: boolean = false; // Cumuler les scores entre quiz
+cumulativeScoresInQuizMode: boolean = false; // Cumuler les scores entre quiz
   defaultQuizQuestions: number = 10; // Nombre de questions par défaut en mode QUIZ
 }
 
@@ -113,16 +106,12 @@ type QuestionsActions = {
   // Récupération des questions
   getQuestionsByBox: (boxName: string) => Question[];
   getQuestionsByCard: (boxName: string, cardNumber: number) => Question[];
-  getCardNumbersForBox: (boxName: string) => number[];
-
   // Génération de quiz
-  generateQuizCard: (boxName: string, cardNumber: number) => QuizCard | null;
   generateRandomQuiz: (boxName: string, questionCount: number) => Question[] | null;
   generateRandomQuizAllBoxes: (questionCount: number, balanceCategories?: boolean) => Question[] | null;
   generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number, balanceCategories?: boolean) => Question[] | null;
 
   // Settings
-  setCumulativeScores: (value: boolean) => void;
   setCumulativeScoresQuiz: (value: boolean) => void;
   setDefaultQuizQuestions: (count: number) => void;
 
@@ -148,7 +137,6 @@ const restoredState: QuestionsData = {
   syncStatus: 'idle',
   lastDBSync: plain.lastDBSync ?? plain.lastGitHubSync,
   lastDBQuestionIds: plain.lastDBQuestionIds ?? plain.lastGitHubQuestionIds ?? [],
-  cumulativeScoresInCardMode: plain.cumulativeScoresInCardMode || false,
   cumulativeScoresInQuizMode: plain.cumulativeScoresInQuizMode || false,
   defaultQuizQuestions: plain.defaultQuizQuestions || 10,
 };
@@ -165,7 +153,6 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           boxes: current.boxes,
           lastDBSync: current.lastDBSync,
           lastDBQuestionIds: current.lastDBQuestionIds,
-          cumulativeScoresInCardMode: current.cumulativeScoresInCardMode,
           cumulativeScoresInQuizMode: current.cumulativeScoresInQuizMode,
           defaultQuizQuestions: current.defaultQuizQuestions,
         };
@@ -179,7 +166,6 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           syncStatus: 'idle',
           lastDBSync: undefined,
           lastDBQuestionIds: [],
-          cumulativeScoresInCardMode: false,
           cumulativeScoresInQuizMode: false,
           defaultQuizQuestions: 10,
         });
@@ -370,39 +356,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         );
       },
 
-      getCardNumbersForBox: (boxName: string) => {
-        const box = get().getBoxByName(boxName);
-        return box ? box.cardNumbers : [];
-      },
-
       // ========== GÉNÉRATION DE QUIZ ==========
-
-      generateQuizCard: (boxName: string, cardNumber: number): QuizCard | null => {
-        const questions = get().getQuestionsByCard(boxName, cardNumber);
-
-        if (questions.length === 0) {
-          return null;
-        }
-
-        // Vérifier qu'on a bien une question par catégorie
-        const categoryCounts = new Map<TrivialCategory, number>();
-        questions.forEach((q) => {
-          categoryCounts.set(q.category, (categoryCounts.get(q.category) || 0) + 1);
-        });
-
-        // Une carte valide doit avoir exactement 6 questions (une par catégorie)
-        if (questions.length !== 6 || categoryCounts.size !== 6) {
-          console.warn(
-            `Carte ${boxName} #${cardNumber} invalide : ${questions.length} questions, ${categoryCounts.size} catégories`
-          );
-        }
-
-        return {
-          questions,
-          boxName,
-          cardNumber,
-        };
-      },
 
       generateRandomQuiz: (boxName: string, questionCount: number): Question[] | null => {
         const allQuestions = get().getQuestionsByBox(boxName);
@@ -515,11 +469,6 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
       },
 
       // ========== SETTINGS ==========
-
-      setCumulativeScores: (value: boolean) => {
-        set({ cumulativeScoresInCardMode: value });
-        get().backup();
-      },
 
       setCumulativeScoresQuiz: (value: boolean) => {
         set({ cumulativeScoresInQuizMode: value });
@@ -643,7 +592,6 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           quiz: {
             questions: current.questions,
             boxes: current.boxes,
-            cumulativeScoresInCardMode: current.cumulativeScoresInCardMode,
             cumulativeScoresInQuizMode: current.cumulativeScoresInQuizMode,
             defaultQuizQuestions: current.defaultQuizQuestions,
           },
@@ -678,7 +626,6 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
             set({
               questions,
               boxes,
-              cumulativeScoresInCardMode: backupData.quiz.cumulativeScoresInCardMode || false,
               cumulativeScoresInQuizMode: backupData.quiz.cumulativeScoresInQuizMode || false,
               defaultQuizQuestions: backupData.quiz.defaultQuizQuestions || 10,
             });
@@ -749,7 +696,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         Object.fromEntries(
           Object.entries(state).filter(([key]) =>
             ['questions', 'boxes', 'lastDBSync', 'lastDBQuestionIds',
-             'cumulativeScoresInCardMode', 'cumulativeScoresInQuizMode',
+             'cumulativeScoresInQuizMode',
              'defaultQuizQuestions'].includes(key)
           ),
         ),

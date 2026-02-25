@@ -44,7 +44,6 @@ library.add(
   faShuffle,
   faSignOutAlt,
   faStepForward,
-  faStepForward,
   faTimes,
   faTimesCircle,
   faTrash,

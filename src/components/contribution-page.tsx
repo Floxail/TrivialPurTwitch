@@ -11,6 +11,7 @@ import {
   categoryNames,
 } from './store/questions-store';
 import { apiSubmitQuestion, SubmitQuestionPayload } from 'services/api-submit-service';
+import { apiCreateQuestion } from 'services/api-service';
 
 // Labels et limites QCM
 const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -95,6 +96,7 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
 const ContributionPage: React.FC = () => {
   const setSubtitle = useGlobalStore((state) => state.setSubtitle);
   const twitchNick = useAuthStore((state) => state.twitchNick);
+  const isAdmin = useAuthStore((state) => state.isAdmin);
   const boxes = useQuestionsStore((state) => state.boxes);
   const addQuestion = useQuestionsStore((state) => state.addQuestion);
   const addBox = useQuestionsStore((state) => state.addBox);
@@ -115,7 +117,6 @@ const ContributionPage: React.FC = () => {
   const [boxName, setBoxName] = useState('');
   const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.FREE_TEXT);
   const [qcmOptions, setQcmOptions] = useState<string[]>(['', '']);
-  const [, setQcmCorrectIndex] = useState(0);
   const [qcmCorrectIndexes, setQcmCorrectIndexes] = useState<number[]>([0]);
   const [submitting, setSubmitting] = useState(false);
 
@@ -152,7 +153,6 @@ const ContributionPage: React.FC = () => {
     setCategory(TrivialCategory.Geography);
     setQuestionType(QuestionType.FREE_TEXT);
     setQcmOptions(['', '']);
-    setQcmCorrectIndex(0);
     setQcmCorrectIndexes([0]);
   };
 
@@ -210,8 +210,13 @@ const ContributionPage: React.FC = () => {
           payload.qcmCorrectIndex = qcmCorrectIndexes[0];
           payload.qcmCorrectIndexes = qcmCorrectIndexes;
         }
-        await apiSubmitQuestion(payload);
-        showSuccess('Question soumise pour modération !');
+        if (isAdmin) {
+          await apiCreateQuestion(payload);
+          showSuccess('Question ajoutée directement en base !');
+        } else {
+          await apiSubmitQuestion(payload);
+          showSuccess('Question soumise pour modération !');
+        }
       } else {
         if (!boxName) {
           showError('Sélectionnez une boîte de destination');
@@ -292,7 +297,11 @@ const ContributionPage: React.FC = () => {
             payload.qcmOptions = q.qcmOptions;
             payload.qcmCorrectIndex = q.qcmCorrectIndex;
           }
-          await apiSubmitQuestion(payload);
+          if (isAdmin) {
+            await apiCreateQuestion(payload);
+          } else {
+            await apiSubmitQuestion(payload);
+          }
         } else {
           if (!bulkBox) {
             showError('Sélectionnez une boîte de destination');
@@ -325,7 +334,8 @@ const ContributionPage: React.FC = () => {
         qcmCount > 0 ? `${qcmCount} QCM` : '',
       ].filter(Boolean).join(', ');
 
-      showSuccess(`${count} question(s) ${mode === 'public' ? 'soumises pour modération' : 'ajoutées à ta collection'} (${details})`);
+      const modeLabel = mode === 'local' ? 'ajoutées à ta collection' : isAdmin ? 'ajoutées directement en base' : 'soumises pour modération';
+      showSuccess(`${count} question(s) ${modeLabel} (${details})`);
       setBulkText('');
       setBulkPreview(null);
     } catch (err: any) {
@@ -542,7 +552,6 @@ const ContributionPage: React.FC = () => {
                       const newIdxs = qcmCorrectIndexes.filter(i => i < newOpts.length);
                       if (newIdxs.length === 0) newIdxs.push(0);
                       setQcmOptions(newOpts);
-                      setQcmCorrectIndex(newIdxs[0]);
                       setQcmCorrectIndexes(newIdxs);
                       setAnswer(newIdxs.map(i => newOpts[i]).filter(Boolean).join(', '));
                     }}
@@ -575,7 +584,6 @@ const ContributionPage: React.FC = () => {
                           } else {
                             newIdxs = [...qcmCorrectIndexes, i].sort();
                           }
-                          setQcmCorrectIndex(newIdxs[0]);
                           setQcmCorrectIndexes(newIdxs);
                           setAnswer(newIdxs.map(idx => qcmOptions[idx]).filter(Boolean).join(', '));
                         }}

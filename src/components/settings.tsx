@@ -16,7 +16,6 @@ const Settings = () => {
   const questionsStore = useQuestionsStore();
   const backupFileInputRef = useRef<HTMLInputElement>(null);
 
-  const [validated] = useState(false);
   const [chatNotifications, setChatNotifications] = useState<boolean>(settingsStore.chatNotifications);
   const [addEveryUser, setAddEveryUser] = useState<boolean>(settingsStore.addEveryUser);
   const [acceptanceDelay, setAcceptanceDelay] = useState<number>(settingsStore.acceptanceDelay);
@@ -121,7 +120,7 @@ const Settings = () => {
 
   return (
     <div style={{ width: '600px', margin: 'auto' }} className="mb-3">
-      <Form noValidate validated={validated} onSubmit={submit}>
+      <Form noValidate onSubmit={submit}>
 
         <h3>Global</h3>
 
