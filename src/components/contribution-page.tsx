@@ -211,7 +211,13 @@ const ContributionPage: React.FC = () => {
           payload.qcmCorrectIndexes = qcmCorrectIndexes;
         }
         if (isAdmin) {
-          await apiCreateQuestion(payload);
+          await apiCreateQuestion({
+            ...payload,
+            id: `q_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
+            boxName: payload.boxName || 'Sans boîte',
+            questionType: payload.questionType || 'free_text',
+            difficulty: 'medium',
+          });
           showSuccess('Question ajoutée directement en base !');
         } else {
           await apiSubmitQuestion(payload);
@@ -298,7 +304,13 @@ const ContributionPage: React.FC = () => {
             payload.qcmCorrectIndex = q.qcmCorrectIndex;
           }
           if (isAdmin) {
-            await apiCreateQuestion(payload);
+            await apiCreateQuestion({
+              ...payload,
+              id: `q_${Date.now()}_${Math.random().toString(36).substring(2, 8)}_${count}`,
+              boxName: payload.boxName || 'Sans boîte',
+              questionType: payload.questionType || 'free_text',
+              difficulty: 'medium',
+            });
           } else {
             await apiSubmitQuestion(payload);
           }
