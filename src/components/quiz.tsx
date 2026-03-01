@@ -402,14 +402,14 @@ const Quiz = () => {
 	};
 
 	const onProposition = (nick: string, tid: string, message: string) => {
-		// Si la question est révélée, on ignore TOUTES les propositions
-		if (questionRevealedRef.current) {
+		// Commande !score - toujours traitée, même entre les questions
+		if (message.toLowerCase() === '!score') {
+			handleScoreCommand(nick);
 			return;
 		}
 
-		// Commande !score - vérifier AVANT addEveryUser
-		if (message.toLowerCase() === '!score') {
-			handleScoreCommand(nick);
+		// Si la question est révélée, on ignore TOUTES les propositions
+		if (questionRevealedRef.current) {
 			return;
 		}
 
