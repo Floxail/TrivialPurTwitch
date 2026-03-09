@@ -1,25 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 /**
- * Vérifie que la requête contient la clé API admin.
- * Le client envoie le header `x-api-key` avec la valeur de ADMIN_API_KEY.
- *
- * Usage dans les handlers :
- *   if (!requireAuth(req)) return res.status(401).json({ error: 'Unauthorized' });
- */
-export function requireAuth(req: VercelRequest): boolean {
-  const apiKey = req.headers['x-api-key'];
-  const expected = process.env.ADMIN_API_KEY;
-
-  if (!expected) {
-    console.error('ADMIN_API_KEY non configurée dans les variables d\'environnement');
-    return false;
-  }
-
-  return apiKey === expected;
-}
-
-/**
  * Vérifie que l'utilisateur est un admin via son token Twitch.
  *
  * Fonctionnement :
@@ -83,23 +64,10 @@ export async function requireAdminAuth(req: VercelRequest): Promise<{ userId: st
 }
 
 /**
- * Accepte soit la clé API admin (x-api-key), soit un token Twitch admin (Bearer).
- * Utilisé pour les endpoints CRUD questions/boxes accessibles aux deux types d'auth.
- */
-export async function requireAnyAuth(req: VercelRequest): Promise<boolean> {
-  if (requireAuth(req)) return true;
-  const admin = await requireAdminAuth(req);
-  return admin !== null;
-}
-
-/**
- * Accepte n'importe quel token Twitch valide (pas forcément admin),
- * ou la clé API admin en fallback.
+ * Accepte n'importe quel token Twitch valide (pas forcément admin).
  * Utilisé pour les endpoints accessibles à tous les streamers connectés (ex: scores).
  */
 export async function requireAnyTwitchAuth(req: VercelRequest): Promise<boolean> {
-  if (requireAuth(req)) return true;
-
   const authHeader = req.headers['authorization'];
   if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
 

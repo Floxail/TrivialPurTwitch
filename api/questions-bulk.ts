@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
 import dotenv from 'dotenv';
-import { requireAuth } from './_utils.js';
+import { requireAdminAuth } from './_utils.js';
 
 dotenv.config({ path: '.env.local' });
 
@@ -25,14 +25,14 @@ function getDb() {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (!requireAuth(req)) {
+  if (!await requireAdminAuth(req)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 

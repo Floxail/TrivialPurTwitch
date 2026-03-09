@@ -25,11 +25,6 @@ const Settings = () => {
   const [backupMessage, setBackupMessage] = useState<string>('');
   const [backupError, setBackupError] = useState<string>('');
 
-  // Clé API Admin
-  const [apiKey, setApiKey] = useState<string>(localStorage.getItem('admin_api_key') || '');
-  const [apiKeyMessage, setApiKeyMessage] = useState<string>('');
-  const [showApiKey, setShowApiKey] = useState(false);
-
   useEffect(() => {
     globalStore.setSubtitle('Settings');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -267,56 +262,6 @@ const Settings = () => {
           style={{ display: 'none' }}
           onChange={handleImportFullBackup}
         />
-      </div>
-
-      <br />
-      <h3>
-        <FontAwesomeIcon icon={['fas', 'key']} className="me-2" />
-        Clé API Admin
-      </h3>
-
-      <div className="card p-3 mb-3">
-        <p className="mb-2">
-          <strong>Clé d'authentification</strong> pour les opérations d'écriture (ajout, modification, suppression de questions).
-          Cette clé doit correspondre à la variable <code>ADMIN_API_KEY</code> configurée sur Vercel.
-        </p>
-
-        {apiKeyMessage && (
-          <Alert variant="success" className="mb-2">
-            {apiKeyMessage}
-          </Alert>
-        )}
-
-        <div className="d-flex align-items-center gap-2 mb-2">
-          <Form.Control
-            type={showApiKey ? 'text' : 'password'}
-            placeholder="Entrez votre clé API admin"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            style={{ maxWidth: '400px' }}
-          />
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={() => setShowApiKey(!showApiKey)}
-            title={showApiKey ? 'Masquer' : 'Afficher'}
-          >
-            <FontAwesomeIcon icon={['fas', showApiKey ? 'eye-slash' : 'eye']} />
-          </Button>
-        </div>
-
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => {
-            localStorage.setItem('admin_api_key', apiKey.trim());
-            setApiKeyMessage('Clé API sauvegardée !');
-            setTimeout(() => setApiKeyMessage(''), 3000);
-          }}
-        >
-          <FontAwesomeIcon icon={['fas', 'save']} className="me-2" />
-          Sauvegarder la clé
-        </Button>
       </div>
     </div>
   );

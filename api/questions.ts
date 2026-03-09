@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
 import dotenv from 'dotenv';
-import { requireAnyAuth } from './_utils.js';
+import { requireAdminAuth } from './_utils.js';
 
 dotenv.config({ path: '.env.local' });
 
@@ -80,8 +80,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ questions });
     }
 
-    // ==================== AUTH REQUISE (x-api-key OU token Twitch admin) ====================
-    if (!(await requireAnyAuth(req))) {
+    // ==================== AUTH REQUISE (token Twitch admin) ====================
+    if (!(await requireAdminAuth(req))) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
