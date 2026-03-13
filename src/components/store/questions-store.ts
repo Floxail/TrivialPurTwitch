@@ -70,6 +70,7 @@ export type TrivialBox = {
   name: string; // Ex: "Cinéma 91"
   cardNumbers: number[]; // Ex: [1, 2, 3, 4, 5]
   totalQuestions: number; // Nombre total de questions dans cette boîte
+  ordered?: boolean; // Si true : questions jouées dans l'ordre d'insertion (rowid DB)
 };
 
 
@@ -110,6 +111,8 @@ type QuestionsActions = {
   generateRandomQuiz: (boxName: string, questionCount: number) => Question[] | null;
   generateRandomQuizAllBoxes: (questionCount: number, balanceCategories?: boolean) => Question[] | null;
   generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number, balanceCategories?: boolean) => Question[] | null;
+  generateOrderedQuiz: (boxName: string) => Question[] | null;
+  toggleBoxOrdered: (boxName: string, ordered: boolean) => void;
 
   // Settings
   setCumulativeScoresQuiz: (value: boolean) => void;
@@ -251,6 +254,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
       // ========== GESTION DES BOÎTES ==========
 
       rebuildBoxes: (questions: Question[]): TrivialBox[] => {
+        const existingBoxes = get().boxes;
         const boxMap = new Map<string, Set<number>>();
 
         questions.forEach((q) => {
@@ -270,6 +274,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
             name: boxName,
             cardNumbers,
             totalQuestions,
+            ordered: existingBoxes.find(b => b.name === boxName)?.ordered,
           });
         });
 
@@ -466,6 +471,17 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         }
 
         return result.sort(() => Math.random() - 0.5);
+      },
+
+      generateOrderedQuiz: (boxName: string): Question[] | null => {
+        const questions = get().questions.filter(q => q.boxName === boxName);
+        return questions.length === 0 ? null : questions;
+      },
+
+      toggleBoxOrdered: (boxName: string, ordered: boolean) => {
+        const boxes = get().boxes.map(b => b.name === boxName ? { ...b, ordered } : b);
+        set({ boxes });
+        get().backup();
       },
 
       // ========== SETTINGS ==========

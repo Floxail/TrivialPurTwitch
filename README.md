@@ -22,11 +22,12 @@ TrivialPurTwitch permet aux streamers d'animer des quiz de type Trivial Pursuit 
 - **Leaderboard** — Classement session en temps réel + scores persistants all-time
 
 ### Questions
-- **Synchronisation GitHub** — Questions officielles mises à jour automatiquement (toutes les heures)
+- **Synchronisation Turso DB** — Questions officielles mises à jour automatiquement (toutes les heures)
 - **Questions locales** — Créez vos propres questions, jamais supprimées par la sync
 - **Ajout en masse** — Format texte `Q:/R:/ALT:` + QCM `A:/B:/C:/D:` avec support multi-réponses
 - **Import/Export JSON** — Sauvegarde et restauration complète
 - **Gestion par boîtes** — Organisez vos questions par thème
+- **Mode ordonné** — Jouez les questions d'une boîte dans l'ordre d'insertion (↓ dans l'UI)
 
 ### Communauté
 - **Proposition de questions** — Les viewers connectés peuvent soumettre des questions via `/contribute`
@@ -131,7 +132,7 @@ src/
 │   ├── admin-dashboard.tsx    # Modération des questions proposées
 │   └── ...
 ├── services/
-│   ├── github-data-service.ts # Sync questions depuis GitHub
+│   ├── github-data-service.ts # Sync questions depuis Turso DB (+ fallback build local)
 │   ├── api-scores-service.ts  # Scores persistants
 │   ├── api-reports-service.ts # Signalement de questions
 │   └── ...

@@ -57,6 +57,7 @@ const QuestionManager = () => {
   const addBox = useQuestionsStore(state => state.addBox);
   const removeBox = useQuestionsStore(state => state.removeBox);
   const renameBox = useQuestionsStore(state => state.renameBox);
+  const toggleBoxOrdered = useQuestionsStore(state => state.toggleBoxOrdered);
   const getBoxByName = useQuestionsStore(state => state.getBoxByName);
   const syncFromDB = useQuestionsStore(state => state.syncFromDB);
   const removeDuplicates = useQuestionsStore(state => state.removeDuplicates);
@@ -678,6 +679,14 @@ const QuestionManager = () => {
                         </h5>
                         {isAdmin && (
                           <div className="d-flex gap-1">
+                            <Button
+                              size="sm"
+                              variant={box.ordered ? 'info' : 'outline-secondary'}
+                              title={box.ordered ? 'Mode ordonné activé — cliquer pour désactiver' : 'Activer le mode ordonné'}
+                              onClick={() => toggleBoxOrdered(box.name, !box.ordered)}
+                            >
+                              <FontAwesomeIcon icon={['fas', 'list-ol']} />
+                            </Button>
                             <Button
                               size="sm"
                               variant="outline-secondary"

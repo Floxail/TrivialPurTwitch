@@ -100,6 +100,7 @@ const ContributionPage: React.FC = () => {
   const boxes = useQuestionsStore((state) => state.boxes);
   const addQuestion = useQuestionsStore((state) => state.addQuestion);
   const addBox = useQuestionsStore((state) => state.addBox);
+  const toggleBoxOrdered = useQuestionsStore((state) => state.toggleBoxOrdered);
 
   // Mode par défaut : local (ma collection)
   const [mode, setMode] = useState<ContributionMode>('local');
@@ -131,6 +132,7 @@ const ContributionPage: React.FC = () => {
   // Nouvelle boîte
   const [showNewBox, setShowNewBox] = useState(false);
   const [newBoxName, setNewBoxName] = useState('');
+  const [newBoxOrdered, setNewBoxOrdered] = useState(false);
 
   useEffect(() => {
     setSubtitle('Proposer des questions');
@@ -164,9 +166,11 @@ const ContributionPage: React.FC = () => {
       return;
     }
     await addBox(name);
+    if (newBoxOrdered) toggleBoxOrdered(name, true);
     setNewBoxName('');
+    setNewBoxOrdered(false);
     setShowNewBox(false);
-    showSuccess(`Boîte "${name}" créée !`);
+    showSuccess(`Boîte "${name}" créée !${newBoxOrdered ? ' (mode ordonné activé)' : ''}`);
   };
 
   // ==================== Soumission unique ====================
@@ -432,23 +436,36 @@ const ContributionPage: React.FC = () => {
             Nouvelle boîte
           </button>
         ) : (
-          <div className="d-flex gap-2 align-items-center">
-            <input
-              className="terminal-input terminal-input-box"
-              type="text"
-              placeholder="Nom de la boîte (ex: Cinéma 91)"
-              value={newBoxName}
-              onChange={(e) => setNewBoxName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleCreateBox()}
-              autoFocus
-              style={{ maxWidth: '300px' }}
-            />
-            <button className="terminal-btn terminal-btn-success terminal-btn-sm" onClick={handleCreateBox} disabled={!newBoxName.trim()}>
-              Créer
-            </button>
-            <button className="terminal-btn terminal-btn-sm" onClick={() => { setShowNewBox(false); setNewBoxName(''); }}>
-              Annuler
-            </button>
+          <div className="d-flex flex-column gap-2">
+            <div className="d-flex gap-2 align-items-center">
+              <input
+                className="terminal-input terminal-input-box"
+                type="text"
+                placeholder="Nom de la boîte (ex: Cinéma 91)"
+                value={newBoxName}
+                onChange={(e) => setNewBoxName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleCreateBox()}
+                autoFocus
+                style={{ maxWidth: '300px' }}
+              />
+              <Form.Check
+                type="switch"
+                id="newBoxOrdered"
+                label="↓ Ordonné"
+                checked={newBoxOrdered}
+                onChange={(e) => setNewBoxOrdered(e.target.checked)}
+                title="Les questions seront jouées dans l'ordre d'insertion"
+                style={{ whiteSpace: 'nowrap' }}
+              />
+            </div>
+            <div className="d-flex gap-2">
+              <button className="terminal-btn terminal-btn-success terminal-btn-sm" onClick={handleCreateBox} disabled={!newBoxName.trim()}>
+                Créer
+              </button>
+              <button className="terminal-btn terminal-btn-sm" onClick={() => { setShowNewBox(false); setNewBoxName(''); setNewBoxOrdered(false); }}>
+                Annuler
+              </button>
+            </div>
           </div>
         )}
       </div>

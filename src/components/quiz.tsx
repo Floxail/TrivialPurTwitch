@@ -70,6 +70,11 @@ const Quiz = () => {
 	const [modeError, setModeError] = useState<string>('');
 	const [balanceCategories, setBalanceCategories] = useState<boolean>(true); // Mode couleurs équilibrées
 
+	// Boîte ordonnée : une seule boîte sélectionnée avec ordered=true
+	const isOrderedBox = selectedBoxNames?.length === 1
+		? (questionsStore.getBoxByName(selectedBoxNames[0])?.ordered ?? false)
+		: false;
+
 	// Report system
 	const [showReportMenu, setShowReportMenu] = useState(false);
 	const [reportSent, setReportSent] = useState(false);
@@ -610,8 +615,13 @@ const Quiz = () => {
 				setModeError(`❌ La boîte "${boxName}" n'existe pas`);
 				return;
 			}
-			questions = questionsStore.generateRandomQuiz(boxName, quizQuestionCount);
-			displayBoxName = boxName;
+			if (box.ordered) {
+				questions = questionsStore.generateOrderedQuiz(boxName);
+				displayBoxName = boxName;
+			} else {
+				questions = questionsStore.generateRandomQuiz(boxName, quizQuestionCount);
+				displayBoxName = boxName;
+			}
 		} else {
 			// Sélection multiple
 			questions = questionsStore.generateRandomQuizFromBoxes(selectedBoxNames, quizQuestionCount, balanceCategories);
@@ -815,35 +825,46 @@ const Quiz = () => {
 						</div>
 					</div>
 
-					{/* Option équilibrer les catégories - visible si plusieurs boîtes */}
-					{(selectedBoxNames === null || selectedBoxNames.length > 1) && (
-						<Form.Group className="mb-3">
-							<Form.Check
-								type="switch"
-								id="balanceCategories"
-								label="Équilibrer les catégories (une question de chaque couleur en rotation)"
-								checked={balanceCategories}
-								onChange={(e) => setBalanceCategories(e.target.checked)}
-							/>
-							<Form.Text style={{ color: 'var(--lumon-text-muted)' }}>
-								{balanceCategories
-									? 'Les questions seront réparties équitablement entre les 6 catégories'
-									: 'Les questions seront choisies aléatoirement sans équilibrage'}
-							</Form.Text>
-						</Form.Group>
-					)}
+					{/* Mode ordonné : afficher un message, cacher les options inutiles */}
+					{isOrderedBox ? (
+						<div className="mb-3 p-2" style={{ background: 'rgba(var(--lumon-cyan-rgb), 0.08)', border: '1px solid rgba(var(--lumon-cyan-rgb), 0.3)', borderRadius: '4px' }}>
+							<small style={{ color: 'var(--lumon-cyan)' }}>
+								↓ Mode ordonné — toutes les questions seront jouées dans l'ordre de la boîte.
+							</small>
+						</div>
+					) : (
+						<>
+							{/* Option équilibrer les catégories - visible si plusieurs boîtes */}
+							{(selectedBoxNames === null || selectedBoxNames.length > 1) && (
+								<Form.Group className="mb-3">
+									<Form.Check
+										type="switch"
+										id="balanceCategories"
+										label="Équilibrer les catégories (une question de chaque couleur en rotation)"
+										checked={balanceCategories}
+										onChange={(e) => setBalanceCategories(e.target.checked)}
+									/>
+									<Form.Text style={{ color: 'var(--lumon-text-muted)' }}>
+										{balanceCategories
+											? 'Les questions seront réparties équitablement entre les 6 catégories'
+											: 'Les questions seront choisies aléatoirement sans équilibrage'}
+									</Form.Text>
+								</Form.Group>
+							)}
 
-					{/* Nombre de questions */}
-					<Form.Group className="mb-3">
-						<Form.Label>Nombre de questions</Form.Label>
-						<Form.Control
-							type="number"
-							min="1"
-							max="550"
-							value={quizQuestionCount}
-							onChange={(e) => setQuizQuestionCount(parseInt(e.target.value) || 10)}
-						/>
-					</Form.Group>
+							{/* Nombre de questions */}
+							<Form.Group className="mb-3">
+								<Form.Label>Nombre de questions</Form.Label>
+								<Form.Control
+									type="number"
+									min="1"
+									max="550"
+									value={quizQuestionCount}
+									onChange={(e) => setQuizQuestionCount(parseInt(e.target.value) || 10)}
+								/>
+							</Form.Group>
+						</>
+					)}
 
 					{/* Message d'erreur */}
 					{modeError && (
@@ -949,6 +970,7 @@ const Quiz = () => {
 													>
 														<span className="mdr-corner-tr" />
 														<span className="mdr-corner-bl" />
+														{b.ordered && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.7 }}>↓</span>}
 														{b.name}
 													</div>
 												))}
