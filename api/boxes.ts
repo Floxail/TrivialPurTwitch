@@ -25,11 +25,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     // ==================== GET ====================
     if (req.method === 'GET') {
-      const result = await getDb().execute('SELECT name, card_numbers FROM boxes ORDER BY name');
+      // Auto-migration : ajouter la colonne ordered si elle n'existe pas
+      await getDb().execute('ALTER TABLE boxes ADD COLUMN ordered INTEGER DEFAULT 0').catch(() => {});
+
+      const result = await getDb().execute('SELECT name, card_numbers, ordered FROM boxes ORDER BY name');
 
       const boxes = result.rows.map((row) => ({
         name: row.name,
         cardNumbers: row.card_numbers ? JSON.parse(row.card_numbers as string) : [],
+        ordered: row.ordered === 1,
       }));
 
       return res.status(200).json({ boxes });
@@ -42,18 +46,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // ==================== POST (créer une boîte) ====================
     if (req.method === 'POST') {
-      const { name } = req.body;
+      const { name, ordered } = req.body;
 
       if (!name || typeof name !== 'string' || name.trim().length === 0) {
         return res.status(400).json({ error: 'Le nom de la boîte est requis' });
       }
 
       await getDb().execute({
-        sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers) VALUES (?, ?)',
-        args: [name.trim(), '[]'],
+        sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers, ordered) VALUES (?, ?, ?)',
+        args: [name.trim(), '[]', ordered ? 1 : 0],
       });
 
       return res.status(201).json({ success: true, name: name.trim() });
+    }
+
+    // ==================== PATCH (mettre à jour le flag ordered) ====================
+    if (req.method === 'PATCH') {
+      const { name, ordered } = req.body;
+
+      if (!name || typeof name !== 'string' || name.trim().length === 0) {
+        return res.status(400).json({ error: 'Le nom de la boîte est requis' });
+      }
+
+      await getDb().execute({
+        sql: 'UPDATE boxes SET ordered = ? WHERE name = ?',
+        args: [ordered ? 1 : 0, name.trim()],
+      });
+
+      return res.status(200).json({ success: true, name: name.trim(), ordered: !!ordered });
     }
 
     // ==================== PUT (renommer une boîte) ====================

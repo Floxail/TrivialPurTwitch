@@ -100,7 +100,6 @@ const ContributionPage: React.FC = () => {
   const boxes = useQuestionsStore((state) => state.boxes);
   const addQuestion = useQuestionsStore((state) => state.addQuestion);
   const addBox = useQuestionsStore((state) => state.addBox);
-  const toggleBoxOrdered = useQuestionsStore((state) => state.toggleBoxOrdered);
 
   // Mode par défaut : local (ma collection)
   const [mode, setMode] = useState<ContributionMode>('local');
@@ -165,8 +164,7 @@ const ContributionPage: React.FC = () => {
       showError(`La boîte "${name}" existe déjà`);
       return;
     }
-    await addBox(name);
-    if (newBoxOrdered) toggleBoxOrdered(name, true);
+    await addBox(name, newBoxOrdered || undefined);
     setNewBoxName('');
     setNewBoxOrdered(false);
     setShowNewBox(false);

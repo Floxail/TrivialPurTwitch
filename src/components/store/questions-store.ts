@@ -10,6 +10,7 @@ import {
   apiDeleteBox,
   apiRenameBox,
   apiImportQuestions,
+  apiSetBoxOrdered,
 } from '../../services/api-service';
 
 const localStorageKey: string = 'quiz_questions_storage_v2';
@@ -99,10 +100,10 @@ type QuestionsActions = {
   // Gestion des boîtes (async → API + state local)
   getBoxes: () => TrivialBox[];
   getBoxByName: (boxName: string) => TrivialBox | undefined;
-  addBox: (boxName: string) => Promise<void>;
+  addBox: (boxName: string, ordered?: boolean) => Promise<void>;
   removeBox: (boxName: string) => Promise<void>;
   renameBox: (oldName: string, newName: string) => Promise<void>;
-  rebuildBoxes: (questions: Question[]) => TrivialBox[];
+  rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>) => TrivialBox[];
 
   // Récupération des questions
   getQuestionsByBox: (boxName: string) => Question[];
@@ -112,7 +113,7 @@ type QuestionsActions = {
   generateRandomQuizAllBoxes: (questionCount: number, balanceCategories?: boolean) => Question[] | null;
   generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number, balanceCategories?: boolean) => Question[] | null;
   generateOrderedQuiz: (boxName: string) => Question[] | null;
-  toggleBoxOrdered: (boxName: string, ordered: boolean) => void;
+  toggleBoxOrdered: (boxName: string, ordered: boolean) => Promise<void>;
 
   // Settings
   setCumulativeScoresQuiz: (value: boolean) => void;
@@ -253,7 +254,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
       // ========== GESTION DES BOÎTES ==========
 
-      rebuildBoxes: (questions: Question[]): TrivialBox[] => {
+      rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>): TrivialBox[] => {
         const existingBoxes = get().boxes;
         const boxMap = new Map<string, Set<number>>();
 
@@ -270,11 +271,15 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         boxMap.forEach((cardSet, boxName) => {
           const cardNumbers = Array.from(cardSet).sort((a, b) => a - b);
           const totalQuestions = questions.filter((q) => q.boxName === boxName).length;
+          // Priorité : DB > état local (fallback si pas de sync)
+          const ordered = dbOrderedMap?.has(boxName)
+            ? dbOrderedMap.get(boxName)
+            : existingBoxes.find(b => b.name === boxName)?.ordered;
           boxes.push({
             name: boxName,
             cardNumbers,
             totalQuestions,
-            ordered: existingBoxes.find(b => b.name === boxName)?.ordered,
+            ordered,
           });
         });
 
@@ -291,14 +296,14 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         return get().boxes.find((box) => box.name === boxName);
       },
 
-      addBox: async (boxName: string) => {
+      addBox: async (boxName: string, ordered?: boolean) => {
         const currentBoxes = get().boxes;
         if (currentBoxes.find((box) => box.name === boxName)) {
           return; // La boîte existe déjà
         }
 
         try {
-          await apiCreateBox(boxName);
+          await apiCreateBox(boxName, ordered);
         } catch (err) {
           console.warn('⚠️ API addBox échouée, sauvegarde locale uniquement', err);
         }
@@ -307,6 +312,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           name: boxName,
           cardNumbers: [],
           totalQuestions: 0,
+          ordered,
         };
 
         set({ boxes: [...currentBoxes, newBox] });
@@ -478,10 +484,15 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         return questions.length === 0 ? null : questions;
       },
 
-      toggleBoxOrdered: (boxName: string, ordered: boolean) => {
+      toggleBoxOrdered: async (boxName: string, ordered: boolean) => {
         const boxes = get().boxes.map(b => b.name === boxName ? { ...b, ordered } : b);
         set({ boxes });
         get().backup();
+        try {
+          await apiSetBoxOrdered(boxName, ordered);
+        } catch (err) {
+          console.warn('⚠️ API toggleBoxOrdered échouée, flag local uniquement', err);
+        }
       },
 
       // ========== SETTINGS ==========
@@ -542,6 +553,18 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
             return;
           }
 
+          // Fetch ordered flags depuis la DB boxes
+          let dbOrderedMap = new Map<string, boolean>();
+          try {
+            const boxesRes = await fetch('/api/boxes');
+            if (boxesRes.ok) {
+              const boxesData = await boxesRes.json();
+              for (const b of (boxesData.boxes || [])) {
+                dbOrderedMap.set(b.name, !!b.ordered);
+              }
+            }
+          } catch { /* ignore, on garde les flags locaux */ }
+
           const currentQuestions = get().questions;
           const previousDBIds = get().lastDBQuestionIds.length > 0
             ? new Set(get().lastDBQuestionIds)
@@ -556,7 +579,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           // Sauvegarder les IDs BD actuels pour la prochaine sync
           const currentDBIds = dbData.questions.map((q: any) => q.id);
 
-          const boxes = get().rebuildBoxes(mergedQuestions);
+          const boxes = get().rebuildBoxes(mergedQuestions, dbOrderedMap);
 
           set({
             questions: mergedQuestions,
