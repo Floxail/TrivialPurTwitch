@@ -23,12 +23,6 @@ export class Answer {
     this.isCombo = isCombo;
     this.timer = timer;
   }
-
-  // <--- MODIF : Cette fonction devient obsolète car le calcul se fait dans le store maintenant
-  // Mais on la garde pour éviter de casser d'autres fichiers si besoin
-  getPoints = () => {
-    return 1 + (this.isFirst ? 1 : 0) + (this.isCombo ? 1 : 0);
-  };
 }
 
 export const EMPTY_PLAYER_STATS: PlayerStats = {

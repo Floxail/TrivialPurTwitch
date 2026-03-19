@@ -17,7 +17,6 @@ import AdminDashboard from './components/admin-dashboard';
 import ContributionPage from './components/contribution-page';
 import Convertisseur from './components/convertisseur';
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/react";
 
 function App() {
 	const navigate = useNavigate();
