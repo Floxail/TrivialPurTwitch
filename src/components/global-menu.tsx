@@ -61,6 +61,7 @@ const GlobalMenu = () => {
           <Dropdown.Item as="button" onClick={() => navigate('/contribute')}><FontAwesomeIcon icon={['fas', 'pen']} size="lg" /> Proposer</Dropdown.Item>
           <Dropdown.Item as="button" onClick={onSettingsClick}><FontAwesomeIcon icon={['fas', 'cog']} size="lg" /> Settings</Dropdown.Item>
           <Dropdown.Item as="button" onClick={onHelpClick}><FontAwesomeIcon icon={['fas', 'question-circle']} size="lg" /> Help</Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() => navigate('/stats')}><FontAwesomeIcon icon={['fas', 'chart-bar']} size="lg" /> Stats</Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item as="button" onClick={onChangelogClick}><FontAwesomeIcon icon={['fas', 'book']} size="lg" /> Changelog</Dropdown.Item>
           <Dropdown.Item as="button"><a style={{ color: 'inherit' }} href="https://ko-fi.com/floxail" target="_blank" rel="noreferrer"><FontAwesomeIcon icon={['fas', 'heart']} color="red" size="lg" /> Support me</a></Dropdown.Item>

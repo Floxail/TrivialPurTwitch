@@ -23,12 +23,6 @@ export class Answer {
     this.isCombo = isCombo;
     this.timer = timer;
   }
-
-  // <--- MODIF : Cette fonction devient obsolète car le calcul se fait dans le store maintenant
-  // Mais on la garde pour éviter de casser d'autres fichiers si besoin
-  getPoints = () => {
-    return 1 + (this.isFirst ? 1 : 0) + (this.isCombo ? 1 : 0);
-  };
 }
 
 export const EMPTY_PLAYER_STATS: PlayerStats = {
@@ -61,7 +55,7 @@ type Actions = {
   recordAnswers: (answers: Answer[]) => void;
   getPlayers: (nicks: string[]) => Player[];
   getDeepCopy: () => Record<string, Player>;
-  syncScoresToAPI: (sessionId: string, boxName?: string) => Promise<void>;
+  syncScoresToAPI: (sessionId: string, boxName?: string, channelName?: string, channelId?: string) => Promise<void>;
 }
 
 const recomputeRanks = (players: Record<string, Player>) => {
@@ -222,7 +216,7 @@ export const usePlayerStore = create<Players & Actions>()(
     getDeepCopy: () => {
       return JSON.parse(JSON.stringify(get().players));
     },
-    syncScoresToAPI: async (sessionId: string, boxName?: string) => {
+    syncScoresToAPI: async (sessionId: string, boxName?: string, channelName?: string, channelId?: string) => {
       const players = get().players;
       const activePlayers = Object.values(players).filter(p => p.score > 0 || p.stats.answers > 0);
 
@@ -232,7 +226,7 @@ export const usePlayerStore = create<Players & Actions>()(
       }
 
       try {
-        const result = await apiRecordScores(activePlayers, sessionId, boxName);
+        const result = await apiRecordScores(activePlayers, sessionId, boxName, channelName, channelId);
         console.log(`✅ Scores synchronisés : ${result.inserted} joueurs envoyés (session: ${sessionId})`);
       } catch (err) {
         console.warn('⚠️ Échec sync scores API, scores conservés localement', err);

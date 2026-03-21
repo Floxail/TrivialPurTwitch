@@ -16,8 +16,8 @@ import QuestionManagerTerminal from './components/question-manager-terminal';
 import AdminDashboard from './components/admin-dashboard';
 import ContributionPage from './components/contribution-page';
 import Convertisseur from './components/convertisseur';
+import Stats from './components/stats';
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/react";
 
 function App() {
 	const navigate = useNavigate();
@@ -144,6 +144,8 @@ useEffect(() => {
 					<Route path="/system-mod-portal" element={<AdminDashboard />} />
 					<Route path="/callback" element={<LoginCallback />} />
 					<Route path="/settings" element={<Settings />} />
+					<Route path="/stats" element={<Stats />} />
+					<Route path="/stats/:username" element={<Stats />} />
 </Routes>
 			</div>
 		<Analytics />

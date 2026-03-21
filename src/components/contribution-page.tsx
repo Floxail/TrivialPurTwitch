@@ -165,8 +165,12 @@ const ContributionPage: React.FC = () => {
       showError(`La boîte "${name}" existe déjà`);
       return;
     }
+<<<<<<< HEAD
     await addBox(name);
     if (newBoxOrdered) toggleBoxOrdered(name, true);
+=======
+    await addBox(name, newBoxOrdered || undefined);
+>>>>>>> master
     setNewBoxName('');
     setNewBoxOrdered(false);
     setShowNewBox(false);
