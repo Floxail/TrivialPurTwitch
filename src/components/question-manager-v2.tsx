@@ -78,6 +78,10 @@ const QuestionManager = () => {
   const [showBulkActionsModal, setShowBulkActionsModal] = useState(false);
   const [bulkAction, setBulkAction] = useState<'delete' | 'move' | null>(null);
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 50;
+
   // Rename boîte
   const [renamingBox, setRenamingBox] = useState<string | null>(null);
   useEffect(() => {
@@ -193,11 +197,15 @@ const QuestionManager = () => {
   // DONNÉES MÉMORISÉES - Évite les recalculs à chaque frappe
   // ==========================================================
 
-  // Boîtes avec leurs stats (mémorisé)
+  // Boîtes avec leurs stats (mémorisé) — O(n) au lieu de O(boxes * questions)
   const boxesWithStats = useMemo(() => {
+    const countMap = new Map<string, number>();
+    for (const q of storeQuestions) {
+      countMap.set(q.boxName || '', (countMap.get(q.boxName || '') || 0) + 1);
+    }
     return storeBoxes.map(box => ({
       ...box,
-      totalQuestions: storeQuestions.filter(q => q.boxName === box.name).length
+      totalQuestions: countMap.get(box.name) || 0
     }));
   }, [storeBoxes, storeQuestions]);
 
@@ -225,6 +233,16 @@ const QuestionManager = () => {
 
     return result;
   }, [storeQuestions, selectedBox, filterCategory]);
+
+  // Reset pagination quand les filtres changent
+  useEffect(() => { setCurrentPage(1); }, [selectedBox, filterCategory]);
+
+  // Questions paginées
+  const totalPages = Math.ceil(filteredQuestions.length / PAGE_SIZE);
+  const paginatedQuestions = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredQuestions.slice(start, start + PAGE_SIZE);
+  }, [filteredQuestions, currentPage]);
 
   // Questions par boîte (mémorisé)
   const questionsByBoxMap = useMemo(() => {
@@ -676,6 +694,11 @@ const QuestionManager = () => {
                         <h5 className="mb-0">
                           <FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
                           {box.name}
+                          {box.createdBy && (
+                            <small className="text-muted ms-2" style={{ fontSize: '0.6em', fontWeight: 'normal' }}>
+                              par {box.createdBy}
+                            </small>
+                          )}
                         </h5>
                         {isAdmin && (
                           <div className="d-flex gap-1">
@@ -807,6 +830,30 @@ const QuestionManager = () => {
               <p className="mt-3 text-muted">Aucune question. Commencez par ajouter une boîte Trivial Pursuit et des questions.</p>
             </div>
           ) : (
+            <>
+            {/* Pagination header */}
+            {filteredQuestions.length > PAGE_SIZE && (
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <span className="text-muted small">
+                  {filteredQuestions.length} questions — page {currentPage}/{totalPages}
+                </span>
+                <div className="d-flex gap-1">
+                  <Button size="sm" variant="outline-secondary" disabled={currentPage <= 1} onClick={() => setCurrentPage(1)}>
+                    <FontAwesomeIcon icon={['fas', 'angle-double-left']} />
+                  </Button>
+                  <Button size="sm" variant="outline-secondary" disabled={currentPage <= 1} onClick={() => setCurrentPage(p => p - 1)}>
+                    <FontAwesomeIcon icon={['fas', 'angle-left']} />
+                  </Button>
+                  <Button size="sm" variant="outline-secondary" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
+                    <FontAwesomeIcon icon={['fas', 'angle-right']} />
+                  </Button>
+                  <Button size="sm" variant="outline-secondary" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(totalPages)}>
+                    <FontAwesomeIcon icon={['fas', 'angle-double-right']} />
+                  </Button>
+                </div>
+              </div>
+            )}
+
             <Table hover responsive key={`table-${selectedBox}-${filterCategory}`}>
               <thead>
                 <tr>
@@ -826,7 +873,7 @@ const QuestionManager = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredQuestions.map(question => (
+                {paginatedQuestions.map(question => (
                   <tr key={question.id}>
                     <td>
                       <Form.Check
@@ -888,6 +935,30 @@ const QuestionManager = () => {
                 ))}
               </tbody>
             </Table>
+
+            {/* Pagination footer */}
+            {filteredQuestions.length > PAGE_SIZE && (
+              <div className="d-flex justify-content-between align-items-center mt-2">
+                <span className="text-muted small">
+                  {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filteredQuestions.length)} sur {filteredQuestions.length}
+                </span>
+                <div className="d-flex gap-1">
+                  <Button size="sm" variant="outline-secondary" disabled={currentPage <= 1} onClick={() => setCurrentPage(1)}>
+                    <FontAwesomeIcon icon={['fas', 'angle-double-left']} />
+                  </Button>
+                  <Button size="sm" variant="outline-secondary" disabled={currentPage <= 1} onClick={() => setCurrentPage(p => p - 1)}>
+                    <FontAwesomeIcon icon={['fas', 'angle-left']} />
+                  </Button>
+                  <Button size="sm" variant="outline-secondary" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
+                    <FontAwesomeIcon icon={['fas', 'angle-right']} />
+                  </Button>
+                  <Button size="sm" variant="outline-secondary" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(totalPages)}>
+                    <FontAwesomeIcon icon={['fas', 'angle-double-right']} />
+                  </Button>
+                </div>
+              </div>
+            )}
+            </>
           )}
         </Tab>
       </Tabs>

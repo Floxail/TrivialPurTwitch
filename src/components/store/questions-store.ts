@@ -72,6 +72,7 @@ export type TrivialBox = {
   cardNumbers: number[]; // Ex: [1, 2, 3, 4, 5]
   totalQuestions: number; // Nombre total de questions dans cette boîte
   ordered?: boolean; // Si true : questions jouées dans l'ordre d'insertion (rowid DB)
+  createdBy?: string | null; // Pseudo du créateur de la boîte
 };
 
 
@@ -553,17 +554,22 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
             return;
           }
 
-          // Fetch ordered flags depuis la DB boxes
-          let dbOrderedMap = new Map<string, boolean>();
+          // Fetch ordered flags + createdBy depuis la DB boxes
+          let dbBoxMetaMap = new Map<string, { ordered: boolean; createdBy?: string | null }>();
           try {
             const boxesRes = await fetch('/api/boxes');
             if (boxesRes.ok) {
               const boxesData = await boxesRes.json();
               for (const b of (boxesData.boxes || [])) {
-                dbOrderedMap.set(b.name, !!b.ordered);
+                dbBoxMetaMap.set(b.name, { ordered: !!b.ordered, createdBy: b.createdBy || null });
               }
             }
           } catch { /* ignore, on garde les flags locaux */ }
+          // Compat: rebuildBoxes attend dbOrderedMap
+          const dbOrderedMap = new Map<string, boolean>();
+          dbBoxMetaMap.forEach((meta, name) => {
+            dbOrderedMap.set(name, meta.ordered);
+          });
 
           const currentQuestions = get().questions;
           const previousDBIds = get().lastDBQuestionIds.length > 0
@@ -579,7 +585,10 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           // Sauvegarder les IDs BD actuels pour la prochaine sync
           const currentDBIds = dbData.questions.map((q: any) => q.id);
 
-          const boxes = get().rebuildBoxes(mergedQuestions, dbOrderedMap);
+          const boxes = get().rebuildBoxes(mergedQuestions, dbOrderedMap).map(box => ({
+            ...box,
+            createdBy: dbBoxMetaMap.get(box.name)?.createdBy ?? box.createdBy ?? null,
+          }));
 
           set({
             questions: mergedQuestions,

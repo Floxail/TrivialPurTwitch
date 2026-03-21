@@ -30,12 +30,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by TEXT').catch(() => {});
       await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by_id TEXT').catch(() => {});
 
-      const result = await getDb().execute('SELECT name, card_numbers, ordered FROM boxes ORDER BY name');
+      const result = await getDb().execute('SELECT name, card_numbers, ordered, created_by FROM boxes ORDER BY name');
 
       const boxes = result.rows.map((row) => ({
         name: row.name,
         cardNumbers: row.card_numbers ? JSON.parse(row.card_numbers as string) : [],
         ordered: row.ordered === 1,
+        createdBy: row.created_by || null,
       }));
 
       return res.status(200).json({ boxes });
