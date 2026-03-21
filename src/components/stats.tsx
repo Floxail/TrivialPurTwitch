@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGlobalStore } from './store/global-store';
 import { useAuthStore } from './store/auth-store';
@@ -9,6 +9,7 @@ import {
   type GlobalStats,
   type PlayerFullStats,
 } from '../services/api-stats-service';
+import { getChannelVideos, findVodForDate, type TwitchVideo } from '../services/twitch-api';
 
 // ==================== Helpers ====================
 
@@ -27,6 +28,77 @@ const formatDateTime = (dateStr: string | null) => {
 const formatMs = (ms: number | null) => {
   if (!ms || ms <= 0) return '—';
   return `${(ms / 1000).toFixed(1)}s`;
+};
+
+// ==================== VOD Button ====================
+
+/** Cache des VODs par channelId pour éviter les appels multiples */
+const vodCache: Record<string, TwitchVideo[]> = {};
+
+const VodButton = ({ channelId, quizDate }: { channelId: string | null; quizDate: string | null }) => {
+  const [vodUrl, setVodUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+
+  const search = useCallback(async () => {
+    if (!channelId || !quizDate) return;
+    setLoading(true);
+    try {
+      let videos = vodCache[channelId];
+      if (!videos) {
+        const res = await getChannelVideos(channelId);
+        videos = res.data?.data || [];
+        vodCache[channelId] = videos;
+      }
+      const url = findVodForDate(videos, quizDate);
+      setVodUrl(url);
+    } catch {
+      // Token manquant ou erreur API — pas grave
+    } finally {
+      setLoading(false);
+      setSearched(true);
+    }
+  }, [channelId, quizDate]);
+
+  if (!channelId || !quizDate) return null;
+
+  if (!searched) {
+    return (
+      <button
+        className="terminal-btn terminal-btn-sm"
+        onClick={search}
+        disabled={loading}
+        title="Chercher la VOD"
+        style={{ padding: '2px 6px', fontSize: '0.75rem', marginLeft: '6px' }}
+      >
+        {loading ? (
+          <FontAwesomeIcon icon={['fas', 'spinner']} spin />
+        ) : (
+          <FontAwesomeIcon icon={['fas', 'video']} />
+        )}
+      </button>
+    );
+  }
+
+  if (vodUrl) {
+    return (
+      <a
+        href={vodUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Voir la VOD"
+        style={{ marginLeft: '6px', color: '#6441A4' }}
+      >
+        <FontAwesomeIcon icon={['fas', 'video']} />
+      </a>
+    );
+  }
+
+  return (
+    <span title="Aucune VOD trouvée" style={{ marginLeft: '6px', color: 'var(--lumon-text-dim)', fontSize: '0.75rem' }}>
+      <FontAwesomeIcon icon={['fas', 'video-slash']} />
+    </span>
+  );
 };
 
 // ==================== Stat Card ====================
@@ -87,6 +159,7 @@ const GlobalStatsView = ({ stats, onPlayerClick }: { stats: GlobalStats; onPlaye
                 <td>
                   <FontAwesomeIcon icon={['fab', 'twitch']} style={{ color: '#6441A4', marginRight: '6px' }} />
                   {ch.channelName}
+                  <VodButton channelId={ch.channelId} quizDate={ch.lastQuiz} />
                 </td>
                 <td style={{ textAlign: 'center' }}>{ch.quizCount}</td>
                 <td style={{ textAlign: 'center' }}>{ch.playerCount}</td>
@@ -214,6 +287,7 @@ const PlayerStatsView = ({ stats }: { stats: PlayerFullStats }) => {
             {stats.bestSession.channelName && (
               <span>
                 <FontAwesomeIcon icon={['fab', 'twitch']} style={{ color: '#6441A4' }} /> {stats.bestSession.channelName}
+                <VodButton channelId={stats.streams?.find(s => s.channelName === stats.bestSession?.channelName)?.channelId || null} quizDate={stats.bestSession.createdAt} />
               </span>
             )}
             <span style={{ color: 'var(--lumon-text-dim)' }}>{formatDateTime(stats.bestSession.createdAt)}</span>
@@ -309,6 +383,7 @@ const PlayerStatsView = ({ stats }: { stats: PlayerFullStats }) => {
                   <td>
                     <FontAwesomeIcon icon={['fab', 'twitch']} style={{ color: '#6441A4', marginRight: '6px' }} />
                     {s.channelName}
+                    <VodButton channelId={s.channelId} quizDate={s.lastPlayed} />
                   </td>
                   <td style={{ textAlign: 'center' }}>{s.sessions}</td>
                   <td style={{ textAlign: 'center' }}>{s.totalScore}</td>
