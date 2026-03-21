@@ -98,7 +98,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Insérer dans la table principale
       await getDb().execute({
-        sql: `INSERT INTO questions
+        sql: `INSERT OR REPLACE INTO questions
               (id, question, answer, alternative_answers, category, box_name,
                difficulty, question_type, qcm_options, qcm_correct_index)
               VALUES (?, ?, ?, ?, ?, ?, 'medium', ?, ?, ?)`,

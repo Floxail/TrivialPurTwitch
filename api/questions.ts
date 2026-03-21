@@ -93,7 +93,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       await getDb().execute({
-        sql: `INSERT INTO questions
+        sql: `INSERT OR REPLACE INTO questions
               (id, question, answer, alternative_answers, category, box_name,
                card_number, difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
                created_by, created_by_id)
