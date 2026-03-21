@@ -80,11 +80,11 @@ export async function apiImportQuestions(data: { boxes?: any[]; questions: any[]
 
 // ==================== BOXES ====================
 
-export async function apiCreateBox(name: string, ordered?: boolean): Promise<boolean> {
+export async function apiCreateBox(name: string, ordered?: boolean, description?: string): Promise<boolean> {
   const res = await fetch('/api/boxes', {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ name, ordered }),
+    body: JSON.stringify({ name, ordered, description }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -110,6 +110,19 @@ export async function apiDeleteBox(name: string): Promise<boolean> {
   const res = await fetch(`/api/boxes?name=${encodeURIComponent(name)}`, {
     method: 'DELETE',
     headers: authHeaders(),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Erreur ${res.status}`);
+  }
+  return true;
+}
+
+export async function apiUpdateBox(name: string, updates: { ordered?: boolean; description?: string }): Promise<boolean> {
+  const res = await fetch('/api/boxes', {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify({ name, ...updates }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));

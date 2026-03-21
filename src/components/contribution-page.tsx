@@ -133,6 +133,7 @@ const ContributionPage: React.FC = () => {
   const [showNewBox, setShowNewBox] = useState(false);
   const [newBoxName, setNewBoxName] = useState('');
   const [newBoxOrdered, setNewBoxOrdered] = useState(false);
+  const [newBoxDescription, setNewBoxDescription] = useState('');
 
   useEffect(() => {
     setSubtitle('Proposer des questions');
@@ -165,9 +166,10 @@ const ContributionPage: React.FC = () => {
       showError(`La boîte "${name}" existe déjà`);
       return;
     }
-    await addBox(name, newBoxOrdered || undefined);
+    await addBox(name, newBoxOrdered || undefined, newBoxDescription.trim() || undefined);
     setNewBoxName('');
     setNewBoxOrdered(false);
+    setNewBoxDescription('');
     setShowNewBox(false);
     showSuccess(`Boîte "${name}" créée !${newBoxOrdered ? ' (mode ordonné activé)' : ''}`);
   };
@@ -457,11 +459,19 @@ const ContributionPage: React.FC = () => {
                 style={{ whiteSpace: 'nowrap' }}
               />
             </div>
+            <input
+              className="terminal-input"
+              type="text"
+              placeholder="Description (optionnel, ex: Boîte Trivial Pursuit édition Cinéma 1991)"
+              value={newBoxDescription}
+              onChange={(e) => setNewBoxDescription(e.target.value)}
+              style={{ maxWidth: '500px' }}
+            />
             <div className="d-flex gap-2">
               <button className="terminal-btn terminal-btn-success terminal-btn-sm" onClick={handleCreateBox} disabled={!newBoxName.trim()}>
                 Créer
               </button>
-              <button className="terminal-btn terminal-btn-sm" onClick={() => { setShowNewBox(false); setNewBoxName(''); setNewBoxOrdered(false); }}>
+              <button className="terminal-btn terminal-btn-sm" onClick={() => { setShowNewBox(false); setNewBoxName(''); setNewBoxOrdered(false); setNewBoxDescription(''); }}>
                 Annuler
               </button>
             </div>

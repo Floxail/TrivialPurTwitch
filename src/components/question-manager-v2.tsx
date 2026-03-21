@@ -7,34 +7,63 @@ import { useGlobalStore } from './store/global-store';
 import { useAuthStore } from './store/auth-store';
 import { QuestionModal, BulkActionsModal } from './question-manager-modals';
 
-const RenameBoxModal = React.memo(({ boxName, onConfirm, onClose }: {
-  boxName: string;
-  onConfirm: (newName: string) => void;
+const EditBoxModal = React.memo(({ box, onConfirm, onClose }: {
+  box: { name: string; ordered?: boolean; description?: string | null };
+  onConfirm: (updates: { newName?: string; ordered?: boolean; description?: string }) => void;
   onClose: () => void;
 }) => {
-  const [value, setValue] = useState(boxName);
-  const isValid = value.trim() !== '' && value.trim() !== boxName;
-  const handleConfirm = () => { if (isValid) onConfirm(value.trim()); };
+  const [name, setName] = useState(box.name);
+  const [ordered, setOrdered] = useState(!!box.ordered);
+  const [description, setDescription] = useState(box.description || '');
+
+  const hasChanges = name.trim() !== box.name || ordered !== !!box.ordered || description !== (box.description || '');
+  const isValid = name.trim().length > 0 && hasChanges;
+
+  const handleConfirm = () => {
+    if (!isValid) return;
+    const updates: { newName?: string; ordered?: boolean; description?: string } = {};
+    if (name.trim() !== box.name) updates.newName = name.trim();
+    if (ordered !== !!box.ordered) updates.ordered = ordered;
+    if (description !== (box.description || '')) updates.description = description;
+    onConfirm(updates);
+  };
+
   return (
     <Modal show onHide={onClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Renommer la boîte</Modal.Title>
+        <Modal.Title>Modifier la boîte</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form.Group>
-          <Form.Label>Nouveau nom</Form.Label>
+        <Form.Group className="mb-3">
+          <Form.Label>Nom</Form.Label>
           <Form.Control
             type="text"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleConfirm(); }}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             autoFocus
           />
         </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Description / Info</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Ex: Boîte de Trivial Pursuit édition Cinéma 1991"
+          />
+        </Form.Group>
+        <Form.Check
+          type="switch"
+          id="editBoxOrdered"
+          label="↓ Mode ordonné (questions jouées dans l'ordre d'insertion)"
+          checked={ordered}
+          onChange={(e) => setOrdered(e.target.checked)}
+        />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClose}>Annuler</Button>
-        <Button variant="primary" onClick={handleConfirm} disabled={!isValid}>Renommer</Button>
+        <Button variant="primary" onClick={handleConfirm} disabled={!isValid}>Enregistrer</Button>
       </Modal.Footer>
     </Modal>
   );
@@ -56,8 +85,7 @@ const QuestionManager = () => {
   const bulkAddQuestions = useQuestionsStore(state => state.bulkAddQuestions);
   const addBox = useQuestionsStore(state => state.addBox);
   const removeBox = useQuestionsStore(state => state.removeBox);
-  const renameBox = useQuestionsStore(state => state.renameBox);
-  const toggleBoxOrdered = useQuestionsStore(state => state.toggleBoxOrdered);
+  const updateBox = useQuestionsStore(state => state.updateBox);
   const getBoxByName = useQuestionsStore(state => state.getBoxByName);
   const syncFromDB = useQuestionsStore(state => state.syncFromDB);
   const removeDuplicates = useQuestionsStore(state => state.removeDuplicates);
@@ -82,8 +110,8 @@ const QuestionManager = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 50;
 
-  // Rename boîte
-  const [renamingBox, setRenamingBox] = useState<string | null>(null);
+  // Édition boîte
+  const [editingBoxName, setEditingBoxName] = useState<string | null>(null);
   useEffect(() => {
     globalStore.setSubtitle('Gestion des questions');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -464,10 +492,10 @@ const QuestionManager = () => {
     await removeBox(boxName);
   };
 
-  const handleConfirmRename = async (newName: string) => {
-    if (!renamingBox) return;
-    await renameBox(renamingBox, newName);
-    setRenamingBox(null);
+  const handleConfirmEditBox = async (updates: { newName?: string; ordered?: boolean; description?: string }) => {
+    if (!editingBoxName) return;
+    await updateBox(editingBoxName, updates);
+    setEditingBoxName(null);
   };
 
   // Fonctions supprimées - mode carte retiré
@@ -559,14 +587,17 @@ const QuestionManager = () => {
         onChange={handleImport}
       />
 
-      {/* Modale de renommage de boîte */}
-      {renamingBox !== null && (
-        <RenameBoxModal
-          boxName={renamingBox}
-          onConfirm={handleConfirmRename}
-          onClose={() => setRenamingBox(null)}
-        />
-      )}
+      {/* Modale d'édition de boîte */}
+      {editingBoxName !== null && (() => {
+        const box = boxesWithStats.find(b => b.name === editingBoxName);
+        return box ? (
+          <EditBoxModal
+            box={box}
+            onConfirm={handleConfirmEditBox}
+            onClose={() => setEditingBoxName(null)}
+          />
+        ) : null;
+      })()}
 
       {/* Modal d'édition de question */}
       <QuestionModal
@@ -693,6 +724,7 @@ const QuestionManager = () => {
                       <div className="card-header d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">
                           <FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
+                          {box.ordered && <span title="Mode ordonné" style={{ fontSize: '0.7em', marginRight: '4px' }}>↓</span>}
                           {box.name}
                           {box.createdBy && (
                             <small className="text-muted ms-2" style={{ fontSize: '0.6em', fontWeight: 'normal' }}>
@@ -704,17 +736,9 @@ const QuestionManager = () => {
                           <div className="d-flex gap-1">
                             <Button
                               size="sm"
-                              variant={box.ordered ? 'info' : 'outline-secondary'}
-                              title={box.ordered ? 'Mode ordonné activé — cliquer pour désactiver' : 'Activer le mode ordonné'}
-                              onClick={() => toggleBoxOrdered(box.name, !box.ordered)}
-                            >
-                              <FontAwesomeIcon icon={['fas', 'list-ol']} />
-                            </Button>
-                            <Button
-                              size="sm"
                               variant="outline-secondary"
-                              title="Renommer la boîte"
-                              onClick={() => setRenamingBox(box.name)}
+                              title="Modifier la boîte"
+                              onClick={() => setEditingBoxName(box.name)}
                             >
                               <FontAwesomeIcon icon={['fas', 'pen']} />
                             </Button>
@@ -729,6 +753,11 @@ const QuestionManager = () => {
                         )}
                       </div>
                       <div className="card-body">
+                        {box.description && (
+                          <p className="text-muted small mb-2" style={{ fontStyle: 'italic' }}>
+                            {box.description}
+                          </p>
+                        )}
                         {/* Statistiques */}
                         <div className="mb-3">
                           <Badge bg="secondary" className="me-2">
@@ -837,17 +866,17 @@ const QuestionManager = () => {
                 <span className="text-muted small">
                   {filteredQuestions.length} questions — page {currentPage}/{totalPages}
                 </span>
-                <div className="d-flex gap-1">
-                  <Button size="sm" variant="outline-secondary" disabled={currentPage <= 1} onClick={() => setCurrentPage(1)}>
+                <div className="d-flex gap-2 align-items-center">
+                  <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage <= 1} onClick={() => setCurrentPage(1)}>
                     <FontAwesomeIcon icon={['fas', 'angle-double-left']} />
                   </Button>
-                  <Button size="sm" variant="outline-secondary" disabled={currentPage <= 1} onClick={() => setCurrentPage(p => p - 1)}>
+                  <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage <= 1} onClick={() => setCurrentPage(p => p - 1)}>
                     <FontAwesomeIcon icon={['fas', 'angle-left']} />
                   </Button>
-                  <Button size="sm" variant="outline-secondary" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
+                  <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
                     <FontAwesomeIcon icon={['fas', 'angle-right']} />
                   </Button>
-                  <Button size="sm" variant="outline-secondary" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(totalPages)}>
+                  <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(totalPages)}>
                     <FontAwesomeIcon icon={['fas', 'angle-double-right']} />
                   </Button>
                 </div>
@@ -942,17 +971,17 @@ const QuestionManager = () => {
                 <span className="text-muted small">
                   {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filteredQuestions.length)} sur {filteredQuestions.length}
                 </span>
-                <div className="d-flex gap-1">
-                  <Button size="sm" variant="outline-secondary" disabled={currentPage <= 1} onClick={() => setCurrentPage(1)}>
+                <div className="d-flex gap-2 align-items-center">
+                  <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage <= 1} onClick={() => setCurrentPage(1)}>
                     <FontAwesomeIcon icon={['fas', 'angle-double-left']} />
                   </Button>
-                  <Button size="sm" variant="outline-secondary" disabled={currentPage <= 1} onClick={() => setCurrentPage(p => p - 1)}>
+                  <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage <= 1} onClick={() => setCurrentPage(p => p - 1)}>
                     <FontAwesomeIcon icon={['fas', 'angle-left']} />
                   </Button>
-                  <Button size="sm" variant="outline-secondary" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
+                  <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
                     <FontAwesomeIcon icon={['fas', 'angle-right']} />
                   </Button>
-                  <Button size="sm" variant="outline-secondary" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(totalPages)}>
+                  <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(totalPages)}>
                     <FontAwesomeIcon icon={['fas', 'angle-double-right']} />
                   </Button>
                 </div>

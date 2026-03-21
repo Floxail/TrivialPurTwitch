@@ -7,7 +7,7 @@ import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
 import { Answer, Player, usePlayerStore } from './store/player-store';
 import { TwitchMode, useSettingsStore } from './store/settings-store';
-import { categoryColors, categoryNames, QuestionType, useQuestionsStore } from './store/questions-store';
+import { categoryColors, categoryNames, QuestionType, TrivialCategory, useQuestionsStore } from './store/questions-store';
 import { QuizMode, useGameStore } from './store/game-store';
 import Podium from './podium';
 import Leaderboard from './leaderboard';
@@ -999,6 +999,89 @@ const Quiz = () => {
 											</div>
 										</div>
 									)}
+
+									{/* Panneau info boîte(s) sélectionnée(s) */}
+									{boxes.length > 0 && (() => {
+										const selected = selectedBoxNames === null ? boxes : boxes.filter(b => selectedBoxNames.includes(b.name));
+										if (selected.length === 0) return null;
+										const allQuestions = questionsStore.questions;
+										const selectedQuestions = selectedBoxNames === null
+											? allQuestions
+											: allQuestions.filter(q => selectedBoxNames.includes(q.boxName));
+										const qcmCount = selectedQuestions.filter(q => q.questionType === QuestionType.QCM).length;
+										const freeCount = selectedQuestions.length - qcmCount;
+
+										// Répartition par catégorie
+										const catCounts: Partial<Record<TrivialCategory, number>> = {};
+										selectedQuestions.forEach(q => { catCounts[q.category as TrivialCategory] = (catCounts[q.category as TrivialCategory] || 0) + 1; });
+
+										const isSingle = selected.length === 1;
+										const singleBox = isSingle ? selected[0] : null;
+
+										return (
+											<div className="mt-3 p-3 terminal-panel" style={{ display: 'inline-block', maxWidth: '600px', textAlign: 'left' }}>
+												<p className="mb-1" style={{ color: 'var(--lumon-cyan)', fontFamily: "'Orbitron', sans-serif", fontSize: '0.8rem' }}>
+													{isSingle ? (
+														<>
+															<FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
+															{singleBox!.ordered && <span style={{ marginRight: '4px' }}>↓</span>}
+															{singleBox!.name}
+															{singleBox!.createdBy && (
+																<span style={{ color: 'var(--lumon-text-muted)', fontSize: '0.65rem', marginLeft: '8px', fontFamily: 'monospace' }}>
+																	par {singleBox!.createdBy}
+																</span>
+															)}
+														</>
+													) : (
+														<>
+															<FontAwesomeIcon icon={['fas', 'box-open']} className="me-2" />
+															{selectedBoxNames === null ? 'Toutes les boîtes' : `${selected.length} boîtes sélectionnées`}
+														</>
+													)}
+												</p>
+												{isSingle && singleBox!.description && (
+													<p className="mb-2" style={{ color: 'var(--lumon-text-dim)', fontSize: '0.75rem', fontStyle: 'italic' }}>
+														{singleBox!.description}
+													</p>
+												)}
+												<div className="d-flex flex-wrap gap-1 mb-1" style={{ fontSize: '0.7rem' }}>
+													<span className="terminal-badge" style={{ padding: '2px 8px' }}>
+														{selectedQuestions.length} question{selectedQuestions.length > 1 ? 's' : ''}
+													</span>
+													{qcmCount > 0 && (
+														<span className="terminal-badge" style={{ padding: '2px 8px', borderColor: '#4caf50', color: '#4caf50' }}>
+															{qcmCount} QCM
+														</span>
+													)}
+													{freeCount > 0 && (
+														<span className="terminal-badge" style={{ padding: '2px 8px', borderColor: '#888', color: '#888' }}>
+															{freeCount} Libre{freeCount > 1 ? 's' : ''}
+														</span>
+													)}
+												</div>
+												<div className="d-flex flex-wrap gap-1" style={{ fontSize: '0.65rem' }}>
+													{Object.entries(categoryNames).map(([key, name]) => {
+														const catKey = parseInt(key) as TrivialCategory;
+														const count = catCounts[catKey] || 0;
+														return (
+															<span
+																key={key}
+																style={{
+																	padding: '1px 6px',
+																	borderRadius: '3px',
+																	backgroundColor: count > 0 ? categoryColors[catKey] : 'transparent',
+																	border: `1px solid ${count > 0 ? categoryColors[catKey] : '#333'}`,
+																	color: count > 0 ? 'white' : '#555',
+																}}
+															>
+																{name.replace('▲ ', '')}: {count}
+															</span>
+														);
+													})}
+												</div>
+											</div>
+										);
+									})()}
 								</div>
 							)}
 

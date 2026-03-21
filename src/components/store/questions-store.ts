@@ -9,6 +9,7 @@ import {
   apiCreateBox,
   apiDeleteBox,
   apiRenameBox,
+  apiUpdateBox,
   apiImportQuestions,
   apiSetBoxOrdered,
 } from '../../services/api-service';
@@ -73,6 +74,7 @@ export type TrivialBox = {
   totalQuestions: number; // Nombre total de questions dans cette boîte
   ordered?: boolean; // Si true : questions jouées dans l'ordre d'insertion (rowid DB)
   createdBy?: string | null; // Pseudo du créateur de la boîte
+  description?: string | null; // Description / info libre de la boîte
 };
 
 
@@ -101,9 +103,10 @@ type QuestionsActions = {
   // Gestion des boîtes (async → API + state local)
   getBoxes: () => TrivialBox[];
   getBoxByName: (boxName: string) => TrivialBox | undefined;
-  addBox: (boxName: string, ordered?: boolean) => Promise<void>;
+  addBox: (boxName: string, ordered?: boolean, description?: string) => Promise<void>;
   removeBox: (boxName: string) => Promise<void>;
   renameBox: (oldName: string, newName: string) => Promise<void>;
+  updateBox: (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string }) => Promise<void>;
   rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>) => TrivialBox[];
 
   // Récupération des questions
@@ -297,14 +300,14 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         return get().boxes.find((box) => box.name === boxName);
       },
 
-      addBox: async (boxName: string, ordered?: boolean) => {
+      addBox: async (boxName: string, ordered?: boolean, description?: string) => {
         const currentBoxes = get().boxes;
         if (currentBoxes.find((box) => box.name === boxName)) {
           return; // La boîte existe déjà
         }
 
         try {
-          await apiCreateBox(boxName, ordered);
+          await apiCreateBox(boxName, ordered, description);
         } catch (err) {
           console.warn('⚠️ API addBox échouée, sauvegarde locale uniquement', err);
         }
@@ -314,6 +317,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           cardNumbers: [],
           totalQuestions: 0,
           ordered,
+          description: description || null,
         };
 
         set({ boxes: [...currentBoxes, newBox] });
@@ -496,6 +500,43 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         }
       },
 
+      updateBox: async (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string }) => {
+        // Rename si nécessaire
+        if (updates.newName && updates.newName !== boxName) {
+          await get().renameBox(boxName, updates.newName);
+          boxName = updates.newName;
+        }
+        // Patch ordered + description via PATCH
+        const patchPayload: any = { name: boxName };
+        let hasPatch = false;
+        if (updates.ordered !== undefined) {
+          patchPayload.ordered = updates.ordered;
+          hasPatch = true;
+        }
+        if (updates.description !== undefined) {
+          patchPayload.description = updates.description;
+          hasPatch = true;
+        }
+        if (hasPatch) {
+          try {
+            await apiUpdateBox(boxName, patchPayload);
+          } catch (err) {
+            console.warn('⚠️ API updateBox échouée, mise à jour locale uniquement', err);
+          }
+        }
+        // Mise à jour locale
+        const boxes = get().boxes.map(b => {
+          if (b.name !== boxName) return b;
+          return {
+            ...b,
+            ...(updates.ordered !== undefined && { ordered: updates.ordered }),
+            ...(updates.description !== undefined && { description: updates.description }),
+          };
+        });
+        set({ boxes });
+        get().backup();
+      },
+
       // ========== SETTINGS ==========
 
       setCumulativeScoresQuiz: (value: boolean) => {
@@ -555,13 +596,13 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           }
 
           // Fetch ordered flags + createdBy depuis la DB boxes
-          let dbBoxMetaMap = new Map<string, { ordered: boolean; createdBy?: string | null }>();
+          let dbBoxMetaMap = new Map<string, { ordered: boolean; createdBy?: string | null; description?: string | null }>();
           try {
             const boxesRes = await fetch('/api/boxes');
             if (boxesRes.ok) {
               const boxesData = await boxesRes.json();
               for (const b of (boxesData.boxes || [])) {
-                dbBoxMetaMap.set(b.name, { ordered: !!b.ordered, createdBy: b.createdBy || null });
+                dbBoxMetaMap.set(b.name, { ordered: !!b.ordered, createdBy: b.createdBy || null, description: b.description || null });
               }
             }
           } catch { /* ignore, on garde les flags locaux */ }
@@ -588,6 +629,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           const boxes = get().rebuildBoxes(mergedQuestions, dbOrderedMap).map(box => ({
             ...box,
             createdBy: dbBoxMetaMap.get(box.name)?.createdBy ?? box.createdBy ?? null,
+            description: dbBoxMetaMap.get(box.name)?.description ?? box.description ?? null,
           }));
 
           set({

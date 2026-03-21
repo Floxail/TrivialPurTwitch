@@ -29,14 +29,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await getDb().execute('ALTER TABLE boxes ADD COLUMN ordered INTEGER DEFAULT 0').catch(() => {});
       await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by TEXT').catch(() => {});
       await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by_id TEXT').catch(() => {});
+      await getDb().execute('ALTER TABLE boxes ADD COLUMN description TEXT').catch(() => {});
 
-      const result = await getDb().execute('SELECT name, card_numbers, ordered, created_by FROM boxes ORDER BY name');
+      const result = await getDb().execute('SELECT name, card_numbers, ordered, created_by, description FROM boxes ORDER BY name');
 
       const boxes = result.rows.map((row) => ({
         name: row.name,
         cardNumbers: row.card_numbers ? JSON.parse(row.card_numbers as string) : [],
         ordered: row.ordered === 1,
         createdBy: row.created_by || null,
+        description: row.description || null,
       }));
 
       return res.status(200).json({ boxes });
@@ -50,34 +52,51 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // ==================== POST (créer une boîte) ====================
     if (req.method === 'POST') {
-      const { name, ordered } = req.body;
+      const { name, ordered, description } = req.body;
 
       if (!name || typeof name !== 'string' || name.trim().length === 0) {
         return res.status(400).json({ error: 'Le nom de la boîte est requis' });
       }
 
       await getDb().execute({
-        sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers, ordered, created_by, created_by_id) VALUES (?, ?, ?, ?, ?)',
-        args: [name.trim(), '[]', ordered ? 1 : 0, admin.login, admin.userId],
+        sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers, ordered, created_by, created_by_id, description) VALUES (?, ?, ?, ?, ?, ?)',
+        args: [name.trim(), '[]', ordered ? 1 : 0, admin.login, admin.userId, description || null],
       });
 
       return res.status(201).json({ success: true, name: name.trim() });
     }
 
-    // ==================== PATCH (mettre à jour le flag ordered) ====================
+    // ==================== PATCH (mettre à jour ordered / description) ====================
     if (req.method === 'PATCH') {
-      const { name, ordered } = req.body;
+      const { name, ordered, description } = req.body;
 
       if (!name || typeof name !== 'string' || name.trim().length === 0) {
         return res.status(400).json({ error: 'Le nom de la boîte est requis' });
       }
 
+      const setClauses: string[] = [];
+      const args: any[] = [];
+
+      if (ordered !== undefined) {
+        setClauses.push('ordered = ?');
+        args.push(ordered ? 1 : 0);
+      }
+      if (description !== undefined) {
+        setClauses.push('description = ?');
+        args.push(description || null);
+      }
+
+      if (setClauses.length === 0) {
+        return res.status(400).json({ error: 'Rien à mettre à jour' });
+      }
+
+      args.push(name.trim());
       await getDb().execute({
-        sql: 'UPDATE boxes SET ordered = ? WHERE name = ?',
-        args: [ordered ? 1 : 0, name.trim()],
+        sql: `UPDATE boxes SET ${setClauses.join(', ')} WHERE name = ?`,
+        args,
       });
 
-      return res.status(200).json({ success: true, name: name.trim(), ordered: !!ordered });
+      return res.status(200).json({ success: true, name: name.trim() });
     }
 
     // ==================== PUT (renommer une boîte) ====================
