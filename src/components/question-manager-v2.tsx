@@ -868,16 +868,16 @@ const QuestionManager = () => {
                 </span>
                 <div className="d-flex gap-2 align-items-center">
                   <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage <= 1} onClick={() => setCurrentPage(1)}>
-                    <FontAwesomeIcon icon={['fas', 'angle-double-left']} />
+                    <FontAwesomeIcon icon={['fas', 'angles-left']} />
                   </Button>
                   <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage <= 1} onClick={() => setCurrentPage(p => p - 1)}>
-                    <FontAwesomeIcon icon={['fas', 'angle-left']} />
+                    <FontAwesomeIcon icon={['fas', 'chevron-left']} />
                   </Button>
                   <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
-                    <FontAwesomeIcon icon={['fas', 'angle-right']} />
+                    <FontAwesomeIcon icon={['fas', 'chevron-right']} />
                   </Button>
                   <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(totalPages)}>
-                    <FontAwesomeIcon icon={['fas', 'angle-double-right']} />
+                    <FontAwesomeIcon icon={['fas', 'angles-right']} />
                   </Button>
                 </div>
               </div>
@@ -973,16 +973,16 @@ const QuestionManager = () => {
                 </span>
                 <div className="d-flex gap-2 align-items-center">
                   <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage <= 1} onClick={() => setCurrentPage(1)}>
-                    <FontAwesomeIcon icon={['fas', 'angle-double-left']} />
+                    <FontAwesomeIcon icon={['fas', 'angles-left']} />
                   </Button>
                   <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage <= 1} onClick={() => setCurrentPage(p => p - 1)}>
-                    <FontAwesomeIcon icon={['fas', 'angle-left']} />
+                    <FontAwesomeIcon icon={['fas', 'chevron-left']} />
                   </Button>
                   <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
-                    <FontAwesomeIcon icon={['fas', 'angle-right']} />
+                    <FontAwesomeIcon icon={['fas', 'chevron-right']} />
                   </Button>
                   <Button size="sm" variant="link" className="text-light p-0" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(totalPages)}>
-                    <FontAwesomeIcon icon={['fas', 'angle-double-right']} />
+                    <FontAwesomeIcon icon={['fas', 'angles-right']} />
                   </Button>
                 </div>
               </div>
