@@ -957,48 +957,6 @@ const Quiz = () => {
 											</button>
 										)}
 									</div>
-									{boxes.length > 0 && (
-										<div className="mt-4 p-3 terminal-panel" style={{ display: 'inline-block' }}>
-											<p className="mb-2" style={{ color: 'var(--lumon-text-dim)' }}>
-												<strong style={{ color: 'var(--lumon-cyan)' }}>Boîtes disponibles</strong>
-												<span style={{ color: 'var(--lumon-text-muted)', fontSize: '0.75rem', marginLeft: '8px' }}>
-													— cliquez pour sélectionner
-												</span>
-											</p>
-											<div
-												className="mdr-data-point-container"
-												ref={mdrContainerRef}
-												onMouseLeave={() => setMdrHoveredIndex(null)}
-											>
-												{/* Card "Toutes les boîtes" */}
-												<div
-													ref={el => { mdrItemRefs.current[0] = el; }}
-													className={`mdr-data-point mdr-all-boxes ${getMdrClass(0)}`}
-													onMouseEnter={() => setMdrHoveredIndex(0)}
-													onClick={() => setSelectedBoxNames(prev => prev === null ? [] : null)}
-												>
-													<span className="mdr-corner-tr" />
-													<span className="mdr-corner-bl" />
-													★ TOUTES
-												</div>
-												{/* Boîtes individuelles */}
-												{boxes.map((b, i) => (
-													<div
-														key={b.name}
-														ref={el => { mdrItemRefs.current[i + 1] = el; }}
-														className={`mdr-data-point ${getMdrClass(i + 1)}`}
-														onMouseEnter={() => setMdrHoveredIndex(i + 1)}
-														onClick={() => handleBoxClick(b.name)}
-													>
-														<span className="mdr-corner-tr" />
-														<span className="mdr-corner-bl" />
-														{b.ordered && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.7 }}>↓</span>}
-														{b.name}
-													</div>
-												))}
-											</div>
-										</div>
-									)}
 
 									{/* Panneau info boîte(s) sélectionnée(s) */}
 									{boxes.length > 0 && (() => {
@@ -1082,6 +1040,49 @@ const Quiz = () => {
 											</div>
 										);
 									})()}
+
+									{boxes.length > 0 && (
+										<div className="mt-4 p-3 terminal-panel" style={{ display: 'inline-block' }}>
+											<p className="mb-2" style={{ color: 'var(--lumon-text-dim)' }}>
+												<strong style={{ color: 'var(--lumon-cyan)' }}>Boîtes disponibles</strong>
+												<span style={{ color: 'var(--lumon-text-muted)', fontSize: '0.75rem', marginLeft: '8px' }}>
+													— cliquez pour sélectionner
+												</span>
+											</p>
+											<div
+												className="mdr-data-point-container"
+												ref={mdrContainerRef}
+												onMouseLeave={() => setMdrHoveredIndex(null)}
+											>
+												{/* Card "Toutes les boîtes" */}
+												<div
+													ref={el => { mdrItemRefs.current[0] = el; }}
+													className={`mdr-data-point mdr-all-boxes ${getMdrClass(0)}`}
+													onMouseEnter={() => setMdrHoveredIndex(0)}
+													onClick={() => setSelectedBoxNames(prev => prev === null ? [] : null)}
+												>
+													<span className="mdr-corner-tr" />
+													<span className="mdr-corner-bl" />
+													★ TOUTES
+												</div>
+												{/* Boîtes individuelles */}
+												{boxes.map((b, i) => (
+													<div
+														key={b.name}
+														ref={el => { mdrItemRefs.current[i + 1] = el; }}
+														className={`mdr-data-point ${getMdrClass(i + 1)}`}
+														onMouseEnter={() => setMdrHoveredIndex(i + 1)}
+														onClick={() => handleBoxClick(b.name)}
+													>
+														<span className="mdr-corner-tr" />
+														<span className="mdr-corner-bl" />
+														{b.ordered && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.7 }}>↓</span>}
+														{b.name}
+													</div>
+												))}
+											</div>
+										</div>
+									)}
 								</div>
 							)}
 
