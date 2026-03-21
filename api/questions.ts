@@ -44,11 +44,9 @@ function rowToQuestion(row: any) {
 let migrationDone = false;
 async function ensureMigration() {
   if (migrationDone) return;
-  try {
-    await getDb().execute('ALTER TABLE questions ADD COLUMN qcm_correct_indexes TEXT');
-  } catch (_) {
-    // Colonne déjà présente, on ignore
-  }
+  await getDb().execute('ALTER TABLE questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {});
+  await getDb().execute('ALTER TABLE questions ADD COLUMN created_by TEXT').catch(() => {});
+  await getDb().execute('ALTER TABLE questions ADD COLUMN created_by_id TEXT').catch(() => {});
   migrationDone = true;
 }
 
@@ -81,7 +79,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // ==================== AUTH REQUISE (token Twitch admin) ====================
-    if (!(await requireAdminAuth(req))) {
+    const admin = await requireAdminAuth(req);
+    if (!admin) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -96,8 +95,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await getDb().execute({
         sql: `INSERT INTO questions
               (id, question, answer, alternative_answers, category, box_name,
-               card_number, difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+               card_number, difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
+               created_by, created_by_id)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         args: [
           q.id,
           q.question,
@@ -111,6 +111,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           q.qcmOptions ? JSON.stringify(q.qcmOptions) : null,
           q.qcmCorrectIndex ?? null,
           q.qcmCorrectIndexes ? JSON.stringify(q.qcmCorrectIndexes) : null,
+          admin.login,
+          admin.userId,
         ],
       });
 

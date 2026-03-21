@@ -25,8 +25,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     // ==================== GET ====================
     if (req.method === 'GET') {
-      // Auto-migration : ajouter la colonne ordered si elle n'existe pas
+      // Auto-migrations
       await getDb().execute('ALTER TABLE boxes ADD COLUMN ordered INTEGER DEFAULT 0').catch(() => {});
+      await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by TEXT').catch(() => {});
+      await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by_id TEXT').catch(() => {});
 
       const result = await getDb().execute('SELECT name, card_numbers, ordered FROM boxes ORDER BY name');
 
@@ -40,7 +42,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // ==================== AUTH REQUISE (token Twitch admin) ====================
-    if (!(await requireAdminAuth(req))) {
+    const admin = await requireAdminAuth(req);
+    if (!admin) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -53,8 +56,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       await getDb().execute({
-        sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers, ordered) VALUES (?, ?, ?)',
-        args: [name.trim(), '[]', ordered ? 1 : 0],
+        sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers, ordered, created_by, created_by_id) VALUES (?, ?, ?, ?, ?)',
+        args: [name.trim(), '[]', ordered ? 1 : 0, admin.login, admin.userId],
       });
 
       return res.status(201).json({ success: true, name: name.trim() });

@@ -43,7 +43,14 @@ export type PlayerFullStats = {
     firstGame: string;
     lastGame: string;
     questionsSubmitted: number;
+    questionsAdded: number;
+    boxesCreated: number;
   };
+  questionsAddedByBox: {
+    boxName: string;
+    count: number;
+  }[];
+  boxesCreatedNames: string[];
   bestSession: {
     sessionId: string;
     boxName: string | null;

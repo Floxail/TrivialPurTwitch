@@ -188,8 +188,14 @@ const PlayerStatsView = ({ stats }: { stats: PlayerFullStats }) => {
         <StatCard label="Premier !" value={p.totalFirsts} icon="bolt" color="var(--lumon-warning)" />
         <StatCard label="Combos" value={p.totalCombos} icon="fire" color="var(--lumon-danger)" />
         <StatCard label="Plus rapide" value={formatMs(p.bestFastest)} icon="stopwatch" />
+        {p.questionsAdded > 0 && (
+          <StatCard label="Questions ajoutées" value={p.questionsAdded} icon="plus-circle" color="var(--lumon-cyan)" />
+        )}
         {p.questionsSubmitted > 0 && (
           <StatCard label="Questions proposées" value={p.questionsSubmitted} icon="pen" color="var(--lumon-cyan)" />
+        )}
+        {p.boxesCreated > 0 && (
+          <StatCard label="Boîtes créées" value={p.boxesCreated} icon="box-open" color="var(--lumon-green)" />
         )}
       </div>
 
@@ -244,6 +250,40 @@ const PlayerStatsView = ({ stats }: { stats: PlayerFullStats }) => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Contributions (questions ajoutées par boîte + boîtes créées) */}
+      {(stats.questionsAddedByBox.length > 0 || stats.boxesCreatedNames.length > 0) && (
+        <div className="terminal-panel" style={{ marginBottom: '1.5rem', padding: '1rem' }}>
+          <h6 style={{ color: 'var(--lumon-green)', fontFamily: "'Orbitron', sans-serif", fontSize: '0.8rem', marginBottom: '0.75rem' }}>
+            <FontAwesomeIcon icon={['fas', 'plus-circle']} className="me-2" />
+            CONTRIBUTIONS
+          </h6>
+          {stats.questionsAddedByBox.length > 0 && (
+            <table className="bt-t" style={{ width: '100%', marginBottom: stats.boxesCreatedNames.length > 0 ? '1rem' : 0 }}>
+              <thead>
+                <tr>
+                  <th>Boîte</th>
+                  <th style={{ textAlign: 'center' }}>Questions ajoutées</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.questionsAddedByBox.map((b) => (
+                  <tr key={b.boxName}>
+                    <td>{b.boxName}</td>
+                    <td style={{ textAlign: 'center', color: 'var(--lumon-cyan)' }}>{b.count}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          {stats.boxesCreatedNames.length > 0 && (
+            <div style={{ fontSize: '0.85rem', color: 'var(--lumon-text-dim)' }}>
+              <strong style={{ color: 'var(--lumon-green)' }}>Boîtes créées :</strong>{' '}
+              {stats.boxesCreatedNames.join(', ')}
+            </div>
+          )}
         </div>
       )}
 
@@ -374,14 +414,14 @@ const Stats = () => {
         <button
           className="terminal-btn terminal-btn-sm"
           style={tab === 'global' ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
-          onClick={() => setTab('global')}
+          onClick={() => { setTab('global'); setError(''); }}
         >
           <FontAwesomeIcon icon={['fas', 'globe']} className="me-1" /> Global
         </button>
         <button
           className="terminal-btn terminal-btn-sm"
           style={tab === 'player' ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
-          onClick={() => { setTab('player'); if (!activeNick && twitchNick) handleMyStats(); }}
+          onClick={() => { setTab('player'); setError(''); if (!activeNick && twitchNick) handleMyStats(); }}
         >
           <FontAwesomeIcon icon={['fas', 'user']} className="me-1" /> Joueur
         </button>

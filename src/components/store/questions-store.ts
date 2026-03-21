@@ -113,11 +113,7 @@ type QuestionsActions = {
   generateRandomQuizAllBoxes: (questionCount: number, balanceCategories?: boolean) => Question[] | null;
   generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number, balanceCategories?: boolean) => Question[] | null;
   generateOrderedQuiz: (boxName: string) => Question[] | null;
-<<<<<<< HEAD
-  toggleBoxOrdered: (boxName: string, ordered: boolean) => void;
-=======
   toggleBoxOrdered: (boxName: string, ordered: boolean) => Promise<void>;
->>>>>>> master
 
   // Settings
   setCumulativeScoresQuiz: (value: boolean) => void;
@@ -258,11 +254,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
       // ========== GESTION DES BOÎTES ==========
 
-<<<<<<< HEAD
-      rebuildBoxes: (questions: Question[]): TrivialBox[] => {
-=======
       rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>): TrivialBox[] => {
->>>>>>> master
         const existingBoxes = get().boxes;
         const boxMap = new Map<string, Set<number>>();
 
@@ -287,11 +279,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
             name: boxName,
             cardNumbers,
             totalQuestions,
-<<<<<<< HEAD
-            ordered: existingBoxes.find(b => b.name === boxName)?.ordered,
-=======
             ordered,
->>>>>>> master
           });
         });
 
@@ -496,12 +484,6 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         return questions.length === 0 ? null : questions;
       },
 
-<<<<<<< HEAD
-      toggleBoxOrdered: (boxName: string, ordered: boolean) => {
-        const boxes = get().boxes.map(b => b.name === boxName ? { ...b, ordered } : b);
-        set({ boxes });
-        get().backup();
-=======
       toggleBoxOrdered: async (boxName: string, ordered: boolean) => {
         const boxes = get().boxes.map(b => b.name === boxName ? { ...b, ordered } : b);
         set({ boxes });
@@ -511,7 +493,6 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         } catch (err) {
           console.warn('⚠️ API toggleBoxOrdered échouée, flag local uniquement', err);
         }
->>>>>>> master
       },
 
       // ========== SETTINGS ==========

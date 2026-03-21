@@ -56,7 +56,7 @@ const Quiz = () => {
 
 	// Refs pour éviter les problèmes de closure dans onProposition
 	const questionRevealedRef = useRef(false);
-	const currentAnswerersRef = useRef<{ nick: string; isFirst: boolean }[]>([]);
+	const currentAnswerersRef = useRef<{ nick: string; isFirst: boolean; answeredAt: number }[]>([]);
 	// Track des tentatives QCM (un viewer ne peut répondre qu'une seule fois en QCM)
 	const qcmAttemptsRef = useRef<Set<string>>(new Set());
 	// Session ID unique pour la sync des scores vers l'API
@@ -320,9 +320,11 @@ const Quiz = () => {
 				? currentQuizState.answers.get(previousQuestionIndex) || []
 				: [];
 
+			const questionStartTime = timerEndTime.current - questionTimeLimit * 1000;
 			const answers = finalAnswerers.map((answerer, index) => {
 				const isCombo = previousAnswerers.includes(answerer.nick);
-				return new Answer(answerer.nick, index === 0, isCombo, 0);
+				const elapsed = answerer.answeredAt ? answerer.answeredAt - questionStartTime : 0;
+				return new Answer(answerer.nick, index === 0, isCombo, elapsed);
 			});
 
 			// Enregistrer les points
@@ -591,7 +593,7 @@ const Quiz = () => {
 			if (isCorrect) {
 				initPlayer(nick, tid);
 				const isFirst = currentAnswerersRef.current.length === 0;
-				const newAnswerer = { nick, isFirst };
+				const newAnswerer = { nick, isFirst, answeredAt: Date.now() };
 				currentAnswerersRef.current = [...currentAnswerersRef.current, newAnswerer];
 			}
 		}

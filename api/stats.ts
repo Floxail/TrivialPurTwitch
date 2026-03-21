@@ -28,9 +28,13 @@ async function ensureTables() {
       args: [],
     },
   ]);
-  // Auto-migration: channel columns on scores
+  // Auto-migrations
   await getDb().execute('ALTER TABLE scores ADD COLUMN channel_name TEXT').catch(() => {});
   await getDb().execute('ALTER TABLE scores ADD COLUMN channel_id TEXT').catch(() => {});
+  await getDb().execute('ALTER TABLE questions ADD COLUMN created_by TEXT').catch(() => {});
+  await getDb().execute('ALTER TABLE questions ADD COLUMN created_by_id TEXT').catch(() => {});
+  await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by TEXT').catch(() => {});
+  await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by_id TEXT').catch(() => {});
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -152,7 +156,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const nick = req.query.nick as string;
       if (!nick) return res.status(400).json({ error: 'nick requis' });
 
-      const [statsResult, categoryResult, streamsResult, bestSessionResult, questionsSubmittedResult] = await Promise.all([
+      // Recherche case-insensitive : trouver le nick exact en DB
+      const nickLookup = await getDb().execute({
+        sql: `SELECT nick FROM scores WHERE LOWER(nick) = LOWER(?) LIMIT 1`,
+        args: [nick],
+      });
+      const resolvedNick = nickLookup.rows.length > 0 ? nickLookup.rows[0].nick as string : nick;
+
+      const [statsResult, categoryResult, streamsResult, bestSessionResult, questionsSubmittedResult, questionsAddedResult, boxesCreatedResult] = await Promise.all([
         // Stats agrégées
         getDb().execute({
           sql: `SELECT
@@ -171,7 +182,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 FROM scores
                 WHERE nick = ?
                 GROUP BY nick`,
-          args: [nick],
+          args: [resolvedNick],
         }),
         // Stats par catégorie (via les sessions + box_name)
         getDb().execute({
@@ -185,7 +196,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 WHERE nick = ? AND box_name IS NOT NULL
                 GROUP BY box_name
                 ORDER BY total_score DESC`,
-          args: [nick],
+          args: [resolvedNick],
         }),
         // Streams où le joueur a participé
         getDb().execute({
@@ -200,7 +211,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 WHERE nick = ? AND channel_name IS NOT NULL AND channel_name != ''
                 GROUP BY channel_name
                 ORDER BY sessions DESC`,
-          args: [nick],
+          args: [resolvedNick],
         }),
         // Meilleure session
         getDb().execute({
@@ -209,11 +220,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 WHERE nick = ?
                 ORDER BY score DESC
                 LIMIT 1`,
-          args: [nick],
+          args: [resolvedNick],
         }),
         // Questions soumises (depuis pending_questions — approuvées)
         getDb().execute({
-          sql: `SELECT COUNT(*) as count FROM pending_questions WHERE submitted_by = ? AND status = 'approved'`,
+          sql: `SELECT COUNT(*) as count FROM pending_questions WHERE LOWER(submitted_by) = LOWER(?) AND status = 'approved'`,
+          args: [nick],
+        }),
+        // Questions ajoutées directement (admin)
+        getDb().execute({
+          sql: `SELECT box_name, COUNT(*) as count FROM questions WHERE LOWER(created_by) = LOWER(?) GROUP BY box_name ORDER BY count DESC`,
+          args: [nick],
+        }),
+        // Boîtes créées
+        getDb().execute({
+          sql: `SELECT name FROM boxes WHERE LOWER(created_by) = LOWER(?)`,
           args: [nick],
         }),
       ]);
@@ -240,7 +261,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           firstGame: s.first_game,
           lastGame: s.last_game,
           questionsSubmitted: Number(questionsSubmittedResult.rows[0].count),
+          questionsAdded: questionsAddedResult.rows.reduce((sum, r) => sum + Number(r.count), 0),
+          boxesCreated: boxesCreatedResult.rows.length,
         },
+        questionsAddedByBox: questionsAddedResult.rows.map(r => ({
+          boxName: r.box_name as string,
+          count: Number(r.count),
+        })),
+        boxesCreatedNames: boxesCreatedResult.rows.map(r => r.name as string),
         bestSession: bs ? {
           sessionId: bs.session_id,
           boxName: bs.box_name,
