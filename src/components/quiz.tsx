@@ -42,6 +42,7 @@ const Quiz = () => {
 	const getPlayersFromNick = usePlayerStore((state) => state.getPlayers);
 
 	const twitchNick = useAuthStore((state) => state.twitchNick);
+	const twitchUserId = useAuthStore((state) => state.twitchUserId);
 	const getTwitchToken = useAuthStore((state) => state.getTwitchOAuthToken);
 	const twitchToken = getTwitchToken(); // Get deobfuscated token
 
@@ -675,12 +676,30 @@ const Quiz = () => {
 		}
 	};
 
+	// Enregistrer les stats de questions jouées en fin de quiz
+	const recordQuestionStats = (quiz: NonNullable<typeof gameStore.activeQuiz>) => {
+		const questionResults = quiz.questions.map((q, i) => {
+			const answerers = quiz.answers.get(i) || [];
+			return {
+				questionId: q.id,
+				correct: answerers.length > 0,
+				answerTimeMs: 0,
+			};
+		});
+		fetch('/api/stats?action=record_questions', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ questions: questionResults }),
+		}).catch(err => console.warn('⚠️ Échec enregistrement question stats', err));
+	};
+
 	// Terminer la session (pour mode cumulatif)
 	const handleEndSession = () => {
 		// Sync scores vers l'API avant de réinitialiser
 		const currentQuiz = useGameStore.getState().activeQuiz;
 		const boxName = currentQuiz?.boxName;
-		usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName);
+		if (currentQuiz) recordQuestionStats(currentQuiz);
+		usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName, twitchNick || undefined, twitchUserId || undefined);
 
 		setPodiumDisplayed(true);
 		usePlayerStore.getState().clear();
@@ -711,7 +730,8 @@ const Quiz = () => {
 		if (nextIndex >= totalQuestions) {
 			// C'est fini — sync scores vers l'API avant de fermer
 			const boxName = currentQuiz.boxName;
-			usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName);
+			recordQuestionStats(currentQuiz);
+			usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName, twitchNick || undefined, twitchUserId || undefined);
 
 			gameStore.endQuiz();
 			setPodiumDisplayed(true);

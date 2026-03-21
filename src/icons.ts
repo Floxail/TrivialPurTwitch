@@ -1,7 +1,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { faCheckCircle, faComment, faTimesCircle } from '@fortawesome/free-regular-svg-icons';
-import { faAdjust, faArrowRight, faBars, faBolt, faBook, faCheck, faChevronLeft, faChevronRight, faCircleInfo, faCog, faCrown, faDatabase, faEllipsis, faExclamationTriangle, faEye, faEyeSlash, faFlag, faFlagCheckered, faGlobe, faHeart, faKey, faList, faLock, faMinus, faMusic, faPaperPlane, faPause, faPen, faPlay, faPlayCircle, faPlus, faPlusCircle, faQuestion, faQuestionCircle, faSave, faSearch, faShuffle, faSignOutAlt, faStepForward, faTimes, faTrash, faVolumeMute, faEdit, faBox, faScroll, faArrowLeft, faDice, faDownload, faUpload, faTrophy, faListOl } from '@fortawesome/free-solid-svg-icons';
+import { faAdjust, faArrowRight, faBars, faBolt, faBook, faBoxOpen, faChartBar, faChartLine, faCheck, faChevronLeft, faChevronRight, faCircleInfo, faCog, faCommentDots, faCrown, faDatabase, faEllipsis, faExclamationTriangle, faEye, faEyeSlash, faFire, faFlag, faFlagCheckered, faGamepad, faGlobe, faHeart, faKey, faList, faLock, faMinus, faMusic, faPaperPlane, faPause, faPen, faPlay, faPlayCircle, faPlus, faPlusCircle, faQuestion, faQuestionCircle, faSave, faSearch, faShareAlt, faShuffle, faSignOutAlt, faSkullCrossbones, faSpinner, faStepForward, faStopwatch, faTimes, faTrash, faUser, faUserCircle, faUsers, faVolumeMute, faEdit, faBox, faScroll, faArrowLeft, faDice, faDownload, faUpload, faTrophy, faListOl } from '@fortawesome/free-solid-svg-icons';
 
 
 library.add(
@@ -60,4 +60,17 @@ library.add(
   faGlobe,
   faFlag,
   faFlagCheckered,
+  faChartBar,
+  faChartLine,
+  faBoxOpen,
+  faCommentDots,
+  faFire,
+  faGamepad,
+  faShareAlt,
+  faSkullCrossbones,
+  faSpinner,
+  faStopwatch,
+  faUser,
+  faUserCircle,
+  faUsers,
 );

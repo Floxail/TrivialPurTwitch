@@ -31,7 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
-      const { players, sessionId, boxName } = req.body;
+      const { players, sessionId, boxName, channelName, channelId } = req.body;
 
       if (!players || !Array.isArray(players) || players.length === 0) {
         return res.status(400).json({ error: 'players[] requis (tableau non vide)' });
@@ -41,6 +41,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'sessionId requis' });
       }
 
+      // Auto-migration : ajouter channel_name et channel_id si absents
+      await db.execute('ALTER TABLE scores ADD COLUMN channel_name TEXT').catch(() => {});
+      await db.execute('ALTER TABLE scores ADD COLUMN channel_id TEXT').catch(() => {});
+
       // Batch insert des scores
       const BATCH_SIZE = 100;
       let inserted = 0;
@@ -48,8 +52,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       for (let i = 0; i < players.length; i += BATCH_SIZE) {
         const batch = players.slice(i, i + BATCH_SIZE);
         const statements = batch.map((p: any) => ({
-          sql: `INSERT INTO scores (twitch_id, nick, score, answers, firsts, combos, fastest, session_id, box_name)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          sql: `INSERT INTO scores (twitch_id, nick, score, answers, firsts, combos, fastest, session_id, box_name, channel_name, channel_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           args: [
             p.tid || '',
             p.nick,
@@ -60,6 +64,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             p.stats?.fastestAnswer === Infinity ? 0 : (p.stats?.fastestAnswer || 0),
             sessionId,
             boxName || null,
+            channelName || null,
+            channelId || null,
           ],
         }));
 
@@ -144,7 +150,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         // Historique des sessions
         const history = await db.execute({
-          sql: `SELECT session_id, box_name, score, answers, firsts, combos, fastest, created_at
+          sql: `SELECT session_id, box_name, score, answers, firsts, combos, fastest, channel_name, created_at
                 FROM scores
                 WHERE nick = ?
                 ORDER BY created_at DESC
@@ -162,6 +168,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             firsts: Number(r.firsts),
             combos: Number(r.combos),
             fastest: r.fastest ? Number(r.fastest) : null,
+            channelName: r.channel_name || null,
             createdAt: r.created_at,
           })),
         });
@@ -173,6 +180,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           sql: `SELECT
                   session_id,
                   box_name,
+                  channel_name,
+                  channel_id,
                   COUNT(*) as player_count,
                   SUM(score) as total_points,
                   MIN(created_at) as started_at
@@ -187,6 +196,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           sessions: result.rows.map((r) => ({
             sessionId: r.session_id,
             boxName: r.box_name,
+            channelName: r.channel_name || null,
+            channelId: r.channel_id || null,
             playerCount: Number(r.player_count),
             totalPoints: Number(r.total_points),
             startedAt: r.started_at,

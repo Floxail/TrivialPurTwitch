@@ -55,7 +55,7 @@ type Actions = {
   recordAnswers: (answers: Answer[]) => void;
   getPlayers: (nicks: string[]) => Player[];
   getDeepCopy: () => Record<string, Player>;
-  syncScoresToAPI: (sessionId: string, boxName?: string) => Promise<void>;
+  syncScoresToAPI: (sessionId: string, boxName?: string, channelName?: string, channelId?: string) => Promise<void>;
 }
 
 const recomputeRanks = (players: Record<string, Player>) => {
@@ -216,7 +216,7 @@ export const usePlayerStore = create<Players & Actions>()(
     getDeepCopy: () => {
       return JSON.parse(JSON.stringify(get().players));
     },
-    syncScoresToAPI: async (sessionId: string, boxName?: string) => {
+    syncScoresToAPI: async (sessionId: string, boxName?: string, channelName?: string, channelId?: string) => {
       const players = get().players;
       const activePlayers = Object.values(players).filter(p => p.score > 0 || p.stats.answers > 0);
 
@@ -226,7 +226,7 @@ export const usePlayerStore = create<Players & Actions>()(
       }
 
       try {
-        const result = await apiRecordScores(activePlayers, sessionId, boxName);
+        const result = await apiRecordScores(activePlayers, sessionId, boxName, channelName, channelId);
         console.log(`✅ Scores synchronisés : ${result.inserted} joueurs envoyés (session: ${sessionId})`);
       } catch (err) {
         console.warn('⚠️ Échec sync scores API, scores conservés localement', err);

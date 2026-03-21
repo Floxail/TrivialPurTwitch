@@ -55,12 +55,14 @@ export async function apiRecordScores(
     stats: { answers: number; firsts: number; combos: number; fastestAnswer: number };
   }>,
   sessionId: string,
-  boxName?: string
+  boxName?: string,
+  channelName?: string,
+  channelId?: string
 ): Promise<{ inserted: number }> {
   const res = await fetch('/api/scores', {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ players, sessionId, boxName }),
+    body: JSON.stringify({ players, sessionId, boxName, channelName, channelId }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
