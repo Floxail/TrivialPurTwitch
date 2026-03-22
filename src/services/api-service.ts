@@ -118,7 +118,7 @@ export async function apiDeleteBox(name: string): Promise<boolean> {
   return true;
 }
 
-export async function apiUpdateBox(name: string, updates: { ordered?: boolean; description?: string }): Promise<boolean> {
+export async function apiUpdateBox(name: string, updates: { ordered?: boolean; description?: string; hidden?: boolean }): Promise<boolean> {
   const res = await fetch('/api/boxes', {
     method: 'PATCH',
     headers: authHeaders(),

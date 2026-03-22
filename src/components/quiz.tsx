@@ -31,7 +31,7 @@ const Quiz = () => {
 
 	const settingsStore = useSettingsStore();
 	// Sélecteurs pour éviter les re-renders inutiles
-	const boxes = useQuestionsStore((state) => state.boxes);
+	const allBoxes = useQuestionsStore((state) => state.boxes);
 	const cumulativeScoresInQuizMode = useQuestionsStore((state) => state.cumulativeScoresInQuizMode);
 	const questionsStore = useQuestionsStore(); // Pour les actions
 	const gameStore = useGameStore();
@@ -44,6 +44,8 @@ const Quiz = () => {
 	const twitchNick = useAuthStore((state) => state.twitchNick);
 	const twitchUserId = useAuthStore((state) => state.twitchUserId);
 	const getTwitchToken = useAuthStore((state) => state.getTwitchOAuthToken);
+	const isAdmin = useAuthStore((state) => state.isAdmin);
+	const boxes = useMemo(() => isAdmin ? allBoxes : allBoxes.filter(b => !b.hidden), [allBoxes, isAdmin]);
 	const twitchToken = getTwitchToken(); // Get deobfuscated token
 
 	// Utiliser le temps de réponse configuré dans les settings
@@ -984,11 +986,6 @@ const Quiz = () => {
 															<FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
 															{singleBox!.ordered && <span style={{ marginRight: '4px' }}>↓</span>}
 															{singleBox!.name}
-															{singleBox!.createdBy && (
-																<span style={{ color: 'var(--lumon-text-muted)', fontSize: '0.65rem', marginLeft: '8px', fontFamily: 'monospace' }}>
-																	par {singleBox!.createdBy}
-																</span>
-															)}
 														</>
 													) : (
 														<>

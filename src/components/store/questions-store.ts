@@ -75,6 +75,7 @@ export type TrivialBox = {
   ordered?: boolean; // Si true : questions jouées dans l'ordre d'insertion (rowid DB)
   createdBy?: string | null; // Pseudo du créateur de la boîte
   description?: string | null; // Description / info libre de la boîte
+  hidden?: boolean; // Si true : boîte masquée pour le public, visible uniquement pour les admins
 };
 
 
@@ -106,7 +107,7 @@ type QuestionsActions = {
   addBox: (boxName: string, ordered?: boolean, description?: string) => Promise<void>;
   removeBox: (boxName: string) => Promise<void>;
   renameBox: (oldName: string, newName: string) => Promise<void>;
-  updateBox: (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string }) => Promise<void>;
+  updateBox: (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean }) => Promise<void>;
   rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>) => TrivialBox[];
 
   // Récupération des questions
@@ -500,7 +501,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         }
       },
 
-      updateBox: async (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string }) => {
+      updateBox: async (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean }) => {
         // Rename si nécessaire
         if (updates.newName && updates.newName !== boxName) {
           await get().renameBox(boxName, updates.newName);
@@ -517,6 +518,10 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           patchPayload.description = updates.description;
           hasPatch = true;
         }
+        if (updates.hidden !== undefined) {
+          patchPayload.hidden = updates.hidden;
+          hasPatch = true;
+        }
         if (hasPatch) {
           try {
             await apiUpdateBox(boxName, patchPayload);
@@ -531,6 +536,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
             ...b,
             ...(updates.ordered !== undefined && { ordered: updates.ordered }),
             ...(updates.description !== undefined && { description: updates.description }),
+            ...(updates.hidden !== undefined && { hidden: updates.hidden }),
           };
         });
         set({ boxes });
@@ -596,13 +602,13 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           }
 
           // Fetch ordered flags + createdBy depuis la DB boxes
-          let dbBoxMetaMap = new Map<string, { ordered: boolean; createdBy?: string | null; description?: string | null }>();
+          let dbBoxMetaMap = new Map<string, { ordered: boolean; createdBy?: string | null; description?: string | null; hidden?: boolean }>();
           try {
             const boxesRes = await fetch('/api/boxes');
             if (boxesRes.ok) {
               const boxesData = await boxesRes.json();
               for (const b of (boxesData.boxes || [])) {
-                dbBoxMetaMap.set(b.name, { ordered: !!b.ordered, createdBy: b.createdBy || null, description: b.description || null });
+                dbBoxMetaMap.set(b.name, { ordered: !!b.ordered, createdBy: b.createdBy || null, description: b.description || null, hidden: !!b.hidden });
               }
             }
           } catch { /* ignore, on garde les flags locaux */ }
@@ -630,6 +636,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
             ...box,
             createdBy: dbBoxMetaMap.get(box.name)?.createdBy ?? box.createdBy ?? null,
             description: dbBoxMetaMap.get(box.name)?.description ?? box.description ?? null,
+            hidden: dbBoxMetaMap.get(box.name)?.hidden ?? box.hidden ?? false,
           }));
 
           set({

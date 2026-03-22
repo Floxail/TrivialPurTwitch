@@ -8,23 +8,25 @@ import { useAuthStore } from './store/auth-store';
 import { QuestionModal, BulkActionsModal } from './question-manager-modals';
 
 const EditBoxModal = React.memo(({ box, onConfirm, onClose }: {
-  box: { name: string; ordered?: boolean; description?: string | null };
-  onConfirm: (updates: { newName?: string; ordered?: boolean; description?: string }) => void;
+  box: { name: string; ordered?: boolean; description?: string | null; hidden?: boolean };
+  onConfirm: (updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean }) => void;
   onClose: () => void;
 }) => {
   const [name, setName] = useState(box.name);
   const [ordered, setOrdered] = useState(!!box.ordered);
   const [description, setDescription] = useState(box.description || '');
+  const [hidden, setHidden] = useState(!!box.hidden);
 
-  const hasChanges = name.trim() !== box.name || ordered !== !!box.ordered || description !== (box.description || '');
+  const hasChanges = name.trim() !== box.name || ordered !== !!box.ordered || description !== (box.description || '') || hidden !== !!box.hidden;
   const isValid = name.trim().length > 0 && hasChanges;
 
   const handleConfirm = () => {
     if (!isValid) return;
-    const updates: { newName?: string; ordered?: boolean; description?: string } = {};
+    const updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean } = {};
     if (name.trim() !== box.name) updates.newName = name.trim();
     if (ordered !== !!box.ordered) updates.ordered = ordered;
     if (description !== (box.description || '')) updates.description = description;
+    if (hidden !== !!box.hidden) updates.hidden = hidden;
     onConfirm(updates);
   };
 
@@ -59,6 +61,14 @@ const EditBoxModal = React.memo(({ box, onConfirm, onClose }: {
           label="↓ Mode ordonné (questions jouées dans l'ordre d'insertion)"
           checked={ordered}
           onChange={(e) => setOrdered(e.target.checked)}
+          className="mb-2"
+        />
+        <Form.Check
+          type="switch"
+          id="editBoxHidden"
+          label="Masquer pour le public (visible uniquement pour les modos)"
+          checked={hidden}
+          onChange={(e) => setHidden(e.target.checked)}
         />
       </Modal.Body>
       <Modal.Footer>
@@ -725,8 +735,9 @@ const QuestionManager = () => {
                         <h5 className="mb-0">
                           <FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
                           {box.ordered && <span title="Mode ordonné" style={{ fontSize: '0.7em', marginRight: '4px' }}>↓</span>}
+                          {box.hidden && <FontAwesomeIcon icon={['fas', 'eye-slash']} className="me-1" title="Masquée pour le public" style={{ fontSize: '0.7em', opacity: 0.6 }} />}
                           {box.name}
-                          {box.createdBy && (
+                          {isAdmin && box.createdBy && (
                             <small className="text-muted ms-2" style={{ fontSize: '0.6em', fontWeight: 'normal' }}>
                               par {box.createdBy}
                             </small>
