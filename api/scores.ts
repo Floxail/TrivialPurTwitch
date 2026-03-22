@@ -27,7 +27,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // ==================== POST /api/scores ====================
     // Enregistre les scores d'une session de quiz terminée
     if (req.method === 'POST') {
-      if (!(await requireAnyTwitchAuth(req))) {
+      if (!(await requireAnyTwitchAuth(req))?.userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 

@@ -67,18 +67,21 @@ export async function requireAdminAuth(req: VercelRequest): Promise<{ userId: st
  * Accepte n'importe quel token Twitch valide (pas forcément admin).
  * Utilisé pour les endpoints accessibles à tous les streamers connectés (ex: scores).
  */
-export async function requireAnyTwitchAuth(req: VercelRequest): Promise<boolean> {
+export async function requireAnyTwitchAuth(req: VercelRequest): Promise<{ userId: string; login: string } | null> {
   const authHeader = req.headers['authorization'];
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
 
   const token = authHeader.substring(7);
   try {
     const response = await fetch('https://id.twitch.tv/oauth2/validate', {
       headers: { 'Authorization': `OAuth ${token}` },
     });
-    return response.ok;
+    if (!response.ok) return null;
+    const data: any = await response.json();
+    if (!data.user_id) return null;
+    return { userId: data.user_id, login: data.login };
   } catch {
-    return false;
+    return null;
   }
 }
 

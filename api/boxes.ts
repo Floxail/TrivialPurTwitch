@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
 import dotenv from 'dotenv';
-import { requireAdminAuth } from './_utils.js';
+import { requireAdminAuth, requireAnyTwitchAuth } from './_utils.js';
 
 dotenv.config({ path: '.env.local' });
 
@@ -46,14 +46,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ boxes });
     }
 
-    // ==================== AUTH REQUISE (token Twitch admin) ====================
-    const admin = await requireAdminAuth(req);
-    if (!admin) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    // ==================== POST (créer une boîte) ====================
+    // ==================== POST (créer une boîte — tout utilisateur Twitch connecté) ====================
     if (req.method === 'POST') {
+      const user = await requireAnyTwitchAuth(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized — connexion Twitch requise' });
+      }
+
       const { name, ordered, description } = req.body;
 
       if (!name || typeof name !== 'string' || name.trim().length === 0) {
@@ -62,10 +61,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       await getDb().execute({
         sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers, ordered, created_by, created_by_id, description) VALUES (?, ?, ?, ?, ?, ?)',
-        args: [name.trim(), '[]', ordered ? 1 : 0, admin.login, admin.userId, description || null],
+        args: [name.trim(), '[]', ordered ? 1 : 0, user.login, user.userId, description || null],
       });
 
       return res.status(201).json({ success: true, name: name.trim() });
+    }
+
+    // ==================== AUTH ADMIN REQUISE (PATCH, PUT, DELETE) ====================
+    const admin = await requireAdminAuth(req);
+    if (!admin) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
     // ==================== PATCH (mettre à jour ordered / description) ====================
