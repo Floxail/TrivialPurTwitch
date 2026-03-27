@@ -52,8 +52,8 @@ const VodButton = ({ channelId, quizDate }: { channelId: string | null; quizDate
       }
       const url = findVodForDate(videos, quizDate);
       setVodUrl(url);
-    } catch {
-      // Token manquant ou erreur API — pas grave
+    } catch (err) {
+      console.warn('[VOD] Erreur recherche VOD pour', channelId, quizDate, err);
     } finally {
       setLoading(false);
       setSearched(true);
