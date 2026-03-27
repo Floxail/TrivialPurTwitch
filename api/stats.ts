@@ -66,7 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         getDb().execute(`
           SELECT
             channel_name,
-            channel_id,
+            MAX(channel_id) as channel_id,
             COUNT(DISTINCT session_id) as quiz_count,
             COUNT(DISTINCT nick) as player_count,
             MIN(created_at) as first_quiz,

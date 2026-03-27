@@ -33,7 +33,10 @@ export const getChannelVideos = (channelId: string) => {
  * Compare created_at du quiz avec la période de chaque VOD (start → start + duration).
  */
 export function findVodForDate(videos: TwitchVideo[], quizDate: string): string | null {
-  const quizTime = new Date(quizDate).getTime();
+  // SQLite datetime('now') retourne "YYYY-MM-DD HH:MM:SS" en UTC mais sans suffixe Z
+  // On ajoute le Z si absent pour que JS le parse correctement en UTC
+  const normalizedDate = quizDate.includes('T') || quizDate.includes('Z') ? quizDate : quizDate + 'Z';
+  const quizTime = new Date(normalizedDate).getTime();
   if (isNaN(quizTime)) return null;
 
   for (const vod of videos) {
