@@ -25,7 +25,7 @@ const Login = () => {
       '?client_id=' + process.env.REACT_APP_TWITCH_CLIENT_ID +
       '&redirect_uri=' + encodeURIComponent(getAppHomeURL() + '/callback') +
       '&scope=chat:read+chat:edit+whispers:edit' +
-      '&force_verify=true' +
+      '&force_verify=false' +
       '&response_type=token' +  // Implicit Flow (client-side)
       '&state=' + state;
   };
