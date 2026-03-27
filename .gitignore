@@ -35,3 +35,4 @@ MIGRATION-VERCEL.md
 TrivialPurTwitch.code-workspace
 scripts/attribute-creators.ts
 scripts/fix-missing-boxes.ts
+scripts/remove-clean-bonus.sh

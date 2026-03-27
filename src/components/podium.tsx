@@ -29,7 +29,7 @@ const Podium = ({ onClose }: any) => {
     return <div style={{ border: '3px dashed #4A4A4AFF', padding: '10px 15px', borderRadius: '.5rem', margin: '5px 5px 14px 0' }}>
       {renderStatsLine('Reponses', `${player.stats.answers}`)}
       {settings.acceptanceDelay > 0 && renderStatsLine('Firsts', `${player.stats.firsts}`)}
-      {renderStatsLine('Combos', `${player.stats.combos}`)}
+      {renderStatsLine('Combo max', `${player.stats.maxCombo || 0}`)}
     </div>;
   };
 

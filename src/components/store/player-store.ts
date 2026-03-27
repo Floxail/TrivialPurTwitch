@@ -8,6 +8,7 @@ export type PlayerStats = {
   answers: number;
   firsts: number;
   combos: number;
+  maxCombo: number;
   fastestAnswer: number;
 }
 
@@ -29,6 +30,7 @@ export const EMPTY_PLAYER_STATS: PlayerStats = {
   answers: 0,
   firsts: 0,
   combos: 0,
+  maxCombo: 0,
   fastestAnswer: Infinity,
 };
 
@@ -185,16 +187,18 @@ export const usePlayerStore = create<Players & Actions>()(
               scoreToAdd += 1;
           }
 
+
           // --- BONUS COMBO PLAFONNÉ À +5 ---
           if (player.currentStreak > 1) {
-              player.stats.combos++; 
-              
+              player.stats.combos++;
+              player.stats.maxCombo = Math.max(player.stats.maxCombo || 0, player.currentStreak);
+
               const maxBonus = 5; // Le plafond demandé
               const rawBonus = player.currentStreak - 1;
-              
+
               // On prend le plus petit des deux (le calcul ou le plafond)
               const comboBonus = Math.min(rawBonus, maxBonus);
-              
+
               scoreToAdd += comboBonus;
           }
           // ---------------------------------

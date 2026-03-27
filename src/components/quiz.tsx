@@ -12,8 +12,6 @@ import { QuizMode, useGameStore } from './store/game-store';
 import Podium from './podium';
 import Leaderboard from './leaderboard';
 import { apiCreateReport, type ReportReason } from 'services/api-reports-service';
-
-
 let twitchCallback: (nick: string, tid: string, msg: string) => void = () => {};
 
 const SCORE_CMD_DELAY = 2000;
@@ -54,13 +52,14 @@ const Quiz = () => {
 	const [questionRevealed, setQuestionRevealed] = useState(false);
 	const [podiumDisplayed, setPodiumDisplayed] = useState(false);
 	const [waitingForRedemption, setWaitingForRedemption] = useState(true);
-	const lastAnswerersRef = useRef<{ nick: string; isFirst: boolean }[]>([]);
+	const lastAnswerersRef = useRef<{ nick: string; isFirst: boolean; answeredAt: number }[]>([]);
 
 	// Refs pour éviter les problèmes de closure dans onProposition
 	const questionRevealedRef = useRef(false);
 	const currentAnswerersRef = useRef<{ nick: string; isFirst: boolean; answeredAt: number }[]>([]);
 	// Track des tentatives QCM (un viewer ne peut répondre qu'une seule fois en QCM)
 	const qcmAttemptsRef = useRef<Set<string>>(new Set());
+	// Track des mauvaises tentatives en mode libre (pour le bonus "sans essai raté")
 	// Session ID unique pour la sync des scores vers l'API
 	const sessionIdRef = useRef<string>('');
 
@@ -590,11 +589,14 @@ const Quiz = () => {
 						}
 					}
 				}
+
 			}
 
 			if (isCorrect) {
 				initPlayer(nick, tid);
 				const isFirst = currentAnswerersRef.current.length === 0;
+				// Bonus "clean" : bonne réponse du premier coup en mode libre (pas de mauvaise tentative)
+				
 				const newAnswerer = { nick, isFirst, answeredAt: Date.now() };
 				currentAnswerersRef.current = [...currentAnswerersRef.current, newAnswerer];
 			}
