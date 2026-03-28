@@ -135,7 +135,7 @@ type QuestionsActions = {
   importFullBackup: (backupData: any) => Promise<boolean>;
 
   // Dédoublonnage
-  removeDuplicates: () => number;
+  removeDuplicates: () => Promise<number>;
 };
 
 // Restore persisted state (support ancien champ lastGitHubSync pour migration transparente)
@@ -758,9 +758,10 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
       // ========== DÉDOUBLONNAGE ==========
 
-      removeDuplicates: (): number => {
+      removeDuplicates: async (): Promise<number> => {
         const currentQuestions = get().questions;
         const seen = new Map<string, Question>();
+        const duplicateIds: string[] = [];
 
         // On garde la première occurrence de chaque question unique
         // Critère d'unicité: question + answer + boxName
@@ -768,6 +769,8 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           const key = `${q.question.trim().toLowerCase()}|${q.answer.trim().toLowerCase()}|${q.boxName}`;
           if (!seen.has(key)) {
             seen.set(key, q);
+          } else {
+            duplicateIds.push(q.id);
           }
         });
 
@@ -775,13 +778,24 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         const removedCount = currentQuestions.length - uniqueQuestions.length;
 
         if (removedCount > 0) {
+          // Supprimer les doublons de la DB Turso
+          const deleteResults = await Promise.allSettled(
+            duplicateIds.map(id => apiDeleteQuestion(id))
+          );
+          const dbDeleted = deleteResults.filter(r => r.status === 'fulfilled' && r.value).length;
+          const dbFailed = deleteResults.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value)).length;
+
+          if (dbFailed > 0) {
+            console.warn(`⚠️ ${dbFailed} doublon(s) n'ont pas pu être supprimés de la DB`);
+          }
+          console.log(`✅ ${removedCount} doublon(s) supprimé(s) (${dbDeleted} de la DB)`);
+
           const boxes = get().rebuildBoxes(uniqueQuestions);
           set({
             questions: uniqueQuestions,
             boxes: boxes,
           });
           get().backup();
-          console.log(`✅ ${removedCount} doublon(s) supprimé(s)`);
         }
 
         return removedCount;

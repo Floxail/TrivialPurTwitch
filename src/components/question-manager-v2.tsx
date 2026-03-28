@@ -164,7 +164,7 @@ const QuestionManager = () => {
     return duplicates;
   };
 
-  const handleCheckDuplicates = () => {
+  const handleCheckDuplicates = async () => {
     const duplicates = findDuplicates();
 
     if (duplicates.length === 0) {
@@ -192,10 +192,15 @@ const QuestionManager = () => {
       return;
     }
 
-    // Utiliser la fonction optimisée du store
-    const removedCount = removeDuplicates();
-
-    setImportSuccess(`✅ ${removedCount} doublon(s) supprimé(s) !`);
+    // Supprimer localement ET dans la DB Turso
+    setImportSuccess('⏳ Suppression des doublons en cours...');
+    try {
+      const removedCount = await removeDuplicates();
+      setImportSuccess(`✅ ${removedCount} doublon(s) supprimé(s) (local + DB) !`);
+    } catch (err) {
+      console.error('Erreur suppression doublons:', err);
+      setImportSuccess('⚠️ Erreur lors de la suppression des doublons');
+    }
     setTimeout(() => setImportSuccess(''), 5000);
   };
 
