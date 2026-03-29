@@ -131,6 +131,19 @@ export async function apiUpdateBox(name: string, updates: { ordered?: boolean; d
   return true;
 }
 
+export async function apiReorderBox(boxName: string, questionIds: string[]): Promise<{ updated: number }> {
+  const res = await fetch('/api/reorder-box', {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ boxName, questionIds }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Erreur ${res.status}`);
+  }
+  return res.json();
+}
+
 export async function apiRenameBox(oldName: string, newName: string): Promise<boolean> {
   const res = await fetch('/api/boxes', {
     method: 'PUT',

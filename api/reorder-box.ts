@@ -1,0 +1,83 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { createClient, type Client } from '@libsql/client';
+import { requireAdminAuth } from './_utils.js';
+
+let db: Client;
+function getDb() {
+  if (!db) {
+    db = createClient({
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN!,
+    });
+  }
+  return db;
+}
+
+/**
+ * POST /api/reorder-box
+ * Body: { boxName: string, questionIds: string[] }
+ *
+ * Met à jour le created_at de chaque question avec des timestamps incrémentaux
+ * pour forcer l'ordre souhaité dans les boîtes ordonnées.
+ */
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') return res.status(204).end();
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const admin = await requireAdminAuth(req);
+  if (!admin) {
+    return res.status(401).json({ error: 'Unauthorized — admin Twitch requis' });
+  }
+
+  const { boxName, questionIds } = req.body;
+
+  if (!boxName || !Array.isArray(questionIds) || questionIds.length === 0) {
+    return res.status(400).json({ error: 'boxName et questionIds[] requis' });
+  }
+
+  try {
+    // Vérifier que toutes les questions existent dans cette boîte
+    const existing = await getDb().execute({
+      sql: 'SELECT id FROM questions WHERE box_name = ?',
+      args: [boxName],
+    });
+    const existingIds = new Set(existing.rows.map(r => r.id as string));
+
+    const missing = questionIds.filter(id => !existingIds.has(id));
+    if (missing.length > 0) {
+      return res.status(400).json({
+        error: `${missing.length} question(s) introuvable(s) dans la boîte "${boxName}"`,
+        missing,
+      });
+    }
+
+    // Mettre à jour created_at avec des timestamps incrémentaux (1 seconde d'écart)
+    const baseDate = new Date('2020-01-01T00:00:00Z');
+    let updated = 0;
+
+    for (let i = 0; i < questionIds.length; i++) {
+      const ts = new Date(baseDate.getTime() + i * 1000).toISOString().replace('T', ' ').replace(/\.\d+Z$/, '');
+      await getDb().execute({
+        sql: 'UPDATE questions SET created_at = ? WHERE id = ? AND box_name = ?',
+        args: [ts, questionIds[i], boxName],
+      });
+      updated++;
+    }
+
+    return res.status(200).json({
+      success: true,
+      boxName,
+      updated,
+      message: `${updated} questions réordonnées dans "${boxName}"`,
+    });
+  } catch (err: any) {
+    console.error('Reorder box error:', err);
+    return res.status(500).json({ error: err.message || 'Internal server error' });
+  }
+}

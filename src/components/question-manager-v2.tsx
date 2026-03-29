@@ -6,6 +6,7 @@ import { categoryColors, categoryNames, Question, QuestionType, TrivialCategory,
 import { useGlobalStore } from './store/global-store';
 import { useAuthStore } from './store/auth-store';
 import { QuestionModal, BulkActionsModal } from './question-manager-modals';
+import { apiReorderBox } from 'services/api-service';
 
 const EditBoxModal = React.memo(({ box, onConfirm, onClose }: {
   box: { name: string; ordered?: boolean; description?: string | null; hidden?: boolean };
@@ -122,6 +123,12 @@ const QuestionManager = () => {
 
   // Édition boîte
   const [editingBoxName, setEditingBoxName] = useState<string | null>(null);
+
+  // Réordonnement boîte ordonnée
+  const [reorderingBoxName, setReorderingBoxName] = useState<string | null>(null);
+  const [reorderList, setReorderList] = useState<Question[]>([]);
+  const [reorderSaving, setReorderSaving] = useState(false);
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   useEffect(() => {
     globalStore.setSubtitle('Gestion des questions');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -252,6 +259,13 @@ const QuestionManager = () => {
     }));
   }, [storeBoxes, storeQuestions]);
 
+  // La boîte sélectionnée est-elle ordonnée ?
+  const selectedBoxIsOrdered = useMemo(() => {
+    if (!selectedBox) return false;
+    const box = storeBoxes.find(b => b.name === selectedBox.trim());
+    return !!box?.ordered;
+  }, [selectedBox, storeBoxes]);
+
   // Questions filtrées (mémorisé)
   const filteredQuestions = useMemo(() => {
     let result = [...storeQuestions];
@@ -265,17 +279,29 @@ const QuestionManager = () => {
       result = result.filter(q => q.category === filterCategory);
     }
 
-    result.sort((a, b) => {
-      const boxCompare = (a.boxName || '').toLowerCase().localeCompare((b.boxName || '').toLowerCase(), 'fr', { sensitivity: 'base' });
-      if (boxCompare !== 0) return boxCompare;
-      const cardA = a.cardNumber ?? 0;
-      const cardB = b.cardNumber ?? 0;
-      if (cardA !== cardB) return cardA - cardB;
-      return a.category - b.category;
-    });
+    // Si la boîte est ordonnée, trier par createdAt / ID
+    if (selectedBoxIsOrdered && filterCategory === 'all') {
+      result.sort((a, b) => {
+        if (a.createdAt && b.createdAt) {
+          const cmp = a.createdAt.localeCompare(b.createdAt);
+          if (cmp !== 0) return cmp;
+        } else if (a.createdAt) return -1;
+        else if (b.createdAt) return 1;
+        return a.id.localeCompare(b.id);
+      });
+    } else {
+      result.sort((a, b) => {
+        const boxCompare = (a.boxName || '').toLowerCase().localeCompare((b.boxName || '').toLowerCase(), 'fr', { sensitivity: 'base' });
+        if (boxCompare !== 0) return boxCompare;
+        const cardA = a.cardNumber ?? 0;
+        const cardB = b.cardNumber ?? 0;
+        if (cardA !== cardB) return cardA - cardB;
+        return a.category - b.category;
+      });
+    }
 
     return result;
-  }, [storeQuestions, selectedBox, filterCategory]);
+  }, [storeQuestions, selectedBox, filterCategory, selectedBoxIsOrdered]);
 
   // Reset pagination quand les filtres changent
   useEffect(() => { setCurrentPage(1); }, [selectedBox, filterCategory]);
@@ -578,6 +604,55 @@ const QuestionManager = () => {
     setShowBulkActionsModal(true);
   };
 
+  // --- Réordonnement ---
+  const handleOpenReorder = (boxName: string) => {
+    const questions = storeQuestions.filter(q => q.boxName === boxName);
+    // Trier par createdAt/ID pour afficher l'ordre actuel
+    questions.sort((a, b) => {
+      if (a.createdAt && b.createdAt) {
+        const cmp = a.createdAt.localeCompare(b.createdAt);
+        if (cmp !== 0) return cmp;
+      } else if (a.createdAt) return -1;
+      else if (b.createdAt) return 1;
+      return a.id.localeCompare(b.id);
+    });
+    setReorderList(questions);
+    setReorderingBoxName(boxName);
+  };
+
+  const handleReorderDrop = (fromIdx: number, toIdx: number) => {
+    if (fromIdx === toIdx) return;
+    const updated = [...reorderList];
+    const [moved] = updated.splice(fromIdx, 1);
+    updated.splice(toIdx, 0, moved);
+    setReorderList(updated);
+  };
+
+  const handleReorderSave = async () => {
+    if (!reorderingBoxName) return;
+    setReorderSaving(true);
+    try {
+      const ids = reorderList.map(q => q.id);
+      await apiReorderBox(reorderingBoxName, ids);
+      // Forcer un re-sync pour rafraîchir les created_at
+      await syncFromDB();
+      setReorderingBoxName(null);
+      setImportSuccess(`✅ Ordre des questions mis à jour pour "${reorderingBoxName}"`);
+      setTimeout(() => setImportSuccess(''), 5000);
+    } catch (err: any) {
+      setImportError(`Erreur réordonnement: ${err.message}`);
+      setTimeout(() => setImportError(''), 5000);
+    } finally {
+      setReorderSaving(false);
+    }
+  };
+
+  const handleReorderMove = (idx: number, direction: 'up' | 'down') => {
+    const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (newIdx < 0 || newIdx >= reorderList.length) return;
+    handleReorderDrop(idx, newIdx);
+  };
+
   return (
     <>
       {/* Alerts pour import */}
@@ -613,6 +688,75 @@ const QuestionManager = () => {
           />
         ) : null;
       })()}
+
+      {/* Modale de réordonnement */}
+      {reorderingBoxName !== null && (
+        <Modal show onHide={() => setReorderingBoxName(null)} centered size="lg" scrollable>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Réordonner — {reorderingBoxName}
+              <small className="text-muted ms-2" style={{ fontSize: '0.6em' }}>{reorderList.length} questions</small>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ maxHeight: '60vh', overflowY: 'auto', padding: 0 }}>
+            <Table hover size="sm" className="mb-0">
+              <thead>
+                <tr>
+                  <th style={{ width: '8%' }}>#</th>
+                  <th style={{ width: '72%' }}>Question</th>
+                  <th style={{ width: '20%', textAlign: 'center' }}>Ordre</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reorderList.map((q, idx) => (
+                  <tr
+                    key={q.id}
+                    draggable
+                    onDragStart={() => setDraggedIdx(idx)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => { if (draggedIdx !== null) handleReorderDrop(draggedIdx, idx); setDraggedIdx(null); }}
+                    style={{
+                      cursor: 'grab',
+                      backgroundColor: draggedIdx === idx ? 'rgba(100,100,255,0.15)' : undefined,
+                    }}
+                  >
+                    <td className="text-muted">{idx + 1}</td>
+                    <td style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '400px' }}>
+                      {q.question}
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <Button
+                        size="sm"
+                        variant="link"
+                        className="p-0 me-2"
+                        disabled={idx === 0}
+                        onClick={() => handleReorderMove(idx, 'up')}
+                      >
+                        <FontAwesomeIcon icon={['fas', 'chevron-up']} />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="link"
+                        className="p-0"
+                        disabled={idx === reorderList.length - 1}
+                        onClick={() => handleReorderMove(idx, 'down')}
+                      >
+                        <FontAwesomeIcon icon={['fas', 'chevron-down']} />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setReorderingBoxName(null)}>Annuler</Button>
+            <Button variant="primary" onClick={handleReorderSave} disabled={reorderSaving}>
+              {reorderSaving ? 'Enregistrement...' : 'Enregistrer l\'ordre'}
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
 
       {/* Modal d'édition de question */}
       <QuestionModal
@@ -750,6 +894,16 @@ const QuestionManager = () => {
                         </h5>
                         {isAdmin && (
                           <div className="d-flex gap-1">
+                            {box.ordered && (
+                              <Button
+                                size="sm"
+                                variant="outline-info"
+                                title="Réordonner les questions"
+                                onClick={() => handleOpenReorder(box.name)}
+                              >
+                                <FontAwesomeIcon icon={['fas', 'sort']} />
+                              </Button>
+                            )}
                             <Button
                               size="sm"
                               variant="outline-secondary"
@@ -899,10 +1053,17 @@ const QuestionManager = () => {
               </div>
             )}
 
+            {selectedBoxIsOrdered && filterCategory === 'all' && (
+              <div className="mb-2">
+                <Badge bg="info">↓ Boîte ordonnée — les questions sont affichées dans l'ordre de jeu</Badge>
+              </div>
+            )}
+
             <Table hover responsive key={`table-${selectedBox}-${filterCategory}`}>
               <thead>
                 <tr>
-                  <th style={{ width: '5%' }}>
+                  {selectedBoxIsOrdered && <th style={{ width: '4%' }}>#</th>}
+                  <th style={{ width: selectedBoxIsOrdered ? '4%' : '5%' }}>
                     <Form.Check
                       type="checkbox"
                       checked={selectedQuestions.size === filteredQuestions.length && filteredQuestions.length > 0}
@@ -912,14 +1073,17 @@ const QuestionManager = () => {
                   <th style={{ width: '12%' }}>Boîte</th>
                   <th style={{ width: '8%' }}>Type</th>
                   <th style={{ width: '12%' }}>Catégorie</th>
-                  <th style={{ width: '30%' }}>Question</th>
+                  <th style={{ width: selectedBoxIsOrdered ? '28%' : '30%' }}>Question</th>
                   <th style={{ width: '20%' }}>Réponse</th>
                   <th style={{ width: '13%' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {paginatedQuestions.map(question => (
+                {paginatedQuestions.map((question, idx) => (
                   <tr key={question.id}>
+                    {selectedBoxIsOrdered && (
+                      <td className="text-muted small">{(currentPage - 1) * PAGE_SIZE + idx + 1}</td>
+                    )}
                     <td>
                       <Form.Check
                         type="checkbox"

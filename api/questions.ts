@@ -37,6 +37,7 @@ function rowToQuestion(row: any) {
     qcmCorrectIndexes: row.qcm_correct_indexes
       ? JSON.parse(row.qcm_correct_indexes as string)
       : undefined,
+    createdAt: row.created_at ?? undefined,
   };
 }
 
@@ -47,6 +48,15 @@ async function ensureMigration() {
   await getDb().execute('ALTER TABLE questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {});
   await getDb().execute('ALTER TABLE questions ADD COLUMN created_by TEXT').catch(() => {});
   await getDb().execute('ALTER TABLE questions ADD COLUMN created_by_id TEXT').catch(() => {});
+  await getDb().execute("ALTER TABLE questions ADD COLUMN created_at TEXT DEFAULT (datetime('now'))").catch(() => {});
+  // Backfill: copier created_at depuis pending_questions pour les questions approuvées existantes
+  await getDb().execute(`
+    UPDATE questions SET created_at = (
+      SELECT pq.created_at FROM pending_questions pq WHERE pq.id = questions.id
+    ) WHERE created_at IS NULL AND EXISTS (
+      SELECT 1 FROM pending_questions pq WHERE pq.id = questions.id
+    )
+  `).catch(() => {});
   migrationDone = true;
 }
 
@@ -72,6 +82,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         args.push(boxName);
       }
 
+      sql += ' ORDER BY rowid';
+
       const result = await getDb().execute({ sql, args });
       const questions = result.rows.map(rowToQuestion);
 
@@ -96,8 +108,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         sql: `INSERT OR REPLACE INTO questions
               (id, question, answer, alternative_answers, category, box_name,
                card_number, difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
-               created_by, created_by_id)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+               created_by, created_by_id, created_at)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
         args: [
           q.id,
           q.question,

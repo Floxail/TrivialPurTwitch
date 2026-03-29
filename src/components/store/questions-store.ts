@@ -65,6 +65,7 @@ export type Question = {
   qcmOptions?: string[]; // 2-6 options (A à F)
   qcmCorrectIndex?: number; // Index de la bonne réponse (legacy, single answer)
   qcmCorrectIndexes?: number[]; // Index des bonnes réponses (multi-réponses)
+  createdAt?: string; // Date de création (pour l'ordre dans les boîtes ordonnées)
 };
 
 // Structure d'une boîte (contient plusieurs cartes)
@@ -487,7 +488,17 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
       generateOrderedQuiz: (boxName: string): Question[] | null => {
         const questions = get().questions.filter(q => q.boxName === boxName);
-        return questions.length === 0 ? null : questions;
+        if (questions.length === 0) return null;
+        // Trier par date de création, puis par ID comme tiebreaker (l'ID contient un timestamp)
+        questions.sort((a, b) => {
+          if (a.createdAt && b.createdAt) {
+            const cmp = a.createdAt.localeCompare(b.createdAt);
+            if (cmp !== 0) return cmp;
+          } else if (a.createdAt) return -1;
+          else if (b.createdAt) return 1;
+          return a.id.localeCompare(b.id);
+        });
+        return questions;
       },
 
       toggleBoxOrdered: async (boxName: string, ordered: boolean) => {
