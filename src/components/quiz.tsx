@@ -543,6 +543,16 @@ const Quiz = () => {
 						return true;
 					}
 
+					// Si la réponse correcte contient des chiffres, ils doivent correspondre exactement.
+					// La tolérance floue reste active sur la partie texte.
+					const answerNumbers = answerNoArticles.match(/\d+/g);
+					if (answerNumbers) {
+						const propNumbers = propNoArticles.match(/\d+/g) || [];
+						if (answerNumbers.join(',') !== propNumbers.join(',')) {
+							return false;
+						}
+					}
+
 					// Vérification de sous-chaîne pour réponses similaires
 					const minLength = Math.min(answerNoArticles.length, propNoArticles.length);
 					const maxLength = Math.max(answerNoArticles.length, propNoArticles.length);
