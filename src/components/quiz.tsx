@@ -42,8 +42,7 @@ const Quiz = () => {
 	const twitchNick = useAuthStore((state) => state.twitchNick);
 	const twitchUserId = useAuthStore((state) => state.twitchUserId);
 	const getTwitchToken = useAuthStore((state) => state.getTwitchOAuthToken);
-	const isAdmin = useAuthStore((state) => state.isAdmin);
-	const boxes = useMemo(() => isAdmin ? allBoxes : allBoxes.filter(b => !b.hidden), [allBoxes, isAdmin]);
+	const boxes = useMemo(() => allBoxes.filter(b => !b.hidden), [allBoxes]);
 	const twitchToken = getTwitchToken(); // Get deobfuscated token
 
 	// Utiliser le temps de réponse configuré dans les settings
@@ -621,8 +620,8 @@ const Quiz = () => {
 		let displayBoxName: string;
 
 		if (selectedBoxNames === null) {
-			// Toutes les boîtes
-			questions = questionsStore.generateRandomQuizAllBoxes(quizQuestionCount, balanceCategories);
+			// Toutes les boîtes visibles
+			questions = questionsStore.generateRandomQuizFromBoxes(boxes.map(b => b.name), quizQuestionCount, balanceCategories);
 			displayBoxName = balanceCategories ? 'Mix équilibré' : 'Mix aléatoire';
 		} else if (selectedBoxNames.length === 1) {
 			// Une seule boîte

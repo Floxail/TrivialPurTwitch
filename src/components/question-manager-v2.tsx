@@ -247,24 +247,30 @@ const QuestionManager = () => {
   // DONNÉES MÉMORISÉES - Évite les recalculs à chaque frappe
   // ==========================================================
 
+  // Filtrer les boîtes cachées pour les non-admins
+  const visibleBoxes = useMemo(
+    () => isAdmin ? storeBoxes : storeBoxes.filter(b => !b.hidden),
+    [storeBoxes, isAdmin]
+  );
+
   // Boîtes avec leurs stats (mémorisé) — O(n) au lieu de O(boxes * questions)
   const boxesWithStats = useMemo(() => {
     const countMap = new Map<string, number>();
     for (const q of storeQuestions) {
       countMap.set(q.boxName || '', (countMap.get(q.boxName || '') || 0) + 1);
     }
-    return storeBoxes.map(box => ({
+    return visibleBoxes.map(box => ({
       ...box,
       totalQuestions: countMap.get(box.name) || 0
     }));
-  }, [storeBoxes, storeQuestions]);
+  }, [visibleBoxes, storeQuestions]);
 
   // La boîte sélectionnée est-elle ordonnée ?
   const selectedBoxIsOrdered = useMemo(() => {
     if (!selectedBox) return false;
-    const box = storeBoxes.find(b => b.name === selectedBox.trim());
+    const box = visibleBoxes.find(b => b.name === selectedBox.trim());
     return !!box?.ordered;
-  }, [selectedBox, storeBoxes]);
+  }, [selectedBox, visibleBoxes]);
 
   // Questions filtrées (mémorisé)
   const filteredQuestions = useMemo(() => {
