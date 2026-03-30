@@ -77,6 +77,7 @@ export type TrivialBox = {
   createdBy?: string | null; // Pseudo du créateur de la boîte
   description?: string | null; // Description / info libre de la boîte
   hidden?: boolean; // Si true : boîte masquée pour le public, visible uniquement pour les admins
+  parentBox?: string | null; // Nom de la boîte parente (si sous-boîte d'une boîte master)
 };
 
 
@@ -105,10 +106,10 @@ type QuestionsActions = {
   // Gestion des boîtes (async → API + state local)
   getBoxes: () => TrivialBox[];
   getBoxByName: (boxName: string) => TrivialBox | undefined;
-  addBox: (boxName: string, ordered?: boolean, description?: string) => Promise<void>;
+  addBox: (boxName: string, ordered?: boolean, description?: string, parentBox?: string) => Promise<void>;
   removeBox: (boxName: string) => Promise<void>;
   renameBox: (oldName: string, newName: string) => Promise<void>;
-  updateBox: (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean }) => Promise<void>;
+  updateBox: (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean; parentBox?: string | null }) => Promise<void>;
   rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>) => TrivialBox[];
 
   // Récupération des questions
@@ -302,14 +303,14 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         return get().boxes.find((box) => box.name === boxName);
       },
 
-      addBox: async (boxName: string, ordered?: boolean, description?: string) => {
+      addBox: async (boxName: string, ordered?: boolean, description?: string, parentBox?: string) => {
         const currentBoxes = get().boxes;
         if (currentBoxes.find((box) => box.name === boxName)) {
           return; // La boîte existe déjà
         }
 
         try {
-          await apiCreateBox(boxName, ordered, description);
+          await apiCreateBox(boxName, ordered, description, parentBox);
         } catch (err) {
           console.warn('⚠️ API addBox échouée, sauvegarde locale uniquement', err);
         }
@@ -320,6 +321,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           totalQuestions: 0,
           ordered,
           description: description || null,
+          parentBox: parentBox || null,
         };
 
         set({ boxes: [...currentBoxes, newBox] });
@@ -512,13 +514,13 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         }
       },
 
-      updateBox: async (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean }) => {
+      updateBox: async (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean; parentBox?: string | null }) => {
         // Rename si nécessaire
         if (updates.newName && updates.newName !== boxName) {
           await get().renameBox(boxName, updates.newName);
           boxName = updates.newName;
         }
-        // Patch ordered + description via PATCH
+        // Patch ordered + description + parentBox via PATCH
         const patchPayload: any = { name: boxName };
         let hasPatch = false;
         if (updates.ordered !== undefined) {
@@ -531,6 +533,10 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         }
         if (updates.hidden !== undefined) {
           patchPayload.hidden = updates.hidden;
+          hasPatch = true;
+        }
+        if (updates.parentBox !== undefined) {
+          patchPayload.parentBox = updates.parentBox;
           hasPatch = true;
         }
         if (hasPatch) {
@@ -548,6 +554,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
             ...(updates.ordered !== undefined && { ordered: updates.ordered }),
             ...(updates.description !== undefined && { description: updates.description }),
             ...(updates.hidden !== undefined && { hidden: updates.hidden }),
+            ...(updates.parentBox !== undefined && { parentBox: updates.parentBox }),
           };
         });
         set({ boxes });
@@ -613,13 +620,13 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           }
 
           // Fetch ordered flags + createdBy depuis la DB boxes
-          let dbBoxMetaMap = new Map<string, { ordered: boolean; createdBy?: string | null; description?: string | null; hidden?: boolean }>();
+          let dbBoxMetaMap = new Map<string, { ordered: boolean; createdBy?: string | null; description?: string | null; hidden?: boolean; parentBox?: string | null }>();
           try {
             const boxesRes = await fetch('/api/boxes');
             if (boxesRes.ok) {
               const boxesData = await boxesRes.json();
               for (const b of (boxesData.boxes || [])) {
-                dbBoxMetaMap.set(b.name, { ordered: !!b.ordered, createdBy: b.createdBy || null, description: b.description || null, hidden: !!b.hidden });
+                dbBoxMetaMap.set(b.name, { ordered: !!b.ordered, createdBy: b.createdBy || null, description: b.description || null, hidden: !!b.hidden, parentBox: b.parentBox || null });
               }
             }
           } catch { /* ignore, on garde les flags locaux */ }
@@ -643,17 +650,36 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           // Sauvegarder les IDs BD actuels pour la prochaine sync
           const currentDBIds = dbData.questions.map((q: any) => q.id);
 
-          const boxes = get().rebuildBoxes(mergedQuestions, dbOrderedMap).map(box => ({
+          const enrichedBoxes: TrivialBox[] = get().rebuildBoxes(mergedQuestions, dbOrderedMap).map(box => ({
             ...box,
             createdBy: dbBoxMetaMap.get(box.name)?.createdBy ?? box.createdBy ?? null,
             description: dbBoxMetaMap.get(box.name)?.description ?? box.description ?? null,
             hidden: dbBoxMetaMap.get(box.name)?.hidden ?? box.hidden ?? false,
+            parentBox: dbBoxMetaMap.get(box.name)?.parentBox ?? box.parentBox ?? null,
           }));
+
+          // Ajouter les boîtes BD sans questions (ex: boîtes master vides)
+          const enrichedNames = new Set(enrichedBoxes.map(b => b.name));
+          dbBoxMetaMap.forEach((meta, name) => {
+            if (!enrichedNames.has(name)) {
+              enrichedBoxes.push({
+                name,
+                cardNumbers: [],
+                totalQuestions: 0,
+                ordered: meta.ordered,
+                createdBy: meta.createdBy ?? null,
+                description: meta.description ?? null,
+                hidden: meta.hidden ?? false,
+                parentBox: meta.parentBox ?? null,
+              });
+            }
+          });
+          enrichedBoxes.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase(), 'fr', { sensitivity: 'base' }));
 
           set({
             questions: mergedQuestions,
             lastDBQuestionIds: currentDBIds,
-            boxes: boxes,
+            boxes: enrichedBoxes,
             syncStatus: 'success',
             lastDBSync: new Date().toISOString(),
           });

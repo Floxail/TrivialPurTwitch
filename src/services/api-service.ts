@@ -80,11 +80,11 @@ export async function apiImportQuestions(data: { boxes?: any[]; questions: any[]
 
 // ==================== BOXES ====================
 
-export async function apiCreateBox(name: string, ordered?: boolean, description?: string): Promise<boolean> {
+export async function apiCreateBox(name: string, ordered?: boolean, description?: string, parentBox?: string): Promise<boolean> {
   const res = await fetch('/api/boxes', {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ name, ordered, description }),
+    body: JSON.stringify({ name, ordered, description, parentBox }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -118,7 +118,7 @@ export async function apiDeleteBox(name: string): Promise<boolean> {
   return true;
 }
 
-export async function apiUpdateBox(name: string, updates: { ordered?: boolean; description?: string; hidden?: boolean }): Promise<boolean> {
+export async function apiUpdateBox(name: string, updates: { ordered?: boolean; description?: string; hidden?: boolean; parentBox?: string | null }): Promise<boolean> {
   const res = await fetch('/api/boxes', {
     method: 'PATCH',
     headers: authHeaders(),

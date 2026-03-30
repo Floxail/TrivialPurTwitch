@@ -8,26 +8,37 @@ import { useAuthStore } from './store/auth-store';
 import { QuestionModal, BulkActionsModal } from './question-manager-modals';
 import { apiReorderBox } from 'services/api-service';
 
-const EditBoxModal = React.memo(({ box, onConfirm, onClose }: {
-  box: { name: string; ordered?: boolean; description?: string | null; hidden?: boolean };
-  onConfirm: (updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean }) => void;
+const EditBoxModal = React.memo(({ box, allBoxes, isMaster, onConfirm, onClose }: {
+  box: { name: string; ordered?: boolean; description?: string | null; hidden?: boolean; parentBox?: string | null };
+  allBoxes: { name: string; parentBox?: string | null }[];
+  isMaster: boolean; // Cette boîte est un master (a des sous-boîtes)
+  onConfirm: (updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean; parentBox?: string | null }) => void;
   onClose: () => void;
 }) => {
   const [name, setName] = useState(box.name);
   const [ordered, setOrdered] = useState(!!box.ordered);
   const [description, setDescription] = useState(box.description || '');
   const [hidden, setHidden] = useState(!!box.hidden);
+  const [parentBox, setParentBox] = useState<string>(box.parentBox || '');
 
-  const hasChanges = name.trim() !== box.name || ordered !== !!box.ordered || description !== (box.description || '') || hidden !== !!box.hidden;
+  // Boîtes candidates comme parent : top-level (sans parent) et différentes de cette boîte
+  const parentCandidates = allBoxes.filter(b => !b.parentBox && b.name !== box.name);
+
+  const hasChanges = name.trim() !== box.name
+    || ordered !== !!box.ordered
+    || description !== (box.description || '')
+    || hidden !== !!box.hidden
+    || parentBox !== (box.parentBox || '');
   const isValid = name.trim().length > 0 && hasChanges;
 
   const handleConfirm = () => {
     if (!isValid) return;
-    const updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean } = {};
+    const updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean; parentBox?: string | null } = {};
     if (name.trim() !== box.name) updates.newName = name.trim();
     if (ordered !== !!box.ordered) updates.ordered = ordered;
     if (description !== (box.description || '')) updates.description = description;
     if (hidden !== !!box.hidden) updates.hidden = hidden;
+    if (parentBox !== (box.parentBox || '')) updates.parentBox = parentBox || null;
     onConfirm(updates);
   };
 
@@ -55,6 +66,21 @@ const EditBoxModal = React.memo(({ box, onConfirm, onClose }: {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Ex: Boîte de Trivial Pursuit édition Cinéma 1991"
           />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Boîte parente (optionnel)</Form.Label>
+          {isMaster ? (
+            <div className="text-muted" style={{ fontSize: '0.85rem' }}>
+              Cette boîte est une <strong>boîte Master</strong> (elle a des sous-boîtes). Supprimez d'abord ses sous-boîtes pour la rattacher à un parent.
+            </div>
+          ) : (
+            <Form.Select value={parentBox} onChange={(e) => setParentBox(e.target.value)}>
+              <option value="">— Indépendante (boîte racine) —</option>
+              {parentCandidates.map(b => (
+                <option key={b.name} value={b.name}>{b.name}</option>
+              ))}
+            </Form.Select>
+          )}
         </Form.Group>
         <Form.Check
           type="switch"
@@ -539,7 +565,7 @@ const QuestionManager = () => {
     await removeBox(boxName);
   };
 
-  const handleConfirmEditBox = async (updates: { newName?: string; ordered?: boolean; description?: string }) => {
+  const handleConfirmEditBox = async (updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean; parentBox?: string | null }) => {
     if (!editingBoxName) return;
     await updateBox(editingBoxName, updates);
     setEditingBoxName(null);
@@ -686,9 +712,12 @@ const QuestionManager = () => {
       {/* Modale d'édition de boîte */}
       {editingBoxName !== null && (() => {
         const box = boxesWithStats.find(b => b.name === editingBoxName);
+        const isMaster = storeBoxes.some(b => b.parentBox === editingBoxName);
         return box ? (
           <EditBoxModal
             box={box}
+            allBoxes={storeBoxes}
+            isMaster={isMaster}
             onConfirm={handleConfirmEditBox}
             onClose={() => setEditingBoxName(null)}
           />
@@ -888,10 +917,15 @@ const QuestionManager = () => {
                     <div className="card">
                       <div className="card-header d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">
-                          <FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
+                          <FontAwesomeIcon icon={['fas', box.parentBox ? 'folder-open' : (storeBoxes.some(b => b.parentBox === box.name) ? 'layer-group' : 'box')]} className="me-2" />
                           {box.ordered && <span title="Mode ordonné" style={{ fontSize: '0.7em', marginRight: '4px' }}>↓</span>}
                           {box.hidden && <FontAwesomeIcon icon={['fas', 'eye-slash']} className="me-1" title="Masquée pour le public" style={{ fontSize: '0.7em', opacity: 0.6 }} />}
                           {box.name}
+                          {box.parentBox && (
+                            <small className="text-muted ms-2" style={{ fontSize: '0.6em', fontWeight: 'normal' }}>
+                              ↳ {box.parentBox}
+                            </small>
+                          )}
                           {isAdmin && box.createdBy && (
                             <small className="text-muted ms-2" style={{ fontSize: '0.6em', fontWeight: 'normal' }}>
                               par {box.createdBy}

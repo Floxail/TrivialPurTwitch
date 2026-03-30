@@ -134,6 +134,7 @@ const ContributionPage: React.FC = () => {
   const [newBoxName, setNewBoxName] = useState('');
   const [newBoxOrdered, setNewBoxOrdered] = useState(false);
   const [newBoxDescription, setNewBoxDescription] = useState('');
+  const [newBoxParent, setNewBoxParent] = useState('');
 
   useEffect(() => {
     setSubtitle('Proposer des questions');
@@ -166,12 +167,13 @@ const ContributionPage: React.FC = () => {
       showError(`La boîte "${name}" existe déjà`);
       return;
     }
-    await addBox(name, newBoxOrdered || undefined, newBoxDescription.trim() || undefined);
+    await addBox(name, newBoxOrdered || undefined, newBoxDescription.trim() || undefined, newBoxParent || undefined);
     setNewBoxName('');
     setNewBoxOrdered(false);
     setNewBoxDescription('');
+    setNewBoxParent('');
     setShowNewBox(false);
-    showSuccess(`Boîte "${name}" créée !${newBoxOrdered ? ' (mode ordonné activé)' : ''}`);
+    showSuccess(`Boîte "${name}" créée !${newBoxParent ? ` (sous-boîte de ${newBoxParent})` : ''}${newBoxOrdered ? ' (mode ordonné)' : ''}`);
   };
 
   // ==================== Soumission unique ====================
@@ -467,11 +469,25 @@ const ContributionPage: React.FC = () => {
               onChange={(e) => setNewBoxDescription(e.target.value)}
               style={{ maxWidth: '500px' }}
             />
+            {isAdmin && (
+              <select
+                className="terminal-input"
+                value={newBoxParent}
+                onChange={(e) => setNewBoxParent(e.target.value)}
+                style={{ maxWidth: '300px' }}
+                title="Rattacher à une boîte Master (optionnel)"
+              >
+                <option value="">— Boîte indépendante (racine) —</option>
+                {boxes.filter(b => !b.parentBox).map(b => (
+                  <option key={b.name} value={b.name}>↳ Sous-boîte de : {b.name}</option>
+                ))}
+              </select>
+            )}
             <div className="d-flex gap-2">
               <button className="terminal-btn terminal-btn-success terminal-btn-sm" onClick={handleCreateBox} disabled={!newBoxName.trim()}>
                 Créer
               </button>
-              <button className="terminal-btn terminal-btn-sm" onClick={() => { setShowNewBox(false); setNewBoxName(''); setNewBoxOrdered(false); setNewBoxDescription(''); }}>
+              <button className="terminal-btn terminal-btn-sm" onClick={() => { setShowNewBox(false); setNewBoxName(''); setNewBoxOrdered(false); setNewBoxDescription(''); setNewBoxParent(''); }}>
                 Annuler
               </button>
             </div>

@@ -42,7 +42,32 @@ const Quiz = () => {
 	const twitchNick = useAuthStore((state) => state.twitchNick);
 	const twitchUserId = useAuthStore((state) => state.twitchUserId);
 	const getTwitchToken = useAuthStore((state) => state.getTwitchOAuthToken);
-	const boxes = useMemo(() => allBoxes.filter(b => !b.hidden), [allBoxes]);
+	// Toutes les boîtes visibles (non cachées) — source de vérité
+	const allVisibleBoxes = useMemo(() => allBoxes.filter(b => !b.hidden), [allBoxes]);
+
+	// Navigation hiérarchique : null = niveau racine, string = sous-boîtes de ce master
+	const [expandedMasterBox, setExpandedMasterBox] = useState<string | null>(null);
+
+	// Map : nom du master → ses sous-boîtes
+	const masterSubBoxMap = useMemo(() => {
+		const map = new Map<string, typeof allVisibleBoxes>();
+		allVisibleBoxes.forEach(b => {
+			if (b.parentBox) {
+				if (!map.has(b.parentBox)) map.set(b.parentBox, []);
+				map.get(b.parentBox)!.push(b);
+			}
+		});
+		return map;
+	}, [allVisibleBoxes]);
+
+	// Boîtes de niveau racine (sans parent)
+	const topLevelBoxes = useMemo(() => allVisibleBoxes.filter(b => !b.parentBox), [allVisibleBoxes]);
+
+	// Boîtes affichées dans la grille MDR
+	const displayedBoxes = useMemo(() => {
+		if (expandedMasterBox === null) return topLevelBoxes;
+		return masterSubBoxMap.get(expandedMasterBox) ?? [];
+	}, [expandedMasterBox, topLevelBoxes, masterSubBoxMap]);
 	const twitchToken = getTwitchToken(); // Get deobfuscated token
 
 	// Utiliser le temps de réponse configuré dans les settings
@@ -114,47 +139,61 @@ const Quiz = () => {
 	}, [mdrHoveredIndex]);
 
 	const getMdrClass = useCallback((mdrIndex: number) => {
-		// mdrIndex 0 = "Toutes", mdrIndex i+1 = boxes[i]
+		// Quand on est dans un master, index 0 = bouton Retour (classe spéciale)
+		if (expandedMasterBox !== null && mdrIndex === 0) {
+			const hoverClass = mdrHoveredIndex === null ? ''
+				: mdrIndex === mdrHoveredIndex ? 'mdr-focused'
+				: mdrNeighborIndices.has(mdrIndex) ? 'mdr-neighbor'
+				: 'mdr-dimmed';
+			return `${hoverClass} mdr-back-box`.trim();
+		}
+		// mdrIndex 0 = "Toutes", mdrIndex i+1 = displayedBoxes[i]
 		const isSelected = mdrIndex === 0
 			? selectedBoxNames === null
-			: (selectedBoxNames === null || selectedBoxNames.includes(boxes[mdrIndex - 1]?.name ?? ''));
-
+			: (selectedBoxNames === null || selectedBoxNames.includes(displayedBoxes[mdrIndex - 1]?.name ?? ''));
 		const hoverClass = mdrHoveredIndex === null ? ''
 			: mdrIndex === mdrHoveredIndex ? 'mdr-focused'
 			: mdrNeighborIndices.has(mdrIndex) ? 'mdr-neighbor'
 			: 'mdr-dimmed';
-
 		const selectionClass = isSelected ? 'mdr-selected' : 'mdr-unselected';
 		return `${hoverClass} ${selectionClass}`.trim();
-	}, [mdrHoveredIndex, mdrNeighborIndices, selectedBoxNames, boxes]);
+	}, [mdrHoveredIndex, mdrNeighborIndices, selectedBoxNames, displayedBoxes, expandedMasterBox]);
 
 	const handleBoxClick = useCallback((boxName: string) => {
 		setSelectedBoxNames(prev => {
-			if (prev === null) {
-				// Était "toutes" → switch vers cette boîte uniquement
-				return [boxName];
-			}
+			if (prev === null) return [boxName];
 			const isSelected = prev.includes(boxName);
-			if (isSelected && prev.length === 1) {
-				// Dernière boîte sélectionnée → ne pas déselectionner
-				return prev;
-			}
-			if (isSelected) {
-				return prev.filter(n => n !== boxName);
-			}
+			if (isSelected && prev.length === 1) return prev;
+			if (isSelected) return prev.filter(n => n !== boxName);
 			return [...prev, boxName];
 		});
+	}, []);
+
+	const handleMasterBoxClick = useCallback((masterName: string) => {
+		setExpandedMasterBox(masterName);
+		setSelectedBoxNames(null);
+		setMdrHoveredIndex(null);
+	}, []);
+
+	const handleBackFromMaster = useCallback(() => {
+		setExpandedMasterBox(null);
+		setSelectedBoxNames(null);
+		setMdrHoveredIndex(null);
 	}, []);
 
 	// Synchroniser la sélection quand les boîtes changent (après sync DB)
 	useEffect(() => {
 		setSelectedBoxNames(prev => {
 			if (prev === null) return null;
-			const boxNames = new Set(boxes.map(b => b.name));
+			const boxNames = new Set(allVisibleBoxes.map(b => b.name));
 			const valid = prev.filter(n => boxNames.has(n));
 			return valid.length > 0 ? valid : null;
 		});
-	}, [boxes]);
+		setExpandedMasterBox(prev => {
+			if (prev === null) return null;
+			return allVisibleBoxes.some(b => b.name === prev) ? prev : null;
+		});
+	}, [allVisibleBoxes]);
 
 	const activeQuiz = gameStore.activeQuiz;
 	const currentQuestion = activeQuiz?.questions[activeQuiz.currentQuestionIndex];
@@ -620,9 +659,15 @@ const Quiz = () => {
 		let displayBoxName: string;
 
 		if (selectedBoxNames === null) {
-			// Toutes les boîtes visibles
-			questions = questionsStore.generateRandomQuizFromBoxes(boxes.map(b => b.name), quizQuestionCount, balanceCategories);
-			displayBoxName = balanceCategories ? 'Mix équilibré' : 'Mix aléatoire';
+			if (expandedMasterBox !== null) {
+				// Toutes les sous-boîtes du master actuel
+				questions = questionsStore.generateRandomQuizFromBoxes(displayedBoxes.map(b => b.name), quizQuestionCount, balanceCategories);
+				displayBoxName = `${expandedMasterBox} — mix`;
+			} else {
+				// Toutes les boîtes visibles (dont les sous-boîtes de tous les masters)
+				questions = questionsStore.generateRandomQuizFromBoxes(allVisibleBoxes.map(b => b.name), quizQuestionCount, balanceCategories);
+				displayBoxName = balanceCategories ? 'Mix équilibré' : 'Mix aléatoire';
+			}
 		} else if (selectedBoxNames.length === 1) {
 			// Une seule boîte
 			const boxName = selectedBoxNames[0];
@@ -852,7 +897,9 @@ const Quiz = () => {
 						<small style={{ color: 'var(--lumon-text-dim)' }}>Boîtes sélectionnées :</small>
 						<div style={{ color: 'var(--lumon-cyan)', fontSize: '0.85rem', marginTop: '2px' }}>
 							{selectedBoxNames === null
-								? `Toutes les boîtes (${boxes.length})`
+								? expandedMasterBox !== null
+									? `Sous-boîtes de "${expandedMasterBox}" (${displayedBoxes.length})`
+									: `Toutes les boîtes (${allVisibleBoxes.length})`
 								: selectedBoxNames.length === 1
 									? selectedBoxNames[0]
 									: `${selectedBoxNames.length} boîtes : ${selectedBoxNames.join(', ')}`
@@ -922,7 +969,7 @@ const Quiz = () => {
 					<button
 						className="terminal-btn terminal-btn-success"
 						onClick={handleStartQuiz}
-						disabled={boxes.length === 0 || (selectedBoxNames !== null && selectedBoxNames.length === 0)}
+						disabled={allVisibleBoxes.length === 0 || (selectedBoxNames !== null && selectedBoxNames.length === 0)}
 					>
 						Lancer le quiz
 					</button>
@@ -972,13 +1019,13 @@ const Quiz = () => {
 									</div>
 
 									{/* Panneau info boîte(s) sélectionnée(s) */}
-									{boxes.length > 0 && (() => {
-										const selected = selectedBoxNames === null ? boxes : boxes.filter(b => selectedBoxNames.includes(b.name));
-										if (selected.length === 0) return null;
+									{allVisibleBoxes.length > 0 && (() => {
+										const effectiveBoxNames: string[] = selectedBoxNames === null
+											? (expandedMasterBox !== null ? displayedBoxes.map(b => b.name) : allVisibleBoxes.map(b => b.name))
+											: selectedBoxNames;
+										if (effectiveBoxNames.length === 0) return null;
 										const allQuestions = questionsStore.questions;
-										const selectedQuestions = selectedBoxNames === null
-											? allQuestions
-											: allQuestions.filter(q => selectedBoxNames.includes(q.boxName));
+										const selectedQuestions = allQuestions.filter(q => effectiveBoxNames.includes(q.boxName));
 										const qcmCount = selectedQuestions.filter(q => q.questionType === QuestionType.QCM).length;
 										const freeCount = selectedQuestions.length - qcmCount;
 
@@ -986,28 +1033,30 @@ const Quiz = () => {
 										const catCounts: Partial<Record<TrivialCategory, number>> = {};
 										selectedQuestions.forEach(q => { catCounts[q.category as TrivialCategory] = (catCounts[q.category as TrivialCategory] || 0) + 1; });
 
-										const isSingle = selected.length === 1;
-										const singleBox = isSingle ? selected[0] : null;
+										const isSingle = effectiveBoxNames.length === 1;
+										const singleBox = isSingle ? questionsStore.getBoxByName(effectiveBoxNames[0]) : null;
 
 										return (
 											<div className="mt-3 p-3 terminal-panel" style={{ display: 'inline-block', maxWidth: '600px', textAlign: 'left' }}>
 												<p className="mb-1" style={{ color: 'var(--lumon-cyan)', fontFamily: "'Orbitron', sans-serif", fontSize: '0.8rem' }}>
-													{isSingle ? (
+													{isSingle && singleBox ? (
 														<>
 															<FontAwesomeIcon icon={['fas', 'box']} className="me-2" />
-															{singleBox!.ordered && <span style={{ marginRight: '4px' }}>↓</span>}
-															{singleBox!.name}
+															{singleBox.ordered && <span style={{ marginRight: '4px' }}>↓</span>}
+															{singleBox.name}
 														</>
 													) : (
 														<>
 															<FontAwesomeIcon icon={['fas', 'box-open']} className="me-2" />
-															{selectedBoxNames === null ? 'Toutes les boîtes' : `${selected.length} boîtes sélectionnées`}
+															{selectedBoxNames === null
+																? expandedMasterBox !== null ? `Toutes — ${expandedMasterBox}` : 'Toutes les boîtes'
+																: `${effectiveBoxNames.length} boîtes sélectionnées`}
 														</>
 													)}
 												</p>
-												{isSingle && singleBox!.description && (
+												{isSingle && singleBox?.description && (
 													<p className="mb-2" style={{ color: 'var(--lumon-text-dim)', fontSize: '0.75rem', fontStyle: 'italic' }}>
-														{singleBox!.description}
+														{singleBox.description}
 													</p>
 												)}
 												<div className="d-flex flex-wrap gap-1 mb-1" style={{ fontSize: '0.7rem' }}>
@@ -1049,10 +1098,12 @@ const Quiz = () => {
 										);
 									})()}
 
-									{boxes.length > 0 && (
+									{allVisibleBoxes.length > 0 && (
 										<div className="mt-4 p-3 terminal-panel" style={{ display: 'inline-block' }}>
 											<p className="mb-2" style={{ color: 'var(--lumon-text-dim)' }}>
-												<strong style={{ color: 'var(--lumon-cyan)' }}>Boîtes disponibles</strong>
+												<strong style={{ color: 'var(--lumon-cyan)' }}>
+													{expandedMasterBox !== null ? `Sous-boîtes — ${expandedMasterBox}` : 'Boîtes disponibles'}
+												</strong>
 												<span style={{ color: 'var(--lumon-text-muted)', fontSize: '0.75rem', marginLeft: '8px' }}>
 													— cliquez pour sélectionner
 												</span>
@@ -1062,32 +1113,40 @@ const Quiz = () => {
 												ref={mdrContainerRef}
 												onMouseLeave={() => setMdrHoveredIndex(null)}
 											>
-												{/* Card "Toutes les boîtes" */}
+												{/* Card 0 : ← Retour (si dans un master) ou ★ TOUTES */}
 												<div
 													ref={el => { mdrItemRefs.current[0] = el; }}
-													className={`mdr-data-point mdr-all-boxes ${getMdrClass(0)}`}
+													className={`mdr-data-point ${expandedMasterBox !== null ? '' : 'mdr-all-boxes'} ${getMdrClass(0)}`}
 													onMouseEnter={() => setMdrHoveredIndex(0)}
-													onClick={() => setSelectedBoxNames(prev => prev === null ? [] : null)}
+													onClick={() => {
+														if (expandedMasterBox !== null) handleBackFromMaster();
+														else setSelectedBoxNames(prev => prev === null ? [] : null);
+													}}
 												>
 													<span className="mdr-corner-tr" />
 													<span className="mdr-corner-bl" />
-													★ TOUTES
+													{expandedMasterBox !== null ? `← ${expandedMasterBox}` : '★ TOUTES'}
 												</div>
-												{/* Boîtes individuelles */}
-												{boxes.map((b, i) => (
-													<div
-														key={b.name}
-														ref={el => { mdrItemRefs.current[i + 1] = el; }}
-														className={`mdr-data-point ${getMdrClass(i + 1)}`}
-														onMouseEnter={() => setMdrHoveredIndex(i + 1)}
-														onClick={() => handleBoxClick(b.name)}
-													>
-														<span className="mdr-corner-tr" />
-														<span className="mdr-corner-bl" />
-														{b.ordered && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.7 }}>↓</span>}
-														{b.name}
-													</div>
-												))}
+												{/* Boîtes affichées (top-level ou sous-boîtes du master ouvert) */}
+												{displayedBoxes.map((b, i) => {
+													const isMaster = expandedMasterBox === null && masterSubBoxMap.has(b.name);
+													return (
+														<div
+															key={b.name}
+															ref={el => { mdrItemRefs.current[i + 1] = el; }}
+															className={`mdr-data-point ${isMaster ? 'mdr-master-box' : ''} ${getMdrClass(i + 1)}`}
+															onMouseEnter={() => setMdrHoveredIndex(i + 1)}
+															onClick={() => { if (isMaster) handleMasterBoxClick(b.name); else handleBoxClick(b.name); }}
+															title={isMaster ? `Ouvrir les sous-boîtes de "${b.name}"` : (b.description || undefined)}
+														>
+															<span className="mdr-corner-tr" />
+															<span className="mdr-corner-bl" />
+															{b.ordered && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.7 }}>↓</span>}
+															{isMaster && <span style={{ fontSize: '0.6rem', marginRight: '3px', opacity: 0.85 }}>▶</span>}
+															{b.name}
+														</div>
+													);
+												})}
 											</div>
 										</div>
 									)}

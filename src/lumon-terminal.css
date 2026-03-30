@@ -1276,6 +1276,35 @@
   letter-spacing: 0.15em;
 }
 
+/* Boîte Master (contient des sous-boîtes) */
+.mdr-data-point.mdr-master-box {
+  border-color: rgba(180, 120, 255, 0.5);
+  color: rgba(200, 160, 255, 0.9);
+}
+.mdr-data-point.mdr-master-box.mdr-focused {
+  border-color: rgba(200, 150, 255, 0.9);
+  color: rgb(220, 180, 255);
+  box-shadow: 0 0 10px rgba(180, 120, 255, 0.3), 0 0 20px rgba(180, 120, 255, 0.12);
+}
+.mdr-data-point.mdr-master-box.mdr-selected {
+  border-color: rgba(200, 150, 255, 0.85);
+  color: rgb(220, 180, 255);
+  text-shadow: 0 0 8px rgba(200, 150, 255, 0.5);
+}
+
+/* Bouton ← Retour (quand on est dans un master) */
+.mdr-data-point.mdr-back-box {
+  border-color: rgba(255, 180, 80, 0.5);
+  color: rgba(255, 200, 100, 0.85);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+.mdr-data-point.mdr-back-box.mdr-focused {
+  border-color: rgba(255, 200, 100, 0.9);
+  color: rgb(255, 215, 120);
+  box-shadow: 0 0 10px rgba(255, 180, 80, 0.3), 0 0 20px rgba(255, 180, 80, 0.12);
+}
+
 /* ── Animated border pulse on focused box ── */
 @keyframes mdr-border-pulse {
   0%, 100% {

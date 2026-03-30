@@ -184,6 +184,11 @@ export const usePlayerStore = create<Players & Actions>()(
           // Bonus First
           if (answer.isFirst) {
               player.stats.firsts++;
+              scoreToAdd += 2;
+          }
+
+          // Bonus Seul : +1 si personne d'autre n'a répondu correctement
+          if (answers.length === 1) {
               scoreToAdd += 1;
           }
 
@@ -193,7 +198,7 @@ export const usePlayerStore = create<Players & Actions>()(
               player.stats.combos++;
               player.stats.maxCombo = Math.max(player.stats.maxCombo || 0, player.currentStreak);
 
-              const maxBonus = 5; // Le plafond demandé
+              const maxBonus = 2;
               const rawBonus = player.currentStreak - 1;
 
               // On prend le plus petit des deux (le calcul ou le plafond)

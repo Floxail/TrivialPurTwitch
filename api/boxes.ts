@@ -31,8 +31,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by_id TEXT').catch(() => {});
       await getDb().execute('ALTER TABLE boxes ADD COLUMN description TEXT').catch(() => {});
       await getDb().execute('ALTER TABLE boxes ADD COLUMN hidden INTEGER DEFAULT 0').catch(() => {});
+      await getDb().execute('ALTER TABLE boxes ADD COLUMN parent_box TEXT').catch(() => {});
 
-      const result = await getDb().execute('SELECT name, card_numbers, ordered, created_by, description, hidden FROM boxes ORDER BY name');
+      const result = await getDb().execute('SELECT name, card_numbers, ordered, created_by, description, hidden, parent_box FROM boxes ORDER BY name');
 
       const boxes = result.rows.map((row) => ({
         name: row.name,
@@ -41,6 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         createdBy: row.created_by || null,
         description: row.description || null,
         hidden: row.hidden === 1,
+        parentBox: row.parent_box || null,
       }));
 
       return res.status(200).json({ boxes });
@@ -53,15 +55,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(401).json({ error: 'Unauthorized — connexion Twitch requise' });
       }
 
-      const { name, ordered, description } = req.body;
+      const { name, ordered, description, parentBox } = req.body;
 
       if (!name || typeof name !== 'string' || name.trim().length === 0) {
         return res.status(400).json({ error: 'Le nom de la boîte est requis' });
       }
 
       await getDb().execute({
-        sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers, ordered, created_by, created_by_id, description) VALUES (?, ?, ?, ?, ?, ?)',
-        args: [name.trim(), '[]', ordered ? 1 : 0, user.login, user.userId, description || null],
+        sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers, ordered, created_by, created_by_id, description, parent_box) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        args: [name.trim(), '[]', ordered ? 1 : 0, user.login, user.userId, description || null, parentBox || null],
       });
 
       return res.status(201).json({ success: true, name: name.trim() });
@@ -99,6 +101,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (req.body.created_by !== undefined) {
         setClauses.push('created_by = ?');
         args.push(req.body.created_by || null);
+      }
+      if (req.body.parentBox !== undefined) {
+        setClauses.push('parent_box = ?');
+        args.push(req.body.parentBox || null);
       }
 
       if (setClauses.length === 0) {
