@@ -642,10 +642,10 @@ const Quiz = () => {
 
 			if (isCorrect) {
 				initPlayer(nick, tid);
-				const isFirst = currentAnswerersRef.current.length === 0;
-				// Bonus "clean" : bonne réponse du premier coup en mode libre (pas de mauvaise tentative)
-				
-				const newAnswerer = { nick, isFirst, answeredAt: Date.now() };
+				const now = Date.now();
+				const firstAnsweredAt = currentAnswerersRef.current.length > 0 ? currentAnswerersRef.current[0].answeredAt : null;
+				const isFirst = firstAnsweredAt === null || (now - firstAnsweredAt) <= 700;
+				const newAnswerer = { nick, isFirst, answeredAt: now };
 				currentAnswerersRef.current = [...currentAnswerersRef.current, newAnswerer];
 			}
 		}

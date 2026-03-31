@@ -193,12 +193,12 @@ export const usePlayerStore = create<Players & Actions>()(
           }
 
 
-          // --- BONUS COMBO PLAFONNÉ À +5 ---
+          // --- BONUS COMBO PLAFONNÉ À +3 ---
           if (player.currentStreak > 1) {
               player.stats.combos++;
               player.stats.maxCombo = Math.max(player.stats.maxCombo || 0, player.currentStreak);
 
-              const maxBonus = 2;
+              const maxBonus = 3;
               const rawBonus = player.currentStreak - 1;
 
               // On prend le plus petit des deux (le calcul ou le plafond)
