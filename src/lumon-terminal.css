@@ -1454,3 +1454,18 @@ a:hover {
     opacity: 0.85;
   }
 }
+
+/* --- FORCER LES BOÎTES NON SÉLECTIONNÉES EN GRIS CLAIR LISIBLE --- */
+.mdr-data-point-container .mdr-unselected,
+.mdr-data-point-container .mdr-dimmed {
+    color: #cfd8dc !important; /* Texte gris clair très lisible */
+    border: 1px solid #546e7a !important; /* Bordure grise classique */
+    background-color: rgba(255, 255, 255, 0.05) !important; /* Fond neutre, sans couleur cyberpunk */
+    opacity: 0.8 !important; /* Assez opaque pour être bien lu */
+    box-shadow: none !important; /* Pas de lueur */
+}
+
+/* On s'assure que même les sous-boîtes perdent leur teinte colorée si non sélectionnées */
+.mdr-data-point-container .mdr-sub-box.mdr-unselected {
+    border-left: 2px solid #546e7a !important;
+}

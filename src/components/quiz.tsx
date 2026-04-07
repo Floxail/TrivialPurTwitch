@@ -63,34 +63,46 @@ const Quiz = () => {
 	// Boîtes de niveau racine (sans parent)
 	const topLevelBoxes = useMemo(() => allVisibleBoxes.filter(b => !b.parentBox), [allVisibleBoxes]);
 
-	// Palette de couleurs cyberpunk pour les master boxes
-	const BOX_THEME_PALETTE = useMemo(() => [
-		{ color: '#00e5ff', rgb: '0,229,255' },    // Cyan
-		{ color: '#ffb000', rgb: '255,176,0' },     // Amber
-		{ color: '#00ff66', rgb: '0,255,102' },      // Emerald
-		{ color: '#b366ff', rgb: '179,102,255' },    // Violet
-		{ color: '#ff3366', rgb: '255,51,102' },     // Rose
-		{ color: '#33ccff', rgb: '51,204,255' },     // Sky Blue
-		{ color: '#ff9933', rgb: '255,153,51' },     // Orange
-		{ color: '#66ff99', rgb: '102,255,153' },    // Mint
+	// Nouvelle palette restreinte (variations de Bleu, Violet, Rose) pour les Master Boxes
+	const MASTER_THEME_PALETTE = useMemo(() => [
+		{ color: '#b366ff', rgb: '179,102,255' },    // Violet Lumon
+		{ color: '#ff3366', rgb: '255,51,102' },     // Rose Néon
+		{ color: '#33ccff', rgb: '51,204,255' },     // Bleu Ciel
+		{ color: '#9d4edd', rgb: '157,78,221' },     // Deep Purple
 		{ color: '#ff66b2', rgb: '255,102,178' },    // Pink
-		{ color: '#ccff33', rgb: '204,255,51' },     // Lime
+		{ color: '#4cc9f0', rgb: '76,201,240' },     // Bright Blue
+		{ color: '#7209b7', rgb: '114,9,183' },      // Indigo profond
 	], []);
 
-	// Map : nom de boîte → couleur du thème (master = couleur directe, sub = hérite du parent)
+	// Couleur standard pour les boîtes indépendantes (Le vrai Cyan Lumon du site)
+	const DEFAULT_LUMON_THEME = { color: '#00e5ff', rgb: '0,229,255' };
+
+	// Map : nom de boîte → couleur du thème
 	const boxThemeMap = useMemo(() => {
 		const map = new Map<string, { color: string; rgb: string }>();
-		topLevelBoxes.forEach((b, idx) => {
-			const theme = BOX_THEME_PALETTE[idx % BOX_THEME_PALETTE.length];
-			map.set(b.name, theme);
-			// Les sous-boîtes héritent de la couleur du master
-			const subs = masterSubBoxMap.get(b.name);
-			if (subs) {
-				subs.forEach(sub => map.set(sub.name, theme));
+		let masterIndex = 0; // On crée un compteur spécifique aux Master Boxes
+
+		topLevelBoxes.forEach((b) => {
+			const isMaster = masterSubBoxMap.has(b.name);
+
+			if (isMaster) {
+				// C'est une Master Box : on lui assigne une couleur de la palette et on incrémente
+				const theme = MASTER_THEME_PALETTE[masterIndex % MASTER_THEME_PALETTE.length];
+				map.set(b.name, theme);
+				
+				// Ses sous-boîtes héritent de la même couleur
+				const subs = masterSubBoxMap.get(b.name);
+				if (subs) {
+					subs.forEach(sub => map.set(sub.name, theme));
+				}
+				masterIndex++;
+			} else {
+				// C'est une boîte classique sans sous-boîtes : Bleu Lumon par défaut !
+				map.set(b.name, DEFAULT_LUMON_THEME);
 			}
 		});
 		return map;
-	}, [topLevelBoxes, masterSubBoxMap, BOX_THEME_PALETTE]);
+	}, [topLevelBoxes, masterSubBoxMap, MASTER_THEME_PALETTE]);
 
 	// Boîtes affichées dans la grille MDR : top-level avec sous-boîtes insérées après chaque master déplié
 	const displayedBoxes = useMemo(() => {
@@ -977,8 +989,6 @@ const Quiz = () => {
 													onMouseEnter={() => setMdrHoveredIndex(0)}
 													onClick={() => setSelectedBoxNames(prev => prev === null ? [] : null)}
 												>
-													<span className="mdr-corner-tr" />
-													<span className="mdr-corner-bl" />
 													★ TOUTES
 												</div>
 												{/* Boîtes avec sous-boîtes inline */}
@@ -1005,8 +1015,6 @@ const Quiz = () => {
 															title={isMaster ? `${isExpanded ? 'Réduire' : 'Déplier'} "${b.name}"` : (b.description || undefined)}
 															style={boxStyle}
 														>
-															<span className="mdr-corner-tr" />
-															<span className="mdr-corner-bl" />
 															{b.ordered && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.7 }}>↓</span>}
 															{isMaster && <span style={{ fontSize: '0.6rem', marginRight: '3px', opacity: 0.85 }}>{isExpanded ? '▼' : '▶'}</span>}
 															{isSubBox && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.6 }}>└</span>}

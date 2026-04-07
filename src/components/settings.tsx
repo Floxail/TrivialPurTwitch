@@ -60,9 +60,32 @@ const Settings = () => {
           <Form.Range onChange={(e) => setAcceptanceDelay(e.target.valueAsNumber)} value={acceptanceDelay} style={{ width: '100%' }} min={0} max={20} />
           <Form.Label style={{ width: '100%', textAlign: 'center', marginTop: '-10px' }}><i>{acceptanceDelay} seconde{acceptanceDelay > 1 ? 's' : ''}</i></Form.Label>
         </Form.Group>
+
+        {/* SLIDER DE CLÉMENCE CORRIGÉ */}
+        <Form.Group className="mb-3" controlId="formGroupGracePeriod">
+          <Form.Label>
+            Délai de clémence (FIRST)
+            <span style={{ fontSize: '0.8rem', color: 'var(--lumon-text-dim)', display: 'block', fontWeight: 'normal' }}>
+              Temps supplémentaire accordé pour partager la place de 1er
+            </span>
+          </Form.Label>
+          <Form.Range 
+            onChange={(e) => setGracePeriodMs(e.target.valueAsNumber)} 
+            value={gracePeriodMs} 
+            style={{ width: '100%' }} 
+            min={100} 
+            max={2000} 
+            step={100} 
+          />
+          <Form.Label style={{ width: '100%', textAlign: 'center', marginTop: '-10px' }}>
+            <i>{(gracePeriodMs / 1000).toFixed(1).replace('.', ',')} seconde{gracePeriodMs >= 2000 ? 's' : ''}</i>
+          </Form.Label>
+        </Form.Group>
+
         <Form.Group className="mb-3" controlId="formPreviewGuessNumber">
           <Form.Check disabled={acceptanceDelay === 0} type="checkbox" checked={previewGuessNumber && acceptanceDelay > 0} label="Prévisualiser le nombre de tentatives pendant le délai d'acceptation" onChange={(e) => { setPreviewGuessNumber(e.target.checked); }} />
         </Form.Group>
+        
         <Form.Group className="mb-3" controlId="formGroupAddEveryUser">
           <Form.Check type="checkbox" checked={addEveryUser} label=" Ajouter tous les spectateurs qui s'expriment dans le classement (peut avoir un impact sur les performances avec un public très large)" onChange={(e) => { setAddEveryUser(e.target.checked); }} />
         </Form.Group>
@@ -139,29 +162,6 @@ const Settings = () => {
             </div>
             <Form.Text className="text-muted">
               Nombre de questions par défaut lors du lancement d'un quiz (entre 1 et 100)
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group className="mb-0">
-            <div className="d-flex align-items-center mb-2">
-              <FontAwesomeIcon icon={['fas', 'clock']} className="me-2" size="lg" color="#FF9800" />
-              <Form.Label className="mb-0">
-                <strong>Clémence des FIRST (Grace Period)</strong>
-              </Form.Label>
-            </div>
-            <Form.Range
-              onChange={(e) => setGracePeriodMs(e.target.valueAsNumber)}
-              value={gracePeriodMs}
-              style={{ width: '100%' }}
-              min={100}
-              max={2000}
-              step={100}
-            />
-            <Form.Label style={{ width: '100%', textAlign: 'center', marginTop: '-10px' }}>
-              <i>{gracePeriodMs} ms</i>
-            </Form.Label>
-            <Form.Text className="text-muted">
-              Fenêtre de temps après la première bonne réponse pendant laquelle les réponses suivantes comptent aussi comme "FIRST" (100ms à 2000ms)
             </Form.Text>
           </Form.Group>
         </div>
