@@ -22,7 +22,7 @@ export type PendingQuestion = {
   question: string;
   answer: string;
   alternativeAnswers?: string[];
-  category: number;
+  category?: number;
   boxName?: string;
   questionType: string;
   qcmOptions?: string[];

@@ -8,7 +8,7 @@ import {
   apiRejectQuestion,
   PendingQuestion,
 } from 'services/api-admin-service';
-import { categoryNames, Question, TrivialCategory, useQuestionsStore } from './store/questions-store';
+import { Question, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
 import {
   apiGetReports,
@@ -44,7 +44,6 @@ const AdminDashboard = () => {
     question: '',
     answer: '',
     alternativeAnswers: '',
-    category: 0 as TrivialCategory,
     boxName: '',
     questionType: 'free_text' as string,
     qcmOptions: ['', ''] as string[],
@@ -169,7 +168,6 @@ const AdminDashboard = () => {
       question: q.question,
       answer: q.answer,
       alternativeAnswers: q.alternativeAnswers?.join(', ') || '',
-      category: q.category as TrivialCategory,
       boxName: q.boxName || '',
       questionType: q.questionType || 'free_text',
       qcmOptions: q.qcmOptions && q.qcmOptions.length >= 2 ? [...q.qcmOptions] : ['', ''],
@@ -189,7 +187,6 @@ const AdminDashboard = () => {
         question: editForm.question,
         answer: editForm.answer,
         alternativeAnswers: altArr.length > 0 ? altArr : undefined,
-        category: editForm.category,
         boxName: editForm.boxName || undefined,
         questionType: editForm.questionType,
       };
@@ -235,7 +232,6 @@ const AdminDashboard = () => {
       question: question.question,
       answer: question.answer,
       alternativeAnswers: question.alternativeAnswers?.join(', ') || '',
-      category: question.category as TrivialCategory,
       boxName: question.boxName || '',
       questionType: question.questionType || 'free_text',
       qcmOptions: question.qcmOptions && question.qcmOptions.length >= 2 ? [...question.qcmOptions] : ['', ''],
@@ -248,7 +244,6 @@ const AdminDashboard = () => {
       question: question.question,
       answer: question.answer,
       alternativeAnswers: question.alternativeAnswers,
-      category: question.category,
       boxName: question.boxName,
       questionType: question.questionType || 'free_text',
       qcmOptions: question.qcmOptions,
@@ -814,19 +809,6 @@ const AdminDashboard = () => {
                 })}
               </div>
             )}
-
-            {/* Catégorie */}
-            <Form.Group className="mb-3">
-              <Form.Label>Catégorie</Form.Label>
-              <Form.Select
-                value={editForm.category}
-                onChange={(e) => setEditForm(f => ({ ...f, category: parseInt(e.target.value) as TrivialCategory }))}
-              >
-                {Object.entries(categoryNames).map(([key, name]) => (
-                  <option key={key} value={key}>{name}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
 
             {/* Boîte */}
             <Form.Group className="mb-3">

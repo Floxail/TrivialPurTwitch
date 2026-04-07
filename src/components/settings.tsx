@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Alert } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,16 +14,13 @@ const Settings = () => {
   const settingsStore = useSettingsStore();
   const globalStore = useGlobalStore();
   const questionsStore = useQuestionsStore();
-  const backupFileInputRef = useRef<HTMLInputElement>(null);
-
   const [chatNotifications, setChatNotifications] = useState<boolean>(settingsStore.chatNotifications);
   const [addEveryUser, setAddEveryUser] = useState<boolean>(settingsStore.addEveryUser);
   const [acceptanceDelay, setAcceptanceDelay] = useState<number>(settingsStore.acceptanceDelay);
   const [questionTimeLimit, setQuestionTimeLimit] = useState<number>(settingsStore.questionTimeLimit);
   const [scoreCommandMode, setScoreCommandMode] = useState<any>(settingsStore.scoreCommandMode);
   const [previewGuessNumber, setPreviewGuessNumber] = useState<boolean>(settingsStore.previewGuessNumber);
-  const [backupMessage, setBackupMessage] = useState<string>('');
-  const [backupError, setBackupError] = useState<string>('');
+  const [gracePeriodMs, setGracePeriodMs] = useState<number>(settingsStore.gracePeriodMs);
 
   useEffect(() => {
     globalStore.setSubtitle('Settings');
@@ -41,76 +38,9 @@ const Settings = () => {
       acceptanceDelay: acceptanceDelay,
       questionTimeLimit: questionTimeLimit,
       scoreCommandMode: scoreCommandMode,
+      gracePeriodMs: gracePeriodMs,
     });
     navigate('/quiz');
-  };
-
-  // Export backup complet
-  const handleExportFullBackup = () => {
-    const backupData = questionsStore.exportFullBackup();
-
-    const dataStr = JSON.stringify(backupData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `trivialpurtwitch-backup-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    setBackupMessage('✅ Backup complet exporté !');
-    setTimeout(() => setBackupMessage(''), 3000);
-  };
-
-  // Import backup complet
-  const handleImportFullBackup = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const content = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target?.result as string);
-        reader.onerror = reject;
-        reader.readAsText(file);
-      });
-
-      const backupData = JSON.parse(content);
-
-      const message = `⚠️ ATTENTION : Cette opération va remplacer TOUTES vos données actuelles :\n\n` +
-                      `- Questions (${questionsStore.questions.length} actuelles → ${backupData.quiz?.questions?.length || 0} dans le backup)\n` +
-                      `- Boîtes (${questionsStore.boxes.length} actuelles)\n` +
-                      `- Scores des joueurs\n` +
-                      `- Paramètres\n\n` +
-                      `Voulez-vous continuer ?`;
-
-      if (!window.confirm(message)) {
-        return;
-      }
-
-      const success = await questionsStore.importFullBackup(backupData);
-
-      if (success) {
-        setBackupMessage('✅ Backup complet restauré ! Rechargement recommandé.');
-        setTimeout(() => {
-          if (window.confirm('Voulez-vous recharger la page pour appliquer tous les changements ?')) {
-            window.location.reload();
-          }
-        }, 1000);
-      } else {
-        setBackupError('❌ Erreur lors de la restauration du backup');
-        setTimeout(() => setBackupError(''), 5000);
-      }
-    } catch (error) {
-      setBackupError('❌ Fichier de backup invalide');
-      setTimeout(() => setBackupError(''), 5000);
-    }
-
-    // Reset input
-    event.target.value = '';
   };
 
   return (
@@ -121,7 +51,7 @@ const Settings = () => {
 
         <Form.Group className="mb-3" controlId="formGroupQuestionTime">
           <Form.Label>Temps de réponse par question</Form.Label>
-          <Form.Range onChange={(e) => setQuestionTimeLimit(e.target.valueAsNumber)} value={questionTimeLimit} style={{ width: '100%' }} min={15} max={60} />
+          <Form.Range onChange={(e) => setQuestionTimeLimit(e.target.valueAsNumber)} value={questionTimeLimit} style={{ width: '100%' }} min={10} max={60} />
           <Form.Label style={{ width: '100%', textAlign: 'center', marginTop: '-10px' }}><i>{questionTimeLimit} seconde{questionTimeLimit > 1 ? 's' : ''}</i></Form.Label>
         </Form.Group>
 
@@ -211,6 +141,29 @@ const Settings = () => {
               Nombre de questions par défaut lors du lancement d'un quiz (entre 1 et 100)
             </Form.Text>
           </Form.Group>
+
+          <Form.Group className="mb-0">
+            <div className="d-flex align-items-center mb-2">
+              <FontAwesomeIcon icon={['fas', 'clock']} className="me-2" size="lg" color="#FF9800" />
+              <Form.Label className="mb-0">
+                <strong>Clémence des FIRST (Grace Period)</strong>
+              </Form.Label>
+            </div>
+            <Form.Range
+              onChange={(e) => setGracePeriodMs(e.target.valueAsNumber)}
+              value={gracePeriodMs}
+              style={{ width: '100%' }}
+              min={100}
+              max={2000}
+              step={100}
+            />
+            <Form.Label style={{ width: '100%', textAlign: 'center', marginTop: '-10px' }}>
+              <i>{gracePeriodMs} ms</i>
+            </Form.Label>
+            <Form.Text className="text-muted">
+              Fenêtre de temps après la première bonne réponse pendant laquelle les réponses suivantes comptent aussi comme "FIRST" (100ms à 2000ms)
+            </Form.Text>
+          </Form.Group>
         </div>
 
         <Button style={{ width: '80px' }} size="sm" className="mr-2" variant="primary" type="submit">
@@ -220,49 +173,6 @@ const Settings = () => {
           <b>Cancel</b>
         </Button>
       </Form>
-
-      <br />
-      <h3>
-        <FontAwesomeIcon icon={['fas', 'database']} className="me-2" />
-        Backup complet
-      </h3>
-
-      <div className="card p-3 mb-3">
-        <p className="mb-2">
-          <strong>Sauvegardez toutes vos données</strong> (questions, boîtes, scores, paramètres) ou restaurez une sauvegarde complète.
-        </p>
-
-        {backupMessage && (
-          <Alert variant="success" className="mb-2">
-            {backupMessage}
-          </Alert>
-        )}
-
-        {backupError && (
-          <Alert variant="danger" className="mb-2">
-            {backupError}
-          </Alert>
-        )}
-
-        <div className="d-flex gap-2">
-          <Button variant="primary" onClick={handleExportFullBackup}>
-            <FontAwesomeIcon icon={['fas', 'download']} className="me-2" />
-            Exporter le backup complet
-          </Button>
-          <Button variant="warning" onClick={() => backupFileInputRef.current?.click()}>
-            <FontAwesomeIcon icon={['fas', 'upload']} className="me-2" />
-            Importer un backup complet
-          </Button>
-        </div>
-
-        <input
-          ref={backupFileInputRef}
-          type="file"
-          accept=".json"
-          style={{ display: 'none' }}
-          onChange={handleImportFullBackup}
-        />
-      </div>
     </div>
   );
 };

@@ -7,8 +7,6 @@ import {
   useQuestionsStore,
   Question,
   QuestionType,
-  TrivialCategory,
-  categoryNames,
 } from './store/questions-store';
 import { apiSubmitQuestion, SubmitQuestionPayload } from 'services/api-submit-service';
 import { apiCreateQuestion } from 'services/api-service';
@@ -114,7 +112,6 @@ const ContributionPage: React.FC = () => {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [alternativeAnswers, setAlternativeAnswers] = useState('');
-  const [category, setCategory] = useState<TrivialCategory>(TrivialCategory.Geography);
   const [boxName, setBoxName] = useState('');
   const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.FREE_TEXT);
   const [qcmOptions, setQcmOptions] = useState<string[]>(['', '']);
@@ -124,8 +121,6 @@ const ContributionPage: React.FC = () => {
   // Bulk
   const [bulkText, setBulkText] = useState('');
   const [bulkBox, setBulkBox] = useState('');
-  const [bulkRandomCat, setBulkRandomCat] = useState(true);
-  const [bulkCategory, setBulkCategory] = useState<TrivialCategory>(TrivialCategory.Geography);
   const [bulkPreview, setBulkPreview] = useState<{ questions: ParsedBulkQuestion[]; errors: string[] } | null>(null);
   const [bulkSubmitting, setBulkSubmitting] = useState(false);
 
@@ -154,7 +149,6 @@ const ContributionPage: React.FC = () => {
     setQuestion('');
     setAnswer('');
     setAlternativeAnswers('');
-    setCategory(TrivialCategory.Geography);
     setQuestionType(QuestionType.FREE_TEXT);
     setQcmOptions(['', '']);
     setQcmCorrectIndexes([0]);
@@ -205,7 +199,6 @@ const ContributionPage: React.FC = () => {
         const payload: SubmitQuestionPayload = {
           question: question.trim(),
           answer: answer.trim(),
-          category,
           boxName: boxName || undefined,
           questionType,
         };
@@ -241,7 +234,6 @@ const ContributionPage: React.FC = () => {
           question: question.trim(),
           answer: answer.trim(),
           alternativeAnswers: alternativeAnswers ? alternativeAnswers.split(',').map(s => s.trim()).filter(Boolean) : undefined,
-          category,
           boxName,
           questionType,
           difficulty: 'medium',
@@ -279,27 +271,12 @@ const ContributionPage: React.FC = () => {
 
     try {
       let count = 0;
-      // Ordre fixe : Bleu, Rose, Jaune, Marron, Vert, Orange
-      const categoryOrder = [
-        TrivialCategory.Geography,
-        TrivialCategory.Entertainment,
-        TrivialCategory.History,
-        TrivialCategory.Arts,
-        TrivialCategory.Science,
-        TrivialCategory.Sports,
-      ];
-      let catIndex = 0;
 
       for (const q of result.questions) {
-        const cat = bulkRandomCat
-          ? categoryOrder[catIndex++ % categoryOrder.length]
-          : bulkCategory;
-
         if (mode === 'public') {
           const payload: SubmitQuestionPayload = {
             question: q.question,
             answer: q.answer,
-            category: cat,
             boxName: bulkBox || undefined,
             questionType: q.isQcm ? 'qcm' : 'free_text',
           };
@@ -332,7 +309,6 @@ const ContributionPage: React.FC = () => {
             question: q.question,
             answer: q.answer,
             alternativeAnswers: q.alternativeAnswers.length > 0 ? q.alternativeAnswers : undefined,
-            category: cat,
             boxName: bulkBox,
             questionType: q.isQcm ? QuestionType.QCM : QuestionType.FREE_TEXT,
             difficulty: 'medium',
@@ -540,18 +516,6 @@ const ContributionPage: React.FC = () => {
             </div>
           </Form.Group>
 
-          {/* Catégorie */}
-          <Form.Group className="mb-3">
-            <Form.Label>Catégorie *</Form.Label>
-            <Form.Select
-              value={category}
-              onChange={(e) => setCategory(parseInt(e.target.value) as TrivialCategory)}
-            >
-              {Object.entries(categoryNames).map(([key, name]) => (
-                <option key={key} value={key}>{name}</option>
-              ))}
-            </Form.Select>
-          </Form.Group>
 
           {/* Question */}
           <Form.Group className="mb-3">
@@ -713,27 +677,6 @@ const ContributionPage: React.FC = () => {
             </Form.Select>
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Check
-              type="switch"
-              id="bulkRandomCat"
-              label="Catégories aléatoires"
-              checked={bulkRandomCat}
-              onChange={(e) => setBulkRandomCat(e.target.checked)}
-            />
-            {!bulkRandomCat && (
-              <Form.Select
-                size="sm"
-                className="mt-2"
-                value={bulkCategory}
-                onChange={(e) => setBulkCategory(parseInt(e.target.value) as TrivialCategory)}
-              >
-                {Object.entries(categoryNames).map(([key, name]) => (
-                  <option key={key} value={key}>{name}</option>
-                ))}
-              </Form.Select>
-            )}
-          </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Questions (format Q:/R:/ALT: ou QCM A:/B:/.../F:)</Form.Label>

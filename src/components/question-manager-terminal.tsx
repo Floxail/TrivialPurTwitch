@@ -42,41 +42,13 @@ import {
 } from './terminal-ui';
 
 import {
-  categoryNames,
   Question,
-  TrivialCategory,
+  QuestionType,
   useQuestionsStore,
 } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
 import { useAuthStore } from './store/auth-store';
 
-// ═══════════════════════════════════════════════════════════════════════════
-// CATEGORY STYLING UTILITIES
-// ═══════════════════════════════════════════════════════════════════════════
-
-const getCategoryClass = (category: TrivialCategory): string => {
-  const classes: Record<TrivialCategory, string> = {
-    [TrivialCategory.Geography]: 'category-geography',
-    [TrivialCategory.Entertainment]: 'category-entertainment',
-    [TrivialCategory.History]: 'category-history',
-    [TrivialCategory.Arts]: 'category-arts',
-    [TrivialCategory.Science]: 'category-science',
-    [TrivialCategory.Sports]: 'category-sports',
-  };
-  return classes[category] || '';
-};
-
-const getCategoryBgClass = (category: TrivialCategory): string => {
-  const classes: Record<TrivialCategory, string> = {
-    [TrivialCategory.Geography]: 'category-bg-geography',
-    [TrivialCategory.Entertainment]: 'category-bg-entertainment',
-    [TrivialCategory.History]: 'category-bg-history',
-    [TrivialCategory.Arts]: 'category-bg-arts',
-    [TrivialCategory.Science]: 'category-bg-science',
-    [TrivialCategory.Sports]: 'category-bg-sports',
-  };
-  return classes[category] || '';
-};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DECORATIVE COMPONENTS
@@ -177,7 +149,7 @@ const QuestionManagerTerminal = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [selectedBox, setSelectedBox] = useState<string>('');
-  const [filterCategory, setFilterCategory] = useState<TrivialCategory | 'all'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'free_text' | 'qcm'>('all');
   const [importSuccess, setImportSuccess] = useState<string>('');
   const [importError, setImportError] = useState<string>('');
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
@@ -188,7 +160,6 @@ const QuestionManagerTerminal = () => {
     question: '',
     answer: '',
     alternativeAnswers: '',
-    category: TrivialCategory.Geography,
     boxName: '',
     cardNumber: undefined as number | undefined,
     difficulty: 'medium' as 'easy' | 'medium' | 'hard',
@@ -326,12 +297,12 @@ const QuestionManagerTerminal = () => {
       result = result.filter((q) => q.boxName === selectedBox);
     }
 
-    if (filterCategory !== 'all') {
-      result = result.filter((q) => q.category === filterCategory);
+    if (filterType !== 'all') {
+      result = result.filter((q) => (q.questionType || QuestionType.FREE_TEXT) === filterType);
     }
 
     return result;
-  }, [selectedBox, filterCategory, questionsStore.questions]);
+  }, [selectedBox, filterType, questionsStore.questions]);
 
   // ═════════════════════════════════════════════════════════════════════════
   // EXPORT / IMPORT
@@ -467,7 +438,6 @@ const QuestionManagerTerminal = () => {
         question: question.question,
         answer: question.answer,
         alternativeAnswers: question.alternativeAnswers?.join(', ') || '',
-        category: question.category,
         boxName: question.boxName,
         cardNumber: question.cardNumber,
         difficulty: question.difficulty || 'medium',
@@ -478,7 +448,6 @@ const QuestionManagerTerminal = () => {
         question: '',
         answer: '',
         alternativeAnswers: '',
-        category: TrivialCategory.Geography,
         boxName: selectedBox || questionsStore.getBoxes()[0]?.name || '',
         cardNumber: undefined,
         difficulty: 'medium',
@@ -505,7 +474,6 @@ const QuestionManagerTerminal = () => {
         question: formData.question,
         answer: formData.answer,
         alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
-        category: formData.category,
         boxName: formData.boxName,
         cardNumber: formData.cardNumber,
         difficulty: formData.difficulty,
@@ -516,7 +484,6 @@ const QuestionManagerTerminal = () => {
         question: formData.question,
         answer: formData.answer,
         alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
-        category: formData.category,
         boxName: formData.boxName,
         cardNumber: formData.cardNumber,
         difficulty: formData.difficulty,
@@ -570,24 +537,6 @@ const QuestionManagerTerminal = () => {
     }
   };
 
-  const getCategoryCountsForCard = (
-    questions: Question[]
-  ): Record<TrivialCategory, number> => {
-    const counts: Record<TrivialCategory, number> = {
-      [TrivialCategory.Geography]: 0,
-      [TrivialCategory.Entertainment]: 0,
-      [TrivialCategory.History]: 0,
-      [TrivialCategory.Arts]: 0,
-      [TrivialCategory.Science]: 0,
-      [TrivialCategory.Sports]: 0,
-    };
-
-    questions.forEach((q) => {
-      counts[q.category]++;
-    });
-
-    return counts;
-  };
 
   // ═════════════════════════════════════════════════════════════════════════
   // BULK ACTIONS
@@ -642,10 +591,10 @@ const QuestionManagerTerminal = () => {
     label: `${box.name} (${box.totalQuestions})`,
   }));
 
-  const categoryOptions = Object.entries(categoryNames).map(([key, name]) => ({
-    value: parseInt(key),
-    label: name,
-  }));
+  const typeOptions = [
+    { value: 'free_text', label: 'LIBRE' },
+    { value: 'qcm', label: 'QCM' },
+  ];
 
   const difficultyOptions = [
     { value: 'easy', label: 'EASY' },
@@ -853,10 +802,6 @@ const QuestionManagerTerminal = () => {
                           box.name,
                           cardNum
                         );
-                        const categoryCounts = getCategoryCountsForCard(cardQuestions);
-                        const isComplete = Object.values(categoryCounts).every(
-                          (c) => c === 1
-                        );
                         const isExpanded =
                           expandedCard === `${box.name}-${cardNum}`;
 
@@ -865,7 +810,7 @@ const QuestionManagerTerminal = () => {
                             key={cardNum}
                             className={`
                               p-2 border cursor-pointer transition-all
-                              ${isComplete ? 'border-lumon-success/50' : 'border-lumon-amber-dim'}
+                              border-lumon-amber-dim
                               ${isExpanded ? 'bg-lumon-cyan/5' : 'hover:bg-lumon-cyan/5'}
                             `}
                             onClick={() =>
@@ -877,16 +822,9 @@ const QuestionManagerTerminal = () => {
                               <span className="font-terminal text-terminal-sm text-lumon-text">
                                 #{cardNum}
                               </span>
-                              {isComplete ? (
-                                <CheckCircle
-                                  size={12}
-                                  className="text-lumon-success"
-                                />
-                              ) : (
-                                <span className="font-terminal text-terminal-xs text-lumon-amber">
-                                  {cardQuestions.length}/6
-                                </span>
-                              )}
+                              <span className="font-terminal text-terminal-xs text-lumon-amber">
+                                {cardQuestions.length}
+                              </span>
                             </div>
 
                             <AnimatePresence>
@@ -897,33 +835,16 @@ const QuestionManagerTerminal = () => {
                                   exit={{ opacity: 0, height: 0 }}
                                   className="mt-2 pt-2 border-t border-lumon-cyan-dim/20"
                                 >
-                                  {Object.entries(categoryNames).map(([key, name]) => {
-                                    const count =
-                                      categoryCounts[parseInt(key) as TrivialCategory];
-                                    return (
-                                      <div
-                                        key={key}
-                                        className="flex justify-between text-terminal-xs"
-                                      >
-                                        <span
-                                          className={getCategoryClass(
-                                            parseInt(key) as TrivialCategory
-                                          )}
-                                        >
-                                          {name.substring(0, 3).toUpperCase()}
-                                        </span>
-                                        <span
-                                          className={
-                                            count > 0
-                                              ? 'text-lumon-success'
-                                              : 'text-lumon-danger'
-                                          }
-                                        >
-                                          {count > 0 ? '●' : '○'}
-                                        </span>
-                                      </div>
-                                    );
-                                  })}
+                                  {cardQuestions.slice(0, 6).map((q, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="flex justify-between text-terminal-xs"
+                                    >
+                                      <span className="text-lumon-text truncate" style={{ maxWidth: '90%' }}>
+                                        {q.question.substring(0, 40)}...
+                                      </span>
+                                    </div>
+                                  ))}
                                   {isAdmin && (
                                     <TerminalButton
                                       size="sm"
@@ -985,16 +906,12 @@ const QuestionManagerTerminal = () => {
               />
               <TerminalSelect
                 options={[
-                  { value: 'all', label: 'ALL CATEGORIES' },
-                  ...categoryOptions,
+                  { value: 'all', label: 'ALL TYPES' },
+                  ...typeOptions,
                 ]}
-                value={filterCategory}
+                value={filterType}
                 onChange={(e) =>
-                  setFilterCategory(
-                    e.target.value === 'all'
-                      ? 'all'
-                      : (parseInt(e.target.value) as TrivialCategory)
-                  )
+                  setFilterType(e.target.value as 'all' | 'free_text' | 'qcm')
                 }
                 fullWidth={false}
                 className="w-48"
@@ -1086,18 +1003,12 @@ const QuestionManagerTerminal = () => {
                     ),
                 },
                 {
-                  key: 'category',
+                  key: 'type',
                   header: 'TYPE',
-                  width: '110px',
+                  width: '80px',
                   render: (q: Question) => (
-                    <span
-                      className={`
-                        font-terminal text-terminal-xs uppercase px-2 py-0.5 border
-                        ${getCategoryClass(q.category)}
-                        ${getCategoryBgClass(q.category)}
-                      `}
-                    >
-                      {categoryNames[q.category].substring(0, 4)}
+                    <span className="font-terminal text-terminal-xs uppercase px-2 py-0.5 border border-lumon-cyan-dim text-lumon-cyan">
+                      {(q.questionType || QuestionType.FREE_TEXT) === QuestionType.QCM ? 'QCM' : 'FREE'}
                     </span>
                   ),
                 },
@@ -1242,18 +1153,6 @@ const QuestionManagerTerminal = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <TerminalSelect
-              label="CATEGORY *"
-              options={categoryOptions}
-              value={formData.category}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  category: parseInt(e.target.value) as TrivialCategory,
-                })
-              }
-            />
-
             <TerminalSelect
               label="DIFFICULTY"
               options={difficultyOptions}

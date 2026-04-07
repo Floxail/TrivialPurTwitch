@@ -16,6 +16,7 @@ type SettingsData = {
   acceptanceDelay: number;
   questionTimeLimit: number;
   scoreCommandMode: TwitchMode;
+  gracePeriodMs: number;
 }
 
 type ExtraSettingsData = {
@@ -36,6 +37,7 @@ const initialState: SettingsData & ExtraSettingsData = {
   acceptanceDelay: 5,
   questionTimeLimit: 30,
   scoreCommandMode: TwitchMode.Channel,
+  gracePeriodMs: 700,
   theme: 0,
 };
 

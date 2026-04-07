@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { cleanValueLight, removeArticles, sorensenDiceScore } from 'helpers';
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import { Client, Options } from 'tmi.js';
@@ -7,11 +6,12 @@ import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
 import { Answer, Player, usePlayerStore } from './store/player-store';
 import { TwitchMode, useSettingsStore } from './store/settings-store';
-import { categoryColors, categoryNames, QuestionType, TrivialCategory, useQuestionsStore } from './store/questions-store';
+import { QuestionType, useQuestionsStore } from './store/questions-store';
 import { QuizMode, useGameStore } from './store/game-store';
 import Podium from './podium';
 import Leaderboard from './leaderboard';
 import { apiCreateReport, type ReportReason } from 'services/api-reports-service';
+import { verifyAnswer } from 'services/answer-validator';
 let twitchCallback: (nick: string, tid: string, msg: string) => void = () => {};
 
 const SCORE_CMD_DELAY = 2000;
@@ -45,8 +45,8 @@ const Quiz = () => {
 	// Toutes les boîtes visibles (non cachées) — source de vérité
 	const allVisibleBoxes = useMemo(() => allBoxes.filter(b => !b.hidden), [allBoxes]);
 
-	// Navigation hiérarchique : null = niveau racine, string = sous-boîtes de ce master
-	const [expandedMasterBox, setExpandedMasterBox] = useState<string | null>(null);
+	// Set de masters actuellement dépliés (accordion inline)
+	const [expandedMasters, setExpandedMasters] = useState<Set<string>>(new Set());
 
 	// Map : nom du master → ses sous-boîtes
 	const masterSubBoxMap = useMemo(() => {
@@ -63,11 +63,21 @@ const Quiz = () => {
 	// Boîtes de niveau racine (sans parent)
 	const topLevelBoxes = useMemo(() => allVisibleBoxes.filter(b => !b.parentBox), [allVisibleBoxes]);
 
-	// Boîtes affichées dans la grille MDR
+	// Boîtes affichées dans la grille MDR : top-level avec sous-boîtes insérées après chaque master déplié
 	const displayedBoxes = useMemo(() => {
-		if (expandedMasterBox === null) return topLevelBoxes;
-		return masterSubBoxMap.get(expandedMasterBox) ?? [];
-	}, [expandedMasterBox, topLevelBoxes, masterSubBoxMap]);
+		const result: { box: typeof allVisibleBoxes[0]; isSubBox: boolean; masterName?: string }[] = [];
+		for (const b of topLevelBoxes) {
+			const isMaster = masterSubBoxMap.has(b.name);
+			result.push({ box: b, isSubBox: false });
+			if (isMaster && expandedMasters.has(b.name)) {
+				const subs = masterSubBoxMap.get(b.name) ?? [];
+				for (const sub of subs) {
+					result.push({ box: sub, isSubBox: true, masterName: b.name });
+				}
+			}
+		}
+		return result;
+	}, [topLevelBoxes, masterSubBoxMap, expandedMasters]);
 	const twitchToken = getTwitchToken(); // Get deobfuscated token
 
 	// Utiliser le temps de réponse configuré dans les settings
@@ -94,7 +104,6 @@ const Quiz = () => {
 	const [selectedBoxNames, setSelectedBoxNames] = useState<null | string[]>(null);
 	const [quizQuestionCount, setQuizQuestionCount] = useState<number>(10);
 	const [modeError, setModeError] = useState<string>('');
-	const [balanceCategories, setBalanceCategories] = useState<boolean>(true); // Mode couleurs équilibrées
 
 	// Boîte ordonnée : une seule boîte sélectionnée avec ordered=true
 	const isOrderedBox = selectedBoxNames?.length === 1
@@ -139,25 +148,17 @@ const Quiz = () => {
 	}, [mdrHoveredIndex]);
 
 	const getMdrClass = useCallback((mdrIndex: number) => {
-		// Quand on est dans un master, index 0 = bouton Retour (classe spéciale)
-		if (expandedMasterBox !== null && mdrIndex === 0) {
-			const hoverClass = mdrHoveredIndex === null ? ''
-				: mdrIndex === mdrHoveredIndex ? 'mdr-focused'
-				: mdrNeighborIndices.has(mdrIndex) ? 'mdr-neighbor'
-				: 'mdr-dimmed';
-			return `${hoverClass} mdr-back-box`.trim();
-		}
 		// mdrIndex 0 = "Toutes", mdrIndex i+1 = displayedBoxes[i]
 		const isSelected = mdrIndex === 0
 			? selectedBoxNames === null
-			: (selectedBoxNames === null || selectedBoxNames.includes(displayedBoxes[mdrIndex - 1]?.name ?? ''));
+			: (selectedBoxNames === null || selectedBoxNames.includes(displayedBoxes[mdrIndex - 1]?.box.name ?? ''));
 		const hoverClass = mdrHoveredIndex === null ? ''
 			: mdrIndex === mdrHoveredIndex ? 'mdr-focused'
 			: mdrNeighborIndices.has(mdrIndex) ? 'mdr-neighbor'
 			: 'mdr-dimmed';
 		const selectionClass = isSelected ? 'mdr-selected' : 'mdr-unselected';
 		return `${hoverClass} ${selectionClass}`.trim();
-	}, [mdrHoveredIndex, mdrNeighborIndices, selectedBoxNames, displayedBoxes, expandedMasterBox]);
+	}, [mdrHoveredIndex, mdrNeighborIndices, selectedBoxNames, displayedBoxes]);
 
 	const handleBoxClick = useCallback((boxName: string) => {
 		setSelectedBoxNames(prev => {
@@ -170,15 +171,12 @@ const Quiz = () => {
 	}, []);
 
 	const handleMasterBoxClick = useCallback((masterName: string) => {
-		setExpandedMasterBox(masterName);
-		setSelectedBoxNames(null);
-		setMdrHoveredIndex(null);
-	}, []);
-
-	const handleBackFromMaster = useCallback(() => {
-		setExpandedMasterBox(null);
-		setSelectedBoxNames(null);
-		setMdrHoveredIndex(null);
+		setExpandedMasters(prev => {
+			const next = new Set(prev);
+			if (next.has(masterName)) next.delete(masterName);
+			else next.add(masterName);
+			return next;
+		});
 	}, []);
 
 	// Synchroniser la sélection quand les boîtes changent (après sync DB)
@@ -189,9 +187,10 @@ const Quiz = () => {
 			const valid = prev.filter(n => boxNames.has(n));
 			return valid.length > 0 ? valid : null;
 		});
-		setExpandedMasterBox(prev => {
-			if (prev === null) return null;
-			return allVisibleBoxes.some(b => b.name === prev) ? prev : null;
+		setExpandedMasters(prev => {
+			const boxNames = new Set(allVisibleBoxes.map(b => b.name));
+			const valid = new Set(Array.from(prev).filter(n => boxNames.has(n)));
+			return valid.size !== prev.size ? valid : prev;
 		});
 	}, [allVisibleBoxes]);
 
@@ -511,140 +510,22 @@ const Quiz = () => {
 				return;
 			}
 
-			let isCorrect = false;
-
-			// Mode QCM : vérifier si la réponse est A, B, C ou D (ou multi-réponses)
-			if (currentActiveQuestion.questionType === QuestionType.QCM &&
-				currentActiveQuestion.qcmOptions &&
-				(currentActiveQuestion.qcmCorrectIndexes || currentActiveQuestion.qcmCorrectIndex !== undefined)) {
-
-				const rawAnswer = message.trim().toUpperCase();
-				const correctIndexes = currentActiveQuestion.qcmCorrectIndexes
-					?? (currentActiveQuestion.qcmCorrectIndex !== undefined ? [currentActiveQuestion.qcmCorrectIndex] : []);
-				const numOptions = currentActiveQuestion.qcmOptions.length;
-				const validLabels = QCM_LABELS.slice(0, numOptions);
-				const validNumbers = Array.from({ length: numOptions }, (_, i) => String(i + 1));
-
-				// Parser les réponses : "A,C" ou "AC" ou "A C" ou "1,3"
-				// Chaque token (séparé par espace/virgule) doit être entièrement composé de labels QCM
-				// ou être un chiffre valide. Cela évite d'extraire des lettres parasites depuis des
-				// mots commentaires (ex: "B Bravo" → ["B"] et non ["B","A"] car "BRAVO" contient 'A')
-				const tokens = rawAnswer.split(/[\s,]+/).filter(t => t.length > 0);
-				const extracted: string[] = [];
-				for (const token of tokens) {
-					if (validLabels.includes(token)) {
-						// Lettre QCM unique valide (A, B, C...)
-						extracted.push(token);
-					} else if (validNumbers.includes(token)) {
-						// Chiffre valide converti en lettre
-						extracted.push(QCM_LABELS[parseInt(token) - 1]);
-					} else if (token.length > 1 && token.split('').every(ch => validLabels.includes(ch))) {
-						// Concaténation de lettres QCM uniquement (ex: "AC", "BD")
-						token.split('').forEach(ch => extracted.push(ch));
-					}
-					// Tokens avec caractères non-QCM ignorés (mots de commentaire)
-				}
-				const normalizedAnswers = Array.from(new Set(extracted));
-
-				// Ignorer si aucune lettre QCM valide
-				if (normalizedAnswers.length === 0) return;
-
-				// En QCM, un viewer ne peut répondre qu'UNE SEULE FOIS
-				if (qcmAttemptsRef.current.has(nick)) {
-					return;
-				}
-				qcmAttemptsRef.current.add(nick);
-
-				// Vérifier : les lettres données doivent correspondre exactement aux bonnes réponses
-				const correctLabels = correctIndexes.map(i => QCM_LABELS[i]).sort();
-				const givenLabels = [...normalizedAnswers].sort();
-
-				if (correctLabels.length === givenLabels.length &&
-					correctLabels.every((l, i) => l === givenLabels[i])) {
-					isCorrect = true;
-				}
-				// Si ce n'est pas correct, on ne fait rien (tentative unique)
-			} else {
-				// Mode réponse libre (comportement existant)
-				const proposition = cleanValueLight(message);
-				const propositionNoArticles = removeArticles(proposition);
-
-				const correctAnswer = cleanValueLight(currentActiveQuestion.answer);
-				const alternativeAnswers = currentActiveQuestion.alternativeAnswers?.map(cleanValueLight) || [];
-
-				// Fonction pour vérifier la similarité avec tolérance améliorée
-				const checkMatch = (answer: string, prop: string, propNoArticles: string) => {
-					const answerNoArticles = removeArticles(answer);
-
-					// Vérification exacte (avec et sans articles)
-					if (answer === prop || answerNoArticles === propNoArticles) {
-						return true;
-					}
-
-					// Si la réponse correcte contient des chiffres, ils doivent correspondre exactement.
-					// La tolérance floue reste active sur la partie texte.
-					const answerNumbers = answerNoArticles.match(/\d+/g);
-					if (answerNumbers) {
-						const propNumbers = propNoArticles.match(/\d+/g) || [];
-						if (answerNumbers.join(',') !== propNumbers.join(',')) {
-							return false;
-						}
-					}
-
-					// Vérification de sous-chaîne pour réponses similaires
-					const minLength = Math.min(answerNoArticles.length, propNoArticles.length);
-					const maxLength = Math.max(answerNoArticles.length, propNoArticles.length);
-
-					if (maxLength - minLength <= 2 && minLength >= 4) {
-						if (answerNoArticles.includes(propNoArticles) || propNoArticles.includes(answerNoArticles)) {
-							return true;
-						}
-					}
-
-					// Pour les réponses plus longues
-					if (minLength >= 5) {
-						const requiredLength = Math.ceil(answerNoArticles.length * 0.8);
-						if (propNoArticles.length >= requiredLength && answerNoArticles.includes(propNoArticles)) {
-							return true;
-						}
-						if (answerNoArticles.length >= requiredLength && propNoArticles.includes(answerNoArticles)) {
-							return true;
-						}
-					}
-
-					// Score de similarité
-					if (sorensenDiceScore(answerNoArticles, propNoArticles) >= 0.70) {
-						return true;
-					}
-					if (sorensenDiceScore(answer, prop) >= 0.75) {
-						return true;
-					}
-
-					return false;
-				};
-
-				// Vérifier la réponse principale
-				if (checkMatch(correctAnswer, proposition, propositionNoArticles)) {
-					isCorrect = true;
-				}
-
-				// Vérifier les réponses alternatives
-				if (!isCorrect) {
-					for (const altAnswer of alternativeAnswers) {
-						if (checkMatch(altAnswer, proposition, propositionNoArticles)) {
-							isCorrect = true;
-							break;
-						}
-					}
-				}
-
+			// En QCM, un viewer ne peut répondre qu'UNE SEULE FOIS
+			const isQcm = currentActiveQuestion.questionType === QuestionType.QCM;
+			if (isQcm && qcmAttemptsRef.current.has(nick)) {
+				return;
 			}
 
-			if (isCorrect) {
+			const result = verifyAnswer(message, currentActiveQuestion);
+
+			if (!result.valid) return;
+			if (isQcm) qcmAttemptsRef.current.add(nick);
+
+			if (result.isCorrect) {
 				initPlayer(nick, tid);
 				const now = Date.now();
 				const firstAnsweredAt = currentAnswerersRef.current.length > 0 ? currentAnswerersRef.current[0].answeredAt : null;
-				const isFirst = firstAnsweredAt === null || (now - firstAnsweredAt) <= 700;
+				const isFirst = firstAnsweredAt === null || (now - firstAnsweredAt) <= settingsStore.gracePeriodMs;
 				const newAnswerer = { nick, isFirst, answeredAt: now };
 				currentAnswerersRef.current = [...currentAnswerersRef.current, newAnswerer];
 			}
@@ -659,15 +540,9 @@ const Quiz = () => {
 		let displayBoxName: string;
 
 		if (selectedBoxNames === null) {
-			if (expandedMasterBox !== null) {
-				// Toutes les sous-boîtes du master actuel
-				questions = questionsStore.generateRandomQuizFromBoxes(displayedBoxes.map(b => b.name), quizQuestionCount, balanceCategories);
-				displayBoxName = `${expandedMasterBox} — mix`;
-			} else {
-				// Toutes les boîtes visibles (dont les sous-boîtes de tous les masters)
-				questions = questionsStore.generateRandomQuizFromBoxes(allVisibleBoxes.map(b => b.name), quizQuestionCount, balanceCategories);
-				displayBoxName = balanceCategories ? 'Mix équilibré' : 'Mix aléatoire';
-			}
+			// Toutes les boîtes visibles (dont les sous-boîtes de tous les masters)
+			questions = questionsStore.generateRandomQuizFromBoxes(allVisibleBoxes.map(b => b.name), quizQuestionCount);
+			displayBoxName = 'Mix aléatoire';
 		} else if (selectedBoxNames.length === 1) {
 			// Une seule boîte
 			const boxName = selectedBoxNames[0];
@@ -685,8 +560,8 @@ const Quiz = () => {
 			}
 		} else {
 			// Sélection multiple
-			questions = questionsStore.generateRandomQuizFromBoxes(selectedBoxNames, quizQuestionCount, balanceCategories);
-			displayBoxName = balanceCategories ? 'Mix sélection équilibré' : 'Mix sélection';
+			questions = questionsStore.generateRandomQuizFromBoxes(selectedBoxNames, quizQuestionCount);
+			displayBoxName = 'Mix sélection';
 		}
 
 		if (!questions || questions.length === 0) {
@@ -897,9 +772,7 @@ const Quiz = () => {
 						<small style={{ color: 'var(--lumon-text-dim)' }}>Boîtes sélectionnées :</small>
 						<div style={{ color: 'var(--lumon-cyan)', fontSize: '0.85rem', marginTop: '2px' }}>
 							{selectedBoxNames === null
-								? expandedMasterBox !== null
-									? `Sous-boîtes de "${expandedMasterBox}" (${displayedBoxes.length})`
-									: `Toutes les boîtes (${allVisibleBoxes.length})`
+								? `Toutes les boîtes (${allVisibleBoxes.length})`
 								: selectedBoxNames.length === 1
 									? selectedBoxNames[0]
 									: `${selectedBoxNames.length} boîtes : ${selectedBoxNames.join(', ')}`
@@ -915,37 +788,16 @@ const Quiz = () => {
 							</small>
 						</div>
 					) : (
-						<>
-							{/* Option équilibrer les catégories - visible si plusieurs boîtes */}
-							{(selectedBoxNames === null || selectedBoxNames.length > 1) && (
-								<Form.Group className="mb-3">
-									<Form.Check
-										type="switch"
-										id="balanceCategories"
-										label="Équilibrer les catégories (une question de chaque couleur en rotation)"
-										checked={balanceCategories}
-										onChange={(e) => setBalanceCategories(e.target.checked)}
-									/>
-									<Form.Text style={{ color: 'var(--lumon-text-muted)' }}>
-										{balanceCategories
-											? 'Les questions seront réparties équitablement entre les 6 catégories'
-											: 'Les questions seront choisies aléatoirement sans équilibrage'}
-									</Form.Text>
-								</Form.Group>
-							)}
-
-							{/* Nombre de questions */}
-							<Form.Group className="mb-3">
-								<Form.Label>Nombre de questions</Form.Label>
-								<Form.Control
-									type="number"
-									min="1"
-									max="550"
-									value={quizQuestionCount}
-									onChange={(e) => setQuizQuestionCount(parseInt(e.target.value) || 10)}
-								/>
-							</Form.Group>
-						</>
+						<Form.Group className="mb-3">
+							<Form.Label>Nombre de questions</Form.Label>
+							<Form.Control
+								type="number"
+								min="1"
+								max="550"
+								value={quizQuestionCount}
+								onChange={(e) => setQuizQuestionCount(parseInt(e.target.value) || 10)}
+							/>
+						</Form.Group>
 					)}
 
 					{/* Message d'erreur */}
@@ -1021,17 +873,13 @@ const Quiz = () => {
 									{/* Panneau info boîte(s) sélectionnée(s) */}
 									{allVisibleBoxes.length > 0 && (() => {
 										const effectiveBoxNames: string[] = selectedBoxNames === null
-											? (expandedMasterBox !== null ? displayedBoxes.map(b => b.name) : allVisibleBoxes.map(b => b.name))
+											? allVisibleBoxes.map(b => b.name)
 											: selectedBoxNames;
 										if (effectiveBoxNames.length === 0) return null;
 										const allQuestions = questionsStore.questions;
 										const selectedQuestions = allQuestions.filter(q => effectiveBoxNames.includes(q.boxName));
 										const qcmCount = selectedQuestions.filter(q => q.questionType === QuestionType.QCM).length;
 										const freeCount = selectedQuestions.length - qcmCount;
-
-										// Répartition par catégorie
-										const catCounts: Partial<Record<TrivialCategory, number>> = {};
-										selectedQuestions.forEach(q => { catCounts[q.category as TrivialCategory] = (catCounts[q.category as TrivialCategory] || 0) + 1; });
 
 										const isSingle = effectiveBoxNames.length === 1;
 										const singleBox = isSingle ? questionsStore.getBoxByName(effectiveBoxNames[0]) : null;
@@ -1049,7 +897,7 @@ const Quiz = () => {
 														<>
 															<FontAwesomeIcon icon={['fas', 'box-open']} className="me-2" />
 															{selectedBoxNames === null
-																? expandedMasterBox !== null ? `Toutes — ${expandedMasterBox}` : 'Toutes les boîtes'
+																? 'Toutes les boîtes'
 																: `${effectiveBoxNames.length} boîtes sélectionnées`}
 														</>
 													)}
@@ -1074,26 +922,6 @@ const Quiz = () => {
 														</span>
 													)}
 												</div>
-												<div className="d-flex flex-wrap gap-1" style={{ fontSize: '0.65rem' }}>
-													{Object.entries(categoryNames).map(([key, name]) => {
-														const catKey = parseInt(key) as TrivialCategory;
-														const count = catCounts[catKey] || 0;
-														return (
-															<span
-																key={key}
-																style={{
-																	padding: '1px 6px',
-																	borderRadius: '3px',
-																	backgroundColor: count > 0 ? categoryColors[catKey] : 'transparent',
-																	border: `1px solid ${count > 0 ? categoryColors[catKey] : '#333'}`,
-																	color: count > 0 ? 'white' : '#555',
-																}}
-															>
-																{name.replace('▲ ', '')}: {count}
-															</span>
-														);
-													})}
-												</div>
 											</div>
 										);
 									})()}
@@ -1102,7 +930,7 @@ const Quiz = () => {
 										<div className="mt-4 p-3 terminal-panel" style={{ display: 'inline-block' }}>
 											<p className="mb-2" style={{ color: 'var(--lumon-text-dim)' }}>
 												<strong style={{ color: 'var(--lumon-cyan)' }}>
-													{expandedMasterBox !== null ? `Sous-boîtes — ${expandedMasterBox}` : 'Boîtes disponibles'}
+													Boîtes disponibles
 												</strong>
 												<span style={{ color: 'var(--lumon-text-muted)', fontSize: '0.75rem', marginLeft: '8px' }}>
 													— cliquez pour sélectionner
@@ -1113,36 +941,37 @@ const Quiz = () => {
 												ref={mdrContainerRef}
 												onMouseLeave={() => setMdrHoveredIndex(null)}
 											>
-												{/* Card 0 : ← Retour (si dans un master) ou ★ TOUTES */}
+												{/* Card 0 : ★ TOUTES */}
 												<div
 													ref={el => { mdrItemRefs.current[0] = el; }}
-													className={`mdr-data-point ${expandedMasterBox !== null ? '' : 'mdr-all-boxes'} ${getMdrClass(0)}`}
+													className={`mdr-data-point mdr-all-boxes ${getMdrClass(0)}`}
 													onMouseEnter={() => setMdrHoveredIndex(0)}
-													onClick={() => {
-														if (expandedMasterBox !== null) handleBackFromMaster();
-														else setSelectedBoxNames(prev => prev === null ? [] : null);
-													}}
+													onClick={() => setSelectedBoxNames(prev => prev === null ? [] : null)}
 												>
 													<span className="mdr-corner-tr" />
 													<span className="mdr-corner-bl" />
-													{expandedMasterBox !== null ? `← ${expandedMasterBox}` : '★ TOUTES'}
+													★ TOUTES
 												</div>
-												{/* Boîtes affichées (top-level ou sous-boîtes du master ouvert) */}
-												{displayedBoxes.map((b, i) => {
-													const isMaster = expandedMasterBox === null && masterSubBoxMap.has(b.name);
+												{/* Boîtes avec sous-boîtes inline */}
+												{displayedBoxes.map((entry, i) => {
+													const { box: b, isSubBox } = entry;
+													const isMaster = !isSubBox && masterSubBoxMap.has(b.name);
+													const isExpanded = isMaster && expandedMasters.has(b.name);
 													return (
 														<div
 															key={b.name}
 															ref={el => { mdrItemRefs.current[i + 1] = el; }}
-															className={`mdr-data-point ${isMaster ? 'mdr-master-box' : ''} ${getMdrClass(i + 1)}`}
+															className={`mdr-data-point ${isMaster ? 'mdr-master-box' : ''} ${isSubBox ? 'mdr-sub-box' : ''} ${getMdrClass(i + 1)}`}
 															onMouseEnter={() => setMdrHoveredIndex(i + 1)}
 															onClick={() => { if (isMaster) handleMasterBoxClick(b.name); else handleBoxClick(b.name); }}
-															title={isMaster ? `Ouvrir les sous-boîtes de "${b.name}"` : (b.description || undefined)}
+															title={isMaster ? `${isExpanded ? 'Réduire' : 'Déplier'} "${b.name}"` : (b.description || undefined)}
+															style={isSubBox ? { marginLeft: '12px', borderLeft: '2px solid rgba(var(--lumon-cyan-rgb, 0, 200, 200), 0.3)' } : undefined}
 														>
 															<span className="mdr-corner-tr" />
 															<span className="mdr-corner-bl" />
 															{b.ordered && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.7 }}>↓</span>}
-															{isMaster && <span style={{ fontSize: '0.6rem', marginRight: '3px', opacity: 0.85 }}>▶</span>}
+															{isMaster && <span style={{ fontSize: '0.6rem', marginRight: '3px', opacity: 0.85 }}>{isExpanded ? '▼' : '▶'}</span>}
+															{isSubBox && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.6 }}>└</span>}
 															{b.name}
 														</div>
 													);
@@ -1155,14 +984,14 @@ const Quiz = () => {
 
 							{activeQuiz && currentQuestion && (
 								<div style={{ flex: 1 }}>
-									{/* Catégorie et timer */}
+									{/* Boîte et timer */}
 									<div className="mb-4">
 									<div
 										className="terminal-badge"
 										style={{
-										backgroundColor: `${categoryColors[currentQuestion.category]}22`,
-										borderColor: categoryColors[currentQuestion.category],
-										color: categoryColors[currentQuestion.category],
+										backgroundColor: 'rgba(255, 255, 255, 0.1)',
+										borderColor: 'rgba(255, 255, 255, 0.5)',
+										color: 'white',
 										padding: '8px 20px',
 										display: 'inline-block',
 										fontFamily: "'Orbitron', sans-serif",
@@ -1172,12 +1001,7 @@ const Quiz = () => {
 										marginBottom: '15px'
 										}}
 									>
-										{categoryNames[currentQuestion.category]}
-										{activeQuiz.boxName.startsWith('Mix') && currentQuestion.boxName && (
-											<span className="ms-2" style={{ opacity: 0.8, fontWeight: 'normal', fontSize: '0.95em' }}>
-												| {currentQuestion.boxName}
-											</span>
-										)}
+										{currentQuestion.boxName}
 									</div>
 
 									<div className={timerUrgencyClass} style={{

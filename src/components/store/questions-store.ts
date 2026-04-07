@@ -16,33 +16,14 @@ import {
 
 const localStorageKey: string = 'quiz_questions_storage_v2';
 
-// Catégories Trivial Pursuit standard
-export enum TrivialCategory {
-  Geography = 0,      // Bleu
-  Entertainment = 1,  // Rose
-  History = 2,        // Jaune
-  Arts = 3,          // Marron/Orange
-  Science = 4,       // Vert
-  Sports = 5         // Orange
+function fisherYatesShuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
-
-export const categoryNames: Record<TrivialCategory, string> = {
-  [TrivialCategory.Geography]: '▲ Bleu',
-  [TrivialCategory.Entertainment]: '▲ Rose',
-  [TrivialCategory.History]: '▲ Jaune',
-  [TrivialCategory.Arts]: '▲ Marron',
-  [TrivialCategory.Science]: '▲ Vert',
-  [TrivialCategory.Sports]: '▲ Orange',
-};
-
-export const categoryColors: Record<TrivialCategory, string> = {
-  [TrivialCategory.Geography]: '#4A90E2',      // Bleu
-  [TrivialCategory.Entertainment]: '#E91E63',  // Rose
-  [TrivialCategory.History]: '#FFC107',        // Jaune
-  [TrivialCategory.Arts]: '#533303ff',           //Marron
-  [TrivialCategory.Science]: '#4CAF50',        // Vert
-  [TrivialCategory.Sports]: '#FF5722',         // Rouge-Orange
-};
 
 // Type de question
 export enum QuestionType {
@@ -52,7 +33,6 @@ export enum QuestionType {
 
 export type Question = {
   id: string;
-  category: TrivialCategory;
   question: string;
   answer: string;
   alternativeAnswers?: string[]; // Réponses alternatives acceptées (mode FREE_TEXT)
@@ -117,8 +97,8 @@ type QuestionsActions = {
   getQuestionsByCard: (boxName: string, cardNumber: number) => Question[];
   // Génération de quiz
   generateRandomQuiz: (boxName: string, questionCount: number) => Question[] | null;
-  generateRandomQuizAllBoxes: (questionCount: number, balanceCategories?: boolean) => Question[] | null;
-  generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number, balanceCategories?: boolean) => Question[] | null;
+  generateRandomQuizAllBoxes: (questionCount: number) => Question[] | null;
+  generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number) => Question[] | null;
   generateOrderedQuiz: (boxName: string) => Question[] | null;
   toggleBoxOrdered: (boxName: string, ordered: boolean) => Promise<void>;
 
@@ -386,106 +366,30 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         }
 
         // Mélanger et prendre N questions
-        const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+        const shuffled = fisherYatesShuffle(allQuestions);
         return shuffled.slice(0, Math.min(questionCount, shuffled.length));
       },
 
-      generateRandomQuizAllBoxes: (questionCount: number, balanceCategories: boolean = false): Question[] | null => {
+      generateRandomQuizAllBoxes: (questionCount: number): Question[] | null => {
         const allQuestions = get().questions;
 
         if (allQuestions.length === 0) {
           return null;
         }
 
-        if (!balanceCategories) {
-          // Mode simple : mélanger toutes les questions
-          const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
-          return shuffled.slice(0, Math.min(questionCount, shuffled.length));
-        }
-
-        // Mode équilibré : essayer d'avoir une répartition équitable des catégories
-        const byCategory = new Map<TrivialCategory, Question[]>();
-
-        // Grouper par catégorie
-        allQuestions.forEach(q => {
-          if (!byCategory.has(q.category)) {
-            byCategory.set(q.category, []);
-          }
-          byCategory.get(q.category)!.push(q);
-        });
-
-        // Mélanger chaque catégorie
-        byCategory.forEach((questions, cat) => {
-          byCategory.set(cat, questions.sort(() => Math.random() - 0.5));
-        });
-
-        const result: Question[] = [];
-        let remaining = questionCount;
-
-        // Prendre des questions de chaque catégorie en rotation
-        const categories = Array.from(byCategory.keys()).sort(() => Math.random() - 0.5);
-        let catIndex = 0;
-
-        while (remaining > 0 && categories.length > 0) {
-          const cat = categories[catIndex % categories.length];
-          const catQuestions = byCategory.get(cat)!;
-
-          if (catQuestions.length > 0) {
-            result.push(catQuestions.shift()!);
-            remaining--;
-          } else {
-            // Plus de questions dans cette catégorie, la retirer
-            categories.splice(catIndex % categories.length, 1);
-            if (categories.length === 0) break;
-          }
-
-          catIndex++;
-        }
-
-        // Mélanger le résultat final pour varier l'ordre des catégories
-        return result.sort(() => Math.random() - 0.5);
+        const shuffled = fisherYatesShuffle(allQuestions);
+        return shuffled.slice(0, Math.min(questionCount, shuffled.length));
       },
 
-      generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number, balanceCategories: boolean = false): Question[] | null => {
+      generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number): Question[] | null => {
         const allQuestions = get().questions.filter((q) => boxNames.includes(q.boxName));
 
         if (allQuestions.length === 0) {
           return null;
         }
 
-        if (!balanceCategories) {
-          const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
-          return shuffled.slice(0, Math.min(questionCount, shuffled.length));
-        }
-
-        const byCategory = new Map<TrivialCategory, Question[]>();
-        allQuestions.forEach(q => {
-          if (!byCategory.has(q.category)) byCategory.set(q.category, []);
-          byCategory.get(q.category)!.push(q);
-        });
-        byCategory.forEach((questions, cat) => {
-          byCategory.set(cat, questions.sort(() => Math.random() - 0.5));
-        });
-
-        const result: Question[] = [];
-        let remaining = questionCount;
-        const categories = Array.from(byCategory.keys()).sort(() => Math.random() - 0.5);
-        let catIndex = 0;
-
-        while (remaining > 0 && categories.length > 0) {
-          const cat = categories[catIndex % categories.length];
-          const catQuestions = byCategory.get(cat)!;
-          if (catQuestions.length > 0) {
-            result.push(catQuestions.shift()!);
-            remaining--;
-          } else {
-            categories.splice(catIndex % categories.length, 1);
-            if (categories.length === 0) break;
-          }
-          catIndex++;
-        }
-
-        return result.sort(() => Math.random() - 0.5);
+        const shuffled = fisherYatesShuffle(allQuestions);
+        return shuffled.slice(0, Math.min(questionCount, shuffled.length));
       },
 
       generateOrderedQuiz: (boxName: string): Question[] | null => {

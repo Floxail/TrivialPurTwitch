@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, Modal, Badge } from 'react-bootstrap';
-import { Question, QuestionType, TrivialCategory, categoryNames } from './store/questions-store';
+import { Question, QuestionType } from './store/questions-store';
 
 // Labels et limites QCM
 const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -15,7 +15,6 @@ interface QuestionFormData {
   question: string;
   answer: string;
   alternativeAnswers: string;
-  category: TrivialCategory;
   boxName: string;
   cardNumber: number | undefined;
   difficulty: 'easy' | 'medium' | 'hard';
@@ -56,7 +55,6 @@ const defaultFormData: QuestionFormData = {
   question: '',
   answer: '',
   alternativeAnswers: '',
-  category: TrivialCategory.Geography,
   boxName: '',
   cardNumber: undefined,
   difficulty: 'medium',
@@ -86,7 +84,6 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
           question: editingQuestion.question,
           answer: editingQuestion.answer,
           alternativeAnswers: editingQuestion.alternativeAnswers?.join(', ') || '',
-          category: editingQuestion.category,
           boxName: editingQuestion.boxName,
           cardNumber: editingQuestion.cardNumber,
           difficulty: editingQuestion.difficulty || 'medium',
@@ -171,19 +168,6 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
                 </div>
               </Button>
             </div>
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Catégorie *</Form.Label>
-            <Form.Select
-              required
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: parseInt(e.target.value) as TrivialCategory })}
-            >
-              {Object.entries(categoryNames).map(([key, name]) => (
-                <option key={key} value={key}>{name}</option>
-              ))}
-            </Form.Select>
           </Form.Group>
 
           <Form.Group className="mb-3">

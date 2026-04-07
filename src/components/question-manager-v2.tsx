@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Button, Form, Table, Badge, Tabs, Tab, Alert, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { categoryColors, categoryNames, Question, QuestionType, TrivialCategory, useQuestionsStore } from './store/questions-store';
+import { Question, QuestionType, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
 import { useAuthStore } from './store/auth-store';
 import { QuestionModal, BulkActionsModal } from './question-manager-modals';
@@ -133,7 +133,7 @@ const QuestionManager = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [selectedBox, setSelectedBox] = useState<string>('');
-  const [filterCategory, setFilterCategory] = useState<TrivialCategory | 'all'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'free_text' | 'qcm'>('all');
   const [importSuccess, setImportSuccess] = useState<string>('');
   const [importError, setImportError] = useState<string>('');
   const [preselectedBoxForModal, setPreselectedBoxForModal] = useState<string>('');
@@ -307,12 +307,12 @@ const QuestionManager = () => {
       result = result.filter(q => (q.boxName || '').trim() === boxNameToFilter);
     }
 
-    if (filterCategory !== 'all') {
-      result = result.filter(q => q.category === filterCategory);
+    if (filterType !== 'all') {
+      result = result.filter(q => (q.questionType || QuestionType.FREE_TEXT) === filterType);
     }
 
     // Si la boîte est ordonnée, trier par createdAt / ID
-    if (selectedBoxIsOrdered && filterCategory === 'all') {
+    if (selectedBoxIsOrdered && filterType === 'all') {
       result.sort((a, b) => {
         if (a.createdAt && b.createdAt) {
           const cmp = a.createdAt.localeCompare(b.createdAt);
@@ -328,15 +328,15 @@ const QuestionManager = () => {
         const cardA = a.cardNumber ?? 0;
         const cardB = b.cardNumber ?? 0;
         if (cardA !== cardB) return cardA - cardB;
-        return a.category - b.category;
+        return a.id.localeCompare(b.id);
       });
     }
 
     return result;
-  }, [storeQuestions, selectedBox, filterCategory, selectedBoxIsOrdered]);
+  }, [storeQuestions, selectedBox, filterType, selectedBoxIsOrdered]);
 
   // Reset pagination quand les filtres changent
-  useEffect(() => { setCurrentPage(1); }, [selectedBox, filterCategory]);
+  useEffect(() => { setCurrentPage(1); }, [selectedBox, filterType]);
 
   // Questions paginées
   const totalPages = Math.ceil(filteredQuestions.length / PAGE_SIZE);
@@ -535,7 +535,6 @@ const QuestionManager = () => {
       question: formData.question,
       answer: formData.answer,
       alternativeAnswers: alternativeAnswers.length > 0 ? alternativeAnswers : undefined,
-      category: formData.category,
       boxName: formData.boxName,
       cardNumber: formData.cardNumber,
       difficulty: formData.difficulty,
@@ -985,27 +984,6 @@ const QuestionManager = () => {
                           )}
                         </div>
 
-                        {/* Répartition par catégorie */}
-                        <h6 className="mb-2">Par catégorie :</h6>
-                        <div className="d-flex flex-wrap gap-1 mb-3">
-                          {Object.entries(categoryNames).map(([key, name]) => {
-                            const count = boxQuestions.filter(q => q.category === parseInt(key)).length;
-                            return (
-                              <Badge
-                                key={key}
-                                bg=""
-                                style={{
-                                  backgroundColor: count > 0 ? categoryColors[parseInt(key) as TrivialCategory] : '#444',
-                                  color: 'white',
-                                  opacity: count > 0 ? 1 : 0.5
-                                }}
-                              >
-                                {name.replace('▲ ', '')} : {count}
-                              </Badge>
-                            );
-                          })}
-                        </div>
-
                       </div>
                     </div>
                   </div>
@@ -1033,13 +1011,12 @@ const QuestionManager = () => {
               <Form.Select
                 className="ms-2"
                 style={{ width: '200px', display: 'inline-block' }}
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value === 'all' ? 'all' : parseInt(e.target.value) as TrivialCategory)}
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value as 'all' | 'free_text' | 'qcm')}
               >
-                <option value="all">Toutes les catégories</option>
-                {Object.entries(categoryNames).map(([key, name]) => (
-                  <option key={key} value={key}>{name}</option>
-                ))}
+                <option value="all">Tous les types</option>
+                <option value="free_text">Réponse libre</option>
+                <option value="qcm">QCM</option>
               </Form.Select>
             </div>
           </div>
@@ -1093,13 +1070,13 @@ const QuestionManager = () => {
               </div>
             )}
 
-            {selectedBoxIsOrdered && filterCategory === 'all' && (
+            {selectedBoxIsOrdered && filterType === 'all' && (
               <div className="mb-2">
                 <Badge bg="info">↓ Boîte ordonnée — les questions sont affichées dans l'ordre de jeu</Badge>
               </div>
             )}
 
-            <Table hover responsive key={`table-${selectedBox}-${filterCategory}`}>
+            <Table hover responsive key={`table-${selectedBox}-${filterType}`}>
               <thead>
                 <tr>
                   {selectedBoxIsOrdered && <th style={{ width: '4%' }}>#</th>}
@@ -1140,16 +1117,8 @@ const QuestionManager = () => {
                       )}
                     </td>
                     <td>
-                      <Badge
-                        bg=""
-                        style={{
-                          backgroundColor: categoryColors[question.category],
-                          color: 'white',
-                          fontWeight: 'bold',
-                          border: '2px solid rgba(0,0,0,0.2)'
-                        }}
-                      >
-                        {categoryNames[question.category]}
+                      <Badge bg="secondary" style={{ fontWeight: 'bold' }}>
+                        {(question.questionType || QuestionType.FREE_TEXT) === QuestionType.QCM ? 'QCM' : 'Libre'}
                       </Badge>
                     </td>
                     <td>{question.question}</td>
