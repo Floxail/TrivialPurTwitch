@@ -150,6 +150,11 @@ const QuestionManager = () => {
   // Édition boîte
   const [editingBoxName, setEditingBoxName] = useState<string | null>(null);
 
+  // Création de boîte vide
+  const [showCreateBoxModal, setShowCreateBoxModal] = useState(false);
+  const [newBoxName, setNewBoxName] = useState('');
+  const [creatingBox, setCreatingBox] = useState(false);
+
   // Réordonnement boîte ordonnée
   const [reorderingBoxName, setReorderingBoxName] = useState<string | null>(null);
   const [reorderList, setReorderList] = useState<Question[]>([]);
@@ -570,6 +575,29 @@ const QuestionManager = () => {
     setEditingBoxName(null);
   };
 
+  const handleCreateEmptyBox = async () => {
+    const trimmed = newBoxName.trim();
+    if (!trimmed) return;
+    if (storeBoxes.find(b => b.name.toLowerCase() === trimmed.toLowerCase())) {
+      setImportError(`Une boîte nommée "${trimmed}" existe déjà.`);
+      setTimeout(() => setImportError(''), 4000);
+      return;
+    }
+    setCreatingBox(true);
+    try {
+      await addBox(trimmed);
+      setImportSuccess(`✅ Boîte "${trimmed}" créée avec succès !`);
+      setTimeout(() => setImportSuccess(''), 4000);
+      setShowCreateBoxModal(false);
+      setNewBoxName('');
+    } catch (err: any) {
+      setImportError(`Erreur: ${err.message}`);
+      setTimeout(() => setImportError(''), 5000);
+    } finally {
+      setCreatingBox(false);
+    }
+  };
+
   // Fonctions supprimées - mode carte retiré
   // handleDeleteCard et getCategoryCountsForCard ne sont plus utilisées
 
@@ -723,6 +751,35 @@ const QuestionManager = () => {
         ) : null;
       })()}
 
+      {/* Modale de création de boîte vide */}
+      <Modal show={showCreateBoxModal} onHide={() => setShowCreateBoxModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Créer une Boîte Vide</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Nom de la boîte</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ex: Culture Générale 2026"
+              value={newBoxName}
+              onChange={(e) => setNewBoxName(e.target.value)}
+              autoFocus
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleCreateEmptyBox(); } }}
+            />
+            <Form.Text className="text-muted">
+              La boîte sera créée vide. Vous pourrez y ajouter des questions ou y rattacher des sous-boîtes ensuite.
+            </Form.Text>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowCreateBoxModal(false)}>Annuler</Button>
+          <Button variant="primary" onClick={handleCreateEmptyBox} disabled={!newBoxName.trim() || creatingBox}>
+            {creatingBox ? 'Création...' : 'Créer'}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       {/* Modale de réordonnement */}
       {reorderingBoxName !== null && (
         <Modal show onHide={() => setReorderingBoxName(null)} centered size="lg" scrollable>
@@ -831,6 +888,11 @@ const QuestionManager = () => {
           <Button variant="info" className="me-2" onClick={() => fileInputRef.current?.click()}>
             <FontAwesomeIcon icon={['fas', 'upload']} /> Importer Questions
           </Button>
+          {isAdmin && (
+            <Button variant="outline-light" onClick={() => { setNewBoxName(''); setShowCreateBoxModal(true); }}>
+              <FontAwesomeIcon icon={['fas', 'plus']} /> Créer une Boîte
+            </Button>
+          )}
         </div>
       </div>
 

@@ -1236,7 +1236,7 @@
 
 /* ── Dimmed state: far-away boxes ── */
 .mdr-data-point.mdr-dimmed {
-  opacity: 0.3;
+  opacity: 0.5;
   color: var(--lumon-text-muted);
 }
 
@@ -1254,20 +1254,20 @@
 
 /* ── Unselected state: muted box ── */
 .mdr-data-point.mdr-unselected {
-  opacity: 0.3;
+  opacity: 0.55;
   color: var(--lumon-text-muted);
-  border-color: rgba(var(--lumon-cyan-rgb), 0.05);
+  border-color: rgba(var(--lumon-cyan-rgb), 0.1);
 }
 
 /* ── Hover sur boîte désactivée : plus de visibilité ── */
 .mdr-data-point.mdr-unselected.mdr-focused {
-  opacity: 0.75;
+  opacity: 0.8;
   color: var(--lumon-text-muted);
-  border-color: rgba(var(--lumon-cyan-rgb), 0.25);
+  border-color: rgba(var(--lumon-cyan-rgb), 0.3);
 }
 
 .mdr-data-point.mdr-unselected.mdr-neighbor {
-  opacity: 0.5;
+  opacity: 0.65;
 }
 
 /* ── All-boxes card: slightly distinct ── */
@@ -1276,20 +1276,9 @@
   letter-spacing: 0.15em;
 }
 
-/* Boîte Master (contient des sous-boîtes) */
+/* Boîte Master (contient des sous-boîtes) — styling minimal, couleur gérée par .mdr-themed */
 .mdr-data-point.mdr-master-box {
-  border-color: rgba(180, 120, 255, 0.5);
-  color: rgba(200, 160, 255, 0.9);
-}
-.mdr-data-point.mdr-master-box.mdr-focused {
-  border-color: rgba(200, 150, 255, 0.9);
-  color: rgb(220, 180, 255);
-  box-shadow: 0 0 10px rgba(180, 120, 255, 0.3), 0 0 20px rgba(180, 120, 255, 0.12);
-}
-.mdr-data-point.mdr-master-box.mdr-selected {
-  border-color: rgba(200, 150, 255, 0.85);
-  color: rgb(220, 180, 255);
-  text-shadow: 0 0 8px rgba(200, 150, 255, 0.5);
+  font-weight: 600;
 }
 
 /* Bouton ← Retour (quand on est dans un master) */
@@ -1303,6 +1292,76 @@
   border-color: rgba(255, 200, 100, 0.9);
   color: rgb(255, 215, 120);
   box-shadow: 0 0 10px rgba(255, 180, 80, 0.3), 0 0 20px rgba(255, 180, 80, 0.12);
+}
+
+/* ── Dynamic theme colors per box (uses --box-theme / --box-theme-rgb CSS vars) ── */
+.mdr-data-point.mdr-themed {
+  border-color: rgba(var(--box-theme-rgb), 0.35);
+  color: var(--box-theme);
+}
+
+.mdr-data-point.mdr-themed.mdr-selected {
+  color: var(--box-theme);
+  border-color: rgba(var(--box-theme-rgb), 0.6);
+  text-shadow:
+    0 0 5px rgba(var(--box-theme-rgb), 0.4),
+    0 0 10px rgba(var(--box-theme-rgb), 0.2);
+  box-shadow:
+    0 0 6px rgba(var(--box-theme-rgb), 0.15),
+    inset 0 0 4px rgba(var(--box-theme-rgb), 0.06);
+}
+
+.mdr-data-point.mdr-themed.mdr-focused {
+  color: var(--box-theme);
+  border-color: var(--box-theme);
+  text-shadow:
+    0 0 6px rgba(var(--box-theme-rgb), 0.6),
+    0 0 14px rgba(var(--box-theme-rgb), 0.3);
+  box-shadow:
+    0 0 8px rgba(var(--box-theme-rgb), 0.2),
+    0 0 20px rgba(var(--box-theme-rgb), 0.1),
+    inset 0 0 6px rgba(var(--box-theme-rgb), 0.08);
+  animation: mdr-themed-pulse 2s ease-in-out infinite,
+             mdr-wobble 0.8s ease-in-out infinite;
+}
+
+.mdr-data-point.mdr-themed.mdr-focused::before,
+.mdr-data-point.mdr-themed.mdr-focused::after,
+.mdr-data-point.mdr-themed.mdr-focused .mdr-corner-tr,
+.mdr-data-point.mdr-themed.mdr-focused .mdr-corner-bl {
+  border-color: var(--box-theme);
+  opacity: 1;
+}
+
+.mdr-data-point.mdr-themed.mdr-neighbor {
+  color: rgba(var(--box-theme-rgb), 0.8);
+  border-color: rgba(var(--box-theme-rgb), 0.25);
+  text-shadow: 0 0 4px rgba(var(--box-theme-rgb), 0.2);
+}
+
+/* Sous-boîte thémée : même couleur mais plus douce */
+.mdr-data-point.mdr-themed.mdr-sub-box {
+  opacity: 0.85;
+  border-color: rgba(var(--box-theme-rgb), 0.2);
+  color: rgba(var(--box-theme-rgb), 0.75);
+}
+.mdr-data-point.mdr-themed.mdr-sub-box.mdr-selected {
+  opacity: 1;
+  color: rgba(var(--box-theme-rgb), 0.85);
+  border-color: rgba(var(--box-theme-rgb), 0.45);
+  text-shadow: 0 0 4px rgba(var(--box-theme-rgb), 0.3);
+}
+
+@keyframes mdr-themed-pulse {
+  0%, 100% {
+    border-color: rgba(var(--box-theme-rgb), 0.5);
+    box-shadow: 0 0 6px rgba(var(--box-theme-rgb), 0.1);
+  }
+  50% {
+    border-color: var(--box-theme);
+    box-shadow: 0 0 12px rgba(var(--box-theme-rgb), 0.25),
+                0 0 24px rgba(var(--box-theme-rgb), 0.1);
+  }
 }
 
 /* ── Animated border pulse on focused box ── */

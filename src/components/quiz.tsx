@@ -63,6 +63,35 @@ const Quiz = () => {
 	// Boîtes de niveau racine (sans parent)
 	const topLevelBoxes = useMemo(() => allVisibleBoxes.filter(b => !b.parentBox), [allVisibleBoxes]);
 
+	// Palette de couleurs cyberpunk pour les master boxes
+	const BOX_THEME_PALETTE = useMemo(() => [
+		{ color: '#00e5ff', rgb: '0,229,255' },    // Cyan
+		{ color: '#ffb000', rgb: '255,176,0' },     // Amber
+		{ color: '#00ff66', rgb: '0,255,102' },      // Emerald
+		{ color: '#b366ff', rgb: '179,102,255' },    // Violet
+		{ color: '#ff3366', rgb: '255,51,102' },     // Rose
+		{ color: '#33ccff', rgb: '51,204,255' },     // Sky Blue
+		{ color: '#ff9933', rgb: '255,153,51' },     // Orange
+		{ color: '#66ff99', rgb: '102,255,153' },    // Mint
+		{ color: '#ff66b2', rgb: '255,102,178' },    // Pink
+		{ color: '#ccff33', rgb: '204,255,51' },     // Lime
+	], []);
+
+	// Map : nom de boîte → couleur du thème (master = couleur directe, sub = hérite du parent)
+	const boxThemeMap = useMemo(() => {
+		const map = new Map<string, { color: string; rgb: string }>();
+		topLevelBoxes.forEach((b, idx) => {
+			const theme = BOX_THEME_PALETTE[idx % BOX_THEME_PALETTE.length];
+			map.set(b.name, theme);
+			// Les sous-boîtes héritent de la couleur du master
+			const subs = masterSubBoxMap.get(b.name);
+			if (subs) {
+				subs.forEach(sub => map.set(sub.name, theme));
+			}
+		});
+		return map;
+	}, [topLevelBoxes, masterSubBoxMap, BOX_THEME_PALETTE]);
+
 	// Boîtes affichées dans la grille MDR : top-level avec sous-boîtes insérées après chaque master déplié
 	const displayedBoxes = useMemo(() => {
 		const result: { box: typeof allVisibleBoxes[0]; isSubBox: boolean; masterName?: string }[] = [];
@@ -957,15 +986,24 @@ const Quiz = () => {
 													const { box: b, isSubBox } = entry;
 													const isMaster = !isSubBox && masterSubBoxMap.has(b.name);
 													const isExpanded = isMaster && expandedMasters.has(b.name);
+													const theme = boxThemeMap.get(b.name);
+													const boxStyle: any = {
+														'--box-theme': theme?.color || 'var(--lumon-cyan)',
+														'--box-theme-rgb': theme?.rgb || 'var(--lumon-cyan-rgb)',
+													};
+													if (isSubBox) {
+														boxStyle.marginLeft = '12px';
+														boxStyle.borderLeft = `2px solid rgba(${theme?.rgb || '0,229,255'}, 0.3)`;
+													}
 													return (
 														<div
 															key={b.name}
 															ref={el => { mdrItemRefs.current[i + 1] = el; }}
-															className={`mdr-data-point ${isMaster ? 'mdr-master-box' : ''} ${isSubBox ? 'mdr-sub-box' : ''} ${getMdrClass(i + 1)}`}
+															className={`mdr-data-point mdr-themed ${isMaster ? 'mdr-master-box' : ''} ${isSubBox ? 'mdr-sub-box' : ''} ${getMdrClass(i + 1)}`}
 															onMouseEnter={() => setMdrHoveredIndex(i + 1)}
 															onClick={() => { if (isMaster) handleMasterBoxClick(b.name); else handleBoxClick(b.name); }}
 															title={isMaster ? `${isExpanded ? 'Réduire' : 'Déplier'} "${b.name}"` : (b.description || undefined)}
-															style={isSubBox ? { marginLeft: '12px', borderLeft: '2px solid rgba(var(--lumon-cyan-rgb, 0, 200, 200), 0.3)' } : undefined}
+															style={boxStyle}
 														>
 															<span className="mdr-corner-tr" />
 															<span className="mdr-corner-bl" />
