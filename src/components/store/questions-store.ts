@@ -315,15 +315,20 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           console.warn('⚠️ API removeBox échouée, suppression locale uniquement', err);
         }
 
-        const currentQuestions = get().questions;
-        const newQuestions = currentQuestions.filter((q) => q.boxName !== boxName);
-        const boxes = get().rebuildBoxes(newQuestions);
+        // Mise à jour locale immédiate (filtre direct au lieu de rebuildBoxes pour préserver les boîtes vides)
+        const newQuestions = get().questions.filter((q) => q.boxName !== boxName);
+        const newBoxes = get().boxes.filter((b) => b.name !== boxName);
 
         set({
           questions: newQuestions,
-          boxes: boxes,
+          boxes: newBoxes,
         });
         get().backup();
+
+        // Re-sync depuis la DB pour garantir la cohérence
+        try {
+          await get().syncFromDB();
+        } catch { /* sync échouée, état local déjà à jour */ }
       },
 
       renameBox: async (oldName: string, newName: string) => {

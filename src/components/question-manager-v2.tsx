@@ -566,6 +566,11 @@ const QuestionManager = () => {
       return;
     }
 
+    // Reset le filtre si on supprime la boîte actuellement sélectionnée
+    if (selectedBox === boxName) {
+      setSelectedBox('');
+    }
+
     await removeBox(boxName);
   };
 
