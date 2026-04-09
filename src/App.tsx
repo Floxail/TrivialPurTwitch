@@ -106,7 +106,14 @@ useEffect(() => {
 			<div className="crt-overlay" />
 			<header className="app-header">
 				<div style={{ position: 'absolute', left: 0, fontSize: '1.3333rem', padding: '4px' }}>
-					<FontAwesomeIcon icon={['fab', 'galactic-republic']} color="var(--spot-color)" size="lg" />
+					<img 
+						src="/favicon.png" 
+						alt="Logo" 
+						width="30" 
+						height="30" 
+						className="me-2 d-inline-block align-top" 
+						style={{ borderRadius: '4px' }}
+						/>
 					<span className="btt" role="button" tabIndex={0} onClick={() => navigate('/quiz')} onKeyDown={(e) => e.key === 'Enter' && navigate('/quiz')} style={{ cursor: 'pointer' }}> <b>T</b>rivial<b>P</b>ur<b>T</b>witch</span>
 				</div>
 				<div style={{ position: 'absolute', right: 0 }}>

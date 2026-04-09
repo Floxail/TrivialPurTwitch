@@ -5,6 +5,118 @@ const Changelog = ({ show, onClose }: any) => {
   return (
     <Modal scrollable={true} show={show} centered size="lg" dialogClassName="changelog-modal">
       <Modal.Body>
+        <h3><u>07/04/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Couleurs dynamiques par boîte</h5>
+        <br />
+        <ul>
+          <li>Les sous-boîtes héritent automatiquement de la couleur de leur boîte parente (teinte atténuée)</li>
+          <li>Hover, sélection, crop marks et animations adaptés à la couleur de chaque boîte</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Création de boîte vide</h5>
+        <br />
+        <ul>
+          <li>Nouveau bouton <b>"Créer une Boîte"</b> dans la barre d'outils du gestionnaire de questions (admin)</li>
+          <li>Permet de créer une boîte vide pour y rattacher des sous-boîtes ou des questions plus tard</li>
+          <li>Détection de doublon (case-insensitive)</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Lisibilité améliorée des boîtes</h5>
+        <br />
+        <ul>
+          <li>Les boîtes non sélectionnées et éloignées du survol sont désormais <b>plus lisibles</b></li>
+          <li>Opacités minimales relevées pour garder les noms de boîtes toujours visibles</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Suppression du système de catégories</h5>
+        <br />
+        <ul>
+          <li>Les anciennes catégories (Géographie, Science, etc.) ont été supprimées</li>
+          <li>Les <b>Boîtes</b> sont désormais le seul organisateur de questions</li>
+          <li>Le badge en-tête de question affiche le nom de la boîte (blanc) au lieu de la catégorie</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Accordion inline pour les sous-boîtes</h5>
+        <br />
+        <ul>
+          <li>Les sous-boîtes s'affichent en <b>accordion inline</b> sous leur boîte parente</li>
+          <li>Plusieurs masters peuvent être dépliés simultanément (icônes ▶ / ▼)</li>
+          <li>Sous-boîtes indentées avec bordure gauche et icône └</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Grace period configurable</h5>
+        <br />
+        <ul>
+          <li>Nouveau slider dans les paramètres : <b>clémence FIRST</b> (100ms à 2000ms)</li>
+          <li>Les joueurs qui répondent dans cette fenêtre après le premier sont aussi considérés "premier"</li>
+          <li>Timer minimum de réponse abaissé de 15s à 10s</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
+        <h3><u>27/03/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Bonus Seul (+1 point)</h5>
+        <br />
+        <ul>
+          <li>Nouveau bonus : <b>+1 point</b> si vous êtes le seul joueur à avoir trouvé la bonne réponse</li>
+          <li>Cumulable avec First (+2) et Combo (max +3) — score max par question : <b>7 points</b></li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Combo max dans le podium</h5>
+        <br />
+        <ul>
+          <li>Le podium affiche désormais le <b>combo max</b> de chaque joueur au lieu du total de combos</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
+        <h3><u>21/03/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Page Statistiques</h5>
+        <br />
+        <ul>
+          <li>Nouvelle page <b>/stats</b> avec statistiques globales et par joueur</li>
+          <li>Stats joueur : score total, meilleur score, combos, performances par boîte, contributions</li>
+          <li>Lien partageable <b>/stats/pseudo</b> pour chaque joueur</li>
+          <li>Bouton "Mes stats" pré-rempli avec le pseudo Twitch connecté</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Attribution des créateurs</h5>
+        <br />
+        <ul>
+          <li>Le pseudo du créateur est affiché à côté de chaque boîte et question</li>
+          <li>Visible dans les statistiques joueur (questions ajoutées, boîtes créées)</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Pagination & optimisations</h5>
+        <br />
+        <ul>
+          <li>Pagination 50 questions/page dans le gestionnaire</li>
+          <li>Fix du temps de réponse (calcul réel basé sur le timestamp de réponse)</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
+        <h3><u>10/03/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Mode boîte ordonnée</h5>
+        <br />
+        <ul>
+          <li>Toggle <b>↓ Ordonné</b> pour jouer les questions dans l'ordre d'insertion</li>
+          <li>Activable à la création ou via le bouton dans l'en-tête de la boîte (admin)</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Nettoyage auth & code</h5>
+        <br />
+        <ul>
+          <li>Suppression complète du système API Key (tout passe par token Twitch Bearer)</li>
+          <li>Nettoyage de code mort : fichiers legacy, fonctions inutilisées</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
         <h3><u>21/02/2026</u></h3>
         <br />
         <h5 className="h5-with-line">Sélection de boîte au clic (page Quiz)</h5>

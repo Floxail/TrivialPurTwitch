@@ -156,50 +156,56 @@ const Quiz = () => {
 	const [reportSent, setReportSent] = useState(false);
 	const [reportError, setReportError] = useState('');
 
-	// MDR fisheye effect
+	// MDR fisheye effect — Severance-style radial magnification
 	const [mdrHoveredIndex, setMdrHoveredIndex] = useState<number | null>(null);
 	const mdrContainerRef = useRef<HTMLDivElement>(null);
 	const mdrItemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-	const mdrNeighborIndices = useMemo(() => {
-		if (mdrHoveredIndex === null || !mdrContainerRef.current) return new Set<number>();
-		const neighbors = new Set<number>();
+	// Compute distance rings from hovered element (fisheye gradient)
+	const mdrRingMap = useMemo(() => {
+		const map = new Map<number, 'near' | 'mid' | 'far'>();
+		if (mdrHoveredIndex === null || !mdrContainerRef.current) return map;
 		const hoveredEl = mdrItemRefs.current[mdrHoveredIndex];
-		if (!hoveredEl) return neighbors;
+		if (!hoveredEl) return map;
 
-		const hoveredRect = hoveredEl.getBoundingClientRect();
-		const hCenterX = hoveredRect.left + hoveredRect.width / 2;
-		const hCenterY = hoveredRect.top + hoveredRect.height / 2;
+		const hr = hoveredEl.getBoundingClientRect();
+		const hx = hr.left + hr.width / 2;
+		const hy = hr.top + hr.height / 2;
+		const unitW = hr.width;
+		const unitH = hr.height;
 
 		for (let i = 0; i < mdrItemRefs.current.length; i++) {
 			if (i === mdrHoveredIndex) continue;
 			const el = mdrItemRefs.current[i];
 			if (!el) continue;
-			const rect = el.getBoundingClientRect();
-			const cx = rect.left + rect.width / 2;
-			const cy = rect.top + rect.height / 2;
-			const dx = Math.abs(cx - hCenterX);
-			const dy = Math.abs(cy - hCenterY);
-			// Neighbor = adjacent horizontally (within ~1.5x width) or vertically (within ~1.5x height)
-			if (dx < hoveredRect.width * 1.8 && dy < hoveredRect.height * 1.8) {
-				neighbors.add(i);
-			}
+			const r = el.getBoundingClientRect();
+			const dx = Math.abs((r.left + r.width / 2) - hx);
+			const dy = Math.abs((r.top + r.height / 2) - hy);
+			// Normalized distance in "box units"
+			const dist = Math.sqrt((dx / unitW) ** 2 + (dy / unitH) ** 2);
+
+			if (dist < 1.6) map.set(i, 'near');
+			else if (dist < 3.0) map.set(i, 'mid');
+			else map.set(i, 'far');
 		}
-		return neighbors;
+		return map;
 	}, [mdrHoveredIndex]);
 
 	const getMdrClass = useCallback((mdrIndex: number) => {
-		// mdrIndex 0 = "Toutes", mdrIndex i+1 = displayedBoxes[i]
 		const isSelected = mdrIndex === 0
 			? selectedBoxNames === null
 			: (selectedBoxNames === null || selectedBoxNames.includes(displayedBoxes[mdrIndex - 1]?.box.name ?? ''));
-		const hoverClass = mdrHoveredIndex === null ? ''
-			: mdrIndex === mdrHoveredIndex ? 'mdr-focused'
-			: mdrNeighborIndices.has(mdrIndex) ? 'mdr-neighbor'
-			: 'mdr-dimmed';
+		let hoverClass = '';
+		if (mdrHoveredIndex !== null) {
+			if (mdrIndex === mdrHoveredIndex) hoverClass = 'mdr-focused';
+			else {
+				const ring = mdrRingMap.get(mdrIndex) || 'far';
+				hoverClass = `mdr-ring-${ring}`;
+			}
+		}
 		const selectionClass = isSelected ? 'mdr-selected' : 'mdr-unselected';
 		return `${hoverClass} ${selectionClass}`.trim();
-	}, [mdrHoveredIndex, mdrNeighborIndices, selectedBoxNames, displayedBoxes]);
+	}, [mdrHoveredIndex, mdrRingMap, selectedBoxNames, displayedBoxes]);
 
 	const handleBoxClick = useCallback((boxName: string) => {
 		setSelectedBoxNames(prev => {

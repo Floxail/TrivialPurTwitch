@@ -31,16 +31,13 @@ const Help = ({ show, onClose }: any) => {
 
         <h2>Scoring</h2>
         <ul>
-          {
-            <>
-              <li><b>2 points</b> sont attribué chaque fois qu'une personne est <i>la première</i> à trouver la bonne réponse</li>
-              <li>Tous les autres joueurs qui trouvent la même réponse dans les {settings.acceptanceDelay} secondes recevront <b>1 point</b></li>
-            </>
-          }
-          <li>Chaque joueur qui répond correctement plus d'une fois recevera <b>+1 point bonus</b> par réponse consécutive <i>avec une limite à 5 points bonus</i></li>
+          <li><b>1 point</b> pour chaque bonne réponse</li>
+          <li><b>+2 points FIRST</b> pour le premier joueur à trouver la bonne réponse (fenêtre de clémence : {settings.gracePeriodMs}ms)</li>
+          <li><b>+1 point SEUL</b> si vous êtes le <i>seul joueur</i> à avoir trouvé la bonne réponse</li>
+          <li><b>+1 à +3 points COMBO</b> par bonne réponse consécutive (max +3)</li>
         </ul>
+        <p className="text-muted small">Score max par question : 1 (base) + 2 (first) + 1 (seul) + 3 (combo) = <b>7 points</b></p>
 
-        {/* --- DÉBUT DU TABLEAU AJOUTÉ --- */}
         <div style={{ marginTop: '20px' }}>
           <h5>Exemple de progression (Streak)</h5>
           <Table striped bordered hover size="sm" responsive className="text-center" style={{ fontSize: '0.9em' }}>
@@ -49,67 +46,73 @@ const Help = ({ show, onClose }: any) => {
                 <th>Question</th>
                 <th>Résultat</th>
                 <th>Base</th>
-                <th>Bonus Série</th>
-                <th>Points Gagnés</th>
+                <th>First</th>
+                <th>Seul</th>
+                <th>Combo</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Q1</td>
-                <td>1er (Correct)</td>
-                <td>2 pts</td>
+                <td>1er, seul à répondre</td>
+                <td>1</td>
+                <td>+2</td>
+                <td>+1</td>
                 <td>0</td>
-                <td><strong>2 pts</strong></td>
+                <td><strong>4 pts</strong></td>
               </tr>
               <tr>
                 <td>Q2</td>
                 <td>Bonne réponse</td>
-                <td>1 pt</td>
-                <td>+ 1</td>
+                <td>1</td>
+                <td>-</td>
+                <td>-</td>
+                <td>+1</td>
                 <td><strong>2 pts</strong></td>
               </tr>
               <tr>
                 <td>Q3</td>
-                <td>Bonne réponse</td>
-                <td>1 pt</td>
-                <td>+ 2</td>
-                <td><strong>3 pts</strong></td>
+                <td>1er</td>
+                <td>1</td>
+                <td>+2</td>
+                <td>-</td>
+                <td>+2</td>
+                <td><strong>5 pts</strong></td>
               </tr>
-              <tr style={{ opacity: 0.6 }}> {/* Grisé pour montrer l'échec */}
+              <tr style={{ opacity: 0.6 }}>
                 <td>Q4</td>
                 <td>Mauvaise réponse</td>
-                <td>0 pt</td>
-                <td style={{ color: 'red', fontWeight: 'bold' }}>0 (Reset)</td>
+                <td>0</td>
+                <td>-</td>
+                <td>-</td>
+                <td style={{ color: 'red', fontWeight: 'bold' }}>Reset</td>
                 <td>0 pt</td>
               </tr>
               <tr>
                 <td>Q5</td>
-                <td>1er (Correct)</td>
-                <td>2 pts</td>
+                <td>1er, seul à répondre</td>
+                <td>1</td>
+                <td>+2</td>
+                <td>+1</td>
                 <td>0</td>
-                <td><strong>2 pts</strong></td>
+                <td><strong>4 pts</strong></td>
               </tr>
               <tr>
-                <td colSpan={5}>... <i>Suite de bonnes réponses</i> ...</td>
+                <td colSpan={7}>... <i>Suite de bonnes réponses</i> ...</td>
               </tr>
               <tr>
-                <td>Q10</td>
-                <td>1er (Correct)</td>
-                <td>2 pts</td>
-                <td style={{ color: 'green', fontWeight: 'bold' }}>+ 5 (Max)</td>
+                <td>Q9</td>
+                <td>1er, seul à répondre</td>
+                <td>1</td>
+                <td>+2</td>
+                <td>+1</td>
+                <td style={{ color: 'green', fontWeight: 'bold' }}>+3 (Max)</td>
                 <td><strong>7 pts</strong></td>
-              </tr>
-              <tr>
-                <td>Q11</td>
-                <td>Bonne réponse</td>
-                <td>1 pt</td>
-                <td style={{ color: 'green', fontWeight: 'bold' }}>+ 5 (Max)</td>
-                <td><strong>6 pts</strong></td>
               </tr>
             </tbody>
           </Table>
         </div>
-        {/* --- FIN DU TABLEAU AJOUTÉ --- */}
 
       </Modal.Body>
       <Modal.Footer>
