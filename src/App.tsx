@@ -38,47 +38,25 @@ function App() {
 	}, []);
 
 	// Migration automatique au premier chargement
-	// Migration automatique au premier chargement
-useEffect(() => {
-  const migrated = localStorage.getItem('quiz_migration_v2_done');
-  if (!migrated) {
-    console.log('🔄 Migration v1 → v2 détectée...');
-    questionsStore.migrateFromV1();
-    localStorage.setItem('quiz_migration_v2_done', 'true');
-  }
-  
-  // Charger depuis la BD Turso au démarrage
-  const lastSync = localStorage.getItem('quiz_last_db_sync');
-  const now = Date.now();
-  const oneHour = 60 * 60 * 1000;
+	useEffect(() => {
+		const migrated = localStorage.getItem('quiz_migration_v2_done');
+		if (!migrated) {
+			console.log('🔄 Migration v1 → v2 détectée...');
+			questionsStore.migrateFromV1();
+			localStorage.setItem('quiz_migration_v2_done', 'true');
+		}
 
-  // Synchroniser si :
-  // - Jamais synchronisé
-  // - Dernière sync > 1h
-  if (!lastSync || (now - parseInt(lastSync)) > oneHour) {
-    console.log('🔄 Chargement des questions depuis la BD Turso...');
-    questionsStore.syncFromDB().then(() => {
-      localStorage.setItem('quiz_last_db_sync', now.toString());
-    });
-  }
+		// Auto-sync au démarrage (silencieux si < 15min, complet sinon)
+		questionsStore.autoSyncIfNeeded();
 
-  // Sync périodique en arrière-plan toutes les heures
-  const syncInterval = setInterval(() => {
-    const lastSyncTime = localStorage.getItem('quiz_last_db_sync');
-    const currentTime = Date.now();
+		// Sync périodique en arrière-plan toutes les 15 minutes (silencieux)
+		const syncInterval = setInterval(() => {
+			questionsStore.autoSyncIfNeeded();
+		}, 15 * 60 * 1000);
 
-    if (!lastSyncTime || (currentTime - parseInt(lastSyncTime)) > oneHour) {
-      console.log('🔄 Synchronisation automatique en arrière-plan (BD)...');
-      questionsStore.syncFromDB().then(() => {
-        localStorage.setItem('quiz_last_db_sync', currentTime.toString());
-      });
-    }
-  }, oneHour);
-
-  // Nettoyer l'intervalle quand le composant est démonté
-  return () => clearInterval(syncInterval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+		return () => clearInterval(syncInterval);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
 		if (!authStore.isLoggedIn()) {

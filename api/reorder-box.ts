@@ -58,23 +58,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Mettre à jour created_at avec des timestamps incrémentaux (1 seconde d'écart)
+    // Utilisation de batch() pour envoyer toutes les mises à jour en une seule transaction réseau
     const baseDate = new Date('2020-01-01T00:00:00Z');
-    let updated = 0;
 
-    for (let i = 0; i < questionIds.length; i++) {
+    const statements = questionIds.map((id: string, i: number) => {
       const ts = new Date(baseDate.getTime() + i * 1000).toISOString().replace('T', ' ').replace(/\.\d+Z$/, '');
-      await getDb().execute({
+      return {
         sql: 'UPDATE questions SET created_at = ? WHERE id = ? AND box_name = ?',
-        args: [ts, questionIds[i], boxName],
-      });
-      updated++;
-    }
+        args: [ts, id, boxName],
+      };
+    });
+
+    await getDb().batch(statements as any, 'write');
 
     return res.status(200).json({
       success: true,
       boxName,
-      updated,
-      message: `${updated} questions réordonnées dans "${boxName}"`,
+      updated: questionIds.length,
+      message: `${questionIds.length} questions réordonnées dans "${boxName}"`,
     });
   } catch (err: any) {
     console.error('Reorder box error:', err);

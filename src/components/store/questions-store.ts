@@ -109,8 +109,10 @@ type QuestionsActions = {
   // Migration
   migrateFromV1: () => void;
 
-  // Synchroniser les questions depuis la BD Turso
-  syncFromDB: () => Promise<void>;
+  // Synchroniser les questions depuis la BD Turso (silent = pas de syncStatus 'loading')
+  syncFromDB: (silent?: boolean) => Promise<void>;
+  // Auto-sync si la dernière sync date de plus de 15 minutes
+  autoSyncIfNeeded: () => Promise<void>;
 
   // Backup complet
   exportFullBackup: () => any;
@@ -166,77 +168,85 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
       // ========== GESTION DES QUESTIONS ==========
 
       addQuestion: async (question: Question) => {
+        // Optimistic UI : mise à jour locale immédiate, rollback si API échoue
+        const prevQuestions = get().questions;
+        const prevBoxes = get().boxes;
+
+        const newQuestions = [...prevQuestions, question];
+        const boxes = get().rebuildBoxes(newQuestions);
+        set({ questions: newQuestions, boxes });
+        get().backup();
+
         try {
           await apiCreateQuestion(question);
         } catch (err) {
-          console.warn('⚠️ API addQuestion échouée, sauvegarde locale uniquement', err);
+          console.warn('⚠️ API addQuestion échouée — rollback', err);
+          set({ questions: prevQuestions, boxes: prevBoxes });
+          get().backup();
+          throw err;
         }
-
-        const currentQuestions = get().questions;
-        const newQuestions = [...currentQuestions, question];
-        const boxes = get().rebuildBoxes(newQuestions);
-
-        set({
-          questions: newQuestions,
-          boxes: boxes,
-        });
-        get().backup();
       },
 
       updateQuestion: async (questionId: string, updates: Partial<Question>) => {
-        try {
-          await apiUpdateQuestion(questionId, updates);
-        } catch (err) {
-          console.warn('⚠️ API updateQuestion échouée, sauvegarde locale uniquement', err);
-        }
+        // Optimistic UI : mise à jour locale immédiate, rollback si API échoue
+        const prevQuestions = get().questions;
+        const prevBoxes = get().boxes;
 
-        const currentQuestions = get().questions;
-        const newQuestions = currentQuestions.map((q) =>
+        const newQuestions = prevQuestions.map((q) =>
           q.id === questionId ? { ...q, ...updates } : q
         );
         const boxes = get().rebuildBoxes(newQuestions);
-
-        set({
-          questions: newQuestions,
-          boxes: boxes,
-        });
+        set({ questions: newQuestions, boxes });
         get().backup();
+
+        try {
+          await apiUpdateQuestion(questionId, updates);
+        } catch (err) {
+          console.warn('⚠️ API updateQuestion échouée — rollback', err);
+          set({ questions: prevQuestions, boxes: prevBoxes });
+          get().backup();
+          throw err;
+        }
       },
 
       deleteQuestion: async (questionId: string) => {
+        // Optimistic UI : suppression locale immédiate, rollback si API échoue
+        const prevQuestions = get().questions;
+        const prevBoxes = get().boxes;
+
+        const newQuestions = prevQuestions.filter((q) => q.id !== questionId);
+        const boxes = get().rebuildBoxes(newQuestions);
+        set({ questions: newQuestions, boxes });
+        get().backup();
+
         try {
           await apiDeleteQuestion(questionId);
         } catch (err) {
-          console.warn('⚠️ API deleteQuestion échouée, suppression locale uniquement', err);
+          console.warn('⚠️ API deleteQuestion échouée — rollback', err);
+          set({ questions: prevQuestions, boxes: prevBoxes });
+          get().backup();
+          throw err;
         }
-
-        const currentQuestions = get().questions;
-        const newQuestions = currentQuestions.filter((q) => q.id !== questionId);
-        const boxes = get().rebuildBoxes(newQuestions);
-
-        set({
-          questions: newQuestions,
-          boxes: boxes,
-        });
-        get().backup();
       },
 
       bulkAddQuestions: async (questions: Question[]) => {
+        // Optimistic UI : ajout local immédiat, rollback si API échoue
+        const prevQuestions = get().questions;
+        const prevBoxes = get().boxes;
+
+        const newQuestions = [...prevQuestions, ...questions];
+        const boxes = get().rebuildBoxes(newQuestions);
+        set({ questions: newQuestions, boxes });
+        get().backup();
+
         try {
           await apiBulkAddQuestions(questions);
         } catch (err) {
-          console.warn('⚠️ API bulkAddQuestions échouée, sauvegarde locale uniquement', err);
+          console.warn('⚠️ API bulkAddQuestions échouée — rollback', err);
+          set({ questions: prevQuestions, boxes: prevBoxes });
+          get().backup();
+          throw err;
         }
-
-        const currentQuestions = get().questions;
-        const newQuestions = [...currentQuestions, ...questions];
-        const boxes = get().rebuildBoxes(newQuestions);
-
-        set({
-          questions: newQuestions,
-          boxes: boxes,
-        });
-        get().backup();
       },
 
       // ========== GESTION DES BOÎTES ==========
@@ -289,12 +299,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           return; // La boîte existe déjà
         }
 
-        try {
-          await apiCreateBox(boxName, ordered, description, parentBox);
-        } catch (err) {
-          console.warn('⚠️ API addBox échouée, sauvegarde locale uniquement', err);
-        }
-
+        // Optimistic UI : ajout local immédiat, rollback si API échoue
         const newBox: TrivialBox = {
           name: boxName,
           cardNumbers: [],
@@ -303,50 +308,61 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           description: description || null,
           parentBox: parentBox || null,
         };
-
         set({ boxes: [...currentBoxes, newBox] });
         get().backup();
+
+        try {
+          await apiCreateBox(boxName, ordered, description, parentBox);
+        } catch (err) {
+          console.warn('⚠️ API addBox échouée — rollback', err);
+          set({ boxes: currentBoxes });
+          get().backup();
+          throw err;
+        }
       },
 
       removeBox: async (boxName: string) => {
+        // Optimistic UI : suppression locale immédiate, rollback si API échoue
+        const prevQuestions = get().questions;
+        const prevBoxes = get().boxes;
+
+        const newQuestions = prevQuestions.filter((q) => q.boxName !== boxName);
+        const newBoxes = prevBoxes.filter((b) => b.name !== boxName);
+        set({ questions: newQuestions, boxes: newBoxes });
+        get().backup();
+
         try {
           await apiDeleteBox(boxName);
         } catch (err) {
-          console.warn('⚠️ API removeBox échouée, suppression locale uniquement', err);
+          console.warn('⚠️ API removeBox échouée — rollback', err);
+          set({ questions: prevQuestions, boxes: prevBoxes });
+          get().backup();
+          throw err;
         }
-
-        // Mise à jour locale immédiate (filtre direct au lieu de rebuildBoxes pour préserver les boîtes vides)
-        const newQuestions = get().questions.filter((q) => q.boxName !== boxName);
-        const newBoxes = get().boxes.filter((b) => b.name !== boxName);
-
-        set({
-          questions: newQuestions,
-          boxes: newBoxes,
-        });
-        get().backup();
-
-        // Re-sync depuis la DB pour garantir la cohérence
-        try {
-          await get().syncFromDB();
-        } catch { /* sync échouée, état local déjà à jour */ }
       },
 
       renameBox: async (oldName: string, newName: string) => {
+        // Optimistic UI : renommage local immédiat, rollback si API échoue
+        const prevQuestions = get().questions;
+        const prevBoxes = get().boxes;
+
+        const newQuestions = prevQuestions.map((q) =>
+          q.boxName === oldName ? { ...q, boxName: newName } : q
+        );
+        const newBoxes = prevBoxes.map((b) =>
+          b.name === oldName ? { ...b, name: newName } : b
+        );
+        set({ questions: newQuestions, boxes: newBoxes });
+        get().backup();
+
         try {
           await apiRenameBox(oldName, newName);
         } catch (err) {
-          console.warn('⚠️ API renameBox échouée, renommage local uniquement', err);
+          console.warn('⚠️ API renameBox échouée — rollback', err);
+          set({ questions: prevQuestions, boxes: prevBoxes });
+          get().backup();
+          throw err;
         }
-
-        const currentQuestions = get().questions.map((q) =>
-          q.boxName === oldName ? { ...q, boxName: newName } : q
-        );
-        const currentBoxes = get().boxes.map((b) =>
-          b.name === oldName ? { ...b, name: newName } : b
-        );
-
-        set({ questions: currentQuestions, boxes: currentBoxes });
-        get().backup();
       },
 
       // ========== RÉCUPÉRATION DES QUESTIONS ==========
@@ -424,39 +440,15 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
       },
 
       updateBox: async (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean; parentBox?: string | null }) => {
-        // Rename si nécessaire
+        // Rename si nécessaire (renameBox est déjà optimistic avec rollback)
         if (updates.newName && updates.newName !== boxName) {
           await get().renameBox(boxName, updates.newName);
           boxName = updates.newName;
         }
-        // Patch ordered + description + parentBox via PATCH
-        const patchPayload: any = { name: boxName };
-        let hasPatch = false;
-        if (updates.ordered !== undefined) {
-          patchPayload.ordered = updates.ordered;
-          hasPatch = true;
-        }
-        if (updates.description !== undefined) {
-          patchPayload.description = updates.description;
-          hasPatch = true;
-        }
-        if (updates.hidden !== undefined) {
-          patchPayload.hidden = updates.hidden;
-          hasPatch = true;
-        }
-        if (updates.parentBox !== undefined) {
-          patchPayload.parentBox = updates.parentBox;
-          hasPatch = true;
-        }
-        if (hasPatch) {
-          try {
-            await apiUpdateBox(boxName, patchPayload);
-          } catch (err) {
-            console.warn('⚠️ API updateBox échouée, mise à jour locale uniquement', err);
-          }
-        }
-        // Mise à jour locale
-        const boxes = get().boxes.map(b => {
+
+        // Optimistic UI : mise à jour locale immédiate, rollback si API échoue
+        const prevBoxes = get().boxes;
+        const newBoxes = prevBoxes.map(b => {
           if (b.name !== boxName) return b;
           return {
             ...b,
@@ -466,8 +458,27 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
             ...(updates.parentBox !== undefined && { parentBox: updates.parentBox }),
           };
         });
-        set({ boxes });
+        set({ boxes: newBoxes });
         get().backup();
+
+        // Patch API
+        const patchPayload: any = { name: boxName };
+        let hasPatch = false;
+        if (updates.ordered !== undefined) { patchPayload.ordered = updates.ordered; hasPatch = true; }
+        if (updates.description !== undefined) { patchPayload.description = updates.description; hasPatch = true; }
+        if (updates.hidden !== undefined) { patchPayload.hidden = updates.hidden; hasPatch = true; }
+        if (updates.parentBox !== undefined) { patchPayload.parentBox = updates.parentBox; hasPatch = true; }
+
+        if (hasPatch) {
+          try {
+            await apiUpdateBox(boxName, patchPayload);
+          } catch (err) {
+            console.warn('⚠️ API updateBox échouée — rollback', err);
+            set({ boxes: prevBoxes });
+            get().backup();
+            throw err;
+          }
+        }
       },
 
       // ========== SETTINGS ==========
@@ -517,9 +528,9 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
       // ========== SYNCHRONISATION DEPUIS LA BD TURSO ==========
 
-      syncFromDB: async () => {
+      syncFromDB: async (silent = false) => {
         try {
-          set({ syncStatus: 'loading' });
+          if (!silent) set({ syncStatus: 'loading' });
 
           const dbData = await loadQuestionsFromAPI();
 
@@ -598,7 +609,16 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           console.log(`✅ ${mergedQuestions.length} questions chargées depuis la BD`);
         } catch (error) {
           console.error('❌ Erreur lors de la synchronisation BD:', error);
-          set({ syncStatus: 'error' });
+          if (!silent) set({ syncStatus: 'error' });
+        }
+      },
+
+      autoSyncIfNeeded: async () => {
+        const lastSync = get().lastDBSync;
+        const fifteenMinutes = 15 * 60 * 1000;
+        if (!lastSync || (Date.now() - new Date(lastSync).getTime()) > fifteenMinutes) {
+          console.log('🔄 Auto-sync silencieux (>15min depuis la dernière sync)...');
+          await get().syncFromDB(true);
         }
       },
 
