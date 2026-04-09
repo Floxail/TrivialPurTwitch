@@ -1155,6 +1155,24 @@ const Quiz = () => {
 											{currentQuestion.question}
 										</h2>
 
+										{/* Image associée à la question */}
+										{currentQuestion.imageUrl && (
+											<div style={{ textAlign: 'center', marginTop: '1rem' }}>
+												<img
+													src={currentQuestion.imageUrl}
+													alt="Illustration de la question"
+													style={{
+														maxHeight: '300px',
+														maxWidth: '100%',
+														objectFit: 'contain',
+														borderRadius: '8px',
+														border: '1px solid var(--lumon-cyan)',
+													}}
+													onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+												/>
+											</div>
+										)}
+
 										{/* Options QCM */}
 										{isQcmQuestion && currentQuestion.qcmOptions && !questionRevealed && (
 											<div className="qcm-options mt-4" style={{ width: '100%', maxWidth: '700px' }}>

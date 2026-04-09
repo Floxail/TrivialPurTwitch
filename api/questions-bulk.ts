@@ -50,8 +50,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const statements = questions.map((q: any) => ({
       sql: `INSERT OR IGNORE INTO questions
             (id, question, answer, alternative_answers, category, box_name,
-             card_number, difficulty, question_type, qcm_options, qcm_correct_index)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             card_number, difficulty, question_type, qcm_options, qcm_correct_index, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         q.id,
         q.question,
@@ -64,6 +64,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         q.questionType ?? 'free_text',
         q.qcmOptions ? JSON.stringify(q.qcmOptions) : null,
         q.qcmCorrectIndex ?? null,
+        q.imageUrl || null,
       ],
     }));
 

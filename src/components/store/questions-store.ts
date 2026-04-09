@@ -46,6 +46,7 @@ export type Question = {
   qcmCorrectIndex?: number; // Index de la bonne réponse (legacy, single answer)
   qcmCorrectIndexes?: number[]; // Index des bonnes réponses (multi-réponses)
   createdAt?: string; // Date de création (pour l'ordre dans les boîtes ordonnées)
+  imageUrl?: string; // URL externe d'une image associée (Discord, Imgur, etc.)
 };
 
 // Structure d'une boîte (contient plusieurs cartes)

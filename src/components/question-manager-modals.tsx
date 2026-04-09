@@ -22,6 +22,7 @@ interface QuestionFormData {
   qcmOptions: string[];
   qcmCorrectIndex: number;
   qcmCorrectIndexes: number[];
+  imageUrl: string;
 }
 
 interface QuestionModalProps {
@@ -62,6 +63,7 @@ const defaultFormData: QuestionFormData = {
   qcmOptions: ['', ''],
   qcmCorrectIndex: 0,
   qcmCorrectIndexes: [0],
+  imageUrl: '',
 };
 
 export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
@@ -91,6 +93,7 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
           qcmOptions: editingQuestion.qcmOptions || ['', ''],
           qcmCorrectIndex: editingQuestion.qcmCorrectIndex ?? 0,
           qcmCorrectIndexes: editingQuestion.qcmCorrectIndexes ?? (editingQuestion.qcmCorrectIndex !== undefined ? [editingQuestion.qcmCorrectIndex] : [0]),
+          imageUrl: editingQuestion.imageUrl || '',
         });
       } else {
         setFormData({
@@ -219,6 +222,19 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
               <option value="medium">Moyen</option>
               <option value="hard">Difficile</option>
             </Form.Select>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>URL de l'image (Optionnel)</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ex: lien Discord ou Imgur (https://i.imgur.com/...)"
+              value={formData.imageUrl}
+              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+            />
+            <Form.Text className="text-muted">
+              L'image sera affichée sous la question pendant le quiz
+            </Form.Text>
           </Form.Group>
 
           {/* Options QCM */}
