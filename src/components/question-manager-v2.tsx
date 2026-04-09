@@ -85,7 +85,7 @@ const EditBoxModal = React.memo(({ box, allBoxes, isMaster, onConfirm, onClose }
         <Form.Check
           type="switch"
           id="editBoxOrdered"
-          label="↓ Mode ordonné (questions jouées dans l'ordre d'insertion)"
+          label="↓ Mode ordonné"
           checked={ordered}
           onChange={(e) => setOrdered(e.target.checked)}
           className="mb-2"
@@ -93,7 +93,7 @@ const EditBoxModal = React.memo(({ box, allBoxes, isMaster, onConfirm, onClose }
         <Form.Check
           type="switch"
           id="editBoxHidden"
-          label="Masquer pour le public (visible uniquement pour les modos)"
+          label="Masquer pour le public"
           checked={hidden}
           onChange={(e) => setHidden(e.target.checked)}
         />
@@ -133,7 +133,7 @@ const QuestionManager = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [selectedBox, setSelectedBox] = useState<string>('');
-  const [filterBoxType, setFilterBoxType] = useState<'all' | 'master' | 'sub'>('all');
+  const [filterBoxType, setFilterBoxType] = useState<'all' | 'master' | 'sub' | 'unique'>('all');
   const [filterType, setFilterType] = useState<'all' | 'free_text' | 'qcm'>('all');
   const [importSuccess, setImportSuccess] = useState<string>('');
   const [importError, setImportError] = useState<string>('');
@@ -225,7 +225,7 @@ const QuestionManager = () => {
       message += `... et ${duplicates.length - 5} autre(s)\n\n`;
     }
 
-    message += 'Voulez-vous supprimer les doublons ?\n(garde seulement la première occurrence de chaque question)';
+    message += 'Voulez-vous supprimer les doublons ?\n';
 
     if (!window.confirm(message)) {
       return;
@@ -235,7 +235,7 @@ const QuestionManager = () => {
     setImportSuccess('⏳ Suppression des doublons en cours...');
     try {
       const removedCount = await removeDuplicates();
-      setImportSuccess(`✅ ${removedCount} doublon(s) supprimé(s) (local + DB) !`);
+      setImportSuccess(`✅ ${removedCount} doublon(s) supprimé(s)!`);
     } catch (err) {
       console.error('Erreur suppression doublons:', err);
       setImportSuccess('⚠️ Erreur lors de la suppression des doublons');
@@ -317,6 +317,8 @@ const QuestionManager = () => {
   const filteredBoxesByType = useMemo(() => {
     if (filterBoxType === 'master') return boxesWithStats.filter(b => masterBoxNames.has(b.name));
     if (filterBoxType === 'sub') return boxesWithStats.filter(b => !!b.parentBox);
+    if (filterBoxType === 'unique') return boxesWithStats.filter(b => !b.parentBox && !masterBoxNames.has(b.name));
+
     return boxesWithStats;
   }, [boxesWithStats, filterBoxType, masterBoxNames]);
 
@@ -976,11 +978,12 @@ const QuestionManager = () => {
             <Form.Select
               style={{ width: '180px' }}
               value={filterBoxType}
-              onChange={(e) => { setFilterBoxType(e.target.value as 'all' | 'master' | 'sub'); setSelectedBox(''); }}
+              onChange={(e) => { setFilterBoxType(e.target.value as 'all' | 'master' | 'sub' | 'unique'); setSelectedBox(''); }}
             >
               <option value="all">Tous les types</option>
               <option value="master">Master Boxes</option>
               <option value="sub">Sous-boîtes</option>
+              <option value="Unique">Indépendante</option>
             </Form.Select>
             <Form.Select
               style={{ width: '250px' }}
@@ -1002,6 +1005,7 @@ const QuestionManager = () => {
               <p className="mt-3 text-muted">
                 {filterBoxType === 'master' ? 'Aucune Master Box trouvée.' :
                  filterBoxType === 'sub' ? 'Aucune sous-boîte trouvée.' :
+                 filterBoxType === 'unique' ? 'Aucune boîte indépendante trouvée.' :
                  'Aucune boîte. Créez votre première boîte et importez des questions.'}
               </p>
             </div>
