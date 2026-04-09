@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Button, Form, Table, Badge, Tabs, Tab, Alert, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { Question, QuestionType, useQuestionsStore } from './store/questions-store';
+import { Question, QuestionType, TrivialBox, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
 import { useAuthStore } from './store/auth-store';
 import { QuestionModal, BulkActionsModal } from './question-manager-modals';
@@ -133,6 +133,7 @@ const QuestionManager = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [selectedBox, setSelectedBox] = useState<string>('');
+  const [filterBoxType, setFilterBoxType] = useState<'all' | 'master' | 'sub'>('all');
   const [filterType, setFilterType] = useState<'all' | 'free_text' | 'qcm'>('all');
   const [importSuccess, setImportSuccess] = useState<string>('');
   const [importError, setImportError] = useState<string>('');
@@ -295,6 +296,29 @@ const QuestionManager = () => {
       totalQuestions: countMap.get(box.name) || 0
     }));
   }, [visibleBoxes, storeQuestions]);
+
+  // Map: master box name → sous-boîtes
+  const subBoxesByMaster = useMemo(() => {
+    const map = new Map<string, TrivialBox[]>();
+    for (const box of boxesWithStats) {
+      if (box.parentBox) {
+        const subs = map.get(box.parentBox) || [];
+        subs.push(box);
+        map.set(box.parentBox, subs);
+      }
+    }
+    return map;
+  }, [boxesWithStats]);
+
+  // Set des noms de master boxes (ont au moins une sous-boîte)
+  const masterBoxNames = useMemo(() => new Set(subBoxesByMaster.keys()), [subBoxesByMaster]);
+
+  // Boîtes filtrées par type (master/sub/all)
+  const filteredBoxesByType = useMemo(() => {
+    if (filterBoxType === 'master') return boxesWithStats.filter(b => masterBoxNames.has(b.name));
+    if (filterBoxType === 'sub') return boxesWithStats.filter(b => !!b.parentBox);
+    return boxesWithStats;
+  }, [boxesWithStats, filterBoxType, masterBoxNames]);
 
   // La boîte sélectionnée est-elle ordonnée ?
   const selectedBoxIsOrdered = useMemo(() => {
@@ -948,42 +972,55 @@ const QuestionManager = () => {
 
       <Tabs defaultActiveKey="boxes" className="mb-3">
         <Tab eventKey="boxes" title="📦 Boîtes">
-          <div className="mb-3 d-flex justify-content-end">
-            <div>
-              <Form.Select
-                style={{ width: '250px' }}
-                value={selectedBox}
-                onChange={(e) => setSelectedBox(e.target.value)}
-              >
-                <option value="">Toutes les boîtes</option>
-                {boxesWithStats.map(box => (
-                  <option key={box.name} value={box.name}>
-                    {box.name} ({box.totalQuestions} questions)
-                  </option>
-                ))}
-              </Form.Select>
-            </div>
+          <div className="mb-3 d-flex justify-content-end gap-2">
+            <Form.Select
+              style={{ width: '180px' }}
+              value={filterBoxType}
+              onChange={(e) => { setFilterBoxType(e.target.value as 'all' | 'master' | 'sub'); setSelectedBox(''); }}
+            >
+              <option value="all">Tous les types</option>
+              <option value="master">Master Boxes</option>
+              <option value="sub">Sous-boîtes</option>
+            </Form.Select>
+            <Form.Select
+              style={{ width: '250px' }}
+              value={selectedBox}
+              onChange={(e) => setSelectedBox(e.target.value)}
+            >
+              <option value="">Toutes les boîtes</option>
+              {filteredBoxesByType.map(box => (
+                <option key={box.name} value={box.name}>
+                  {box.name} ({box.totalQuestions} questions)
+                </option>
+              ))}
+            </Form.Select>
           </div>
 
-          {boxesWithStats.length === 0 ? (
+          {filteredBoxesByType.length === 0 ? (
             <div className="text-center p-5">
               <FontAwesomeIcon icon={['fas', 'box']} size="3x" color="var(--alt-text-color)" />
-              <p className="mt-3 text-muted">Aucune boîte. Créez votre première boîte et importez des questions.</p>
+              <p className="mt-3 text-muted">
+                {filterBoxType === 'master' ? 'Aucune Master Box trouvée.' :
+                 filterBoxType === 'sub' ? 'Aucune sous-boîte trouvée.' :
+                 'Aucune boîte. Créez votre première boîte et importez des questions.'}
+              </p>
             </div>
           ) : (
             <div className="row">
-              {(selectedBox ? boxesWithStats.filter(b => b.name === selectedBox) : boxesWithStats).map(box => {
+              {(selectedBox ? filteredBoxesByType.filter(b => b.name === selectedBox) : filteredBoxesByType).map(box => {
                 // Compter les types de questions
                 const boxQuestions = getBoxQuestions(box.name);
                 const qcmCount = boxQuestions.filter(q => q.questionType === QuestionType.QCM).length;
                 const freeTextCount = boxQuestions.length - qcmCount;
+                const isMasterBox = masterBoxNames.has(box.name);
+                const childBoxes = subBoxesByMaster.get(box.name) || [];
 
                 return (
                   <div key={box.name} className="col-md-6 mb-3">
                     <div className="card">
                       <div className="card-header d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">
-                          <FontAwesomeIcon icon={['fas', box.parentBox ? 'folder-open' : (storeBoxes.some(b => b.parentBox === box.name) ? 'layer-group' : 'box')]} className="me-2" />
+                          <FontAwesomeIcon icon={['fas', box.parentBox ? 'folder-open' : (isMasterBox ? 'layer-group' : 'box')]} className="me-2" />
                           {box.ordered && <span title="Mode ordonné" style={{ fontSize: '0.7em', marginRight: '4px' }}>↓</span>}
                           {box.hidden && <FontAwesomeIcon icon={['fas', 'eye-slash']} className="me-1" title="Masquée pour le public" style={{ fontSize: '0.7em', opacity: 0.6 }} />}
                           {box.name}
@@ -1034,11 +1071,42 @@ const QuestionManager = () => {
                             {box.description}
                           </p>
                         )}
+                        {/* Sous-boîtes pour les Master Boxes */}
+                        {isMasterBox && childBoxes.length > 0 && (
+                          <div className="mb-3">
+                            <small className="text-muted d-block mb-1">
+                              <FontAwesomeIcon icon={['fas', 'sitemap']} className="me-1" />
+                              {childBoxes.length} sous-boîte{childBoxes.length > 1 ? 's' : ''} :
+                            </small>
+                            <div className="d-flex flex-wrap gap-1">
+                              {childBoxes.map(sub => (
+                                <Badge
+                                  key={sub.name}
+                                  bg="info"
+                                  className="me-1"
+                                  style={{ cursor: 'pointer', fontSize: '0.8em' }}
+                                  title={`${sub.totalQuestions} question${sub.totalQuestions > 1 ? 's' : ''} — Cliquer pour voir`}
+                                  onClick={() => { setFilterBoxType('all'); setSelectedBox(sub.name); }}
+                                >
+                                  <FontAwesomeIcon icon={['fas', 'folder-open']} className="me-1" />
+                                  {sub.name}
+                                  <span className="ms-1" style={{ opacity: 0.7 }}>({sub.totalQuestions})</span>
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                         {/* Statistiques */}
                         <div className="mb-3">
-                          <Badge bg="secondary" className="me-2">
-                            {box.totalQuestions} question{box.totalQuestions > 1 ? 's' : ''}
-                          </Badge>
+                          {isMasterBox ? (
+                            <Badge bg="secondary" className="me-2">
+                              {childBoxes.reduce((sum, s) => sum + s.totalQuestions, 0) + box.totalQuestions} question{(childBoxes.reduce((sum, s) => sum + s.totalQuestions, 0) + box.totalQuestions) > 1 ? 's' : ''} (total)
+                            </Badge>
+                          ) : (
+                            <Badge bg="secondary" className="me-2">
+                              {box.totalQuestions} question{box.totalQuestions > 1 ? 's' : ''}
+                            </Badge>
+                          )}
                           {qcmCount > 0 && (
                             <Badge bg="success" className="me-2">
                               📋 {qcmCount} QCM
