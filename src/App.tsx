@@ -46,15 +46,28 @@ function App() {
 			localStorage.setItem('quiz_migration_v2_done', 'true');
 		}
 
-		// Auto-sync au démarrage (silencieux si < 15min, complet sinon)
-		questionsStore.autoSyncIfNeeded();
+		// Sync obligatoire au démarrage (non-silencieux) pour garantir des données fraîches
+		questionsStore.syncFromDB();
 
-		// Sync périodique en arrière-plan toutes les 15 minutes (silencieux)
+		// Sync périodique en arrière-plan toutes les 2 minutes (silencieux)
 		const syncInterval = setInterval(() => {
 			questionsStore.autoSyncIfNeeded();
-		}, 15 * 60 * 1000);
+		}, 2 * 60 * 1000);
 
-		return () => clearInterval(syncInterval);
+		// Sync quand l'utilisateur revient sur l'onglet (changement de visibilité ou focus)
+		const onVisible = () => {
+			if (document.visibilityState === 'visible') {
+				questionsStore.autoSyncIfNeeded();
+			}
+		};
+		document.addEventListener('visibilitychange', onVisible);
+		window.addEventListener('focus', onVisible);
+
+		return () => {
+			clearInterval(syncInterval);
+			document.removeEventListener('visibilitychange', onVisible);
+			window.removeEventListener('focus', onVisible);
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
