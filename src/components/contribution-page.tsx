@@ -5,7 +5,6 @@ import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
 import {
   useQuestionsStore,
-  Question,
   QuestionType,
 } from './store/questions-store';
 import { apiSubmitQuestion, SubmitQuestionPayload } from 'services/api-submit-service';
@@ -15,8 +14,6 @@ import { apiCreateQuestion } from 'services/api-service';
 const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
 const QCM_MIN_OPTIONS = 2;
 const QCM_MAX_OPTIONS = 6;
-
-type ContributionMode = 'local' | 'public';
 
 // ============================================================
 // Parser bulk questions (réutilisé depuis question-manager-modals)
@@ -93,15 +90,10 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
 
 const ContributionPage: React.FC = () => {
   const setSubtitle = useGlobalStore((state) => state.setSubtitle);
-  const twitchNick = useAuthStore((state) => state.twitchNick);
   const isAdmin = useAuthStore((state) => state.isAdmin);
   const boxes = useQuestionsStore((state) => state.boxes);
-  const addQuestion = useQuestionsStore((state) => state.addQuestion);
   const addBox = useQuestionsStore((state) => state.addBox);
-  const toggleBoxOrdered = useQuestionsStore((state) => state.toggleBoxOrdered);
 
-  // Mode par défaut : local (ma collection)
-  const [mode, setMode] = useState<ContributionMode>('local');
   const [tab, setTab] = useState<'single' | 'bulk'>('single');
 
   // Notifications
@@ -195,56 +187,32 @@ const ContributionPage: React.FC = () => {
     setError('');
 
     try {
-      if (mode === 'public') {
-        const payload: SubmitQuestionPayload = {
-          question: question.trim(),
-          answer: answer.trim(),
-          boxName: boxName || undefined,
-          questionType,
-        };
-        if (questionType === QuestionType.FREE_TEXT && alternativeAnswers.trim()) {
-          payload.alternativeAnswers = alternativeAnswers.split(',').map(s => s.trim()).filter(Boolean);
-        }
-        if (questionType === QuestionType.QCM) {
-          payload.qcmOptions = qcmOptions;
-          payload.qcmCorrectIndex = qcmCorrectIndexes[0];
-          payload.qcmCorrectIndexes = qcmCorrectIndexes;
-        }
-        if (isAdmin) {
-          await apiCreateQuestion({
-            ...payload,
-            id: `q_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
-            boxName: payload.boxName || 'Sans boîte',
-            questionType: payload.questionType || 'free_text',
-            difficulty: 'medium',
-          });
-          showSuccess('Question ajoutée directement en base !');
-        } else {
-          await apiSubmitQuestion(payload);
-          showSuccess('Question soumise pour modération !');
-        }
-      } else {
-        if (!boxName) {
-          showError('Sélectionnez une boîte de destination');
-          setSubmitting(false);
-          return;
-        }
-        const newQuestion: Question = {
-          id: `local_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
-          question: question.trim(),
-          answer: answer.trim(),
-          alternativeAnswers: alternativeAnswers ? alternativeAnswers.split(',').map(s => s.trim()).filter(Boolean) : undefined,
-          boxName,
-          questionType,
+      const payload: SubmitQuestionPayload = {
+        question: question.trim(),
+        answer: answer.trim(),
+        boxName: boxName || undefined,
+        questionType,
+      };
+      if (questionType === QuestionType.FREE_TEXT && alternativeAnswers.trim()) {
+        payload.alternativeAnswers = alternativeAnswers.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      if (questionType === QuestionType.QCM) {
+        payload.qcmOptions = qcmOptions;
+        payload.qcmCorrectIndex = qcmCorrectIndexes[0];
+        payload.qcmCorrectIndexes = qcmCorrectIndexes;
+      }
+      if (isAdmin) {
+        await apiCreateQuestion({
+          ...payload,
+          id: `q_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
+          boxName: payload.boxName || 'Sans boîte',
+          questionType: payload.questionType || 'free_text',
           difficulty: 'medium',
-        };
-        if (questionType === QuestionType.QCM) {
-          newQuestion.qcmOptions = qcmOptions;
-          newQuestion.qcmCorrectIndex = qcmCorrectIndexes[0];
-          newQuestion.qcmCorrectIndexes = qcmCorrectIndexes;
-        }
-        addQuestion(newQuestion);
-        showSuccess('Question ajoutée à ta collection locale !');
+        });
+        showSuccess('Question ajoutée directement en base !');
+      } else {
+        await apiSubmitQuestion(payload);
+        showSuccess('Question soumise pour modération !');
       }
       resetSingleForm();
     } catch (err: any) {
@@ -273,51 +241,29 @@ const ContributionPage: React.FC = () => {
       let count = 0;
 
       for (const q of result.questions) {
-        if (mode === 'public') {
-          const payload: SubmitQuestionPayload = {
-            question: q.question,
-            answer: q.answer,
-            boxName: bulkBox || undefined,
-            questionType: q.isQcm ? 'qcm' : 'free_text',
-          };
-          if (!q.isQcm && q.alternativeAnswers.length > 0) {
-            payload.alternativeAnswers = q.alternativeAnswers;
-          }
-          if (q.isQcm) {
-            payload.qcmOptions = q.qcmOptions;
-            payload.qcmCorrectIndex = q.qcmCorrectIndex;
-          }
-          if (isAdmin) {
-            await apiCreateQuestion({
-              ...payload,
-              id: `q_${Date.now()}_${Math.random().toString(36).substring(2, 8)}_${count}`,
-              boxName: payload.boxName || 'Sans boîte',
-              questionType: payload.questionType || 'free_text',
-              difficulty: 'medium',
-            });
-          } else {
-            await apiSubmitQuestion(payload);
-          }
-        } else {
-          if (!bulkBox) {
-            showError('Sélectionnez une boîte de destination');
-            setBulkSubmitting(false);
-            return;
-          }
-          const newQ: Question = {
-            id: `local_${Date.now()}_${Math.random().toString(36).substring(2, 6)}_${count}`,
-            question: q.question,
-            answer: q.answer,
-            alternativeAnswers: q.alternativeAnswers.length > 0 ? q.alternativeAnswers : undefined,
-            boxName: bulkBox,
-            questionType: q.isQcm ? QuestionType.QCM : QuestionType.FREE_TEXT,
+        const payload: SubmitQuestionPayload = {
+          question: q.question,
+          answer: q.answer,
+          boxName: bulkBox || undefined,
+          questionType: q.isQcm ? 'qcm' : 'free_text',
+        };
+        if (!q.isQcm && q.alternativeAnswers.length > 0) {
+          payload.alternativeAnswers = q.alternativeAnswers;
+        }
+        if (q.isQcm) {
+          payload.qcmOptions = q.qcmOptions;
+          payload.qcmCorrectIndex = q.qcmCorrectIndex;
+        }
+        if (isAdmin) {
+          await apiCreateQuestion({
+            ...payload,
+            id: `q_${Date.now()}_${Math.random().toString(36).substring(2, 8)}_${count}`,
+            boxName: payload.boxName || 'Sans boîte',
+            questionType: payload.questionType || 'free_text',
             difficulty: 'medium',
-          };
-          if (q.isQcm) {
-            newQ.qcmOptions = q.qcmOptions;
-            newQ.qcmCorrectIndex = q.qcmCorrectIndex;
-          }
-          addQuestion(newQ);
+          });
+        } else {
+          await apiSubmitQuestion(payload);
         }
         count++;
       }
@@ -329,7 +275,7 @@ const ContributionPage: React.FC = () => {
         qcmCount > 0 ? `${qcmCount} QCM` : '',
       ].filter(Boolean).join(', ');
 
-      const modeLabel = mode === 'local' ? 'ajoutées à ta collection' : isAdmin ? 'ajoutées directement en base' : 'soumises pour modération';
+      const modeLabel = isAdmin ? 'ajoutées directement en base' : 'soumises pour modération';
       showSuccess(`${count} question(s) ${modeLabel} (${details})`);
       setBulkText('');
       setBulkPreview(null);
@@ -339,9 +285,6 @@ const ContributionPage: React.FC = () => {
       setBulkSubmitting(false);
     }
   };
-
-  const isLocal = mode === 'local';
-  const isPublic = mode === 'public';
 
   return (
     <div className="lumon-page" style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -353,42 +296,14 @@ const ContributionPage: React.FC = () => {
       {success && <div className="terminal-alert terminal-alert-success mb-3">{success}</div>}
       {error && <div className="terminal-alert terminal-alert-danger mb-3">{error}</div>}
 
-      {/* ========== Sélecteur de mode ========== */}
-      <div className="mb-3 d-flex gap-0">
-        <button
-          className={`terminal-btn flex-fill py-2 ${isLocal ? '' : 'terminal-btn-amber'}`}
-          onClick={() => setMode('local')}
-          style={isLocal ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
-        >
-          <FontAwesomeIcon icon={['fas', 'database']} className="me-2" />
-          <strong>Ma Collection</strong>
-          <div className="system-artifact" style={{ fontSize: '10px', marginTop: '2px' }}>Stocké localement sur ton navigateur</div>
-        </button>
-        <button
-          className={`terminal-btn flex-fill py-2 ${isPublic ? '' : 'terminal-btn-amber'}`}
-          onClick={() => setMode('public')}
-          style={isPublic ? { backgroundColor: 'var(--lumon-cyan)', color: 'var(--lumon-void)' } : {}}
-        >
-          <FontAwesomeIcon icon={['fas', 'globe']} className="me-2" />
-          <strong>Proposer à la Communauté</strong>
-          <div className="system-artifact" style={{ fontSize: '10px', marginTop: '2px' }}>Envoyé pour validation par un admin</div>
-        </button>
-      </div>
-
-      {/* Badge info mode */}
       <div className="mb-3">
-        {isLocal && (
-          <div className="terminal-alert terminal-alert-warning py-2">
-            <FontAwesomeIcon icon={['fas', 'database']} className="me-2" />
-            Les questions seront ajoutées <strong>uniquement dans ton navigateur</strong> ({twitchNick || 'toi'}).
-          </div>
-        )}
-        {isPublic && (
-          <div className="terminal-alert terminal-alert-info py-2">
-            <FontAwesomeIcon icon={['fas', 'globe']} className="me-2" />
-            Ta question sera <strong>envoyée à un admin</strong> qui la validera avant de l'ajouter.
-          </div>
-        )}
+        <div className="terminal-alert terminal-alert-info py-2">
+          <FontAwesomeIcon icon={['fas', 'globe']} className="me-2" />
+          {isAdmin
+            ? <>En tant qu'admin, tes questions sont <strong>ajoutées directement en base</strong>.</>
+            : <>Ta question sera <strong>envoyée à un admin</strong> qui la validera avant de l'ajouter.</>
+          }
+        </div>
       </div>
 
       {/* Tabs : Question unique / Ajout en masse */}
@@ -477,16 +392,13 @@ const ContributionPage: React.FC = () => {
           {/* Boîte */}
           <Form.Group className="mb-3">
             <Form.Label>
-              Boîte Trivial Pursuit {isLocal ? '*' : '(optionnel)'}
+              Boîte Trivial Pursuit (optionnel)
             </Form.Label>
             <Form.Select
-              required={isLocal}
               value={boxName}
               onChange={(e) => setBoxName(e.target.value)}
             >
-              <option value="">
-                {isPublic ? "L'admin choisira la boîte" : 'Sélectionner une boîte...'}
-              </option>
+              <option value="">L'admin choisira la boîte</option>
               {boxes.map(box => (
                 <option key={box.name} value={box.name}>{box.name}</option>
               ))}
@@ -638,22 +550,13 @@ const ContributionPage: React.FC = () => {
 
           <button
             type="submit"
-            className={`terminal-btn w-100 ${isLocal ? 'terminal-btn-amber' : ''}`}
+            className="terminal-btn w-100"
             disabled={submitting}
             style={{ padding: '0.7rem 1rem', fontSize: '0.85rem' }}
           >
             {submitting && <Spinner animation="border" size="sm" className="me-2" />}
-            {isLocal ? (
-              <>
-                <FontAwesomeIcon icon={['fas', 'plus']} className="me-2" />
-                Ajouter à ma collection
-              </>
-            ) : (
-              <>
-                <FontAwesomeIcon icon={['fas', 'paper-plane']} className="me-2" />
-                Proposer la question
-              </>
-            )}
+            <FontAwesomeIcon icon={['fas', 'paper-plane']} className="me-2" />
+            Proposer la question
           </button>
         </Form>
       )}
@@ -662,15 +565,12 @@ const ContributionPage: React.FC = () => {
       {tab === 'bulk' && (
         <div>
           <Form.Group className="mb-3">
-            <Form.Label>Boîte de destination {isLocal ? '*' : '(optionnel)'}</Form.Label>
+            <Form.Label>Boîte de destination (optionnel)</Form.Label>
             <Form.Select
-              required={isLocal}
               value={bulkBox}
               onChange={(e) => setBulkBox(e.target.value)}
             >
-              <option value="">
-                {isPublic ? "L'admin choisira" : 'Sélectionner...'}
-              </option>
+              <option value="">L'admin choisira</option>
               {boxes.map(box => (
                 <option key={box.name} value={box.name}>{box.name}</option>
               ))}
@@ -741,23 +641,14 @@ const ContributionPage: React.FC = () => {
           )}
 
           <button
-            className={`terminal-btn w-100 ${isLocal ? 'terminal-btn-amber' : ''}`}
+            className="terminal-btn w-100"
             disabled={bulkSubmitting || !bulkText.trim()}
             onClick={handleBulkSubmit}
             style={{ padding: '0.7rem 1rem', fontSize: '0.85rem' }}
           >
             {bulkSubmitting && <Spinner animation="border" size="sm" className="me-2" />}
-            {isLocal ? (
-              <>
-                <FontAwesomeIcon icon={['fas', 'plus']} className="me-2" />
-                Ajouter à ma collection {bulkPreview ? `(${bulkPreview.questions.length})` : ''}
-              </>
-            ) : (
-              <>
-                <FontAwesomeIcon icon={['fas', 'paper-plane']} className="me-2" />
-                Proposer {bulkPreview ? `(${bulkPreview.questions.length})` : ''} question(s)
-              </>
-            )}
+            <FontAwesomeIcon icon={['fas', 'paper-plane']} className="me-2" />
+            Proposer {bulkPreview ? `(${bulkPreview.questions.length})` : ''} question(s)
           </button>
         </div>
       )}

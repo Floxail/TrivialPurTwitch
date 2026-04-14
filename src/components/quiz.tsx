@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import { Client, Options } from 'tmi.js';
 import { useAuthStore } from './store/auth-store';
@@ -18,6 +18,21 @@ const SCORE_CMD_DELAY = 2000;
 
 // Labels pour les options QCM
 const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+// Regex pour détecter les emojis Unicode (Extended_Pictographic couvre la plupart des emojis modernes)
+const EMOJI_SPLIT_REGEX = /(\p{Extended_Pictographic}(?:\u200d\p{Extended_Pictographic})*\uFE0F?)/gu;
+const EMOJI_TEST_REGEX = /^\p{Extended_Pictographic}/u;
+
+// Encapsule chaque emoji dans un span avec une taille augmentée
+const renderWithEmojiBoost = (text: string): React.ReactNode => {
+	if (!text) return text;
+	const parts = text.split(EMOJI_SPLIT_REGEX);
+	return parts.map((part, i) =>
+		EMOJI_TEST_REGEX.test(part)
+			? <span key={i} className="emoji-boost">{part}</span>
+			: part
+	);
+};
 
 const Quiz = () => {
 	const twitchClient = useRef<Client | null>(null);
@@ -121,12 +136,22 @@ const Quiz = () => {
 	}, [topLevelBoxes, masterSubBoxMap, expandedMasters]);
 	const twitchToken = getTwitchToken(); // Get deobfuscated token
 
-	// Utiliser le temps de réponse configuré dans les settings
-	const questionTimeLimit = settingsStore.questionTimeLimit;
+	// Overrides locaux (popup de config quiz) — ne modifient PAS les settings globaux
+	const [activeQuestionTimeLimit, setActiveQuestionTimeLimit] = useState(settingsStore.questionTimeLimit);
+	const [activeAcceptanceDelay, setActiveAcceptanceDelay] = useState(settingsStore.acceptanceDelay);
+	const [activeGracePeriodMs, setActiveGracePeriodMs] = useState(settingsStore.gracePeriodMs);
+	const [onlyOneAnswer, setOnlyOneAnswer] = useState(false);
+	const [penalizeWrong, setPenalizeWrong] = useState(false);
+	const questionTimeLimit = activeQuestionTimeLimit;
 	const [timeLeft, setTimeLeft] = useState(questionTimeLimit);
+	// Refs pour lecture dans onProposition (évite closure stale)
+	const onlyOneAnswerRef = useRef(false);
+	const penalizeWrongRef = useRef(false);
+	const activeGracePeriodMsRef = useRef(settingsStore.gracePeriodMs);
+	// Track des joueurs ayant déjà été pénalisés ce tour (une seule pénalité par question)
+	const penalizedRef = useRef<Set<string>>(new Set());
 	const [questionRevealed, setQuestionRevealed] = useState(false);
 	const [podiumDisplayed, setPodiumDisplayed] = useState(false);
-	const [waitingForRedemption, setWaitingForRedemption] = useState(true);
 	const lastAnswerersRef = useRef<{ nick: string; isFirst: boolean; answeredAt: number }[]>([]);
 
 	// Refs pour éviter les problèmes de closure dans onProposition
@@ -244,6 +269,25 @@ const Quiz = () => {
 	const activeQuiz = gameStore.activeQuiz;
 	const currentQuestion = activeQuiz?.questions[activeQuiz.currentQuestionIndex];
 
+	// Synchroniser les refs avec les états (pour lecture dans les callbacks async)
+	useEffect(() => { onlyOneAnswerRef.current = onlyOneAnswer; }, [onlyOneAnswer]);
+	useEffect(() => { penalizeWrongRef.current = penalizeWrong; }, [penalizeWrong]);
+	useEffect(() => { activeGracePeriodMsRef.current = activeGracePeriodMs; }, [activeGracePeriodMs]);
+
+	// Réinitialiser les overrides à l'ouverture du popup (depuis les settings actuels)
+	const [prevShowModeSelector, setPrevShowModeSelector] = useState(false);
+	useEffect(() => {
+		if (showModeSelector && !prevShowModeSelector) {
+			setActiveQuestionTimeLimit(settingsStore.questionTimeLimit);
+			setActiveAcceptanceDelay(settingsStore.acceptanceDelay);
+			setActiveGracePeriodMs(settingsStore.gracePeriodMs);
+			setOnlyOneAnswer(false);
+			setPenalizeWrong(false);
+		}
+		setPrevShowModeSelector(showModeSelector);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [showModeSelector]);
+
 	// Vérifie si la question actuelle est un QCM
 	const isQcmQuestion = currentQuestion?.questionType === QuestionType.QCM &&
 		currentQuestion?.qcmOptions && currentQuestion.qcmOptions.length >= 2;
@@ -265,13 +309,11 @@ const Quiz = () => {
 			const totalQuestions = activeQuiz.totalQuestions;
 
 			setSubtitle(`Quiz - Question ${questionNum}/${totalQuestions}`);
-			setWaitingForRedemption(false);
 
 			// Démarrer le timer pour chaque question
 			startQuestionTimer();
 		} else {
 			setSubtitle('En attente...');
-			setWaitingForRedemption(true);
 		}
 
 		return () => {
@@ -311,26 +353,6 @@ const Quiz = () => {
 			}
 		});
 
-		// Écoute des redemptions de points de chaîne (custom-reward-id)
-		twitchClient.current.on('message', (_channel: any, _tags: any, _message: any, _self: any) => {
-			if (_self) return;
-
-			// Vérifier si c'est une redemption de points de chaîne
-			if (_tags['custom-reward-id']) {
-				const rewardTitle = _tags['msg-id'] || '';
-				const userInput = _message.trim();
-				const userName = _tags['display-name'];
-				const userId = _tags['user-id'];
-
-				console.log('TRIVIALPURTWITCH RECLAMÉE:', {
-					reward: rewardTitle,
-					input: userInput,
-					user: userName
-				});
-
-				handleChannelPointsRedemption(userName, userId, userInput);
-			}
-		});
 	};
 
 	const stopTimerLoop = useCallback(() => {
@@ -349,6 +371,7 @@ const Quiz = () => {
 		currentAnswerersRef.current = [];
 		lastAnswerersRef.current = [];
 		qcmAttemptsRef.current = new Set(); // Reset des tentatives QCM
+		penalizedRef.current = new Set(); // Reset des pénalités du tour
 		setQuestionRevealed(false);
 		questionRevealedRef.current = false;
 
@@ -472,28 +495,6 @@ const Quiz = () => {
 		}
 	};
 
-	// Gestion des redemptions de points de chaîne
-	const handleChannelPointsRedemption = (nick: string, tid: string, userInput: string) => {
-		initPlayer(nick, tid);
-
-		const trimmedInput = userInput.trim();
-
-		// Vérifier si c'est un nombre (nombre de questions)
-		const questionCount = parseInt(trimmedInput);
-
-		if (!isNaN(questionCount) && trimmedInput === questionCount.toString()) {
-			// L'utilisateur a entré un nombre de questions
-			setPendingQuizRequester(nick);
-			setQuizQuestionCount(questionCount);
-			setShowModeSelector(true);
-		} else {
-			// L'utilisateur a entré un nom de boîte — pré-sélectionner cette boîte
-			setPendingQuizRequester(nick);
-			if (trimmedInput) setSelectedBoxNames([trimmedInput]);
-			setShowModeSelector(true);
-		}
-	};
-
 	const onProposition = (nick: string, tid: string, message: string) => {
 		// Commande !score - toujours traitée, même entre les questions
 		if (message.toLowerCase() === '!score') {
@@ -552,29 +553,35 @@ const Quiz = () => {
 		const currentActiveQuestion = currentActiveQuiz?.questions[currentActiveQuiz.currentQuestionIndex];
 
 		if (currentActiveQuiz && currentActiveQuestion && !questionRevealedRef.current) {
-			// Vérifier si le joueur a déjà répondu
+			// Vérifier si le joueur a déjà répondu correctement
 			if (currentAnswerersRef.current.find((a) => a.nick === nick)) {
 				return;
 			}
 
-			// En QCM, un viewer ne peut répondre qu'UNE SEULE FOIS
+			// QCM ou "Une seule réponse par personne" : une seule tentative autorisée
 			const isQcm = currentActiveQuestion.questionType === QuestionType.QCM;
-			if (isQcm && qcmAttemptsRef.current.has(nick)) {
+			const singleAttemptMode = isQcm || onlyOneAnswerRef.current;
+			if (singleAttemptMode && qcmAttemptsRef.current.has(nick)) {
 				return;
 			}
 
 			const result = verifyAnswer(message, currentActiveQuestion);
 
 			if (!result.valid) return;
-			if (isQcm) qcmAttemptsRef.current.add(nick);
+			if (singleAttemptMode) qcmAttemptsRef.current.add(nick);
 
 			if (result.isCorrect) {
 				initPlayer(nick, tid);
 				const now = Date.now();
 				const firstAnsweredAt = currentAnswerersRef.current.length > 0 ? currentAnswerersRef.current[0].answeredAt : null;
-				const isFirst = firstAnsweredAt === null || (now - firstAnsweredAt) <= settingsStore.gracePeriodMs;
+				const isFirst = firstAnsweredAt === null || (now - firstAnsweredAt) <= activeGracePeriodMsRef.current;
 				const newAnswerer = { nick, isFirst, answeredAt: now };
 				currentAnswerersRef.current = [...currentAnswerersRef.current, newAnswerer];
+			} else if (penalizeWrongRef.current && !penalizedRef.current.has(nick)) {
+				// Pénalité : -1 point sur mauvaise réponse (une seule fois par question)
+				initPlayer(nick, tid);
+				usePlayerStore.getState().addPoints(nick, -1);
+				penalizedRef.current.add(nick);
 			}
 		}
 	};
@@ -847,6 +854,64 @@ const Quiz = () => {
 						</Form.Group>
 					)}
 
+					{/* Overrides locaux (valables uniquement pour ce quiz) */}
+					<div className="mb-3 p-3" style={{ background: 'rgba(var(--lumon-cyan-rgb), 0.03)', border: '1px solid rgba(var(--lumon-cyan-rgb), 0.15)', borderRadius: '4px' }}>
+						<small style={{ color: 'var(--lumon-text-dim)', display: 'block', marginBottom: '10px' }}>
+							Réglages pour cette partie uniquement (n'affecte pas les Settings globaux)
+						</small>
+
+						<Form.Group className="mb-2">
+							<Form.Label style={{ fontSize: '0.85rem' }}>Temps de réponse par question</Form.Label>
+							<Form.Range value={activeQuestionTimeLimit} onChange={(e) => setActiveQuestionTimeLimit(e.target.valueAsNumber)} min={10} max={60} />
+							<div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--lumon-cyan)', marginTop: '-6px' }}>
+								<i>{activeQuestionTimeLimit} seconde{activeQuestionTimeLimit > 1 ? 's' : ''}</i>
+							</div>
+						</Form.Group>
+
+						<Form.Group className="mb-2">
+							<Form.Label style={{ fontSize: '0.85rem' }}>Délai d'acceptation de la réponse</Form.Label>
+							<Form.Range value={activeAcceptanceDelay} onChange={(e) => setActiveAcceptanceDelay(e.target.valueAsNumber)} min={0} max={20} />
+							<div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--lumon-cyan)', marginTop: '-6px' }}>
+								<i>{activeAcceptanceDelay} seconde{activeAcceptanceDelay > 1 ? 's' : ''}</i>
+							</div>
+						</Form.Group>
+
+						<Form.Group className="mb-2">
+							<Form.Label style={{ fontSize: '0.85rem' }}>
+								Délai de clémence (FIRST)
+								<span style={{ fontSize: '0.7rem', color: 'var(--lumon-text-dim)', display: 'block', fontWeight: 'normal' }}>
+									Temps supplémentaire accordé pour partager la place de 1er
+								</span>
+							</Form.Label>
+							<Form.Range value={activeGracePeriodMs} onChange={(e) => setActiveGracePeriodMs(e.target.valueAsNumber)} min={100} max={2000} step={100} />
+							<div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--lumon-cyan)', marginTop: '-6px' }}>
+								<i>{(activeGracePeriodMs / 1000).toFixed(1).replace('.', ',')} seconde{activeGracePeriodMs >= 2000 ? 's' : ''}</i>
+							</div>
+						</Form.Group>
+
+						<hr style={{ borderColor: 'rgba(var(--lumon-cyan-rgb), 0.15)', margin: '10px 0' }} />
+
+						<Form.Group className="mb-2">
+							<Form.Check
+								type="checkbox"
+								id="onlyOneAnswer"
+								checked={onlyOneAnswer}
+								onChange={(e) => setOnlyOneAnswer(e.target.checked)}
+								label="Une seule réponse par personne (comme en QCM)"
+							/>
+						</Form.Group>
+
+						<Form.Group>
+							<Form.Check
+								type="checkbox"
+								id="penalizeWrong"
+								checked={penalizeWrong}
+								onChange={(e) => setPenalizeWrong(e.target.checked)}
+								label="Retirer 1 point pour chaque mauvaise réponse"
+							/>
+						</Form.Group>
+					</div>
+
 					{/* Message d'erreur */}
 					{modeError && (
 						<div className="terminal-alert terminal-alert-danger mt-2">
@@ -879,18 +944,10 @@ const Quiz = () => {
 				<div className="row mb-4">
 					<div className="col-md-8">
 						<div className="terminal-panel terminal-panel-glow scanlines p-3 mb-2">
-							{waitingForRedemption && (
+							{!activeQuiz && (
 								<div className="lumon-standby">
-									<FontAwesomeIcon icon={['fas', 'gift']} size="4x" className="standby-icon" />
+									<FontAwesomeIcon icon={['fas', 'play-circle']} size="4x" className="standby-icon" />
 									<h3 className="mt-4 text-glow-cyan">En attente...</h3>
-									<div className="mt-3">
-										<p style={{ color: 'var(--lumon-text-dim)' }}>
-											<strong>Pour les viewers :</strong> Utilisez vos <strong style={{ color: 'var(--lumon-cyan)' }}>points de chaîne</strong> !
-										</p>
-										<p className="system-artifact" style={{ fontSize: '14px' }}>
-											Entrez le nombre de questions souhaitées
-										</p>
-									</div>
 									<div className="mt-4">
 										<button
 											className="terminal-btn"
@@ -1152,7 +1209,7 @@ const Quiz = () => {
 											fontSize: '1.4rem',
 											letterSpacing: '0.05em'
 										}}>
-											{currentQuestion.question}
+											{renderWithEmojiBoost(currentQuestion.question)}
 										</h2>
 
 										{/* Options QCM */}
@@ -1178,7 +1235,7 @@ const Quiz = () => {
 																<div className="qcm-option-terminal">
 																	<span className="qcm-label">{QCM_LABELS[index]}</span>
 																	<span style={{ color: 'var(--lumon-text-dim)' }}>—</span>
-																	<span style={{ color: 'var(--lumon-text)' }}>{option}</span>
+																	<span style={{ color: 'var(--lumon-text)' }}>{renderWithEmojiBoost(option)}</span>
 																</div>
 															</div>
 														);
@@ -1210,13 +1267,13 @@ const Quiz = () => {
 											marginBottom: '20px'
 										}}>
 											<h3 style={{ margin: 0 }}>
-												✅ {isQcmQuestion && (currentQuestion.qcmCorrectIndexes || currentQuestion.qcmCorrectIndex !== undefined)
+												<span className="emoji-boost">✅</span> {isQcmQuestion && (currentQuestion.qcmCorrectIndexes || currentQuestion.qcmCorrectIndex !== undefined)
 													? (() => {
 														const idxs = currentQuestion.qcmCorrectIndexes
 															?? (currentQuestion.qcmCorrectIndex !== undefined ? [currentQuestion.qcmCorrectIndex] : []);
-														return idxs.map(i => `${QCM_LABELS[i]} - ${currentQuestion.qcmOptions?.[i] || ''}`).join(', ');
+														return renderWithEmojiBoost(idxs.map(i => `${QCM_LABELS[i]} - ${currentQuestion.qcmOptions?.[i] || ''}`).join(', '));
 													})()
-													: currentQuestion.answer}
+													: renderWithEmojiBoost(currentQuestion.answer)}
 											</h3>
 										</div>
 									)}

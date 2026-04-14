@@ -733,3 +733,11 @@ a:hover {
 .mdr-data-point-container .mdr-sub-box.mdr-unselected {
   border-left: 2px solid #546e7a !important;
 }
+
+/* Boost de la taille des emoji Unicode dans le texte des questions/réponses */
+.emoji-boost {
+  font-size: 1.8em;
+  vertical-align: middle;
+  line-height: 1;
+  display: inline-block;
+}
