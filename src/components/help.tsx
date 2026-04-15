@@ -1,5 +1,6 @@
 import { Button, Modal, Table } from 'react-bootstrap';
 import { useSettingsStore } from './store/settings-store';
+import { WelcomeContent } from './welcome';
 
 const Help = ({ show, onClose }: any) => {
 
@@ -8,6 +9,8 @@ const Help = ({ show, onClose }: any) => {
   return (
     <Modal show={show} centered size="lg" dialogClassName="help-modal">
       <Modal.Body>
+        <WelcomeContent showHelpHint={false} />
+        <hr />
         <strong>TrivialPurTwitch</strong> is made by <strong>Floxail</strong> (<a href="https://bsky.app/profile/floxail.bsky.social" target="_blank" rel="noreferrer">@floxail.bsky.social</a>) and is <strong><a href="https://github.com/Floxail/TrivialPurTwitch" target="_blank" rel="noreferrer">open-source</a></strong>
         <br />
         is a fork of <strong><a href="https://github.com/s-vivien/BlindTesTwitch" target="_blank" rel="noreferrer">BlindTesTwitch</a></strong> From <strong>Neumann</strong>

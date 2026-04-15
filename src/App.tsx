@@ -79,15 +79,20 @@ function App() {
 	 		navigate('/');
 		} else if (!settingsStore.isInitialized()) {
 			navigate('/settings');
-		} else {
-			if (shouldShowWelcome()) setShowWelcome(true);
-			if (location.pathname === '/') {
-				setView(<Quiz />);
-				navigate('/quiz');
-			}
+		} else if (location.pathname === '/') {
+			setView(<Quiz />);
+			navigate('/quiz');
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [navigate, authStore, settingsStore]);
+
+	useEffect(() => {
+		const isHome = location.pathname === '/' || location.pathname === '/quiz';
+		if (authStore.isLoggedIn() && settingsStore.isInitialized() && isHome && shouldShowWelcome()) {
+			setShowWelcome(true);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const onPopupClose = () => {
 		setErrorMessage('');
