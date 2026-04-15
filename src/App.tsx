@@ -135,8 +135,8 @@ function App() {
 				<Routes>
 					<Route path="/" element={view} />
 					<Route path="/quiz" element={<Quiz />} />
-					<Route path="/questions" element={<QuestionManager />} />
-					<Route path="/questions-terminal" element={<QuestionManagerTerminal />} />
+					<Route path="/questions" element={authStore.isAdmin ? <QuestionManager /> : <Quiz />} />
+					<Route path="/questions-terminal" element={authStore.isAdmin ? <QuestionManagerTerminal /> : <Quiz />} />
 					<Route path="/convertisseur" element={<Convertisseur />} />
 					<Route path="/contribute" element={<ContributionPage />} />
 					<Route path="/system-mod-portal" element={<AdminDashboard />} />

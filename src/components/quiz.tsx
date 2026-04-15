@@ -242,7 +242,23 @@ const Quiz = () => {
 		});
 	}, []);
 
-	const handleMasterBoxClick = useCallback((masterName: string) => {
+	// Clic sur un Master : toggle la sélection du master + toutes ses sous-boîtes en bloc
+	const handleMasterSelectToggle = useCallback((masterName: string) => {
+		const subs = masterSubBoxMap.get(masterName) ?? [];
+		const allNames = [masterName, ...subs.map(s => s.name)];
+		setSelectedBoxNames(prev => {
+			if (prev === null) return allNames;
+			const allSelected = allNames.every(n => prev.includes(n));
+			if (allSelected) {
+				const filtered = prev.filter(n => !allNames.includes(n));
+				return filtered.length === 0 ? prev : filtered;
+			}
+			return Array.from(new Set([...prev, ...allNames]));
+		});
+	}, [masterSubBoxMap]);
+
+	// Chevron ▶/▼ : expand/collapse de la Master (ne change pas la sélection)
+	const handleMasterExpandToggle = useCallback((masterName: string) => {
 		setExpandedMasters(prev => {
 			const next = new Set(prev);
 			if (next.has(masterName)) next.delete(masterName);
@@ -946,7 +962,6 @@ const Quiz = () => {
 						<div className="terminal-panel terminal-panel-glow scanlines p-3 mb-2">
 							{!activeQuiz && (
 								<div className="lumon-standby">
-									<FontAwesomeIcon icon={['fas', 'play-circle']} size="4x" className="standby-icon" />
 									<h3 className="mt-4 text-glow-cyan">En attente...</h3>
 									<div className="mt-4">
 										<button
@@ -1059,29 +1074,35 @@ const Quiz = () => {
 													const { box: b, isSubBox } = entry;
 													const isMaster = !isSubBox && masterSubBoxMap.has(b.name);
 													const isExpanded = isMaster && expandedMasters.has(b.name);
+													const subCount = isMaster ? (masterSubBoxMap.get(b.name)?.length ?? 0) : 0;
 													const theme = boxThemeMap.get(b.name);
 													const boxStyle: any = {
 														'--box-theme': theme?.color || 'var(--lumon-cyan)',
 														'--box-theme-rgb': theme?.rgb || 'var(--lumon-cyan-rgb)',
 													};
-													if (isSubBox) {
-														boxStyle.marginLeft = '12px';
-														boxStyle.borderLeft = `2px solid rgba(${theme?.rgb || '0,229,255'}, 0.3)`;
-													}
 													return (
 														<div
 															key={b.name}
 															ref={el => { mdrItemRefs.current[i + 1] = el; }}
 															className={`mdr-data-point mdr-themed ${isMaster ? 'mdr-master-box' : ''} ${isSubBox ? 'mdr-sub-box' : ''} ${getMdrClass(i + 1)}`}
 															onMouseEnter={() => setMdrHoveredIndex(i + 1)}
-															onClick={() => { if (isMaster) handleMasterBoxClick(b.name); else handleBoxClick(b.name); }}
-															title={isMaster ? `${isExpanded ? 'Réduire' : 'Déplier'} "${b.name}"` : (b.description || undefined)}
+															onClick={() => { if (isMaster) handleMasterSelectToggle(b.name); else handleBoxClick(b.name); }}
+															title={isMaster ? `Sélectionner "${b.name}" et ses ${subCount} sous-boîte(s)` : (b.description || undefined)}
 															style={boxStyle}
 														>
-															{b.ordered && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.7 }}>↓</span>}
-															{isMaster && <span style={{ fontSize: '0.6rem', marginRight: '3px', opacity: 0.85 }}>{isExpanded ? '▼' : '▶'}</span>}
-															{isSubBox && <span style={{ fontSize: '0.55rem', marginRight: '3px', opacity: 0.6 }}>└</span>}
-															{b.name}
+															{isMaster && (
+																<span
+																	className="mdr-chevron"
+																	onClick={(e) => { e.stopPropagation(); handleMasterExpandToggle(b.name); }}
+																	title={isExpanded ? 'Réduire' : `Déplier (${subCount})`}
+																>
+																	{isExpanded ? '▼' : '▶'}
+																</span>
+															)}
+															{isSubBox && <span className="mdr-sub-connector">└</span>}
+															{b.ordered && <span style={{ fontSize: '0.55rem', marginRight: '4px', opacity: 0.7 }}>↓</span>}
+															<span className="mdr-box-name">{b.name}</span>
+															{isMaster && <span className="mdr-sub-count">({subCount})</span>}
 														</div>
 													);
 												})}

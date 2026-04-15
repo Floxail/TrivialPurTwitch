@@ -482,11 +482,77 @@ a:hover {
    ═══════════════════════════════════════════════════════════════════════════ */
 .mdr-data-point-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 14px 16px;
-  justify-content: center;
-  padding: 12px 8px;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 8px;
+  max-width: 520px;
+  margin: 0 auto;
 }
+
+/* Layout interne d'un item en mode liste linéaire */
+.mdr-data-point {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px !important;
+}
+
+/* Chevron Master — zone cliquable séparée (expand/collapse) */
+.mdr-chevron {
+  font-size: 0.6rem;
+  opacity: 0.85;
+  padding: 2px 6px;
+  margin-left: -6px;
+  border-radius: 2px;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.mdr-chevron:hover { background-color: rgba(var(--box-theme-rgb, var(--lumon-cyan-rgb)), 0.2); opacity: 1; }
+
+.mdr-sub-connector {
+  font-size: 0.6rem;
+  opacity: 0.5;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+.mdr-box-name { flex: 1; }
+
+.mdr-sub-count {
+  font-size: 0.62rem;
+  opacity: 0.55;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+/* Indentation des sous-boîtes */
+.mdr-data-point.mdr-sub-box {
+  padding-left: 28px !important;
+  border-left: 2px solid rgba(var(--box-theme-rgb), 0.25) !important;
+}
+
+/* Card "★ TOUTES" mise en valeur en haut */
+.mdr-data-point.mdr-all-boxes {
+  justify-content: center;
+  font-weight: 600;
+  border-color: rgba(var(--lumon-cyan-rgb), 0.35) !important;
+  margin-bottom: 6px;
+}
+
+/* Atténuation fisheye dans le layout linéaire (on retire le wobble/scale agressif) */
+.mdr-data-point-container .mdr-data-point.mdr-focused,
+.mdr-data-point-container .mdr-data-point.mdr-themed.mdr-focused {
+  transform: none;
+  animation: none;
+}
+.mdr-data-point-container .mdr-data-point.mdr-ring-near,
+.mdr-data-point-container .mdr-data-point.mdr-ring-mid,
+.mdr-data-point-container .mdr-data-point.mdr-ring-far,
+.mdr-data-point-container .mdr-data-point.mdr-ring-near.mdr-selected,
+.mdr-data-point-container .mdr-data-point.mdr-ring-mid.mdr-selected,
+.mdr-data-point-container .mdr-data-point.mdr-ring-far.mdr-selected { transform: none; }
 
 .mdr-data-point {
   font-family: 'Share Tech Mono', monospace;

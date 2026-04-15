@@ -94,6 +94,14 @@ const ContributionPage: React.FC = () => {
   const boxes = useQuestionsStore((state) => state.boxes);
   const addBox = useQuestionsStore((state) => state.addBox);
 
+  // On ne peut pas ajouter de questions dans une boîte Master qui contient des sous-boîtes.
+  const childlessBoxes = React.useMemo(() => {
+    const parentsWithChildren = new Set(
+      boxes.map(b => b.parentBox).filter((p): p is string => !!p)
+    );
+    return boxes.filter(b => !parentsWithChildren.has(b.name));
+  }, [boxes]);
+
   const [tab, setTab] = useState<'single' | 'bulk'>('single');
 
   // Notifications
@@ -399,7 +407,7 @@ const ContributionPage: React.FC = () => {
               onChange={(e) => setBoxName(e.target.value)}
             >
               <option value="">L'admin choisira la boîte</option>
-              {boxes.map(box => (
+              {childlessBoxes.map(box => (
                 <option key={box.name} value={box.name}>{box.name}</option>
               ))}
             </Form.Select>
@@ -571,12 +579,19 @@ const ContributionPage: React.FC = () => {
               onChange={(e) => setBulkBox(e.target.value)}
             >
               <option value="">L'admin choisira</option>
-              {boxes.map(box => (
+              {childlessBoxes.map(box => (
                 <option key={box.name} value={box.name}>{box.name}</option>
               ))}
             </Form.Select>
           </Form.Group>
 
+
+          {!isAdmin && (
+            <div className="terminal-alert terminal-alert-warning py-2 mb-3" style={{ fontSize: '0.8rem' }}>
+              <FontAwesomeIcon icon={['fas', 'info-circle']} className="me-2" />
+              Limite : <strong>100 questions par minute</strong>. Au-delà, les envois suivants échouent (réessaie après 1 min).
+            </div>
+          )}
 
           <Form.Group className="mb-3">
             <Form.Label>Questions (format Q:/R:/ALT: ou QCM A:/B:/.../F:)</Form.Label>
