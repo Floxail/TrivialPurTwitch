@@ -17,6 +17,7 @@ import AdminDashboard from './components/admin-dashboard';
 import ContributionPage from './components/contribution-page';
 import Convertisseur from './components/convertisseur';
 import Stats from './components/stats';
+import Welcome, { shouldShowWelcome } from './components/welcome';
 import { Analytics } from '@vercel/analytics/react';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
 
 	const [view, setView] = useState(<div />);
 	const [errorMessage, setErrorMessage] = useState('');
+	const [showWelcome, setShowWelcome] = useState(false);
 
 	const location = useLocation();
 
@@ -77,10 +79,12 @@ function App() {
 	 		navigate('/');
 		} else if (!settingsStore.isInitialized()) {
 			navigate('/settings');
-		} else if (location.pathname === '/') {
-	 	 // Rediriger vers le quiz au lieu du blind test
-			setView(<Quiz />);
-	 		navigate('/quiz');
+		} else {
+			if (shouldShowWelcome()) setShowWelcome(true);
+			if (location.pathname === '/') {
+				setView(<Quiz />);
+				navigate('/quiz');
+			}
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [navigate, authStore, settingsStore]);
@@ -147,6 +151,7 @@ function App() {
 </Routes>
 			</div>
 		<Analytics />
+		<Welcome show={showWelcome} onClose={() => setShowWelcome(false)} />
 		</>
 	);
 }

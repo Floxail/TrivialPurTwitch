@@ -1004,7 +1004,7 @@ const Quiz = () => {
 										const singleBox = isSingle ? questionsStore.getBoxByName(effectiveBoxNames[0]) : null;
 
 										return (
-											<div className="mt-3 p-3 terminal-panel" style={{ display: 'inline-block', maxWidth: '600px', textAlign: 'left' }}>
+											<div className="mt-3 p-3 terminal-panel" style={{ display: 'block', maxWidth: '600px', margin: '12px auto 0', textAlign: 'left' }}>
 												<p className="mb-1" style={{ color: 'var(--lumon-cyan)', fontFamily: "'Orbitron', sans-serif", fontSize: '0.8rem' }}>
 													{isSingle && singleBox ? (
 														<>
@@ -1046,7 +1046,7 @@ const Quiz = () => {
 									})()}
 
 									{allVisibleBoxes.length > 0 && (
-										<div className="mt-4 p-3 terminal-panel" style={{ display: 'inline-block' }}>
+										<div className="mt-4 p-3 terminal-panel" style={{ display: 'block', maxWidth: '920px', margin: '16px auto 0' }}>
 											<p className="mb-2" style={{ color: 'var(--lumon-text-dim)' }}>
 												<strong style={{ color: 'var(--lumon-cyan)' }}>
 													Boîtes disponibles
