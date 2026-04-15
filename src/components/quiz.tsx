@@ -21,7 +21,7 @@ const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 // Regex pour détecter les emojis Unicode (Extended_Pictographic couvre la plupart des emojis modernes)
 const EMOJI_SPLIT_REGEX = /(\p{Extended_Pictographic}(?:\u200d\p{Extended_Pictographic})*\uFE0F?)/gu;
-const EMOJI_TEST_REGEX = /^\p{Extended_Pictographic}/u;
+const EMOJI_TEST_REGEX = /^\p{Extended_Pictographic}/;
 
 // Encapsule chaque emoji dans un span avec une taille augmentée
 const renderWithEmojiBoost = (text: string): React.ReactNode => {
@@ -1241,11 +1241,13 @@ const Quiz = () => {
 												letterSpacing: '0.25em',
 												marginTop: '4px',
 											}}>
-												{unlimitedTimer ? 'manuel' : 'sec'}
+												{unlimitedTimer}
 											</div>
 										</div>
 									</div>
 									</div>
+
+
 
 									{/* Question */}
 									<div className="question-box terminal-panel border-glow-cyan" style={{
