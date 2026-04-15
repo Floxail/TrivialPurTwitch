@@ -22,16 +22,6 @@ const Help = ({ show, onClose }: any) => {
           <li><b>Aucune inscription ou condition préalable requise</b> : il suffit de taper dans le chat pour jouer ! Vous serez automatiquement ajouté au classement.</li>
           <li>Il existe une (petite) <b>tolérance aux fautes de frappe</b>, n'hésitez pas à taper rapidement</li>
         </ul>
-        <div className="help-section mb-4">
-        <h2 className="text-primary"><i className="bi bi-lightbulb-fill me-2"></i>Comment proposer des questions ?</h2>
-  <p className="text-muted small">
-    Vous pouvez enrichir la base de données commune pour que vos questions apparaissent en jeu (chez vous et chez les autres streamers).</p><ul><li>
-      <strong>Accès :</strong> Cliquez sur le bouton <strong>"Contribuer"</strong> dans le menu global.</li>
-    <li><strong>Format :</strong> Indiquez une question claire, la bonne réponse, et trois mauvaises réponses crédibles pour le mode QCM.</li>
-    <li><strong>Validation :</strong> Une fois envoyée, votre question est placée en file d'attente. Elle sera relue par un modérateur avant d'être injectée dans la base de données.</li>
-  </ul>
-</div>
-
         <h2>Scoring</h2>
         <ul>
           <li><b>1 point</b> pour chaque bonne réponse</li>
@@ -116,6 +106,16 @@ const Help = ({ show, onClose }: any) => {
             </tbody>
           </Table>
         </div>
+
+         <div className="help-section mb-4">
+        <h2 className="text-primary"><i className="bi bi-lightbulb-fill me-2"></i>Comment proposer des questions ?</h2>
+  <p className="text-muted small">
+    Vous pouvez enrichir la base de données commune pour que vos questions apparaissent en jeu (chez vous et chez les autres streamers).</p><ul><li>
+      <strong>Accès :</strong> Cliquez sur le bouton <strong>"Contribuer"</strong> dans le menu global.</li>
+    <li><strong>Format :</strong> Indiquez une question claire, la bonne réponse, et trois mauvaises réponses crédibles pour le mode QCM.</li>
+    <li><strong>Validation :</strong> Une fois envoyée, votre question est placée en file d'attente. Elle sera relue par un modérateur avant d'être injectée dans la base de données.</li>
+  </ul>
+</div>
 
       </Modal.Body>
       <Modal.Footer>
