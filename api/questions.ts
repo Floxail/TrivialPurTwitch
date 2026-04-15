@@ -39,6 +39,7 @@ function rowToQuestion(row: any) {
       : undefined,
     createdAt: row.created_at ?? undefined,
     imageUrl: row.image_url ?? undefined,
+    answerImageUrl: row.answer_image_url ?? undefined,
   };
 }
 
@@ -51,6 +52,7 @@ async function ensureMigration() {
   await getDb().execute('ALTER TABLE questions ADD COLUMN created_by_id TEXT').catch(() => {});
   await getDb().execute("ALTER TABLE questions ADD COLUMN created_at TEXT DEFAULT (datetime('now'))").catch(() => {});
   await getDb().execute('ALTER TABLE questions ADD COLUMN image_url TEXT').catch(() => {});
+  await getDb().execute('ALTER TABLE questions ADD COLUMN answer_image_url TEXT').catch(() => {});
   // Backfill: copier created_at depuis pending_questions pour les questions approuvées existantes
   await getDb().execute(`
     UPDATE questions SET created_at = (
@@ -110,8 +112,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         sql: `INSERT OR REPLACE INTO questions
               (id, question, answer, alternative_answers, category, box_name,
                card_number, difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
-               created_by, created_by_id, created_at, image_url)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)`,
+               created_by, created_by_id, created_at, image_url, answer_image_url)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?, ?)`,
         args: [
           q.id,
           q.question,
@@ -128,6 +130,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           admin.login,
           admin.userId,
           q.imageUrl || null,
+          q.answerImageUrl || null,
         ],
       });
 
@@ -164,6 +167,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         qcmCorrectIndex: 'qcm_correct_index',
         qcmCorrectIndexes: 'qcm_correct_indexes',
         imageUrl: 'image_url',
+        answerImageUrl: 'answer_image_url',
       };
 
       for (const [jsField, dbField] of Object.entries(fieldMap)) {

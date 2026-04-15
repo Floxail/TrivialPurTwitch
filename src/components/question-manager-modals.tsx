@@ -23,6 +23,7 @@ interface QuestionFormData {
   qcmCorrectIndex: number;
   qcmCorrectIndexes: number[];
   imageUrl: string;
+  answerImageUrl: string;
 }
 
 interface QuestionModalProps {
@@ -64,6 +65,7 @@ const defaultFormData: QuestionFormData = {
   qcmCorrectIndex: 0,
   qcmCorrectIndexes: [0],
   imageUrl: '',
+  answerImageUrl: '',
 };
 
 export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
@@ -94,6 +96,7 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
           qcmCorrectIndex: editingQuestion.qcmCorrectIndex ?? 0,
           qcmCorrectIndexes: editingQuestion.qcmCorrectIndexes ?? (editingQuestion.qcmCorrectIndex !== undefined ? [editingQuestion.qcmCorrectIndex] : [0]),
           imageUrl: editingQuestion.imageUrl || '',
+          answerImageUrl: editingQuestion.answerImageUrl || '',
         });
       } else {
         setFormData({
@@ -225,7 +228,7 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>URL de l'image (Optionnel)</Form.Label>
+            <Form.Label>URL de l'image de la question (Optionnel)</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ex: lien Discord ou Imgur (https://i.imgur.com/...)"
@@ -233,7 +236,20 @@ export const QuestionModal: React.FC<QuestionModalProps> = React.memo(({
               onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
             />
             <Form.Text className="text-muted">
-              L'image sera affichée sous la question pendant le quiz
+              Affichée pendant la question. Si aucune image de réponse n'est fournie, celle-ci restera visible à la révélation.
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>URL de l'image de la réponse (Optionnel)</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ex: lien Discord ou Imgur (https://i.imgur.com/...)"
+              value={formData.answerImageUrl}
+              onChange={(e) => setFormData({ ...formData, answerImageUrl: e.target.value })}
+            />
+            <Form.Text className="text-muted">
+              Affichée uniquement au moment de la révélation. Si seule l'image de réponse est fournie, la question n'aura pas d'image.
             </Form.Text>
           </Form.Group>
 

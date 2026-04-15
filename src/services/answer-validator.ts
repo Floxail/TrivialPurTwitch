@@ -15,13 +15,13 @@ export type ValidationResult =
  * - { valid: false } si le message n'est pas une tentative de réponse valide (ex: texte random en QCM)
  * - { valid: true, isCorrect: true/false } sinon
  */
-export function verifyAnswer(message: string, question: Question): ValidationResult {
+export function verifyAnswer(message: string, question: Question, opts?: { strictSpelling?: boolean }): ValidationResult {
   if (question.questionType === QuestionType.QCM &&
     question.qcmOptions &&
     (question.qcmCorrectIndexes || question.qcmCorrectIndex !== undefined)) {
     return verifyQcmAnswer(message, question);
   }
-  return verifyFreeTextAnswer(message, question);
+  return verifyFreeTextAnswer(message, question, opts?.strictSpelling ?? false);
 }
 
 function verifyQcmAnswer(message: string, question: Question): ValidationResult {
@@ -59,19 +59,19 @@ function verifyQcmAnswer(message: string, question: Question): ValidationResult 
   return { valid: true, isCorrect };
 }
 
-function verifyFreeTextAnswer(message: string, question: Question): ValidationResult {
+function verifyFreeTextAnswer(message: string, question: Question, strict: boolean): ValidationResult {
   const proposition = cleanValueLight(message);
   const propositionNoArticles = removeArticles(proposition);
 
   const correctAnswer = cleanValueLight(question.answer);
   const alternativeAnswers = question.alternativeAnswers?.map(cleanValueLight) || [];
 
-  if (checkMatch(correctAnswer, proposition, propositionNoArticles)) {
+  if (checkMatch(correctAnswer, proposition, propositionNoArticles, strict)) {
     return { valid: true, isCorrect: true };
   }
 
   for (const altAnswer of alternativeAnswers) {
-    if (checkMatch(altAnswer, proposition, propositionNoArticles)) {
+    if (checkMatch(altAnswer, proposition, propositionNoArticles, strict)) {
       return { valid: true, isCorrect: true };
     }
   }
@@ -79,12 +79,17 @@ function verifyFreeTextAnswer(message: string, question: Question): ValidationRe
   return { valid: true, isCorrect: false };
 }
 
-function checkMatch(answer: string, prop: string, propNoArticles: string): boolean {
+function checkMatch(answer: string, prop: string, propNoArticles: string, strict: boolean = false): boolean {
   const answerNoArticles = removeArticles(answer);
 
   // Vérification exacte (avec et sans articles)
   if (answer === prop || answerNoArticles === propNoArticles) {
     return true;
+  }
+
+  // Mode strict : aucune tolérance — seul l'exact match ci-dessus compte.
+  if (strict) {
+    return false;
   }
 
   // Si la réponse correcte contient des chiffres, ils doivent correspondre exactement.
