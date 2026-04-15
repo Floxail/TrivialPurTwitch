@@ -101,6 +101,7 @@ const AdminDashboard = () => {
     try {
       await apiApproveQuestion(id, boxName);
       setPendingQuestions(prev => prev.filter(q => q.id !== id));
+      useQuestionsStore.getState().syncFromDB(true).catch(() => {});
       showSuccess(`Question approuvée → ${boxName}`);
     } catch (err: any) {
       setError(err.message || 'Erreur lors de l\'approbation');

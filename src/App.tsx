@@ -17,6 +17,7 @@ import AdminDashboard from './components/admin-dashboard';
 import ContributionPage from './components/contribution-page';
 import Convertisseur from './components/convertisseur';
 import Stats from './components/stats';
+import Welcome, { shouldShowWelcome } from './components/welcome';
 import { Analytics } from '@vercel/analytics/react';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
 
 	const [view, setView] = useState(<div />);
 	const [errorMessage, setErrorMessage] = useState('');
+	const [showWelcome, setShowWelcome] = useState(false);
 
 	const location = useLocation();
 
@@ -46,15 +48,28 @@ function App() {
 			localStorage.setItem('quiz_migration_v2_done', 'true');
 		}
 
-		// Auto-sync au démarrage (silencieux si < 15min, complet sinon)
-		questionsStore.autoSyncIfNeeded();
+		// Sync obligatoire au démarrage (non-silencieux) pour garantir des données fraîches
+		questionsStore.syncFromDB();
 
-		// Sync périodique en arrière-plan toutes les 15 minutes (silencieux)
+		// Sync périodique en arrière-plan toutes les 2 minutes (silencieux)
 		const syncInterval = setInterval(() => {
 			questionsStore.autoSyncIfNeeded();
-		}, 15 * 60 * 1000);
+		}, 2 * 60 * 1000);
 
-		return () => clearInterval(syncInterval);
+		// Sync quand l'utilisateur revient sur l'onglet (changement de visibilité ou focus)
+		const onVisible = () => {
+			if (document.visibilityState === 'visible') {
+				questionsStore.autoSyncIfNeeded();
+			}
+		};
+		document.addEventListener('visibilitychange', onVisible);
+		window.addEventListener('focus', onVisible);
+
+		return () => {
+			clearInterval(syncInterval);
+			document.removeEventListener('visibilitychange', onVisible);
+			window.removeEventListener('focus', onVisible);
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -65,12 +80,19 @@ function App() {
 		} else if (!settingsStore.isInitialized()) {
 			navigate('/settings');
 		} else if (location.pathname === '/') {
-	 	 // Rediriger vers le quiz au lieu du blind test
 			setView(<Quiz />);
-	 		navigate('/quiz');
+			navigate('/quiz');
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [navigate, authStore, settingsStore]);
+
+	useEffect(() => {
+		const isHome = location.pathname === '/' || location.pathname === '/quiz';
+		if (authStore.isLoggedIn() && settingsStore.isInitialized() && isHome && shouldShowWelcome()) {
+			setShowWelcome(true);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const onPopupClose = () => {
 		setErrorMessage('');
@@ -122,8 +144,8 @@ function App() {
 				<Routes>
 					<Route path="/" element={view} />
 					<Route path="/quiz" element={<Quiz />} />
-					<Route path="/questions" element={<QuestionManager />} />
-					<Route path="/questions-terminal" element={<QuestionManagerTerminal />} />
+					<Route path="/questions" element={authStore.isAdmin ? <QuestionManager /> : <Quiz />} />
+					<Route path="/questions-terminal" element={authStore.isAdmin ? <QuestionManagerTerminal /> : <Quiz />} />
 					<Route path="/convertisseur" element={<Convertisseur />} />
 					<Route path="/contribute" element={<ContributionPage />} />
 					<Route path="/system-mod-portal" element={<AdminDashboard />} />
@@ -134,6 +156,7 @@ function App() {
 </Routes>
 			</div>
 		<Analytics />
+		<Welcome show={showWelcome} onClose={() => setShowWelcome(false)} />
 		</>
 	);
 }

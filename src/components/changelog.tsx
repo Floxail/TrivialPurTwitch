@@ -307,7 +307,6 @@ const Changelog = ({ show, onClose }: any) => {
         <ul>
           <li>Convertisseur de thèmes pour gérer différentes catégories</li>
           <li>Système de combo pour récompenser les bonnes réponses consécutives</li>
-          <li>Points de chaîne pour encourager la participation</li>
           <li>Commande !score optimisée pour éviter le spam</li>
         </ul>
         <br />

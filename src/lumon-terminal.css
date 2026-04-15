@@ -481,12 +481,86 @@ a:hover {
      Ring 3 (far):      scale(0.92)  — recedes into darkness
    ═══════════════════════════════════════════════════════════════════════════ */
 .mdr-data-point-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 16px;
-  justify-content: center;
-  padding: 12px 8px;
+  display: block;
+  column-width: 200px;
+  column-gap: 10px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 8px;
 }
+
+/* Chaque box = ligne dans sa colonne, ne se coupe pas entre deux colonnes */
+.mdr-data-point {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px !important;
+  margin-bottom: 3px;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  font-size: 0.68rem !important;
+}
+
+/* Chevron Master — zone cliquable séparée (expand/collapse) */
+.mdr-chevron {
+  font-size: 0.6rem;
+  opacity: 0.85;
+  padding: 2px 6px;
+  margin-left: -6px;
+  border-radius: 2px;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.mdr-chevron:hover { background-color: rgba(var(--box-theme-rgb, var(--lumon-cyan-rgb)), 0.2); opacity: 1; }
+
+.mdr-sub-connector {
+  font-size: 0.6rem;
+  opacity: 0.5;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+.mdr-box-name { flex: 1; }
+
+.mdr-sub-count {
+  font-size: 0.62rem;
+  opacity: 0.55;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+/* Indentation des sous-boîtes */
+.mdr-data-point.mdr-sub-box {
+  padding-left: 20px !important;
+  border-left: 2px solid rgba(var(--box-theme-rgb), 0.25) !important;
+  margin-left: 8px;
+}
+
+/* Card "★ TOUTES" — span toutes les colonnes en haut */
+.mdr-data-point.mdr-all-boxes {
+  justify-content: center;
+  font-weight: 600;
+  border-color: rgba(var(--lumon-cyan-rgb), 0.35) !important;
+  margin-bottom: 8px;
+  column-span: all;
+  -webkit-column-span: all;
+}
+
+/* Atténuation fisheye dans le layout linéaire (on retire le wobble/scale agressif) */
+.mdr-data-point-container .mdr-data-point.mdr-focused,
+.mdr-data-point-container .mdr-data-point.mdr-themed.mdr-focused {
+  transform: none;
+  animation: none;
+}
+.mdr-data-point-container .mdr-data-point.mdr-ring-near,
+.mdr-data-point-container .mdr-data-point.mdr-ring-mid,
+.mdr-data-point-container .mdr-data-point.mdr-ring-far,
+.mdr-data-point-container .mdr-data-point.mdr-ring-near.mdr-selected,
+.mdr-data-point-container .mdr-data-point.mdr-ring-mid.mdr-selected,
+.mdr-data-point-container .mdr-data-point.mdr-ring-far.mdr-selected { transform: none; }
 
 .mdr-data-point {
   font-family: 'Share Tech Mono', monospace;
@@ -732,4 +806,12 @@ a:hover {
 }
 .mdr-data-point-container .mdr-sub-box.mdr-unselected {
   border-left: 2px solid #546e7a !important;
+}
+
+/* Boost de la taille des emoji Unicode dans le texte des questions/réponses */
+.emoji-boost {
+  font-size: 1.8em;
+  vertical-align: middle;
+  line-height: 1;
+  display: inline-block;
 }

@@ -15,14 +15,125 @@ import {
 } from '../../services/api-service';
 
 const localStorageKey: string = 'quiz_questions_storage_v2';
+const HISTORY_KEY = 'quiz_recent_questions';
+const HISTORY_MAX = 500;
+
+// Entier uniforme dans [0, max) sans biais modulo (rejection sampling sur crypto)
+function randomInt(max: number): number {
+  if (max <= 1) return 0;
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const buf = new Uint32Array(1);
+    const limit = Math.floor(0x100000000 / max) * max;
+    let v: number;
+    do {
+      crypto.getRandomValues(buf);
+      v = buf[0];
+    } while (v >= limit);
+    return v % max;
+  }
+  return Math.floor(Math.random() * max);
+}
 
 function fisherYatesShuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = randomInt(i + 1);
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+// Historique glissant des questions récemment tirées (anti-répétition inter-sessions)
+function getRecentHistory(): string[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function addToHistory(ids: string[]): void {
+  if (ids.length === 0) return;
+  try {
+    const current = getRecentHistory();
+    const set = new Set(ids);
+    const filtered = current.filter((id) => !set.has(id));
+    const updated = [...ids, ...filtered].slice(0, HISTORY_MAX);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+  } catch {
+    // quota exceeded, ignore
+  }
+}
+
+// Sélection biaisée "fraîcheur" : priorité aux questions absentes de l'historique,
+// sinon on complète avec les plus anciennement jouées (shuffle dans la tranche la plus vieille)
+function smartPick<T extends { id: string }>(pool: T[], count: number): T[] {
+  if (pool.length === 0 || count <= 0) return [];
+  if (pool.length <= count) return fisherYatesShuffle(pool);
+
+  const history = getRecentHistory();
+  const rank = new Map<string, number>();
+  history.forEach((id, i) => rank.set(id, i));
+
+  const fresh: T[] = [];
+  const seen: T[] = [];
+  for (const q of pool) {
+    if (rank.has(q.id)) seen.push(q);
+    else fresh.push(q);
+  }
+
+  const shuffledFresh = fisherYatesShuffle(fresh);
+  if (shuffledFresh.length >= count) {
+    return shuffledFresh.slice(0, count);
+  }
+
+  // Complément : on prend les plus vieilles (rang élevé = vu il y a longtemps)
+  seen.sort((a, b) => (rank.get(b.id)! - rank.get(a.id)!));
+  const need = count - shuffledFresh.length;
+  const sliceSize = Math.min(seen.length, Math.max(need * 2, need));
+  const oldestSlice = fisherYatesShuffle(seen.slice(0, sliceSize));
+  return [...shuffledFresh, ...oldestSlice.slice(0, need)];
+}
+
+// Échantillonnage stratifié : alloue équitablement entre boîtes non vides,
+// redistribue le leftover et compense si une boîte est trop petite
+function stratifiedPick(pools: { id: string }[][], totalCount: number): { id: string }[] {
+  const nonEmpty = pools.filter((p) => p.length > 0).map((p) => [...p]);
+  if (nonEmpty.length === 0 || totalCount <= 0) return [];
+
+  const base = Math.floor(totalCount / nonEmpty.length);
+  const alloc = new Array(nonEmpty.length).fill(base);
+  const leftover = totalCount - base * nonEmpty.length;
+  const order = fisherYatesShuffle(Array.from({ length: nonEmpty.length }, (_, i) => i));
+  for (let i = 0; i < leftover; i++) alloc[order[i]]++;
+
+  const result: { id: string }[] = [];
+  for (let i = 0; i < nonEmpty.length; i++) {
+    const picked = smartPick(nonEmpty[i], Math.min(alloc[i], nonEmpty[i].length));
+    result.push(...picked);
+    const pickedIds = new Set(picked.map((q) => q.id));
+    nonEmpty[i] = nonEmpty[i].filter((q) => !pickedIds.has(q.id));
+  }
+
+  // Compensation si certaines boîtes étaient trop petites
+  while (result.length < totalCount) {
+    const available = nonEmpty.filter((p) => p.length > 0);
+    if (available.length === 0) break;
+    const need = totalCount - result.length;
+    const perBox = Math.max(1, Math.ceil(need / available.length));
+    for (const pool of available) {
+      if (result.length >= totalCount) break;
+      const take = Math.min(perBox, pool.length, totalCount - result.length);
+      const picked = smartPick(pool, take);
+      result.push(...picked);
+      const pickedIds = new Set(picked.map((q) => q.id));
+      const idx = nonEmpty.indexOf(pool);
+      nonEmpty[idx] = pool.filter((q) => !pickedIds.has(q.id));
+    }
+  }
+
+  return fisherYatesShuffle(result);
 }
 
 // Type de question
@@ -382,36 +493,41 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
       generateRandomQuiz: (boxName: string, questionCount: number): Question[] | null => {
         const allQuestions = get().getQuestionsByBox(boxName);
+        if (allQuestions.length === 0) return null;
 
-        if (allQuestions.length === 0) {
-          return null;
-        }
-
-        // Mélanger et prendre N questions
-        const shuffled = fisherYatesShuffle(allQuestions);
-        return shuffled.slice(0, Math.min(questionCount, shuffled.length));
+        const picked = smartPick(allQuestions, Math.min(questionCount, allQuestions.length));
+        addToHistory(picked.map((q) => q.id));
+        return picked as Question[];
       },
 
       generateRandomQuizAllBoxes: (questionCount: number): Question[] | null => {
-        const allQuestions = get().questions;
-
-        if (allQuestions.length === 0) {
-          return null;
+        const byBox = new Map<string, Question[]>();
+        for (const q of get().questions) {
+          const arr = byBox.get(q.boxName) || [];
+          arr.push(q);
+          byBox.set(q.boxName, arr);
         }
+        if (byBox.size === 0) return null;
 
-        const shuffled = fisherYatesShuffle(allQuestions);
-        return shuffled.slice(0, Math.min(questionCount, shuffled.length));
+        const picked = stratifiedPick(Array.from(byBox.values()), questionCount) as Question[];
+        if (picked.length === 0) return null;
+        addToHistory(picked.map((q) => q.id));
+        return picked;
       },
 
       generateRandomQuizFromBoxes: (boxNames: string[], questionCount: number): Question[] | null => {
-        const allQuestions = get().questions.filter((q) => boxNames.includes(q.boxName));
-
-        if (allQuestions.length === 0) {
-          return null;
+        const byBox = new Map<string, Question[]>();
+        for (const name of boxNames) byBox.set(name, []);
+        for (const q of get().questions) {
+          if (byBox.has(q.boxName)) byBox.get(q.boxName)!.push(q);
         }
+        const pools = Array.from(byBox.values()).filter((p) => p.length > 0);
+        if (pools.length === 0) return null;
 
-        const shuffled = fisherYatesShuffle(allQuestions);
-        return shuffled.slice(0, Math.min(questionCount, shuffled.length));
+        const picked = stratifiedPick(pools, questionCount) as Question[];
+        if (picked.length === 0) return null;
+        addToHistory(picked.map((q) => q.id));
+        return picked;
       },
 
       generateOrderedQuiz: (boxName: string): Question[] | null => {
@@ -616,9 +732,8 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
       autoSyncIfNeeded: async () => {
         const lastSync = get().lastDBSync;
-        const fifteenMinutes = 15 * 60 * 1000;
-        if (!lastSync || (Date.now() - new Date(lastSync).getTime()) > fifteenMinutes) {
-          console.log('🔄 Auto-sync silencieux (>15min depuis la dernière sync)...');
+        const twoMinutes = 2 * 60 * 1000;
+        if (!lastSync || (Date.now() - new Date(lastSync).getTime()) > twoMinutes) {
           await get().syncFromDB(true);
         }
       },

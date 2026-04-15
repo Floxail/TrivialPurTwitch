@@ -49,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   if (req.method === 'OPTIONS') return res.status(204).end();
 
-  if (checkRateLimit(req, res, 20, 60_000)) return;
+  if (checkRateLimit(req, res, 100, 60_000)) return;
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

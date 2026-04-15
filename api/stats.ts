@@ -80,7 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         getDb().execute(`
           SELECT question_id, times_asked, times_correct, times_wrong, fastest_correct_ms
           FROM question_stats
-          WHERE times_asked >= 3
+          WHERE times_asked >= 3 AND times_correct < times_asked
           ORDER BY CAST(times_correct AS REAL) / times_asked ASC
           LIMIT 10
         `),
@@ -92,7 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const bestQuestions = await getDb().execute(`
         SELECT question_id, times_asked, times_correct, times_wrong
         FROM question_stats
-        WHERE times_asked >= 3
+        WHERE times_asked >= 3 AND times_correct > 0
         ORDER BY CAST(times_correct AS REAL) / times_asked DESC
         LIMIT 10
       `);
