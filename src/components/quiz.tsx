@@ -236,7 +236,7 @@ const Quiz = () => {
 		setSelectedBoxNames(prev => {
 			if (prev === null) return [boxName];
 			const isSelected = prev.includes(boxName);
-			if (isSelected && prev.length === 1) return prev;
+			if (isSelected && prev.length === 1) return null;
 			if (isSelected) return prev.filter(n => n !== boxName);
 			return [...prev, boxName];
 		});
@@ -251,7 +251,7 @@ const Quiz = () => {
 			const allSelected = allNames.every(n => prev.includes(n));
 			if (allSelected) {
 				const filtered = prev.filter(n => !allNames.includes(n));
-				return filtered.length === 0 ? prev : filtered;
+				return filtered.length === 0 ? null : filtered;
 			}
 			return Array.from(new Set([...prev, ...allNames]));
 		});
