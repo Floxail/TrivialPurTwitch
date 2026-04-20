@@ -150,6 +150,8 @@ const Quiz = () => {
 	const activeGracePeriodMsRef = useRef(settingsStore.gracePeriodMs);
 	// Track des joueurs ayant déjà été pénalisés ce tour (une seule pénalité par question)
 	const penalizedRef = useRef<Set<string>>(new Set());
+	// File d'attente des pénalités à appliquer au moment de la révélation (pas avant)
+	const pendingPenaltiesRef = useRef<{ nick: string; tid: string }[]>([]);
 	const [questionRevealed, setQuestionRevealed] = useState(false);
 	const [podiumDisplayed, setPodiumDisplayed] = useState(false);
 	const lastAnswerersRef = useRef<{ nick: string; isFirst: boolean; answeredAt: number }[]>([]);
@@ -388,6 +390,7 @@ const Quiz = () => {
 		lastAnswerersRef.current = [];
 		qcmAttemptsRef.current = new Set(); // Reset des tentatives QCM
 		penalizedRef.current = new Set(); // Reset des pénalités du tour
+		pendingPenaltiesRef.current = []; // Reset de la file des pénalités différées
 		setQuestionRevealed(false);
 		questionRevealedRef.current = false;
 
@@ -454,8 +457,18 @@ const Quiz = () => {
 			// Enregistrer les points
 			recordAnswers(answers);
 			gameStore.recordAnswer(currentQuizState.currentQuestionIndex, finalAnswerers[0].nick);
-			usePlayerStore.getState().backup();
 		}
+
+		// Appliquer les pénalités différées (mauvaises réponses)
+		if (pendingPenaltiesRef.current.length > 0) {
+			const ps = usePlayerStore.getState();
+			for (const { nick } of pendingPenaltiesRef.current) {
+				ps.addPoints(nick, -1);
+			}
+			pendingPenaltiesRef.current = [];
+		}
+
+		usePlayerStore.getState().backup();
 
 		// Message chat
 		if (settingsStore.chatNotifications && twitchNick) {
@@ -594,9 +607,9 @@ const Quiz = () => {
 				const newAnswerer = { nick, isFirst, answeredAt: now };
 				currentAnswerersRef.current = [...currentAnswerersRef.current, newAnswerer];
 			} else if (penalizeWrongRef.current && !penalizedRef.current.has(nick)) {
-				// Pénalité : -1 point sur mauvaise réponse (une seule fois par question)
+				// Pénalité différée : enregistrée maintenant, appliquée à la révélation
 				initPlayer(nick, tid);
-				usePlayerStore.getState().addPoints(nick, -1);
+				pendingPenaltiesRef.current.push({ nick, tid });
 				penalizedRef.current.add(nick);
 			}
 		}
