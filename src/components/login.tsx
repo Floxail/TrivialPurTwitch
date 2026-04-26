@@ -6,11 +6,11 @@ import { useGlobalStore } from './store/global-store';
 
 const Login = () => {
 
-  const globalStore = useGlobalStore();
-  const authStore = useAuthStore();
+  const setSubtitle = useGlobalStore(s => s.setSubtitle);
+  const isLoggedIn = useAuthStore(s => s.isLoggedIn);
 
   useEffect(() => {
-    globalStore.setSubtitle('');
+    setSubtitle('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -62,7 +62,7 @@ const Login = () => {
         <p style={{ color: 'var(--lumon-text-dim)', fontFamily: "'Share Tech Mono', monospace", marginTop: '1rem' }}>Connectez-vous avec Twitch pour commencer</p>
       </div>
       <LoginButton
-        loggedIn={authStore.isLoggedIn()}
+        loggedIn={isLoggedIn()}
         appName="Twitch"
         onClick={twitchLogin}
         icon={twitchIcon}

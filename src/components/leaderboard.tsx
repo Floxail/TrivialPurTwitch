@@ -22,7 +22,8 @@ const DISPLAYED_USER_LIMIT = 100;
 
 const Leaderboard = memo(() => {
 
-  const playerStore = usePlayerStore();
+  const players = usePlayerStore(s => s.players);
+  const addPoints = usePlayerStore(s => s.addPoints);
 
   const [nickFilter, setNickFilter] = useState('');
   const [mode, setMode] = useState<LeaderboardMode>('session');
@@ -52,7 +53,7 @@ const Leaderboard = memo(() => {
 
   // Données de session (local)
   const sessionRows = useMemo(() => {
-    let rows: LeaderboardRow[] = Object.values(playerStore.players).map(player => ({
+    let rows: LeaderboardRow[] = Object.values(players).map((player) => ({
       nick: player.nick,
       score: player.score,
       tid: player.tid,
@@ -74,7 +75,7 @@ const Leaderboard = memo(() => {
     }
 
     return rows;
-  }, [nickFilter, playerStore]);
+  }, [nickFilter, players]);
 
   // Données all-time (API)
   const allTimeRows = useMemo(() => {
@@ -112,7 +113,7 @@ const Leaderboard = memo(() => {
   const displayedRows = mode === 'session' ? sessionRows : allTimeRows;
 
   const addPointToPlayer = (nick: string, points: number) => {
-    playerStore.addPoints(nick, points);
+    addPoints(nick, points);
   };
 
   const onNickFilterChange = (e: any) => {

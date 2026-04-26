@@ -42,12 +42,30 @@ const Quiz = () => {
 	const scoreCommandTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
 	const delayedScoreCommands = useRef<string[]>([]);
 
-	const settingsStore = useSettingsStore();
-	// Sélecteurs pour éviter les re-renders inutiles
-	const allBoxes = useQuestionsStore((state) => state.boxes);
-	const cumulativeScoresInQuizMode = useQuestionsStore((state) => state.cumulativeScoresInQuizMode);
-	const questionsStore = useQuestionsStore(); // Pour les actions
-	const gameStore = useGameStore();
+	// Settings : on lit seulement les champs utilisés (settings change rarement, mais évite re-render au moindre toggle)
+	const questionTimeLimit_setting = useSettingsStore(s => s.questionTimeLimit);
+	const acceptanceDelay_setting = useSettingsStore(s => s.acceptanceDelay);
+	const gracePeriodMs_setting = useSettingsStore(s => s.gracePeriodMs);
+	const chatNotifications = useSettingsStore(s => s.chatNotifications);
+	const scoreCommandMode = useSettingsStore(s => s.scoreCommandMode);
+	const addEveryUser = useSettingsStore(s => s.addEveryUser);
+
+	// Questions store : actions stables + slices spécifiques
+	const allBoxes = useQuestionsStore(s => s.boxes);
+	const cumulativeScoresInQuizMode = useQuestionsStore(s => s.cumulativeScoresInQuizMode);
+	const allQuestions = useQuestionsStore(s => s.questions);
+	const getBoxByName = useQuestionsStore(s => s.getBoxByName);
+	const generateRandomQuiz = useQuestionsStore(s => s.generateRandomQuiz);
+	const generateRandomQuizFromBoxes = useQuestionsStore(s => s.generateRandomQuizFromBoxes);
+	const generateOrderedQuiz = useQuestionsStore(s => s.generateOrderedQuiz);
+
+	// Game store : activeQuiz + actions
+	const activeQuiz_state = useGameStore(s => s.activeQuiz);
+	const startQuiz = useGameStore(s => s.startQuiz);
+	const recordAnswer_game = useGameStore(s => s.recordAnswer);
+	const nextQuestion = useGameStore(s => s.nextQuestion);
+	const endQuiz = useGameStore(s => s.endQuiz);
+
 	const setSubtitle = useGlobalStore((state) => state.setSubtitle);
 
 	const initPlayer = usePlayerStore((state) => state.initPlayer);
@@ -137,9 +155,9 @@ const Quiz = () => {
 	const twitchToken = getTwitchToken(); // Get deobfuscated token
 
 	// Overrides locaux (popup de config quiz) — ne modifient PAS les settings globaux
-	const [activeQuestionTimeLimit, setActiveQuestionTimeLimit] = useState(settingsStore.questionTimeLimit);
-	const [activeAcceptanceDelay, setActiveAcceptanceDelay] = useState(settingsStore.acceptanceDelay);
-	const [activeGracePeriodMs, setActiveGracePeriodMs] = useState(settingsStore.gracePeriodMs);
+	const [activeQuestionTimeLimit, setActiveQuestionTimeLimit] = useState(questionTimeLimit_setting);
+	const [activeAcceptanceDelay, setActiveAcceptanceDelay] = useState(acceptanceDelay_setting);
+	const [activeGracePeriodMs, setActiveGracePeriodMs] = useState(gracePeriodMs_setting);
 	const [onlyOneAnswer, setOnlyOneAnswer] = useState(false);
 	const [penalizeWrong, setPenalizeWrong] = useState(false);
 	const questionTimeLimit = activeQuestionTimeLimit;
@@ -147,7 +165,7 @@ const Quiz = () => {
 	// Refs pour lecture dans onProposition (évite closure stale)
 	const onlyOneAnswerRef = useRef(false);
 	const penalizeWrongRef = useRef(false);
-	const activeGracePeriodMsRef = useRef(settingsStore.gracePeriodMs);
+	const activeGracePeriodMsRef = useRef(gracePeriodMs_setting);
 	// Track des joueurs ayant déjà été pénalisés ce tour (une seule pénalité par question)
 	const penalizedRef = useRef<Set<string>>(new Set());
 	// File d'attente des pénalités à appliquer au moment de la révélation (pas avant)
@@ -175,7 +193,7 @@ const Quiz = () => {
 
 	// Boîte ordonnée : une seule boîte sélectionnée avec ordered=true
 	const isOrderedBox = selectedBoxNames?.length === 1
-		? (questionsStore.getBoxByName(selectedBoxNames[0])?.ordered ?? false)
+		? (getBoxByName(selectedBoxNames[0])?.ordered ?? false)
 		: false;
 
 	// Report system
@@ -284,7 +302,7 @@ const Quiz = () => {
 		});
 	}, [allVisibleBoxes]);
 
-	const activeQuiz = gameStore.activeQuiz;
+	const activeQuiz = activeQuiz_state;
 	const currentQuestion = activeQuiz?.questions[activeQuiz.currentQuestionIndex];
 
 	// Synchroniser les refs avec les états (pour lecture dans les callbacks async)
@@ -296,9 +314,9 @@ const Quiz = () => {
 	const [prevShowModeSelector, setPrevShowModeSelector] = useState(false);
 	useEffect(() => {
 		if (showModeSelector && !prevShowModeSelector) {
-			setActiveQuestionTimeLimit(settingsStore.questionTimeLimit);
-			setActiveAcceptanceDelay(settingsStore.acceptanceDelay);
-			setActiveGracePeriodMs(settingsStore.gracePeriodMs);
+			setActiveQuestionTimeLimit(questionTimeLimit_setting);
+			setActiveAcceptanceDelay(acceptanceDelay_setting);
+			setActiveGracePeriodMs(gracePeriodMs_setting);
 			setOnlyOneAnswer(false);
 			setPenalizeWrong(false);
 		}
@@ -313,7 +331,7 @@ const Quiz = () => {
 	useEffect(() => {
 		if (twitchNick && twitchToken) {
 			console.log(`Twitch channel changed to ${twitchNick}`);
-			twitchConnection(twitchNick, settingsStore.chatNotifications);
+			twitchConnection(twitchNick, chatNotifications);
 			return () => {
 				twitchDisconnection();
 			};
@@ -456,7 +474,7 @@ const Quiz = () => {
 
 			// Enregistrer les points
 			recordAnswers(answers);
-			gameStore.recordAnswer(currentQuizState.currentQuestionIndex, finalAnswerers[0].nick);
+			recordAnswer_game(currentQuizState.currentQuestionIndex, finalAnswerers[0].nick);
 		}
 
 		// Appliquer les pénalités différées (mauvaises réponses)
@@ -471,7 +489,7 @@ const Quiz = () => {
 		usePlayerStore.getState().backup();
 
 		// Message chat
-		if (settingsStore.chatNotifications && twitchNick) {
+		if (chatNotifications && twitchNick) {
 			// On utilise currentQuizState pour être safe
 			const safeQuestion = currentQuizState?.questions[currentQuizState.currentQuestionIndex];
 
@@ -510,11 +528,11 @@ const Quiz = () => {
 	};
 
 	const handleScoreCommand = (nick: string) => {
-		if (settingsStore.scoreCommandMode === TwitchMode.Whisper) {
+		if (scoreCommandMode === TwitchMode.Whisper) {
 			const player = getPlayersFromNick([nick])[0];
 			if (!player) return;
 			twitchClient.current?.whisper(nick, `Tu es #${player.rank} [${player.score} point${player.score > 1 ? 's' : ''}]`);
-		} else if (settingsStore.scoreCommandMode === TwitchMode.Channel && twitchNick) {
+		} else if (scoreCommandMode === TwitchMode.Channel && twitchNick) {
 			if (!scoreCommandTimeout.current) {
 				scoreCommandTimeout.current = setTimeout(flushScoreCommands, SCORE_CMD_DELAY);
 			}
@@ -536,7 +554,7 @@ const Quiz = () => {
 			return;
 		}
 
-		if (settingsStore.addEveryUser) {
+		if (addEveryUser) {
 			initPlayer(nick, tid);
 		}
 
@@ -578,7 +596,7 @@ const Quiz = () => {
 		}
 
 		// Vérification des réponses
-		const currentActiveQuiz = gameStore.activeQuiz;
+		const currentActiveQuiz = activeQuiz_state;
 		const currentActiveQuestion = currentActiveQuiz?.questions[currentActiveQuiz.currentQuestionIndex];
 
 		if (currentActiveQuiz && currentActiveQuestion && !questionRevealedRef.current) {
@@ -619,31 +637,31 @@ const Quiz = () => {
 
 	// Lancer le quiz
 	const handleStartQuiz = () => {
-		let questions: ReturnType<typeof questionsStore.generateRandomQuiz>;
+		let questions: ReturnType<typeof generateRandomQuiz>;
 		let displayBoxName: string;
 
 		if (selectedBoxNames === null) {
 			// Toutes les boîtes visibles (dont les sous-boîtes de tous les masters)
-			questions = questionsStore.generateRandomQuizFromBoxes(allVisibleBoxes.map(b => b.name), quizQuestionCount);
+			questions = generateRandomQuizFromBoxes(allVisibleBoxes.map(b => b.name), quizQuestionCount);
 			displayBoxName = 'Mix aléatoire';
 		} else if (selectedBoxNames.length === 1) {
 			// Une seule boîte
 			const boxName = selectedBoxNames[0];
-			const box = questionsStore.getBoxByName(boxName);
+			const box = getBoxByName(boxName);
 			if (!box) {
 				setModeError(`❌ La boîte "${boxName}" n'existe pas`);
 				return;
 			}
 			if (box.ordered) {
-				questions = questionsStore.generateOrderedQuiz(boxName);
+				questions = generateOrderedQuiz(boxName);
 				displayBoxName = boxName;
 			} else {
-				questions = questionsStore.generateRandomQuiz(boxName, quizQuestionCount);
+				questions = generateRandomQuiz(boxName, quizQuestionCount);
 				displayBoxName = boxName;
 			}
 		} else {
 			// Sélection multiple
-			questions = questionsStore.generateRandomQuizFromBoxes(selectedBoxNames, quizQuestionCount);
+			questions = generateRandomQuizFromBoxes(selectedBoxNames, quizQuestionCount);
 			displayBoxName = 'Mix sélection';
 		}
 
@@ -659,7 +677,7 @@ const Quiz = () => {
 		sessionIdRef.current = `quiz_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
 		// Démarrer le quiz dans le store
-		gameStore.startQuiz(QuizMode.QUIZ, displayBoxName, questions);
+		startQuiz(QuizMode.QUIZ, displayBoxName, questions);
 
 		// Gérer les scores cumulatifs
 		if (!cumulativeScoresInQuizMode) {
@@ -695,7 +713,7 @@ const Quiz = () => {
 	};
 
 	// Enregistrer les stats de questions jouées en fin de quiz
-	const recordQuestionStats = (quiz: NonNullable<typeof gameStore.activeQuiz>) => {
+	const recordQuestionStats = (quiz: NonNullable<typeof activeQuiz_state>) => {
 		const questionResults = quiz.questions.map((q, i) => {
 			const answerers = quiz.answers.get(i) || [];
 			return {
@@ -751,7 +769,7 @@ const Quiz = () => {
 			recordQuestionStats(currentQuiz);
 			usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName, twitchNick || undefined, twitchUserId || undefined);
 
-			gameStore.endQuiz();
+			endQuiz();
 			setPodiumDisplayed(true);
 			if (twitchNick) {
 				twitchClient.current?.say(twitchNick, '🎉 Quiz terminé ! Bravo à tous les participants !');
@@ -765,7 +783,7 @@ const Quiz = () => {
 		setReportError('');
 
 		setTimeout(() => {
-			gameStore.nextQuestion();
+			nextQuestion();
 
 			const updatedStore = useGameStore.getState();
 			const newQuiz = updatedStore.activeQuiz;
@@ -774,7 +792,7 @@ const Quiz = () => {
 				const newQuestion = newQuiz.questions[newQuiz.currentQuestionIndex];
 				const questionNum = newQuiz.currentQuestionIndex + 1;
 
-				if (settingsStore.chatNotifications && twitchNick) {
+				if (chatNotifications && twitchNick) {
 					let questionMsg = `❓ Question ${questionNum}/${newQuiz.totalQuestions} : ${newQuestion.question}`;
 
 					// Ajouter les options QCM si applicable
@@ -1008,13 +1026,12 @@ const Quiz = () => {
 											? allVisibleBoxes.map(b => b.name)
 											: selectedBoxNames;
 										if (effectiveBoxNames.length === 0) return null;
-										const allQuestions = questionsStore.questions;
 										const selectedQuestions = allQuestions.filter(q => effectiveBoxNames.includes(q.boxName));
 										const qcmCount = selectedQuestions.filter(q => q.questionType === QuestionType.QCM).length;
 										const freeCount = selectedQuestions.length - qcmCount;
 
 										const isSingle = effectiveBoxNames.length === 1;
-										const singleBox = isSingle ? questionsStore.getBoxByName(effectiveBoxNames[0]) : null;
+										const singleBox = isSingle ? getBoxByName(effectiveBoxNames[0]) : null;
 
 										return (
 											<div className="mt-3 p-3 terminal-panel" style={{ display: 'block', maxWidth: '600px', margin: '12px auto 0', textAlign: 'left' }}>

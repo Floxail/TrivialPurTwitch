@@ -14,8 +14,8 @@ const GlobalMenu = () => {
   const isAdmin = useAuthStore((state) => state.isAdmin);
 
 
-  const settingsStore = useSettingsStore();
-  const authStore = useAuthStore();
+  const resetSettings = useSettingsStore(s => s.reset);
+  const clearAuth = useAuthStore(s => s.clear);
   const clearPlayers = usePlayerStore((state) => state.clear);
 
   const [helpDisplayed, setHelpDisplayed] = useState(false);
@@ -35,8 +35,8 @@ const GlobalMenu = () => {
 
   const onLogoutClick = () => {
     clearPlayers();
-    authStore.clear();
-    settingsStore.reset();
+    clearAuth();
+    resetSettings();
     navigate('/');
   };
 

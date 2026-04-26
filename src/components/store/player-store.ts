@@ -60,16 +60,17 @@ type Actions = {
   syncScoresToAPI: (sessionId: string, boxName?: string, channelName?: string, channelId?: string) => Promise<void>;
 }
 
-const recomputeRanks = (players: Record<string, Player>) => {
-  const flat = Object.values(players);
-  flat.sort((a, b) => b.score - a.score);
+const recomputeRanks = (players: Record<string, Player>): Record<string, Player> => {
+  const flat = Object.values(players).slice().sort((a, b) => b.score - a.score);
+  const result: Record<string, Player> = {};
   let lastRankGroup = 1;
   for (let i = 0; i < flat.length; i++) {
     if (i === 0 || flat[i].score !== flat[i - 1].score) {
       lastRankGroup = i + 1;
     }
-    flat[i].rank = lastRankGroup;
+    result[flat[i].nick] = { ...flat[i], rank: lastRankGroup };
   }
+  return result;
 };
 
 let avatarFetchTimeout: NodeJS.Timeout | undefined = undefined;
@@ -93,19 +94,26 @@ export const usePlayerStore = create<Players & Actions>()(
     },
     restorePlayers: (players: Record<string, Player>) => {
       set((state) => {
-        const updated = state.players;
-        for (const nick of Object.keys(updated)) {
+        const updated: Record<string, Player> = {};
+        for (const nick of Object.keys(state.players)) {
+          const base = state.players[nick];
           if (players[nick]) {
-            updated[nick].score = players[nick].score;
-            updated[nick].stats = players[nick].stats;
-            updated[nick].currentStreak = players[nick].currentStreak || 0; // <--- MODIF
+            updated[nick] = {
+              ...base,
+              score: players[nick].score,
+              stats: players[nick].stats,
+              currentStreak: players[nick].currentStreak || 0,
+            };
           } else {
-            updated[nick].score = 0;
-            updated[nick].stats = { ...EMPTY_PLAYER_STATS };
-            updated[nick].currentStreak = 0; // <--- MODIF
+            updated[nick] = {
+              ...base,
+              score: 0,
+              stats: { ...EMPTY_PLAYER_STATS },
+              currentStreak: 0,
+            };
           }
         }
-        return ({ players: updated });
+        return { players: updated };
       });
     },
     initPlayer: (nick: string, tid: string) => {
@@ -114,12 +122,14 @@ export const usePlayerStore = create<Players & Actions>()(
         if (ids.length > 0) {
           getUsers(ids).then((response) => {
             set((state) => {
-              const updated = state.players;
+              const updated = { ...state.players };
               for (let u of response.data.data) {
                 const nick = u.display_name;
-                if(updated[nick]) updated[nick].avatar = u.profile_image_url;
+                if (updated[nick]) {
+                  updated[nick] = { ...updated[nick], avatar: u.profile_image_url };
+                }
               }
-              return ({ players: updated });
+              return { players: updated };
             });
           });
         }
@@ -127,9 +137,10 @@ export const usePlayerStore = create<Players & Actions>()(
 
       if (!get().players[nick]) {
         set((state) => {
-          const updated = state.players;
-          // <--- MODIF : Initialisation de currentStreak à 0
-          updated[nick] = { tid: tid, rank: -1, score: 0, nick: nick, currentStreak: 0, stats: { ...EMPTY_PLAYER_STATS } };
+          const updated = {
+            ...state.players,
+            [nick]: { tid, rank: -1, score: 0, nick, currentStreak: 0, stats: { ...EMPTY_PLAYER_STATS } },
+          };
 
           if (avatarFetchTimeout === undefined) {
             downloadAvatar(updated);
@@ -139,83 +150,63 @@ export const usePlayerStore = create<Players & Actions>()(
             }, avatarFetchTimeoutDuration);
           }
 
-          recomputeRanks(updated);
-          return ({ players: updated });
+          return { players: recomputeRanks(updated) };
         });
       }
     },
     addPoints: (nick: string, points: number) => {
       set((state) => {
-        const updated = state.players;
-        if(updated[nick]) {
-            updated[nick].score += points;
-            recomputeRanks(updated);
-        }
-        return ({ players: updated });
+        if (!state.players[nick]) return state;
+        const updated = {
+          ...state.players,
+          [nick]: { ...state.players[nick], score: state.players[nick].score + points },
+        };
+        return { players: recomputeRanks(updated) };
       });
     },
 
     // COMBO PLAFONNÉ À +5
     recordAnswers: (answers: Answer[]) => {
       set((state) => {
-        const updated = state.players;
-
-        // 1. Liste des pseudos qui ont répondu juste à ce tour
         const winnerNicks = new Set(answers.map(a => a.nick));
+        const updated: Record<string, Player> = {};
 
-        // 2. On remet à zéro le streak de TOUS ceux qui ne sont pas dans la liste des gagnants
-        Object.values(updated).forEach(player => {
-            if (!winnerNicks.has(player.nick)) {
-                player.currentStreak = 0;
-            }
-        });
+        // 1+2. Spread tous les joueurs, reset streak des non-gagnants
+        for (const nick of Object.keys(state.players)) {
+          const p = state.players[nick];
+          updated[nick] = winnerNicks.has(nick)
+            ? { ...p, stats: { ...p.stats } }
+            : { ...p, currentStreak: 0, stats: { ...p.stats } };
+        }
 
-        // 3. On traite les gagnants
+        // 3. Traiter gagnants (sur copies)
         for (const answer of answers) {
           const player = updated[answer.nick];
           if (!player) continue;
 
-          // Augmenter la série
           player.currentStreak = (player.currentStreak || 0) + 1;
-
-          // Point de base pour la bonne réponse
           let scoreToAdd = 1;
 
-          // Bonus First
           if (answer.isFirst) {
-              player.stats.firsts++;
-              scoreToAdd += 2;
+            player.stats.firsts++;
+            scoreToAdd += 2;
           }
 
-          // Bonus Seul : +1 si personne d'autre n'a répondu correctement
-          if (answers.length === 1) {
-              scoreToAdd += 1;
-          }
+          if (answers.length === 1) scoreToAdd += 1;
 
-
-          // --- BONUS COMBO PLAFONNÉ À +3 ---
           if (player.currentStreak > 1) {
-              player.stats.combos++;
-              player.stats.maxCombo = Math.max(player.stats.maxCombo || 0, player.currentStreak);
-
-              const maxBonus = 3;
-              const rawBonus = player.currentStreak - 1;
-
-              // On prend le plus petit des deux (le calcul ou le plafond)
-              const comboBonus = Math.min(rawBonus, maxBonus);
-
-              scoreToAdd += comboBonus;
+            player.stats.combos++;
+            player.stats.maxCombo = Math.max(player.stats.maxCombo || 0, player.currentStreak);
+            const comboBonus = Math.min(player.currentStreak - 1, 3);
+            scoreToAdd += comboBonus;
           }
-          // ---------------------------------
 
-          // Mise à jour des stats et du score
           player.stats.answers++;
           player.stats.fastestAnswer = Math.min(player.stats.fastestAnswer, answer.timer);
           player.score += scoreToAdd;
         }
 
-        recomputeRanks(updated);
-        return ({ players: updated });
+        return { players: recomputeRanks(updated) };
       });
     },
     getPlayers: (nicks: string[]) => {

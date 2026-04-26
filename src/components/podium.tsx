@@ -7,8 +7,8 @@ import { useSettingsStore } from './store/settings-store';
 
 const Podium = ({ onClose }: any) => {
 
-  const playerStore = usePlayerStore();
-  const settings = useSettingsStore();
+  const players = usePlayerStore(s => s.players);
+  const acceptanceDelay = useSettingsStore(s => s.acceptanceDelay);
   const [loser, setLoser] = useState<Player | null>(null);
 
   class PodiumStepContent {
@@ -28,7 +28,7 @@ const Podium = ({ onClose }: any) => {
   const renderPlayerStats = (player: Player) => {
     return <div style={{ border: '3px dashed #4A4A4AFF', padding: '10px 15px', borderRadius: '.5rem', margin: '5px 5px 14px 0' }}>
       {renderStatsLine('Reponses', `${player.stats.answers}`)}
-      {settings.acceptanceDelay > 0 && renderStatsLine('Firsts', `${player.stats.firsts}`)}
+      {acceptanceDelay > 0 && renderStatsLine('Firsts', `${player.stats.firsts}`)}
       {renderStatsLine('Combo max', `${player.stats.maxCombo || 0}`)}
     </div>;
   };
@@ -121,11 +121,11 @@ const Podium = ({ onClose }: any) => {
   };
 
   let podiumContent: PodiumStepContent[] = [];
-  let players = Object.values(playerStore.players);
+  let playerList = Object.values(players);
 
   for (let rank = 1; rank <= 3; rank++) {
     const step = new PodiumStepContent();
-    step.players = players.filter((player) => player.rank === rank);
+    step.players = playerList.filter((player) => player.rank === rank);
     if (step.players.length > 0) {
       step.rank = rank;
       step.score = step.players[0].score;
@@ -138,7 +138,7 @@ const Podium = ({ onClose }: any) => {
     }
   }
 
-  const losers = Object.values(playerStore.players).filter(player => player.score > 0 && !podiumContent.find(pc => pc.players.includes(player)));
+  const losers = Object.values(players).filter(player => player.score > 0 && !podiumContent.find(pc => pc.players.includes(player)));
 
   const pickLoser = () => {
     const loser = losers[Math.floor(Math.random() * losers.length)];

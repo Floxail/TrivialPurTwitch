@@ -7,6 +7,14 @@ const db = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN!,
 });
 
+let migrationDone = false;
+async function ensureMigration() {
+  if (migrationDone) return;
+  await db.execute('ALTER TABLE scores ADD COLUMN channel_name TEXT').catch(() => {});
+  await db.execute('ALTER TABLE scores ADD COLUMN channel_id TEXT').catch(() => {});
+  migrationDone = true;
+}
+
 const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -41,9 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'sessionId requis' });
       }
 
-      // Auto-migration : ajouter channel_name et channel_id si absents
-      await db.execute('ALTER TABLE scores ADD COLUMN channel_name TEXT').catch(() => {});
-      await db.execute('ALTER TABLE scores ADD COLUMN channel_id TEXT').catch(() => {});
+      await ensureMigration();
 
       // Batch insert des scores
       const BATCH_SIZE = 100;

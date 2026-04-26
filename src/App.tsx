@@ -4,29 +4,42 @@ import { useAuthStore } from 'components/store/auth-store';
 import { useGlobalStore } from 'components/store/global-store';
 import { useSettingsStore } from 'components/store/settings-store';
 import { useQuestionsStore } from 'components/store/questions-store';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Login from './components/login';
 import LoginCallback from './components/login-callback';
-import Settings from './components/settings';
 import './icons';
 import Quiz from './components/quiz';
-import QuestionManager from './components/question-manager-v2';
-import QuestionManagerTerminal from './components/question-manager-terminal';
-import AdminDashboard from './components/admin-dashboard';
-import ContributionPage from './components/contribution-page';
-import Convertisseur from './components/convertisseur';
-import Stats from './components/stats';
 import Welcome, { shouldShowWelcome } from './components/welcome';
 import { Analytics } from '@vercel/analytics/react';
+
+// Routes lazy-loaded — économise du JS au boot pour les pages peu visitées
+const Settings = lazy(() => import('./components/settings'));
+const QuestionManager = lazy(() => import('./components/question-manager-v2'));
+const QuestionManagerTerminal = lazy(() => import('./components/question-manager-terminal'));
+const AdminDashboard = lazy(() => import('./components/admin-dashboard'));
+const ContributionPage = lazy(() => import('./components/contribution-page'));
+const Convertisseur = lazy(() => import('./components/convertisseur'));
+const Stats = lazy(() => import('./components/stats'));
+
+const RouteFallback = () => (
+	<div style={{ textAlign: 'center', padding: '3rem' }}>
+		<div className="text-glow-cyan" style={{ fontFamily: "'Orbitron', sans-serif" }}>Chargement…</div>
+	</div>
+);
 
 function App() {
 	const navigate = useNavigate();
 
-	const settingsStore = useSettingsStore();
-	const authStore = useAuthStore();
-	const globalStore = useGlobalStore();
-	const questionsStore = useQuestionsStore();
+	// Sélecteurs granulaires : on lit seulement les valeurs/actions utilisées par App
+	const isInitialized = useSettingsStore(s => s.isInitialized);
+	const isLoggedIn = useAuthStore(s => s.isLoggedIn);
+	const isAdmin = useAuthStore(s => s.isAdmin);
+	const validateTwitchOAuthToken = useAuthStore(s => s.validateTwitchOAuthToken);
+	const subtitle = useGlobalStore(s => s.subtitle);
+	const migrateFromV1 = useQuestionsStore(s => s.migrateFromV1);
+	const syncFromDB = useQuestionsStore(s => s.syncFromDB);
+	const autoSyncIfNeeded = useQuestionsStore(s => s.autoSyncIfNeeded);
 
 	const [view, setView] = useState(<div />);
 	const [errorMessage, setErrorMessage] = useState('');
@@ -35,7 +48,7 @@ function App() {
 	const location = useLocation();
 
 	useEffect(() => {
-		authStore.validateTwitchOAuthToken();
+		validateTwitchOAuthToken();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -44,22 +57,22 @@ function App() {
 		const migrated = localStorage.getItem('quiz_migration_v2_done');
 		if (!migrated) {
 			console.log('🔄 Migration v1 → v2 détectée...');
-			questionsStore.migrateFromV1();
+			migrateFromV1();
 			localStorage.setItem('quiz_migration_v2_done', 'true');
 		}
 
 		// Sync obligatoire au démarrage (non-silencieux) pour garantir des données fraîches
-		questionsStore.syncFromDB();
+		syncFromDB();
 
 		// Sync périodique en arrière-plan toutes les 2 minutes (silencieux)
 		const syncInterval = setInterval(() => {
-			questionsStore.autoSyncIfNeeded();
+			autoSyncIfNeeded();
 		}, 2 * 60 * 1000);
 
 		// Sync quand l'utilisateur revient sur l'onglet (changement de visibilité ou focus)
 		const onVisible = () => {
 			if (document.visibilityState === 'visible') {
-				questionsStore.autoSyncIfNeeded();
+				autoSyncIfNeeded();
 			}
 		};
 		document.addEventListener('visibilitychange', onVisible);
@@ -74,21 +87,21 @@ function App() {
 	}, []);
 
 	useEffect(() => {
-		if (!authStore.isLoggedIn()) {
+		if (!isLoggedIn()) {
 			setView(<Login />);
 	 		navigate('/');
-		} else if (!settingsStore.isInitialized()) {
+		} else if (!isInitialized()) {
 			navigate('/settings');
 		} else if (location.pathname === '/') {
 			setView(<Quiz />);
 			navigate('/quiz');
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [navigate, authStore, settingsStore]);
+	}, [navigate]);
 
 	useEffect(() => {
 		const isHome = location.pathname === '/' || location.pathname === '/quiz';
-		if (authStore.isLoggedIn() && settingsStore.isInitialized() && isHome && shouldShowWelcome()) {
+		if (isLoggedIn() && isInitialized() && isHome && shouldShowWelcome()) {
 			setShowWelcome(true);
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,7 +112,7 @@ function App() {
 		navigate('/');
 	};
 
-	const loggedIn = authStore.isLoggedIn();
+	const loggedIn = isLoggedIn();
 	return (
 		<>
 			{/* CRT Scanline overlay - Lumon Industries terminal effect */}
@@ -122,7 +135,7 @@ function App() {
 					}
 				</div>
 				<p id="subtitle" className="lead text-secondary">
-					{globalStore.subtitle}
+					{subtitle}
 				</p>
 			</header>
 			<div className={'app container'}>
@@ -141,19 +154,21 @@ function App() {
 						</div>
 					</div>
 				}
-				<Routes>
-					<Route path="/" element={view} />
-					<Route path="/quiz" element={<Quiz />} />
-					<Route path="/questions" element={authStore.isAdmin ? <QuestionManager /> : <Quiz />} />
-					<Route path="/questions-terminal" element={authStore.isAdmin ? <QuestionManagerTerminal /> : <Quiz />} />
-					<Route path="/convertisseur" element={<Convertisseur />} />
-					<Route path="/contribute" element={<ContributionPage />} />
-					<Route path="/system-mod-portal" element={<AdminDashboard />} />
-					<Route path="/callback" element={<LoginCallback />} />
-					<Route path="/settings" element={<Settings />} />
-					<Route path="/stats" element={<Stats />} />
-					<Route path="/stats/:username" element={<Stats />} />
-</Routes>
+				<Suspense fallback={<RouteFallback />}>
+					<Routes>
+						<Route path="/" element={view} />
+						<Route path="/quiz" element={<Quiz />} />
+						<Route path="/questions" element={isAdmin ? <QuestionManager /> : <Quiz />} />
+						<Route path="/questions-terminal" element={isAdmin ? <QuestionManagerTerminal /> : <Quiz />} />
+						<Route path="/convertisseur" element={<Convertisseur />} />
+						<Route path="/contribute" element={<ContributionPage />} />
+						<Route path="/system-mod-portal" element={<AdminDashboard />} />
+						<Route path="/callback" element={<LoginCallback />} />
+						<Route path="/settings" element={<Settings />} />
+						<Route path="/stats" element={<Stats />} />
+						<Route path="/stats/:username" element={<Stats />} />
+					</Routes>
+				</Suspense>
 			</div>
 		<Analytics />
 		<Welcome show={showWelcome} onClose={() => setShowWelcome(false)} />

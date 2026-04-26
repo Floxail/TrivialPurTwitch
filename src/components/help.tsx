@@ -4,7 +4,7 @@ import { WelcomeContent } from './welcome';
 
 const Help = ({ show, onClose }: any) => {
 
-  const settings = useSettingsStore();
+  const gracePeriodMs = useSettingsStore(s => s.gracePeriodMs);
 
   return (
     <Modal show={show} centered size="lg" dialogClassName="help-modal">
@@ -25,7 +25,7 @@ const Help = ({ show, onClose }: any) => {
         <h2>Scoring</h2>
         <ul>
           <li><b>1 point</b> pour chaque bonne réponse</li>
-          <li><b>+2 points FIRST</b> pour le premier joueur à trouver la bonne réponse (fenêtre de clémence : {settings.gracePeriodMs}ms)</li>
+          <li><b>+2 points FIRST</b> pour le premier joueur à trouver la bonne réponse (fenêtre de clémence : {gracePeriodMs}ms)</li>
           <li><b>+1 point SEUL</b> si vous êtes le <i>seul joueur</i> à avoir trouvé la bonne réponse</li>
           <li><b>+1 à +3 points COMBO</b> par bonne réponse consécutive (max +3)</li>
         </ul>
