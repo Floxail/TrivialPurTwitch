@@ -97,14 +97,15 @@ const Quiz = () => {
 	const topLevelBoxes = useMemo(() => allVisibleBoxes.filter(b => !b.parentBox), [allVisibleBoxes]);
 
 	// Nouvelle palette restreinte (variations de Bleu, Violet, Rose) pour les Master Boxes
+	// Palette Master : violets / roses / magenta uniquement (pas de bleu pour éviter confusion avec boîtes indépendantes en cyan)
 	const MASTER_THEME_PALETTE = useMemo(() => [
 		{ color: '#b366ff', rgb: '179,102,255' },    // Violet Lumon
 		{ color: '#ff3366', rgb: '255,51,102' },     // Rose Néon
-		{ color: '#33ccff', rgb: '51,204,255' },     // Bleu Ciel
 		{ color: '#9d4edd', rgb: '157,78,221' },     // Deep Purple
 		{ color: '#ff66b2', rgb: '255,102,178' },    // Pink
-		{ color: '#4cc9f0', rgb: '76,201,240' },     // Bright Blue
 		{ color: '#7209b7', rgb: '114,9,183' },      // Indigo profond
+		{ color: '#e040fb', rgb: '224,64,251' },     // Magenta vif
+		{ color: '#c71585', rgb: '199,21,133' },     // Rose framboise
 	], []);
 
 	// Couleur standard pour les boîtes indépendantes (Le vrai Cyan Lumon du site)

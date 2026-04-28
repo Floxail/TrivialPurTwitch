@@ -32,16 +32,28 @@ function verifyQcmAnswer(message: string, question: Question): ValidationResult 
   const validLabels = QCM_LABELS.slice(0, numOptions);
   const validNumbers = Array.from({ length: numOptions }, (_, i) => String(i + 1));
 
-  // Parser les réponses : "A,C" ou "AC" ou "A C" ou "1,3"
-  const tokens = rawAnswer.split(/[\s,]+/).filter(t => t.length > 0);
+  // QCM mono-réponse : on accepte UNIQUEMENT le message strict "<lettre>" ou "<chiffre>".
+  // Pas de mots autour, pas de split, pas de multi-tokens. Tout autre message → ignoré.
+  const isMultiAnswer = correctIndexes.length > 1;
   const extracted: string[] = [];
-  for (const token of tokens) {
-    if (validLabels.includes(token)) {
-      extracted.push(token);
-    } else if (validNumbers.includes(token)) {
-      extracted.push(QCM_LABELS[parseInt(token) - 1]);
-    } else if (token.length > 1 && token.split('').every(ch => validLabels.includes(ch))) {
-      token.split('').forEach(ch => extracted.push(ch));
+
+  if (!isMultiAnswer) {
+    if (validLabels.includes(rawAnswer)) {
+      extracted.push(rawAnswer);
+    } else if (validNumbers.includes(rawAnswer)) {
+      extracted.push(QCM_LABELS[parseInt(rawAnswer) - 1]);
+    }
+  } else {
+    // Multi-réponses : "A,C" ou "AC" ou "A C" ou "1,3" ou "13"
+    const tokens = rawAnswer.split(/[\s,]+/).filter(t => t.length > 0);
+    for (const token of tokens) {
+      if (validLabels.includes(token)) {
+        extracted.push(token);
+      } else if (validNumbers.includes(token)) {
+        extracted.push(QCM_LABELS[parseInt(token) - 1]);
+      } else if (token.length > 1 && token.split('').every(ch => validLabels.includes(ch))) {
+        token.split('').forEach(ch => extracted.push(ch));
+      }
     }
   }
   const normalizedAnswers = Array.from(new Set(extracted));

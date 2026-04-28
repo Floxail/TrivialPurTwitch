@@ -121,6 +121,7 @@ const AdminDashboard = () => {
     try {
       await apiRejectQuestion(id);
       setPendingQuestions(prev => prev.filter(q => q.id !== id));
+      useQuestionsStore.getState().syncFromDB(true).catch(() => {});
       showSuccess('Question rejetée');
     } catch (err: any) {
       setError(err.message || 'Erreur lors du rejet');
@@ -285,6 +286,7 @@ const AdminDashboard = () => {
     try {
       await apiResolveReport(reportId);
       setReports(prev => prev.filter(r => r.id !== reportId));
+      useQuestionsStore.getState().syncFromDB(true).catch(() => {});
       showSuccess('Signalement marqué comme traité');
     } catch (err: any) {
       setError(err.message || 'Erreur');
@@ -298,6 +300,7 @@ const AdminDashboard = () => {
     try {
       await apiDeleteReport(reportId);
       setReports(prev => prev.filter(r => r.id !== reportId));
+      useQuestionsStore.getState().syncFromDB(true).catch(() => {});
       showSuccess('Signalement supprimé');
     } catch (err: any) {
       setError(err.message || 'Erreur');
