@@ -112,10 +112,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       args.push(name.trim());
-      await getDb().execute({
-        sql: `UPDATE boxes SET ${setClauses.join(', ')} WHERE name = ?`,
-        args,
-      });
+
+      // Garantir l'existence de la row boxes pour cette boîte
+      // (les boîtes peuvent exister uniquement via la table questions si elles ont été importées en masse).
+      // Sinon UPDATE ne touche aucune ligne et la modif est silencieusement perdue.
+      await getDb().batch([
+        {
+          sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers) VALUES (?, ?)',
+          args: [name.trim(), '[]'],
+        },
+        {
+          sql: `UPDATE boxes SET ${setClauses.join(', ')} WHERE name = ?`,
+          args,
+        },
+      ]);
 
       return res.status(200).json({ success: true, name: name.trim() });
     }

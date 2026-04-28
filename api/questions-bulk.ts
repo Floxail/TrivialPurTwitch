@@ -47,7 +47,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Maximum 200 questions par requête (timeout Vercel 10s)' });
     }
 
-    const statements = questions.map((q: any) => ({
+    // Garantit que les rows boxes existent pour toutes les boîtes référencées (sinon édition de meta perdue)
+    const uniqueBoxNames = Array.from(new Set(questions.map((q: any) => q.boxName).filter(Boolean)));
+    const boxStatements = uniqueBoxNames.map((name) => ({
+      sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers) VALUES (?, ?)',
+      args: [name, '[]'],
+    }));
+
+    const questionStatements = questions.map((q: any) => ({
       sql: `INSERT OR IGNORE INTO questions
             (id, question, answer, alternative_answers, category, box_name,
              card_number, difficulty, question_type, qcm_options, qcm_correct_index)
@@ -67,7 +74,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ],
     }));
 
-    await getDb().batch(statements as any);
+    await getDb().batch([...boxStatements, ...questionStatements] as any);
 
     return res.status(201).json({ success: true, count: questions.length });
   } catch (error) {

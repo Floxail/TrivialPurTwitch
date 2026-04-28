@@ -3931,6 +3931,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": "npm:^6.2.1"
     "@fortawesome/react-fontawesome": "npm:^0.2.0"
     "@libsql/client": "npm:^0.17.0"
+    "@popperjs/core": "npm:^2.11.8"
     "@types/node": "npm:^25.3.0"
     "@types/react": "npm:^18.0.27"
     "@types/react-dom": "npm:^18.0.10"

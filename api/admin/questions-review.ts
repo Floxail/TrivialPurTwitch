@@ -97,27 +97,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const targetBox = boxName || q.box_name || 'Propositions';
 
       // Insérer dans la table principale (avec created_at original pour préserver l'ordre de soumission)
-      await getDb().execute({
-        sql: `INSERT OR REPLACE INTO questions
-              (id, question, answer, alternative_answers, category, box_name,
-               difficulty, question_type, qcm_options, qcm_correct_index,
-               created_by, created_by_id, created_at)
-              VALUES (?, ?, ?, ?, ?, ?, 'medium', ?, ?, ?, ?, ?, ?)`,
-        args: [
-          q.id,
-          q.question,
-          q.answer,
-          q.alternative_answers ?? null,
-          q.category ?? 0,
-          targetBox,
-          q.question_type ?? 'free_text',
-          q.qcm_options ?? null,
-          q.qcm_correct_index ?? null,
-          q.submitted_by ?? null,
-          q.submitted_by_id ?? null,
-          q.created_at ?? null,
-        ],
-      });
+      // + garantit que la row boxes existe pour la boîte cible (sinon édition de meta perdue)
+      await getDb().batch([
+        {
+          sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers) VALUES (?, ?)',
+          args: [targetBox, '[]'],
+        },
+        {
+          sql: `INSERT OR REPLACE INTO questions
+                (id, question, answer, alternative_answers, category, box_name,
+                 difficulty, question_type, qcm_options, qcm_correct_index,
+                 created_by, created_by_id, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'medium', ?, ?, ?, ?, ?, ?)`,
+          args: [
+            q.id,
+            q.question,
+            q.answer,
+            q.alternative_answers ?? null,
+            q.category ?? 0,
+            targetBox,
+            q.question_type ?? 'free_text',
+            q.qcm_options ?? null,
+            q.qcm_correct_index ?? null,
+            q.submitted_by ?? null,
+            q.submitted_by_id ?? null,
+            q.created_at ?? null,
+          ],
+        },
+      ]);
 
       // Marquer comme approuvée
       await getDb().execute({

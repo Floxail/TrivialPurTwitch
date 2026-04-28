@@ -104,29 +104,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'Champs requis manquants: id, question, answer, boxName' });
       }
 
-      await getDb().execute({
-        sql: `INSERT OR REPLACE INTO questions
-              (id, question, answer, alternative_answers, category, box_name,
-               card_number, difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
-               created_by, created_by_id, created_at)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-        args: [
-          q.id,
-          q.question,
-          q.answer,
-          q.alternativeAnswers ? JSON.stringify(q.alternativeAnswers) : null,
-          q.category ?? 0,
-          q.boxName,
-          q.cardNumber ?? null,
-          q.difficulty ?? 'medium',
-          q.questionType ?? 'free_text',
-          q.qcmOptions ? JSON.stringify(q.qcmOptions) : null,
-          q.qcmCorrectIndex ?? null,
-          q.qcmCorrectIndexes ? JSON.stringify(q.qcmCorrectIndexes) : null,
-          admin.login,
-          admin.userId,
-        ],
-      });
+      await getDb().batch([
+        // Garantit que la row boxes existe pour cette boîte (sinon édition de meta perdue)
+        {
+          sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers) VALUES (?, ?)',
+          args: [q.boxName, '[]'],
+        },
+        {
+          sql: `INSERT OR REPLACE INTO questions
+                (id, question, answer, alternative_answers, category, box_name,
+                 card_number, difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
+                 created_by, created_by_id, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+          args: [
+            q.id,
+            q.question,
+            q.answer,
+            q.alternativeAnswers ? JSON.stringify(q.alternativeAnswers) : null,
+            q.category ?? 0,
+            q.boxName,
+            q.cardNumber ?? null,
+            q.difficulty ?? 'medium',
+            q.questionType ?? 'free_text',
+            q.qcmOptions ? JSON.stringify(q.qcmOptions) : null,
+            q.qcmCorrectIndex ?? null,
+            q.qcmCorrectIndexes ? JSON.stringify(q.qcmCorrectIndexes) : null,
+            admin.login,
+            admin.userId,
+          ],
+        },
+      ]);
 
       return res.status(201).json({ success: true, id: q.id });
     }
