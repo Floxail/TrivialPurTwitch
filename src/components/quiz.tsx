@@ -161,11 +161,15 @@ const Quiz = () => {
 	const [activeGracePeriodMs, setActiveGracePeriodMs] = useState(gracePeriodMs_setting);
 	const [onlyOneAnswer, setOnlyOneAnswer] = useState(false);
 	const [penalizeWrong, setPenalizeWrong] = useState(false);
+	const [unlimitedTimer, setUnlimitedTimer] = useState(false);
+	const [strictSpelling, setStrictSpelling] = useState(false);
 	const questionTimeLimit = activeQuestionTimeLimit;
 	const [timeLeft, setTimeLeft] = useState(questionTimeLimit);
 	// Refs pour lecture dans onProposition (évite closure stale)
 	const onlyOneAnswerRef = useRef(false);
 	const penalizeWrongRef = useRef(false);
+	const unlimitedTimerRef = useRef(false);
+	const strictSpellingRef = useRef(false);
 	const activeGracePeriodMsRef = useRef(gracePeriodMs_setting);
 	// Track des joueurs ayant déjà été pénalisés ce tour (une seule pénalité par question)
 	const penalizedRef = useRef<Set<string>>(new Set());
@@ -309,6 +313,8 @@ const Quiz = () => {
 	// Synchroniser les refs avec les états (pour lecture dans les callbacks async)
 	useEffect(() => { onlyOneAnswerRef.current = onlyOneAnswer; }, [onlyOneAnswer]);
 	useEffect(() => { penalizeWrongRef.current = penalizeWrong; }, [penalizeWrong]);
+	useEffect(() => { unlimitedTimerRef.current = unlimitedTimer; }, [unlimitedTimer]);
+	useEffect(() => { strictSpellingRef.current = strictSpelling; }, [strictSpelling]);
 	useEffect(() => { activeGracePeriodMsRef.current = activeGracePeriodMs; }, [activeGracePeriodMs]);
 
 	// Réinitialiser les overrides à l'ouverture du popup (depuis les settings actuels)
@@ -412,6 +418,14 @@ const Quiz = () => {
 		pendingPenaltiesRef.current = []; // Reset de la file des pénalités différées
 		setQuestionRevealed(false);
 		questionRevealedRef.current = false;
+
+		// Mode timer illimité : pas de décompte, révélation manuelle via bouton existant RÉVÉLER
+		if (unlimitedTimerRef.current) {
+			if (timerCircleRef.current) {
+				timerCircleRef.current.setAttribute('stroke-dashoffset', '0');
+			}
+			return;
+		}
 
 		// Boucle fluide avec requestAnimationFrame
 		const circumference = 2 * Math.PI * 54; // timerRadius
@@ -613,7 +627,7 @@ const Quiz = () => {
 				return;
 			}
 
-			const result = verifyAnswer(message, currentActiveQuestion);
+			const result = verifyAnswer(message, currentActiveQuestion, { strictSpelling: strictSpellingRef.current });
 
 			if (!result.valid) return;
 			if (singleAttemptMode) qcmAttemptsRef.current.add(nick);
@@ -949,13 +963,33 @@ const Quiz = () => {
 							/>
 						</Form.Group>
 
-						<Form.Group>
+						<Form.Group className="mb-2">
 							<Form.Check
 								type="checkbox"
 								id="penalizeWrong"
 								checked={penalizeWrong}
 								onChange={(e) => setPenalizeWrong(e.target.checked)}
 								label="Retirer 1 point pour chaque mauvaise réponse"
+							/>
+						</Form.Group>
+
+						<Form.Group className="mb-2">
+							<Form.Check
+								type="checkbox"
+								id="unlimitedTimer"
+								checked={unlimitedTimer}
+								onChange={(e) => setUnlimitedTimer(e.target.checked)}
+								label="Timer illimité (révélation manuelle)"
+							/>
+						</Form.Group>
+
+						<Form.Group>
+							<Form.Check
+								type="checkbox"
+								id="strictSpelling"
+								checked={strictSpelling}
+								onChange={(e) => setStrictSpelling(e.target.checked)}
+								label="Pas de tolérance orthographique"
 							/>
 						</Form.Group>
 					</div>
@@ -1228,7 +1262,7 @@ const Quiz = () => {
 												transition: 'color 0.5s ease',
 												textShadow: `0 0 12px ${timerColor}, 0 0 24px ${timerColor}40`,
 											}}>
-												{timeLeft}
+												{unlimitedTimer ? '∞' : timeLeft}
 											</div>
 											<div style={{
 												fontFamily: "'Share Tech Mono', monospace",
@@ -1238,7 +1272,7 @@ const Quiz = () => {
 												letterSpacing: '0.25em',
 												marginTop: '4px',
 											}}>
-												sec
+												{unlimitedTimer ? 'manuel' : 'sec'}
 											</div>
 										</div>
 									</div>
@@ -1263,6 +1297,30 @@ const Quiz = () => {
 										}}>
 											{renderWithEmojiBoost(currentQuestion.question)}
 										</h2>
+
+										{/* Image associée à la question / réponse */}
+										{(() => {
+											const displayedImage = questionRevealed
+												? (currentQuestion.answerImageUrl || currentQuestion.imageUrl)
+												: currentQuestion.imageUrl;
+											if (!displayedImage) return null;
+											return (
+											<div style={{ textAlign: 'center', marginTop: '1rem' }}>
+												<img
+													src={displayedImage}
+													alt={questionRevealed ? "Illustration de la réponse" : "Illustration de la question"}
+													style={{
+														maxHeight: '300px',
+														maxWidth: '100%',
+														objectFit: 'contain',
+														borderRadius: '8px',
+														border: '1px solid var(--lumon-cyan)',
+													}}
+													onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+												/>
+											</div>
+											);
+										})()}
 
 										{/* Options QCM */}
 										{isQcmQuestion && currentQuestion.qcmOptions && !questionRevealed && (

@@ -573,6 +573,8 @@ const QuestionManager = () => {
       qcmOptions: qcmOptions,
       qcmCorrectIndex: qcmCorrectIndex,
       qcmCorrectIndexes: qcmCorrectIndexes,
+      imageUrl: formData.imageUrl?.trim() || undefined,
+      answerImageUrl: formData.answerImageUrl?.trim() || undefined,
     });
 
     handleCloseModal();

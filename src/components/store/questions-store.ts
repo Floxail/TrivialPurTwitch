@@ -157,6 +157,8 @@ export type Question = {
   qcmCorrectIndex?: number; // Index de la bonne réponse (legacy, single answer)
   qcmCorrectIndexes?: number[]; // Index des bonnes réponses (multi-réponses)
   createdAt?: string; // Date de création (pour l'ordre dans les boîtes ordonnées)
+  imageUrl?: string; // URL externe d'une image associée à la question (Discord, Imgur, etc.)
+  answerImageUrl?: string; // URL externe d'une image affichée au moment de la révélation
 };
 
 // Structure d'une boîte (contient plusieurs cartes)
