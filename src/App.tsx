@@ -4,6 +4,7 @@ import { useAuthStore } from 'components/store/auth-store';
 import { useGlobalStore } from 'components/store/global-store';
 import { useSettingsStore } from 'components/store/settings-store';
 import { useQuestionsStore } from 'components/store/questions-store';
+import { useGameStore } from 'components/store/game-store';
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Login from './components/login';
@@ -44,8 +45,11 @@ function App() {
 	const [view, setView] = useState(<div />);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [showWelcome, setShowWelcome] = useState(false);
+	const [showQuitConfirm, setShowQuitConfirm] = useState(false);
 
 	const location = useLocation();
+	const activeQuiz = useGameStore(s => s.activeQuiz);
+	const endQuiz = useGameStore(s => s.endQuiz);
 
 	useEffect(() => {
 		validateTwitchOAuthToken();
@@ -112,6 +116,20 @@ function App() {
 		navigate('/');
 	};
 
+	const handleTitleClick = () => {
+		if (activeQuiz) {
+			setShowQuitConfirm(true);
+		} else {
+			navigate('/quiz');
+		}
+	};
+
+	const confirmQuitQuiz = () => {
+		endQuiz();
+		setShowQuitConfirm(false);
+		navigate('/quiz');
+	};
+
 	const loggedIn = isLoggedIn();
 	return (
 		<>
@@ -127,7 +145,7 @@ function App() {
 						className="me-2 d-inline-block align-top" 
 						style={{ borderRadius: '4px' }}
 						/>
-					<span className="btt" role="button" tabIndex={0} onClick={() => navigate('/quiz')} onKeyDown={(e) => e.key === 'Enter' && navigate('/quiz')} style={{ cursor: 'pointer' }}> <b>T</b>rivial<b>P</b>ur<b>T</b>witch</span>
+					<span className="btt" role="button" tabIndex={0} onClick={handleTitleClick} onKeyDown={(e) => e.key === 'Enter' && handleTitleClick()} style={{ cursor: 'pointer' }}> <b>T</b>rivial<b>P</b>ur<b>T</b>witch</span>
 				</div>
 				<div style={{ position: 'absolute', right: 0 }}>
 					{loggedIn &&
@@ -149,6 +167,24 @@ function App() {
 							<div className="d-flex justify-content-center">
 								<button className="terminal-btn terminal-btn-danger" onClick={onPopupClose}>
 									Close
+								</button>
+							</div>
+						</div>
+					</div>
+				}
+				{showQuitConfirm &&
+					<div className="alert-modal-bg">
+						<div className="alert-modal terminal-alert terminal-alert-warning">
+							<h5 className="text-glow-amber" style={{ fontFamily: "'Orbitron', sans-serif", marginBottom: '1rem' }}>Arrêter le quiz ?</h5>
+							<p>
+								Le quiz en cours sera perdu. Êtes-vous sûr ?
+							</p>
+							<div className="d-flex justify-content-center gap-2">
+								<button className="terminal-btn terminal-btn-danger" onClick={confirmQuitQuiz}>
+									Oui, arrêter
+								</button>
+								<button className="terminal-btn" onClick={() => setShowQuitConfirm(false)}>
+									Annuler
 								</button>
 							</div>
 						</div>

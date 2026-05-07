@@ -153,13 +153,22 @@ a:hover {
 }
 
 .typewriter-wrap {
-  overflow: hidden;
-  border-right: 3px solid var(--lumon-cyan);
+  display: inline;
+  position: relative;
+}
+.typewriter-wrap::after {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background-color: var(--lumon-cyan);
+  margin-left: 2px;
+  vertical-align: -0.125em;
   animation: typewriter-blink 0.75s step-end infinite;
 }
 @keyframes typewriter-blink {
-  0%, 100% { border-color: var(--lumon-cyan); }
-  50% { border-color: transparent; }
+  0%, 100% { background-color: var(--lumon-cyan); }
+  50% { background-color: transparent; }
 }
 
 .system-artifact {

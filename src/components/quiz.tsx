@@ -831,17 +831,6 @@ const Quiz = () => {
 		}
 	};
 
-	const handleSkipQuestion = () => {
-		stopTimerLoop();
-		if (timerCircleRef.current) {
-			timerCircleRef.current.setAttribute(
-				'stroke-dashoffset',
-				String(2 * Math.PI * 54)
-			);
-		}
-		setQuestionRevealed(true);
-		questionRevealedRef.current = true;
-	};
 
 	// Timer : calcul couleur selon le temps restant
 	const timerRadius = 54;
@@ -1501,16 +1490,6 @@ const Quiz = () => {
 									>
 										<FontAwesomeIcon icon={['fas', 'eye']} className="me-1" />
 										RÉVÉLER
-									</button>
-									&nbsp;
-									<button
-										className="terminal-btn terminal-btn-danger terminal-btn-sm"
-										id="skipButton"
-										disabled={questionRevealed}
-										onClick={handleSkipQuestion}
-										style={{ width: '35px' }}
-									>
-										<FontAwesomeIcon icon={['fas', 'step-forward']} />
 									</button>
 								</>
 							)}
