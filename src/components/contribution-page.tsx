@@ -26,6 +26,7 @@ interface ParsedBulkQuestion {
   isQcm?: boolean;
   qcmOptions?: string[];
   qcmCorrectIndex?: number;
+  qcmCorrectIndexes?: number[];
 }
 
 function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; errors: string[] } {
@@ -67,14 +68,23 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
 
     const optionKeys = QCM_LABELS.filter(l => qcmOptions[l]);
     const answerUpper = answer.toUpperCase();
-    const isQcm = optionKeys.length >= 2 && QCM_LABELS.includes(answerUpper) && !!qcmOptions[answerUpper];
+
+    // Parse multi-réponses: "A,B" ou "AB" ou "A B"
+    const answerLetters = answerUpper.split(/[,\s]+/).filter(s => s.length > 0);
+    const isQcm = optionKeys.length >= 2 &&
+      answerLetters.length > 0 &&
+      answerLetters.every(letter => QCM_LABELS.includes(letter) && !!qcmOptions[letter]);
 
     if (isQcm) {
       const orderedOptions = optionKeys.map(l => qcmOptions[l]);
-      const correctIndex = optionKeys.indexOf(answerUpper);
+      const correctIndexes = answerLetters.map(letter => optionKeys.indexOf(letter));
+      const displayAnswer = correctIndexes.map(i => orderedOptions[i]).join(', ');
+
       questions.push({
-        question, answer: qcmOptions[answerUpper], alternativeAnswers: [],
-        isQcm: true, qcmOptions: orderedOptions, qcmCorrectIndex: correctIndex,
+        question, answer: displayAnswer, alternativeAnswers: [],
+        isQcm: true, qcmOptions: orderedOptions,
+        qcmCorrectIndex: correctIndexes[0],
+        qcmCorrectIndexes: correctIndexes,
       });
     } else {
       questions.push({ question, answer, alternativeAnswers });
@@ -261,6 +271,7 @@ const ContributionPage: React.FC = () => {
         if (q.isQcm) {
           payload.qcmOptions = q.qcmOptions;
           payload.qcmCorrectIndex = q.qcmCorrectIndex;
+          payload.qcmCorrectIndexes = q.qcmCorrectIndexes;
         }
         if (isAdmin) {
           await apiCreateQuestion({
@@ -629,17 +640,20 @@ const ContributionPage: React.FC = () => {
                       {q.isQcm && <span className="terminal-badge terminal-badge-cyan ms-2">QCM</span>}
                       <br />
                       {q.isQcm && q.qcmOptions ? (
-                        q.qcmOptions.map((opt, j) => (
-                          <span key={j}>
-                            <span style={{
-                              color: j === q.qcmCorrectIndex ? '#4CAF50' : 'inherit',
-                              fontWeight: j === q.qcmCorrectIndex ? 'bold' : 'normal',
-                            }}>
-                              {QCM_LABELS[j]}: {opt}{j === q.qcmCorrectIndex && ' ✓'}
+                        q.qcmOptions.map((opt, j) => {
+                          const isCorrect = q.qcmCorrectIndexes?.includes(j) ?? (j === q.qcmCorrectIndex);
+                          return (
+                            <span key={j}>
+                              <span style={{
+                                color: isCorrect ? '#4CAF50' : 'inherit',
+                                fontWeight: isCorrect ? 'bold' : 'normal',
+                              }}>
+                                {QCM_LABELS[j]}: {opt}{isCorrect && ' ✓'}
+                              </span>
+                              <br />
                             </span>
-                            <br />
-                          </span>
-                        ))
+                          );
+                        })
                       ) : (
                         <>
                           <strong>R:</strong> {q.answer}

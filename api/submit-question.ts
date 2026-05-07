@@ -13,6 +13,13 @@ function getDb() {
   return db;
 }
 
+let migrationDone = false;
+async function ensureMigration() {
+  if (migrationDone) return;
+  await getDb().execute('ALTER TABLE pending_questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {});
+  migrationDone = true;
+}
+
 const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -49,6 +56,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   if (req.method === 'OPTIONS') return res.status(204).end();
 
+  try {
+    await ensureMigration();
+  } catch {
+    // Ignore migration errors, continue
+  }
+
   if (checkRateLimit(req, res, 100, 60_000)) return;
 
   if (req.method !== 'POST') {
@@ -71,6 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       questionType,
       qcmOptions,
       qcmCorrectIndex,
+      qcmCorrectIndexes,
     } = req.body;
 
     // Validation des champs obligatoires
@@ -97,9 +111,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await getDb().execute({
       sql: `INSERT INTO pending_questions
             (id, question, answer, alternative_answers, category, box_name,
-             question_type, qcm_options, qcm_correct_index,
+             question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
              submitted_by, submitted_by_id, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'))`,
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'))`,
       args: [
         id,
         question.trim(),
@@ -110,6 +124,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         questionType || 'free_text',
         qcmOptions ? JSON.stringify(qcmOptions) : null,
         qcmCorrectIndex ?? null,
+        qcmCorrectIndexes ? JSON.stringify(qcmCorrectIndexes) : null,
         user.login,
         user.userId,
       ],

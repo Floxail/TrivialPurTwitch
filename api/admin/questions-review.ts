@@ -34,6 +34,9 @@ function rowToPendingQuestion(row: any) {
       ? JSON.parse(row.qcm_options as string)
       : undefined,
     qcmCorrectIndex: row.qcm_correct_index ?? undefined,
+    qcmCorrectIndexes: row.qcm_correct_indexes
+      ? JSON.parse(row.qcm_correct_indexes as string)
+      : undefined,
     submittedBy: row.submitted_by,
     submittedById: row.submitted_by_id,
     status: row.status,
@@ -106,9 +109,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         {
           sql: `INSERT OR REPLACE INTO questions
                 (id, question, answer, alternative_answers, category, box_name,
-                 difficulty, question_type, qcm_options, qcm_correct_index,
+                 difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
                  created_by, created_by_id, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, 'medium', ?, ?, ?, ?, ?, ?)`,
+                VALUES (?, ?, ?, ?, ?, ?, 'medium', ?, ?, ?, ?, ?, ?, ?)`,
           args: [
             q.id,
             q.question,
@@ -119,6 +122,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             q.question_type ?? 'free_text',
             q.qcm_options ?? null,
             q.qcm_correct_index ?? null,
+            q.qcm_correct_indexes ?? null,
             q.submitted_by ?? null,
             q.submitted_by_id ?? null,
             q.created_at ?? null,
@@ -156,13 +160,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         questionType: 'question_type',
         qcmOptions: 'qcm_options',
         qcmCorrectIndex: 'qcm_correct_index',
+        qcmCorrectIndexes: 'qcm_correct_indexes',
         status: 'status',
       };
 
       for (const [jsField, dbField] of Object.entries(fieldMap)) {
         if (jsField in updates) {
           let value = updates[jsField];
-          if ((jsField === 'alternativeAnswers' || jsField === 'qcmOptions') && value) {
+          if ((jsField === 'alternativeAnswers' || jsField === 'qcmOptions' || jsField === 'qcmCorrectIndexes') && value) {
             value = JSON.stringify(value);
           }
           setClauses.push(`${dbField} = ?`);
