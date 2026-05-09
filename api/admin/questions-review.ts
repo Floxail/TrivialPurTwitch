@@ -37,6 +37,8 @@ function rowToPendingQuestion(row: any) {
     qcmCorrectIndexes: row.qcm_correct_indexes
       ? JSON.parse(row.qcm_correct_indexes as string)
       : undefined,
+    imageUrl: row.image_url ?? undefined,
+    answerImageUrl: row.answer_image_url ?? undefined,
     submittedBy: row.submitted_by,
     submittedById: row.submitted_by_id,
     status: row.status,
@@ -110,8 +112,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           sql: `INSERT OR REPLACE INTO questions
                 (id, question, answer, alternative_answers, category, box_name,
                  difficulty, question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
-                 created_by, created_by_id, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, 'medium', ?, ?, ?, ?, ?, ?, ?)`,
+                 image_url, answer_image_url, created_by, created_by_id, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'medium', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           args: [
             q.id,
             q.question,
@@ -123,6 +125,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             q.qcm_options ?? null,
             q.qcm_correct_index ?? null,
             q.qcm_correct_indexes ?? null,
+            q.imageUrl ?? null,
+            q.answerImageUrl ?? null,
             q.submitted_by ?? null,
             q.submitted_by_id ?? null,
             q.created_at ?? null,
@@ -161,6 +165,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         qcmOptions: 'qcm_options',
         qcmCorrectIndex: 'qcm_correct_index',
         qcmCorrectIndexes: 'qcm_correct_indexes',
+        imageUrl: 'image_url',
+        answerImageUrl: 'answer_image_url',
         status: 'status',
       };
 

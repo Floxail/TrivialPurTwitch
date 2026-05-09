@@ -17,6 +17,8 @@ let migrationDone = false;
 async function ensureMigration() {
   if (migrationDone) return;
   await getDb().execute('ALTER TABLE pending_questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {});
+  await getDb().execute('ALTER TABLE pending_questions ADD COLUMN image_url TEXT').catch(() => {});
+  await getDb().execute('ALTER TABLE pending_questions ADD COLUMN answer_image_url TEXT').catch(() => {});
   migrationDone = true;
 }
 
@@ -85,6 +87,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       qcmOptions,
       qcmCorrectIndex,
       qcmCorrectIndexes,
+      imageUrl,
+      answerImageUrl,
     } = req.body;
 
     // Validation des champs obligatoires
@@ -112,8 +116,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       sql: `INSERT INTO pending_questions
             (id, question, answer, alternative_answers, category, box_name,
              question_type, qcm_options, qcm_correct_index, qcm_correct_indexes,
-             submitted_by, submitted_by_id, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'))`,
+             image_url, answer_image_url, submitted_by, submitted_by_id, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'))`,
       args: [
         id,
         question.trim(),
@@ -125,6 +129,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         qcmOptions ? JSON.stringify(qcmOptions) : null,
         qcmCorrectIndex ?? null,
         qcmCorrectIndexes ? JSON.stringify(qcmCorrectIndexes) : null,
+        imageUrl || null,
+        answerImageUrl || null,
         user.login,
         user.userId,
       ],

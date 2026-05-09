@@ -27,6 +27,8 @@ interface ParsedBulkQuestion {
   qcmOptions?: string[];
   qcmCorrectIndex?: number;
   qcmCorrectIndexes?: number[];
+  imageUrl?: string;
+  answerImageUrl?: string;
 }
 
 function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; errors: string[] } {
@@ -43,11 +45,15 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
     let answer = '';
     const alternativeAnswers: string[] = [];
     const qcmOptions: Record<string, string> = {};
+    let imageUrl = '';
+    let answerImageUrl = '';
 
     for (const line of lines) {
       const qMatch = line.match(/^Q\s*:\s*(.+)/i);
       const rMatch = line.match(/^R\s*:\s*(.+)/i);
       const altMatch = line.match(/^ALT\s*:\s*(.+)/i);
+      const imgqMatch = line.match(/^IMGQ\s*:\s*(.+)/i);
+      const imgrMatch = line.match(/^IMGR\s*:\s*(.+)/i);
       const optMatch = line.match(/^([A-F])\s*:\s*(.+)/);
 
       if (qMatch) {
@@ -57,6 +63,10 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
         alternativeAnswers.push(...parts);
       } else if (rMatch) {
         answer = rMatch[1].trim();
+      } else if (imgqMatch) {
+        imageUrl = imgqMatch[1].trim();
+      } else if (imgrMatch) {
+        answerImageUrl = imgrMatch[1].trim();
       } else if (optMatch) {
         qcmOptions[optMatch[1]] = optMatch[2].trim();
       }
@@ -85,9 +95,15 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
         isQcm: true, qcmOptions: orderedOptions,
         qcmCorrectIndex: correctIndexes[0],
         qcmCorrectIndexes: correctIndexes,
+        imageUrl: imageUrl || undefined,
+        answerImageUrl: answerImageUrl || undefined,
       });
     } else {
-      questions.push({ question, answer, alternativeAnswers });
+      questions.push({
+        question, answer, alternativeAnswers,
+        imageUrl: imageUrl || undefined,
+        answerImageUrl: answerImageUrl || undefined,
+      });
     }
   }
 
@@ -272,6 +288,12 @@ const ContributionPage: React.FC = () => {
           payload.qcmOptions = q.qcmOptions;
           payload.qcmCorrectIndex = q.qcmCorrectIndex;
           payload.qcmCorrectIndexes = q.qcmCorrectIndexes;
+        }
+        if (q.imageUrl) {
+          payload.imageUrl = q.imageUrl;
+        }
+        if (q.answerImageUrl) {
+          payload.answerImageUrl = q.answerImageUrl;
         }
         if (isAdmin) {
           await apiCreateQuestion({
@@ -605,11 +627,11 @@ const ContributionPage: React.FC = () => {
           )}
 
           <Form.Group className="mb-3">
-            <Form.Label>Questions (format Q:/R:/ALT: ou QCM A:/B:/.../F:)</Form.Label>
+            <Form.Label>Questions (format Q:/R:/ALT: ou QCM A:/B:/.../F: + optionnel IMGQ:/IMGR:)</Form.Label>
             <Form.Control
               as="textarea"
               rows={12}
-              placeholder={`Q: Paris est la capitale de la France ?\nA: FAUX\nB: VRAIS\nR: B\n\nQ: Lesquels sont des langages de programmation ?\nA: Python\nB: Cobra\nC: Java\nD: Espresso\nR: A,C\n\nQ: Qui a peint la Joconde ?\nR: Léonard de Vinci\nALT: De Vinci, Vinci, etc..`}
+              placeholder={`Q: Paris est la capitale de la France ?\nA: FAUX\nB: VRAIS\nR: B\n\nQ: Lesquels sont des langages de programmation ?\nA: Python\nB: Cobra\nC: Java\nD: Espresso\nR: A,C\nIMGQ: https://imgur.com/example.png\n\nQ: Qui a peint la Joconde ?\nR: Léonard de Vinci\nALT: De Vinci, Vinci, etc..\nIMGR: https://imgur.com/answer.png`}
               value={bulkText}
               onChange={(e) => { setBulkText(e.target.value); setBulkPreview(null); }}
               style={{ fontFamily: 'monospace', fontSize: '13px' }}
@@ -639,6 +661,11 @@ const ContributionPage: React.FC = () => {
                       <strong>Q:</strong> {q.question}
                       {q.isQcm && <span className="terminal-badge terminal-badge-cyan ms-2">QCM</span>}
                       <br />
+                      {q.imageUrl && (
+                        <div style={{ marginTop: '6px', marginBottom: '6px' }}>
+                          <small style={{ color: '#FFB000' }}>📷 IMGQ</small>
+                        </div>
+                      )}
                       {q.isQcm && q.qcmOptions ? (
                         q.qcmOptions.map((opt, j) => {
                           const isCorrect = q.qcmCorrectIndexes?.includes(j) ?? (j === q.qcmCorrectIndex);
@@ -661,6 +688,11 @@ const ContributionPage: React.FC = () => {
                             <span className="text-muted"> (ALT: {q.alternativeAnswers.join(', ')})</span>
                           )}
                         </>
+                      )}
+                      {q.answerImageUrl && (
+                        <div style={{ marginTop: '6px' }}>
+                          <small style={{ color: '#00FF66' }}>📷 IMGR</small>
+                        </div>
                       )}
                     </div>
                   ))}

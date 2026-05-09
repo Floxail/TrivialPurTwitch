@@ -23,6 +23,8 @@ export interface SubmitQuestionPayload {
   qcmOptions?: string[];
   qcmCorrectIndex?: number;
   qcmCorrectIndexes?: number[];
+  imageUrl?: string;
+  answerImageUrl?: string;
 }
 
 export async function apiSubmitQuestion(
