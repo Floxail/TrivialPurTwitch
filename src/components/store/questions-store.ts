@@ -66,6 +66,33 @@ function addToHistory(ids: string[]): void {
   }
 }
 
+/** Merge les IDs venant du serveur dans le localStorage local.
+ *  Les IDs serveur sont mis en base (plus "anciens" que le local récent).
+ *  Le local récent garde la priorité sur l'ordre. */
+export function mergeServerHistory(serverIds: string[]): void {
+  if (serverIds.length === 0) return;
+  try {
+    const local = getRecentHistory();
+    const localSet = new Set(local);
+    // Ajoute les IDs serveur absents du local (en queue = moins récents)
+    const onlyServer = serverIds.filter((id) => !localSet.has(id));
+    const merged = [...local, ...onlyServer].slice(0, HISTORY_MAX);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(merged));
+  } catch {
+    // ignore
+  }
+}
+
+/** Calcule le nombre de questions fraîches (jamais jouées) dans un pool */
+export function countFreshInPool(poolIds: string[]): { fresh: number; seen: number } {
+  const history = new Set(getRecentHistory());
+  let seen = 0;
+  for (const id of poolIds) {
+    if (history.has(id)) seen++;
+  }
+  return { fresh: poolIds.length - seen, seen };
+}
+
 // Sélection biaisée "fraîcheur" : priorité aux questions absentes de l'historique,
 // sinon on complète avec les plus anciennement jouées (shuffle dans la tranche la plus vieille)
 function smartPick<T extends { id: string }>(pool: T[], count: number): T[] {

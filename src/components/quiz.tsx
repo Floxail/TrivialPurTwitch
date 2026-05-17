@@ -6,12 +6,13 @@ import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
 import { Answer, Player, usePlayerStore } from './store/player-store';
 import { TwitchMode, useSettingsStore } from './store/settings-store';
-import { QuestionType, useQuestionsStore } from './store/questions-store';
+import { QuestionType, useQuestionsStore, mergeServerHistory, countFreshInPool } from './store/questions-store';
 import { QuizMode, useGameStore } from './store/game-store';
 import Podium from './podium';
 import Leaderboard from './leaderboard';
 import { apiCreateReport, type ReportReason } from 'services/api-reports-service';
 import { verifyAnswer } from 'services/answer-validator';
+import { fetchHistory, recordHistory } from 'services/api-history-service';
 let twitchCallback: (nick: string, tid: string, msg: string) => void = () => {};
 
 const SCORE_CMD_DELAY = 2000;
@@ -195,6 +196,8 @@ const Quiz = () => {
 	const [selectedBoxNames, setSelectedBoxNames] = useState<null | string[]>(null);
 	const [quizQuestionCount, setQuizQuestionCount] = useState<number>(10);
 	const [modeError, setModeError] = useState<string>('');
+	const [freshStats, setFreshStats] = useState<{ fresh: number; seen: number } | null>(null);
+	const [historySyncing, setHistorySyncing] = useState(false);
 
 	// Boîte ordonnée : une seule boîte sélectionnée avec ordered=true
 	const isOrderedBox = selectedBoxNames?.length === 1
@@ -326,10 +329,32 @@ const Quiz = () => {
 			setActiveGracePeriodMs(gracePeriodMs_setting);
 			setOnlyOneAnswer(false);
 			setPenalizeWrong(false);
+
+			// Sync historique depuis Turso au lancement du modal
+			setHistorySyncing(true);
+			setFreshStats(null);
+			fetchHistory()
+				.then((serverIds) => {
+					mergeServerHistory(serverIds);
+				})
+				.catch(() => {})
+				.finally(() => setHistorySyncing(false));
 		}
 		setPrevShowModeSelector(showModeSelector);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [showModeSelector]);
+
+	// Recalcule freshStats quand sélection ou nb questions change
+	useEffect(() => {
+		if (!showModeSelector) return;
+		const allVisibleBoxNames = allVisibleBoxes.map(b => b.name);
+		const targetBoxes = selectedBoxNames ?? allVisibleBoxNames;
+		const poolIds = allQuestions
+			.filter((q: { boxName: string; id: string }) => targetBoxes.includes(q.boxName))
+			.map((q: { boxName: string; id: string }) => q.id);
+		setFreshStats(countFreshInPool(poolIds));
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [showModeSelector, selectedBoxNames, historySyncing]);
 
 	// Vérifie si la question actuelle est un QCM
 	const isQcmQuestion = currentQuestion?.questionType === QuestionType.QCM &&
@@ -684,6 +709,11 @@ const Quiz = () => {
 			setModeError(`❌ Impossible de générer le quiz (pas assez de questions)`);
 			return;
 		}
+
+		// Persiste l'historique en Turso (fire-and-forget, pas bloquant)
+		const pickedIds = questions.map(q => q.id);
+		const historyBoxName = selectedBoxNames?.length === 1 ? selectedBoxNames[0] : undefined;
+		recordHistory(pickedIds, historyBoxName).catch(() => {});
 
 		// Sauvegarder le requester avant de fermer le modal
 		const requester = pendingQuizRequester;
@@ -1092,6 +1122,20 @@ const Quiz = () => {
 													{freeCount > 0 && (
 														<span className="terminal-badge" style={{ padding: '2px 8px', borderColor: '#888', color: '#888' }}>
 															{freeCount} Libre{freeCount > 1 ? 's' : ''}
+														</span>
+													)}
+													{historySyncing && (
+														<span className="terminal-badge" style={{ padding: '2px 8px', borderColor: '#FFB000', color: '#FFB000' }}>
+															⏳ sync…
+														</span>
+													)}
+													{!historySyncing && freshStats && (
+														<span className="terminal-badge" style={{
+															padding: '2px 8px',
+															borderColor: freshStats.fresh > 0 ? '#00FF66' : '#FF0033',
+															color: freshStats.fresh > 0 ? '#00FF66' : '#FF0033',
+														}}>
+															{freshStats.fresh} fraîche{freshStats.fresh > 1 ? 's' : ''} / {freshStats.seen} déjà vue{freshStats.seen > 1 ? 's' : ''}
 														</span>
 													)}
 												</div>

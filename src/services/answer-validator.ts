@@ -42,6 +42,9 @@ function verifyQcmAnswer(message: string, question: Question): ValidationResult 
       extracted.push(rawAnswer);
     } else if (validNumbers.includes(rawAnswer)) {
       extracted.push(QCM_LABELS[parseInt(rawAnswer) - 1]);
+    } else if (rawAnswer.length > 1 && rawAnswer.split('').every(ch => validLabels.includes(ch))) {
+      // "AB" en mono-réponse = tentative valide mais fausse (évite le retry après)
+      rawAnswer.split('').forEach(ch => extracted.push(ch));
     }
   } else {
     // Multi-réponses : "A,C" ou "AC" ou "A C" ou "1,3" ou "13"
