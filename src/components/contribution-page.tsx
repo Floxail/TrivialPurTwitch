@@ -631,7 +631,7 @@ const ContributionPage: React.FC = () => {
             <Form.Control
               as="textarea"
               rows={12}
-              placeholder={`Q: Paris est la capitale de la France ?\nA: FAUX\nB: VRAIS\nR: B\n\nQ: Lesquels sont des langages de programmation ?\nA: Python\nB: Cobra\nC: Java\nD: Espresso\nR: A,C\nIMGQ: https://imgur.com/example.png\n\nQ: Qui a peint la Joconde ?\nR: Léonard de Vinci\nALT: De Vinci, Vinci, etc..\nIMGR: https://imgur.com/answer.png`}
+              placeholder={`Q: Paris est la capitale de la France ?\nA: FAUX\nB: VRAIS\nR: B\n\nQ: Lesquels sont des langages de programmation ?\nA: Python\nB: Cobra\nC: Java\nD: Espresso\nR: A,C\n\nQ: Qui a peint la Joconde ?\nR: Léonard de Vinci\nALT: De Vinci, Vinci, etc..\n`}
               value={bulkText}
               onChange={(e) => { setBulkText(e.target.value); setBulkPreview(null); }}
               style={{ fontFamily: 'monospace', fontSize: '13px' }}
