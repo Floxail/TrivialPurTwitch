@@ -198,6 +198,7 @@ const Quiz = () => {
 	const [modeError, setModeError] = useState<string>('');
 	const [freshStats, setFreshStats] = useState<{ fresh: number; seen: number } | null>(null);
 	const [historySyncing, setHistorySyncing] = useState(false);
+	const lastHistorySyncRef = useRef<number>(0);
 
 	// Boîte ordonnée : une seule boîte sélectionnée avec ordered=true
 	const isOrderedBox = selectedBoxNames?.length === 1
@@ -330,31 +331,33 @@ const Quiz = () => {
 			setOnlyOneAnswer(false);
 			setPenalizeWrong(false);
 
-			// Sync historique depuis Turso au lancement du modal
-			setHistorySyncing(true);
-			setFreshStats(null);
-			fetchHistory()
-				.then((serverIds) => {
-					mergeServerHistory(serverIds);
-				})
-				.catch(() => {})
-				.finally(() => setHistorySyncing(false));
+			// Sync historique depuis Turso (max une fois par minute)
+			if (Date.now() - lastHistorySyncRef.current > 60_000) {
+				setHistorySyncing(true);
+				setFreshStats(null);
+				fetchHistory()
+					.then((serverIds) => {
+						mergeServerHistory(serverIds);
+						lastHistorySyncRef.current = Date.now();
+					})
+					.catch(() => {})
+					.finally(() => setHistorySyncing(false));
+			}
 		}
 		setPrevShowModeSelector(showModeSelector);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [showModeSelector]);
 
-	// Recalcule freshStats quand sélection ou nb questions change
+	// Recalcule freshStats quand sélection, questions ou sync change
 	useEffect(() => {
 		if (!showModeSelector) return;
-		const allVisibleBoxNames = allVisibleBoxes.map(b => b.name);
-		const targetBoxes = selectedBoxNames ?? allVisibleBoxNames;
+		const visibleBoxNames = allVisibleBoxes.map(b => b.name);
+		const targetBoxes = selectedBoxNames ?? visibleBoxNames;
 		const poolIds = allQuestions
-			.filter((q: { boxName: string; id: string }) => targetBoxes.includes(q.boxName))
-			.map((q: { boxName: string; id: string }) => q.id);
+			.filter(q => targetBoxes.includes(q.boxName))
+			.map(q => q.id);
 		setFreshStats(countFreshInPool(poolIds));
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [showModeSelector, selectedBoxNames, historySyncing]);
+	}, [showModeSelector, selectedBoxNames, allQuestions, allVisibleBoxes]);
 
 	// Vérifie si la question actuelle est un QCM
 	const isQcmQuestion = currentQuestion?.questionType === QuestionType.QCM &&

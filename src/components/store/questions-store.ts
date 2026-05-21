@@ -66,8 +66,8 @@ function addToHistory(ids: string[]): void {
   }
 }
 
-/** Merge les IDs venant du serveur dans le localStorage local.
- *  Les IDs serveur sont mis en base (plus "anciens" que le local récent).
+/** Merge les IDs venant du serveur dans l'historique localStorage.
+ *  Les IDs serveur sont ajoutés en queue (plus anciens que le local récent).
  *  Le local récent garde la priorité sur l'ordre. */
 export function mergeServerHistory(serverIds: string[]): void {
   if (serverIds.length === 0) return;

@@ -50,27 +50,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // ==================== GET : récupère historique ====================
     if (req.method === 'GET') {
-      const { box } = req.query;
-
-      let result;
-      if (box && typeof box === 'string') {
-        // Historique pour une boîte spécifique + global (box_name IS NULL)
-        result = await getDb().execute({
-          sql: `SELECT question_id, box_name, played_at FROM question_history
-                WHERE twitch_id = ?
-                ORDER BY played_at DESC
-                LIMIT ?`,
-          args: [user.userId, HISTORY_MAX],
-        });
-      } else {
-        result = await getDb().execute({
-          sql: `SELECT question_id, box_name, played_at FROM question_history
-                WHERE twitch_id = ?
-                ORDER BY played_at DESC
-                LIMIT ?`,
-          args: [user.userId, HISTORY_MAX],
-        });
-      }
+      const result = await getDb().execute({
+        sql: `SELECT question_id FROM question_history
+              WHERE twitch_id = ?
+              ORDER BY played_at DESC
+              LIMIT ?`,
+        args: [user.userId, HISTORY_MAX],
+      });
 
       const ids = result.rows.map((r) => r.question_id as string);
       return res.status(200).json({ ids, total: ids.length });
@@ -91,10 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         args: [user.userId, boxName || null, qid, now],
       }));
 
-      await getDb().batch(statements, 'write');
-
-      // Garder max HISTORY_MAX entrées par streamer (purge les plus vieilles)
-      await getDb().execute({
+      const purgeStatement = {
         sql: `DELETE FROM question_history
               WHERE twitch_id = ?
                 AND question_id NOT IN (
@@ -104,7 +87,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                   LIMIT ?
                 )`,
         args: [user.userId, user.userId, HISTORY_MAX],
-      });
+      };
+      await getDb().batch([...statements, purgeStatement], 'write');
 
       return res.status(200).json({ success: true, recorded: questionIds.length });
     }
