@@ -1,3 +1,7 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /api/
+Disallow: /callback
+Disallow: /system-mod-portal
+
+Sitemap: https://trivial.floxail.fr/sitemap.xml
