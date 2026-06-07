@@ -1,50 +1,13 @@
-import { createClient, type Client } from '@libsql/client';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import dotenv from 'dotenv';
-
-dotenv.config({ path: '.env.local' });
-
-let db: Client;
-function getDb() {
-  if (!db) {
-    db = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
-    });
-  }
-  return db;
-}
-
-async function ensureTables() {
-  await getDb().batch([
-    {
-      sql: `CREATE TABLE IF NOT EXISTS question_stats (
-        question_id TEXT PRIMARY KEY,
-        times_asked INTEGER DEFAULT 0,
-        times_correct INTEGER DEFAULT 0,
-        times_wrong INTEGER DEFAULT 0,
-        fastest_correct_ms INTEGER DEFAULT 0
-      )`,
-      args: [],
-    },
-  ]);
-  // Auto-migrations
-  await getDb().execute('ALTER TABLE scores ADD COLUMN channel_name TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE scores ADD COLUMN channel_id TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE questions ADD COLUMN created_by TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE questions ADD COLUMN created_by_id TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by_id TEXT').catch(() => {});
-}
+import { applyCors } from './_utils.js';
+import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  applyCors(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    await ensureTables();
+    await runMigrations();
     const { action } = req.query;
 
     // ==================== GET /api/stats?action=global ====================

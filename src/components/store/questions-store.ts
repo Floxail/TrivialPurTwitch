@@ -677,7 +677,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
         try {
           if (!silent) set({ syncStatus: 'loading' });
 
-          const dbData = await loadQuestionsFromAPI();
+          const dbData = await loadQuestionsFromAPI(!silent);
 
           if (!dbData) {
             set({ syncStatus: 'error' });

@@ -1,17 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type Client } from '@libsql/client';
 import { requireAdminAuth, checkRateLimit, applyCors } from '../_utils.js';
-
-let db: Client;
-function getDb() {
-  if (!db) {
-    db = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
-    });
-  }
-  return db;
-}
+import { getDb } from '../_db.js';
 
 function rowToPendingQuestion(row: any) {
   return {

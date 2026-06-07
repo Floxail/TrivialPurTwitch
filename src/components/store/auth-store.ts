@@ -199,17 +199,16 @@ export const useAuthStore = create<AuthData & Actions>()(
           return;
         }
         try {
-          // Appel GET vers l'endpoint admin — 200 = admin, 401 = pas admin
-          // Les erreurs 500 (ex: table manquante) ne changent pas le statut
-          const res = await fetch('/api/admin/questions-review?status=pending&limit=1', {
+          const res = await fetch('/api/auth/me', {
             headers: { 'Authorization': `Bearer ${token}` },
           });
           if (res.ok) {
-            set({ isAdmin: true });
+            const data = await res.json();
+            set({ isAdmin: data.isAdmin === true, twitchUserId: data.userId });
           } else if (res.status === 401) {
             set({ isAdmin: false });
           }
-          // Sinon (500, etc.) on ne change pas isAdmin
+          // Erreur réseau / 500 : on ne change pas isAdmin
         } catch {
           // Erreur réseau : on ne change pas le statut
         }

@@ -5,9 +5,22 @@
 // Priorité 2 : Build local (filet de sécurité si API totalement down)
 // Priorité 3 : Cache localStorage (géré automatiquement par Zustand persist)
 
-export const loadQuestionsFromAPI = async (): Promise<any> => {
+interface RawQuestion {
+  id: string;
+  question: string;
+  answer: string;
+  boxName: string;
+  [key: string]: unknown;
+}
+
+interface QuestionsApiResponse {
+  questions: RawQuestion[];
+}
+
+export const loadQuestionsFromAPI = async (force = false): Promise<QuestionsApiResponse | null> => {
   try {
-    const response = await fetch(`/api/questions?t=${Date.now()}`);
+    const url = force ? `/api/questions?t=${Date.now()}` : '/api/questions';
+    const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
       console.log(`✅ Questions chargées depuis la BD Turso (${data.questions.length})`);
@@ -36,16 +49,16 @@ export const loadQuestionsFromAPI = async (): Promise<any> => {
 
 // Fusionner les questions BD avec les questions locales (custom par navigateur)
 export const mergeQuestionsFromDB = (
-  dbData: any,
-  localQuestions: any[],
+  dbData: QuestionsApiResponse | null,
+  localQuestions: RawQuestion[],
   previousDBIds?: Set<string>
-): any[] => {
+): RawQuestion[] => {
   if (!dbData || !dbData.questions) {
     return localQuestions;
   }
 
   const dbQuestions = dbData.questions;
-  const currentDBIds = new Set(dbQuestions.map((q: any) => q.id));
+  const currentDBIds = new Set(dbQuestions.map((q) => q.id));
 
   // Questions locales = questions qui n'ont JAMAIS été dans la BD
   // (custom privées du streamer, non partagées)

@@ -1,43 +1,15 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type Client } from '@libsql/client';
 import { requireAnyTwitchAuth, applyCors } from './_utils.js';
-
-let db: Client;
-function getDb() {
-  if (!db) {
-    db = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
-    });
-  }
-  return db;
-}
+import { getDb, runMigrations } from './_db.js';
 
 const HISTORY_MAX = 500;
-
-let migrationDone = false;
-async function ensureMigration() {
-  if (migrationDone) return;
-  await getDb().execute(`
-    CREATE TABLE IF NOT EXISTS question_history (
-      twitch_id   TEXT NOT NULL,
-      box_name    TEXT,
-      question_id TEXT NOT NULL,
-      played_at   TEXT DEFAULT (datetime('now')),
-      PRIMARY KEY (twitch_id, question_id)
-    )
-  `);
-  await getDb().execute(`CREATE INDEX IF NOT EXISTS idx_history_twitch ON question_history(twitch_id)`);
-  await getDb().execute(`CREATE INDEX IF NOT EXISTS idx_history_box ON question_history(twitch_id, box_name)`);
-  migrationDone = true;
-}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   applyCors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   try {
-    await ensureMigration();
+    await runMigrations();
 
     const user = await requireAnyTwitchAuth(req);
     if (!user) return res.status(401).json({ error: 'Auth requise' });

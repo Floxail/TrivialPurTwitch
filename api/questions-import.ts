@@ -1,20 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type Client } from '@libsql/client';
-import dotenv from 'dotenv';
 import { requireAdminAuth } from './_utils.js';
-
-dotenv.config({ path: '.env.local' });
-
-let db: Client;
-function getDb() {
-  if (!db) {
-    db = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
-    });
-  }
-  return db;
-}
+import { getDb } from './_db.js';
 
 /**
  * POST /api/questions-import

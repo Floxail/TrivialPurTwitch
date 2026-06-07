@@ -1,19 +1,6 @@
-import { createClient } from '@libsql/client';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { requireAnyTwitchAuth, applyCors } from './_utils.js';
-
-const db = createClient({
-  url: process.env.TURSO_DATABASE_URL!,
-  authToken: process.env.TURSO_AUTH_TOKEN!,
-});
-
-let migrationDone = false;
-async function ensureMigration() {
-  if (migrationDone) return;
-  await db.execute('ALTER TABLE scores ADD COLUMN channel_name TEXT').catch(() => {});
-  await db.execute('ALTER TABLE scores ADD COLUMN channel_id TEXT').catch(() => {});
-  migrationDone = true;
-}
+import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   applyCors(res);
@@ -40,7 +27,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'sessionId requis' });
       }
 
-      await ensureMigration();
+      await runMigrations();
 
       // Batch insert des scores
       const BATCH_SIZE = 100;
@@ -66,7 +53,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           ],
         }));
 
-        await db.batch(statements as any);
+        await getDb().batch(statements as any);
         inserted += batch.length;
       }
 
@@ -80,7 +67,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // GET /api/scores?action=leaderboard → classement all-time
       if (action === 'leaderboard') {
-        const result = await db.execute({
+        const result = await getDb().execute({
           sql: `SELECT
                   nick,
                   twitch_id,
@@ -113,7 +100,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // GET /api/scores?action=player&nick=xxx → stats d'un joueur
       if (action === 'player' && nick) {
-        const result = await db.execute({
+        const result = await getDb().execute({
           sql: `SELECT
                   nick,
                   twitch_id,
@@ -146,7 +133,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         };
 
         // Historique des sessions
-        const history = await db.execute({
+        const history = await getDb().execute({
           sql: `SELECT session_id, box_name, score, answers, firsts, combos, fastest, channel_name, created_at
                 FROM scores
                 WHERE nick = ?
@@ -173,7 +160,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // GET /api/scores?action=sessions → liste des sessions récentes
       if (action === 'sessions') {
-        const result = await db.execute({
+        const result = await getDb().execute({
           sql: `SELECT
                   session_id,
                   box_name,

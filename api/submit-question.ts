@@ -1,57 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type Client } from '@libsql/client';
-import { checkRateLimit, applyCors } from './_utils.js';
+import { checkRateLimit, applyCors, requireAnyTwitchAuth } from './_utils.js';
+import { getDb, runMigrations } from './_db.js';
 
-let db: Client;
-function getDb() {
-  if (!db) {
-    db = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
-    });
-  }
-  return db;
-}
-
-let migrationDone = false;
-async function ensureMigration() {
-  if (migrationDone) return;
-  await getDb().execute('ALTER TABLE pending_questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE pending_questions ADD COLUMN image_url TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE pending_questions ADD COLUMN answer_image_url TEXT').catch(() => {});
-  migrationDone = true;
-}
-
-/**
- * Valide le token Twitch et retourne les infos utilisateur.
- * Tout utilisateur connecté peut proposer une question.
- */
-async function validateTwitchUser(req: VercelRequest): Promise<{ userId: string; login: string } | null> {
-  const authHeader = req.headers['authorization'];
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
-
-  const token = authHeader.substring(7);
-  try {
-    const response = await fetch('https://id.twitch.tv/oauth2/validate', {
-      headers: { 'Authorization': `OAuth ${token}` },
-    });
-    if (!response.ok) return null;
-
-    const data: any = await response.json();
-    if (!data.user_id) return null;
-
-    return { userId: data.user_id, login: data.login };
-  } catch {
-    return null;
-  }
-}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   applyCors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   try {
-    await ensureMigration();
+    await runMigrations();
   } catch {
     // Ignore migration errors, continue
   }
@@ -63,7 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // L'utilisateur doit être connecté via Twitch
-  const user = await validateTwitchUser(req);
+  const user = await requireAnyTwitchAuth(req);
   if (!user) {
     return res.status(401).json({ error: 'Token Twitch invalide ou expiré' });
   }

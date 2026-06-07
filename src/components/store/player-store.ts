@@ -44,8 +44,8 @@ export type Player = {
   avatar?: string;
 }
 
-export class Players {
-  players: Record<string, Player> = {};
+type PlayersState = {
+  players: Record<string, Player>;
 }
 
 type Actions = {
@@ -76,9 +76,15 @@ const recomputeRanks = (players: Record<string, Player>): Record<string, Player>
 let avatarFetchTimeout: NodeJS.Timeout | undefined = undefined;
 const avatarFetchTimeoutDuration: number = 2500;
 
-const restoredState: Players = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
+const restoredState: PlayersState = (() => {
+  try {
+    return JSON.parse(localStorage.getItem(localStorageKey) || '{}');
+  } catch {
+    return {};
+  }
+})();
 
-export const usePlayerStore = create<Players & Actions>()(
+export const usePlayerStore = create<PlayersState & Actions>()(
   (set, get) => ({
     players: restoredState.players || {},
     backup: () => {

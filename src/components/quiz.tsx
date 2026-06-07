@@ -13,7 +13,6 @@ import Leaderboard from './leaderboard';
 import { apiCreateReport, type ReportReason } from 'services/api-reports-service';
 import { verifyAnswer } from 'services/answer-validator';
 import { fetchHistory, recordHistory } from 'services/api-history-service';
-let twitchCallback: (nick: string, tid: string, msg: string) => void = () => {};
 
 const SCORE_CMD_DELAY = 2000;
 
@@ -37,6 +36,7 @@ const renderWithEmojiBoost = (text: string): React.ReactNode => {
 
 const Quiz = () => {
 	const twitchClient = useRef<Client | null>(null);
+	const twitchCallbackRef = useRef<(nick: string, tid: string, msg: string) => void>(() => {});
 	const questionTimer = useRef<number | null>(null); // requestAnimationFrame ID
 	const timerEndTime = useRef<number>(0); // timestamp de fin du timer
 	const timerCircleRef = useRef<SVGCircleElement | null>(null); // ref directe sur le cercle SVG
@@ -420,7 +420,7 @@ const Quiz = () => {
 		twitchClient.current.on('message', (_channel: any, _tags: any, _message: any, _self: any) => {
 			if (_self) return;
 			if (_tags['message-type'] !== 'whisper') {
-				return twitchCallback(_tags['display-name'], _tags['user-id'], _message);
+				return twitchCallbackRef.current(_tags['display-name'], _tags['user-id'], _message);
 			}
 		});
 
@@ -676,7 +676,7 @@ const Quiz = () => {
 		}
 	};
 
-	twitchCallback = onProposition;
+	twitchCallbackRef.current = onProposition;
 
 	// Lancer le quiz
 	const handleStartQuiz = () => {

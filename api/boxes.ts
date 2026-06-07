@@ -1,38 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type Client } from '@libsql/client';
-import dotenv from 'dotenv';
-import { requireAdminAuth, requireAnyTwitchAuth } from './_utils.js';
-
-dotenv.config({ path: '.env.local' });
-
-let db: Client;
-function getDb() {
-  if (!db) {
-    db = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
-    });
-  }
-  return db;
-}
+import { requireAdminAuth, requireAnyTwitchAuth, applyCors } from './_utils.js';
+import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key, Authorization');
+  applyCors(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
+    await runMigrations();
+
     // ==================== GET ====================
     if (req.method === 'GET') {
-      // Auto-migrations
-      await getDb().execute('ALTER TABLE boxes ADD COLUMN ordered INTEGER DEFAULT 0').catch(() => {});
-      await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by TEXT').catch(() => {});
-      await getDb().execute('ALTER TABLE boxes ADD COLUMN created_by_id TEXT').catch(() => {});
-      await getDb().execute('ALTER TABLE boxes ADD COLUMN description TEXT').catch(() => {});
-      await getDb().execute('ALTER TABLE boxes ADD COLUMN hidden INTEGER DEFAULT 0').catch(() => {});
-      await getDb().execute('ALTER TABLE boxes ADD COLUMN parent_box TEXT').catch(() => {});
-
       const result = await getDb().execute('SELECT name, card_numbers, ordered, created_by, description, hidden, parent_box FROM boxes ORDER BY name');
 
       const boxes = result.rows.map((row) => ({

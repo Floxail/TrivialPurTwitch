@@ -1,20 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type Client } from '@libsql/client';
-import dotenv from 'dotenv';
-import { requireAdminAuth } from './_utils.js';
-
-dotenv.config({ path: '.env.local' });
-
-let db: Client;
-function getDb() {
-  if (!db) {
-    db = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
-    });
-  }
-  return db;
-}
+import { requireAdminAuth, applyCors, checkRateLimit } from './_utils.js';
+import { getDb, runMigrations } from './_db.js';
 
 /** Transforme une row DB en objet frontend */
 function rowToQuestion(row: any) {
@@ -43,40 +29,31 @@ function rowToQuestion(row: any) {
   };
 }
 
-/** Migration paresseuse : ajoute qcm_correct_indexes si la colonne n'existe pas encore */
-let migrationDone = false;
-async function ensureMigration() {
-  if (migrationDone) return;
-  await getDb().execute('ALTER TABLE questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE questions ADD COLUMN created_by TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE questions ADD COLUMN created_by_id TEXT').catch(() => {});
-  await getDb().execute("ALTER TABLE questions ADD COLUMN created_at TEXT DEFAULT (datetime('now'))").catch(() => {});
-  await getDb().execute('ALTER TABLE questions ADD COLUMN image_url TEXT').catch(() => {});
-  await getDb().execute('ALTER TABLE questions ADD COLUMN answer_image_url TEXT').catch(() => {});
-  // Backfill: copier created_at depuis pending_questions pour les questions approuvées existantes
-  await getDb().execute(`
-    UPDATE questions SET created_at = (
-      SELECT pq.created_at FROM pending_questions pq WHERE pq.id = questions.id
-    ) WHERE created_at IS NULL AND EXISTS (
-      SELECT 1 FROM pending_questions pq WHERE pq.id = questions.id
-    )
-  `).catch(() => {});
-  migrationDone = true;
+let questionsCache: { data: { questions: any[] }; expiresAt: number } | null = null;
+const CACHE_TTL_MS = 60_000;
+
+function invalidateQuestionsCache() {
+  questionsCache = null;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
+  applyCors(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    await ensureMigration();
+    await runMigrations();
 
     // ==================== GET ====================
     if (req.method === 'GET') {
+      if (checkRateLimit(req, res, 60, 60_000)) return;
       const { boxName } = req.query;
+
+      // Cache en mémoire 60s pour les requêtes sans filtre (sync background)
+      const useCache = !boxName;
+      if (useCache && questionsCache && Date.now() < questionsCache.expiresAt) {
+        res.setHeader('Cache-Control', 'max-age=60, stale-while-revalidate=30');
+        return res.status(200).json(questionsCache.data);
+      }
 
       let sql = 'SELECT * FROM questions';
       const args: any[] = [];
@@ -90,8 +67,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const result = await getDb().execute({ sql, args });
       const questions = result.rows.map(rowToQuestion);
+      const data = { questions };
 
-      return res.status(200).json({ questions });
+      if (useCache) {
+        questionsCache = { data, expiresAt: Date.now() + CACHE_TTL_MS };
+      }
+
+      res.setHeader('Cache-Control', 'max-age=60, stale-while-revalidate=30');
+      return res.status(200).json(data);
     }
 
     // ==================== AUTH REQUISE (token Twitch admin) ====================
@@ -141,6 +124,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         },
       ]);
 
+      invalidateQuestionsCache();
       return res.status(201).json({ success: true, id: q.id });
     }
 
@@ -201,6 +185,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         args,
       });
 
+      invalidateQuestionsCache();
       return res.status(200).json({ success: true, id });
     }
 
@@ -217,6 +202,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         args: [id],
       });
 
+      invalidateQuestionsCache();
       return res.status(200).json({ success: true, id });
     }
 

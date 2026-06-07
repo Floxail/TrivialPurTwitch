@@ -1,17 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type Client } from '@libsql/client';
-import { requireAdminAuth } from './_utils.js';
-
-let db: Client;
-function getDb() {
-  if (!db) {
-    db = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
-      authToken: process.env.TURSO_AUTH_TOKEN!,
-    });
-  }
-  return db;
-}
+import { requireAdminAuth, applyCors } from './_utils.js';
+import { getDb } from './_db.js';
 
 /**
  * POST /api/reorder-box
@@ -21,9 +10,7 @@ function getDb() {
  * pour forcer l'ordre souhaité dans les boîtes ordonnées.
  */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  applyCors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   if (req.method !== 'POST') {
