@@ -1,6 +1,6 @@
 import { createClient } from '@libsql/client';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAnyTwitchAuth } from './_utils.js';
+import { requireAnyTwitchAuth, applyCors } from './_utils.js';
 
 const db = createClient({
   url: process.env.TURSO_DATABASE_URL!,
@@ -15,17 +15,8 @@ async function ensureMigration() {
   migrationDone = true;
 }
 
-const CORS_HEADERS: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Ajouter les headers CORS
-  for (const [key, value] of Object.entries(CORS_HEADERS)) {
-    res.setHeader(key, value);
-  }
+  applyCors(res);
 
   if (req.method === 'OPTIONS') {
     return res.status(204).end();

@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
-import { requireAnyTwitchAuth } from './_utils.js';
+import { requireAnyTwitchAuth, applyCors } from './_utils.js';
 
 let db: Client;
 function getDb() {
@@ -12,12 +12,6 @@ function getDb() {
   }
   return db;
 }
-
-const CORS_HEADERS: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
 
 const HISTORY_MAX = 500;
 
@@ -39,7 +33,7 @@ async function ensureMigration() {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  for (const [k, v] of Object.entries(CORS_HEADERS)) res.setHeader(k, v);
+  applyCors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   try {

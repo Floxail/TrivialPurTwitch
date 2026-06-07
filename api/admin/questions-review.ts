@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
-import { requireAdminAuth, checkRateLimit } from '../_utils.js';
+import { requireAdminAuth, checkRateLimit, applyCors } from '../_utils.js';
 
 let db: Client;
 function getDb() {
@@ -12,12 +12,6 @@ function getDb() {
   }
   return db;
 }
-
-const CORS_HEADERS: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
 
 function rowToPendingQuestion(row: any) {
   return {
@@ -49,9 +43,7 @@ function rowToPendingQuestion(row: any) {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  for (const [key, value] of Object.entries(CORS_HEADERS)) {
-    res.setHeader(key, value);
-  }
+  applyCors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   // Toutes les actions nécessitent une auth admin Twitch

@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
-import { checkRateLimit } from './_utils.js';
+import { checkRateLimit, applyCors } from './_utils.js';
 
 let db: Client;
 function getDb() {
@@ -21,12 +21,6 @@ async function ensureMigration() {
   await getDb().execute('ALTER TABLE pending_questions ADD COLUMN answer_image_url TEXT').catch(() => {});
   migrationDone = true;
 }
-
-const CORS_HEADERS: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
 
 /**
  * Valide le token Twitch et retourne les infos utilisateur.
@@ -53,9 +47,7 @@ async function validateTwitchUser(req: VercelRequest): Promise<{ userId: string;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  for (const [key, value] of Object.entries(CORS_HEADERS)) {
-    res.setHeader(key, value);
-  }
+  applyCors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   try {

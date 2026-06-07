@@ -5,7 +5,7 @@ import { useAuthStore } from './store/auth-store';
 
 const LoginCallback = () => {
 
-  const authStore = useAuthStore();
+  const setTwitchOAuthToken = useAuthStore(s => s.setTwitchOAuthToken);
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
@@ -36,14 +36,14 @@ const LoginCallback = () => {
       if (accessToken) {
         // Store token with obfuscation (handled by auth-store)
         // Twitch implicit flow tokens expire in ~4 hours
-        authStore.setTwitchOAuthToken(accessToken, 4 * 60 * 60);
+        setTwitchOAuthToken(accessToken, 4 * 60 * 60);
       }
 
       navigate('/');
     };
 
     handleCallback();
-  }, [navigate, authStore]);
+  }, [navigate, setTwitchOAuthToken]);
 
   if (error) {
     return (

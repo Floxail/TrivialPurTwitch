@@ -1,0 +1,437 @@
+{
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\_utils.ts": {
+    "mtime": 1777542177.1396453,
+    "ast_hash": "ac1a5532b0cde4a795efa935ff08f360",
+    "semantic_hash": "ac1a5532b0cde4a795efa935ff08f360"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\admin\\questions-review.ts": {
+    "mtime": 1778331192.603354,
+    "ast_hash": "fafa9d909ca414bc8449b411e67b4af9",
+    "semantic_hash": "fafa9d909ca414bc8449b411e67b4af9"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\boxes.ts": {
+    "mtime": 1777395343.852793,
+    "ast_hash": "d7798032009de9608bb0749ed1fbb152",
+    "semantic_hash": "d7798032009de9608bb0749ed1fbb152"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\history.ts": {
+    "mtime": 1779284414.0443347,
+    "ast_hash": "199b58cf4b7a11bcd05f9ee68140b3bc",
+    "semantic_hash": "199b58cf4b7a11bcd05f9ee68140b3bc"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\package.json": {
+    "mtime": 1771223188.3425767,
+    "ast_hash": "2324363c71f28a5b7e946a38dc2d9293",
+    "semantic_hash": "2324363c71f28a5b7e946a38dc2d9293"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\questions-bulk.ts": {
+    "mtime": 1777395646.949257,
+    "ast_hash": "64c8591b4107f22da111f04951e6f09f",
+    "semantic_hash": "64c8591b4107f22da111f04951e6f09f"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\questions-import.ts": {
+    "mtime": 1773069728.8638382,
+    "ast_hash": "b5e9282b53e1d4ffe112c946c8136a96",
+    "semantic_hash": "b5e9282b53e1d4ffe112c946c8136a96"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\questions.ts": {
+    "mtime": 1777650485.6450527,
+    "ast_hash": "08909413951b704286feec58414844a0",
+    "semantic_hash": "08909413951b704286feec58414844a0"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\reorder-box.ts": {
+    "mtime": 1775752659.3035572,
+    "ast_hash": "15500da69047e9bc592af049dca96e7e",
+    "semantic_hash": "15500da69047e9bc592af049dca96e7e"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\reports.ts": {
+    "mtime": 1771332753.6651702,
+    "ast_hash": "84f0120cb4b2e0a883447804f8736177",
+    "semantic_hash": "84f0120cb4b2e0a883447804f8736177"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\scores.ts": {
+    "mtime": 1777212092.9126272,
+    "ast_hash": "681e4e577944bbfc72d7ec58263e6c0f",
+    "semantic_hash": "681e4e577944bbfc72d7ec58263e6c0f"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\stats.ts": {
+    "mtime": 1776270857.1317592,
+    "ast_hash": "be7aaf5e6f2b002e8555c24cf1de33fa",
+    "semantic_hash": "be7aaf5e6f2b002e8555c24cf1de33fa"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\submit-question.ts": {
+    "mtime": 1778331167.0587142,
+    "ast_hash": "0b8df9fb6114e8125d44f4c517667ea0",
+    "semantic_hash": "0b8df9fb6114e8125d44f4c517667ea0"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\api\\tsconfig.json": {
+    "mtime": 1771223223.3382723,
+    "ast_hash": "7fc23484c20201f9f1e28fbe51af4855",
+    "semantic_hash": "7fc23484c20201f9f1e28fbe51af4855"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\package.json": {
+    "mtime": 1777395768.0731268,
+    "ast_hash": "27a1035af8ad613c7cb27b0450ca1250",
+    "semantic_hash": "27a1035af8ad613c7cb27b0450ca1250"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\questions\\questions.json": {
+    "mtime": 1771005981.1233466,
+    "ast_hash": "73c85f13d3413d9bd0d483a2573c4cad",
+    "semantic_hash": "73c85f13d3413d9bd0d483a2573c4cad"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\scripts\\convert-to-qcm.js": {
+    "mtime": 1769898672.0878887,
+    "ast_hash": "131a8d09721886a5c16c0142d6a7a31f",
+    "semantic_hash": "131a8d09721886a5c16c0142d6a7a31f"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\scripts\\create-pending-table.ts": {
+    "mtime": 1771174940.1073718,
+    "ast_hash": "9053d8611c11ab46906a00ff11c1077e",
+    "semantic_hash": "9053d8611c11ab46906a00ff11c1077e"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\scripts\\fix-box-order.ts": {
+    "mtime": 1774896199.7484121,
+    "ast_hash": "223118ed573f571e43bcf5d3b566fece",
+    "semantic_hash": "223118ed573f571e43bcf5d3b566fece"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\scripts\\patch-ajv-keywords.js": {
+    "mtime": 1771680778.5124886,
+    "ast_hash": "b1de86728af5484ed78b0fb64d1447a5",
+    "semantic_hash": "b1de86728af5484ed78b0fb64d1447a5"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\scripts\\reset-question-stats.ts": {
+    "mtime": 1776270857.1912725,
+    "ast_hash": "5278f688ea120dc71606ab6cebf06cfe",
+    "semantic_hash": "5278f688ea120dc71606ab6cebf06cfe"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\scripts\\seed-database.ts": {
+    "mtime": 1771170998.235414,
+    "ast_hash": "16d1d36616e2794640a985c96b13ee78",
+    "semantic_hash": "16d1d36616e2794640a985c96b13ee78"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\App.tsx": {
+    "mtime": 1778165602.0226583,
+    "ast_hash": "56dd06431ff406752627f4b49cddc1f7",
+    "semantic_hash": "56dd06431ff406752627f4b49cddc1f7"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\admin-dashboard.tsx": {
+    "mtime": 1777377626.0756645,
+    "ast_hash": "845ff32423ce045f564938aee28083e0",
+    "semantic_hash": "845ff32423ce045f564938aee28083e0"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\changelog.tsx": {
+    "mtime": 1776270857.1932714,
+    "ast_hash": "be9473747766a84b514b4d59c15e3a8d",
+    "semantic_hash": "be9473747766a84b514b4d59c15e3a8d"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\contribution-page.tsx": {
+    "mtime": 1779034142.3436594,
+    "ast_hash": "719d33940d64260945fd2d8a28188dc2",
+    "semantic_hash": "719d33940d64260945fd2d8a28188dc2"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\convertisseur.tsx": {
+    "mtime": 1768137944.4511375,
+    "ast_hash": "c71db5f24754a109182c037f4974bd0b",
+    "semantic_hash": "c71db5f24754a109182c037f4974bd0b"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\global-menu.tsx": {
+    "mtime": 1777211984.6121035,
+    "ast_hash": "9046c09d3445515b820a8b635c870855",
+    "semantic_hash": "9046c09d3445515b820a8b635c870855"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\help.tsx": {
+    "mtime": 1777212031.1394992,
+    "ast_hash": "4feca814e7bdeb37f5b6ca2084bb3068",
+    "semantic_hash": "4feca814e7bdeb37f5b6ca2084bb3068"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\leaderboard.tsx": {
+    "mtime": 1777211547.7148125,
+    "ast_hash": "5f7bc29acfa46919befd01f6c6a9f704",
+    "semantic_hash": "5f7bc29acfa46919befd01f6c6a9f704"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\login-callback.tsx": {
+    "mtime": 1771241278.1470425,
+    "ast_hash": "29c7813d456dee9a0a4d3aaab3f007f6",
+    "semantic_hash": "29c7813d456dee9a0a4d3aaab3f007f6"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\login.tsx": {
+    "mtime": 1777212053.9513528,
+    "ast_hash": "5c1c613979c23df976d1f71c829b799e",
+    "semantic_hash": "5c1c613979c23df976d1f71c829b799e"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\podium.tsx": {
+    "mtime": 1777212015.4826093,
+    "ast_hash": "a27cc15f9ed4ead8bb7e5d9dd27d0b79",
+    "semantic_hash": "a27cc15f9ed4ead8bb7e5d9dd27d0b79"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\question-manager-modals.tsx": {
+    "mtime": 1777650526.201854,
+    "ast_hash": "c7fdcb54d0093021b9b5cefa839baec0",
+    "semantic_hash": "c7fdcb54d0093021b9b5cefa839baec0"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\question-manager-terminal.tsx": {
+    "mtime": 1775715228.9566789,
+    "ast_hash": "16047d7b30bb6627531cac45f1bbdede",
+    "semantic_hash": "16047d7b30bb6627531cac45f1bbdede"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\question-manager-v2.tsx": {
+    "mtime": 1777650543.263214,
+    "ast_hash": "d0cafd8993eec478197137e72218ea04",
+    "semantic_hash": "d0cafd8993eec478197137e72218ea04"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\quiz.tsx": {
+    "mtime": 1779284437.9149828,
+    "ast_hash": "b40bbd45034a35d76ac5aca36c38a897",
+    "semantic_hash": "b40bbd45034a35d76ac5aca36c38a897"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\settings.tsx": {
+    "mtime": 1775715228.9597487,
+    "ast_hash": "49d934e64dbe379aaae6af6699cb3718",
+    "semantic_hash": "49d934e64dbe379aaae6af6699cb3718"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\stats.tsx": {
+    "mtime": 1774896199.7529902,
+    "ast_hash": "1bbfcd7bfd1ba5e8752fc30591e5cffc",
+    "semantic_hash": "1bbfcd7bfd1ba5e8752fc30591e5cffc"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\store\\auth-store.ts": {
+    "mtime": 1771175104.7737963,
+    "ast_hash": "2619441183dbbfa85a87db54c1f27cdd",
+    "semantic_hash": "2619441183dbbfa85a87db54c1f27cdd"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\store\\game-store.ts": {
+    "mtime": 1769867038.1439507,
+    "ast_hash": "3c83c5fb934d158fc28d79fd3119a4b6",
+    "semantic_hash": "3c83c5fb934d158fc28d79fd3119a4b6"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\store\\global-store.ts": {
+    "mtime": 1766179785.550226,
+    "ast_hash": "62f3160e0c05b5aa287ec49e14467a23",
+    "semantic_hash": "62f3160e0c05b5aa287ec49e14467a23"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\store\\player-store.ts": {
+    "mtime": 1777211507.2229102,
+    "ast_hash": "a6d83bed58393d5033a9dc9c68e4eb63",
+    "semantic_hash": "a6d83bed58393d5033a9dc9c68e4eb63"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\store\\questions-store.ts": {
+    "mtime": 1779284445.2151096,
+    "ast_hash": "2525d77b27d6b9db4c9c71e875a38227",
+    "semantic_hash": "2525d77b27d6b9db4c9c71e875a38227"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\store\\settings-store.ts": {
+    "mtime": 1775715228.9597487,
+    "ast_hash": "522e40ce411b23d1690f1715f8dd57e0",
+    "semantic_hash": "522e40ce411b23d1690f1715f8dd57e0"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalAlert.tsx": {
+    "mtime": 1768125126.1007702,
+    "ast_hash": "5212b9f9eff9f905b130413c001a0218",
+    "semantic_hash": "5212b9f9eff9f905b130413c001a0218"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalBadge.tsx": {
+    "mtime": 1768125066.9057727,
+    "ast_hash": "e64b39c3043936ec76f7b9e4c6bb944f",
+    "semantic_hash": "e64b39c3043936ec76f7b9e4c6bb944f"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalButton.tsx": {
+    "mtime": 1768125645.62204,
+    "ast_hash": "0226406dbd0ea60c7ecce91b3212fd65",
+    "semantic_hash": "0226406dbd0ea60c7ecce91b3212fd65"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalContainer.tsx": {
+    "mtime": 1768125109.0137227,
+    "ast_hash": "ce66c82656b7dae76e74af48a0acacda",
+    "semantic_hash": "ce66c82656b7dae76e74af48a0acacda"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalInput.tsx": {
+    "mtime": 1768124973.2765281,
+    "ast_hash": "ae0bc526ca6fe8e88e8aabf716b08879",
+    "semantic_hash": "ae0bc526ca6fe8e88e8aabf716b08879"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalModal.tsx": {
+    "mtime": 1768125025.460119,
+    "ast_hash": "e334137e0d70b12eafca5b7049b59a8f",
+    "semantic_hash": "e334137e0d70b12eafca5b7049b59a8f"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalSelect.tsx": {
+    "mtime": 1768124997.5722537,
+    "ast_hash": "694a37ba25a5a28abf08d35df0d99cce",
+    "semantic_hash": "694a37ba25a5a28abf08d35df0d99cce"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalTable.tsx": {
+    "mtime": 1768125054.7473328,
+    "ast_hash": "7026e2cd31edf0157edb905f007a4987",
+    "semantic_hash": "7026e2cd31edf0157edb905f007a4987"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalTabs.tsx": {
+    "mtime": 1768125651.2502599,
+    "ast_hash": "fe4b0ade285e7952078a139cee5b8712",
+    "semantic_hash": "fe4b0ade285e7952078a139cee5b8712"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\TerminalTextarea.tsx": {
+    "mtime": 1768125674.4865613,
+    "ast_hash": "346b5cffcd0b44bf3891128e0c08d23f",
+    "semantic_hash": "346b5cffcd0b44bf3891128e0c08d23f"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\terminal-ui\\index.ts": {
+    "mtime": 1768125152.5436049,
+    "ast_hash": "cc0e42e91512d5fdaf688bdd6552e22c",
+    "semantic_hash": "cc0e42e91512d5fdaf688bdd6552e22c"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\twitch-avatar.tsx": {
+    "mtime": 1771004771.7706857,
+    "ast_hash": "047a88999f94feccc2341276ac29ecbe",
+    "semantic_hash": "047a88999f94feccc2341276ac29ecbe"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\components\\welcome.tsx": {
+    "mtime": 1776270857.197271,
+    "ast_hash": "3e50e34508c5f0b540215e522d02b7a0",
+    "semantic_hash": "3e50e34508c5f0b540215e522d02b7a0"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\helpers.ts": {
+    "mtime": 1777669469.8639376,
+    "ast_hash": "f3ad944a95901c9855f8352473fd65c7",
+    "semantic_hash": "f3ad944a95901c9855f8352473fd65c7"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\icons.ts": {
+    "mtime": 1775752659.3340452,
+    "ast_hash": "e884b9bb3c3d6ee4e905fca619d9d82d",
+    "semantic_hash": "e884b9bb3c3d6ee4e905fca619d9d82d"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\index.tsx": {
+    "mtime": 1768125371.9725418,
+    "ast_hash": "1219a612cea5c61e6e34a4aff875be74",
+    "semantic_hash": "1219a612cea5c61e6e34a4aff875be74"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\react-app-env.d.ts": {
+    "mtime": 1766179785.5537689,
+    "ast_hash": "6c6e01e59f5b56816e02688702db5875",
+    "semantic_hash": "6c6e01e59f5b56816e02688702db5875"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\answer-validator.ts": {
+    "mtime": 1778885689.9582996,
+    "ast_hash": "b969657a9afd657ea56f0a1e7fce1682",
+    "semantic_hash": "b969657a9afd657ea56f0a1e7fce1682"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\api-admin-service.ts": {
+    "mtime": 1775715228.9618945,
+    "ast_hash": "7608373fc33fe6c40aea93a6fb30f3c8",
+    "semantic_hash": "7608373fc33fe6c40aea93a6fb30f3c8"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\api-history-service.ts": {
+    "mtime": 1779011273.4048526,
+    "ast_hash": "a29d11236613a62238bd89198f405599",
+    "semantic_hash": "a29d11236613a62238bd89198f405599"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\api-reports-service.ts": {
+    "mtime": 1771332754.674387,
+    "ast_hash": "447e57815f0a3f0a71466006e0195390",
+    "semantic_hash": "447e57815f0a3f0a71466006e0195390"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\api-scores-service.ts": {
+    "mtime": 1774072750.1596339,
+    "ast_hash": "f5af1ffa93971d3e5d1f107478de7a0f",
+    "semantic_hash": "f5af1ffa93971d3e5d1f107478de7a0f"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\api-service.ts": {
+    "mtime": 1775715228.96341,
+    "ast_hash": "8ba668e9997071ac5901eadd46741b18",
+    "semantic_hash": "8ba668e9997071ac5901eadd46741b18"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\api-stats-service.ts": {
+    "mtime": 1774128900.7822566,
+    "ast_hash": "382e3f00931ad5ce022c2b513f6d6b2f",
+    "semantic_hash": "382e3f00931ad5ce022c2b513f6d6b2f"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\api-submit-service.ts": {
+    "mtime": 1778331149.615885,
+    "ast_hash": "01a107f52387e15a943a3f7996652341",
+    "semantic_hash": "01a107f52387e15a943a3f7996652341"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\github-data-service.ts": {
+    "mtime": 1771529686.18981,
+    "ast_hash": "29facc85698e8498a8a5578caa0d07fb",
+    "semantic_hash": "29facc85698e8498a8a5578caa0d07fb"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\src\\services\\twitch-api.ts": {
+    "mtime": 1774896199.757075,
+    "ast_hash": "928aa5673b9ace2a77d54c979b57fe3c",
+    "semantic_hash": "928aa5673b9ace2a77d54c979b57fe3c"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\tsconfig.json": {
+    "mtime": 1766179785.5542746,
+    "ast_hash": "b4372d8fed91f3226cc1252fa41da69f",
+    "semantic_hash": "b4372d8fed91f3226cc1252fa41da69f"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\vercel.json": {
+    "mtime": 1771171268.3490129,
+    "ast_hash": "300dd2e650d2f8dc4c412ec0b0c93b3a",
+    "semantic_hash": "300dd2e650d2f8dc4c412ec0b0c93b3a"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\.github\\workflows\\deploy.yml": {
+    "mtime": 1767094310.534389,
+    "ast_hash": "9bc074bb88f76ee70aa34af772a6f7df",
+    "semantic_hash": "9bc074bb88f76ee70aa34af772a6f7df"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\.yarnrc.yml": {
+    "mtime": 1771680858.2314653,
+    "ast_hash": "4c84191c0c0d72fad6823d861356d161",
+    "semantic_hash": "4c84191c0c0d72fad6823d861356d161"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\README.md": {
+    "mtime": 1774072750.1527185,
+    "ast_hash": "5475d7f92908d65112a31510853a1644",
+    "semantic_hash": "5475d7f92908d65112a31510853a1644"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\404.html": {
+    "mtime": 1767089827.2068698,
+    "ast_hash": "53cb50969861e5a3f8c0e1e0cbfc34f6",
+    "semantic_hash": "53cb50969861e5a3f8c0e1e0cbfc34f6"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\index.html": {
+    "mtime": 1780494385.2960513,
+    "ast_hash": "0002e28ca8f53f3a4a5bbf9c91f0e42e",
+    "semantic_hash": "0002e28ca8f53f3a4a5bbf9c91f0e42e"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\robots.txt": {
+    "mtime": 1780488663.1342072,
+    "ast_hash": "115cc82c172a111459adfa2995fe4274",
+    "semantic_hash": "115cc82c172a111459adfa2995fe4274"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\TrivialPurTwitch.png": {
+    "mtime": 1774629415.5390625,
+    "ast_hash": "1ffe33458a3e7b5a0e904d7da8a1ef72",
+    "semantic_hash": "1ffe33458a3e7b5a0e904d7da8a1ef72"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\avatar.png": {
+    "mtime": 1766179785.5406718,
+    "ast_hash": "2b95ca7601529eca0c578a0f322a5a3c",
+    "semantic_hash": "2b95ca7601529eca0c578a0f322a5a3c"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\bronze.svg": {
+    "mtime": 1775752659.3315272,
+    "ast_hash": "10bd8fd8f8cb49cfad68223dbcbf844b",
+    "semantic_hash": "10bd8fd8f8cb49cfad68223dbcbf844b"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\crown.svg": {
+    "mtime": 1776270857.1902726,
+    "ast_hash": "abf9d27544900ca97d389bb31dd665dd",
+    "semantic_hash": "abf9d27544900ca97d389bb31dd665dd"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\favicon.png": {
+    "mtime": 1775754217.9379506,
+    "ast_hash": "9f8e7ca86e55b1ba288dd0dcac83770e",
+    "semantic_hash": "9f8e7ca86e55b1ba288dd0dcac83770e"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\gold.svg": {
+    "mtime": 1775715228.9453125,
+    "ast_hash": "e2b0755059b9ae261242663db27150f9",
+    "semantic_hash": "e2b0755059b9ae261242663db27150f9"
+  },
+  "C:\\Users\\Floxa\\Downloads\\TrivialPurTwitch\\public\\silver.svg": {
+    "mtime": 1775715228.9536407,
+    "ast_hash": "4220745ca8272e12f8179b549050c953",
+    "semantic_hash": "4220745ca8272e12f8179b549050c953"
+  }
+}

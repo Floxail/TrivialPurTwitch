@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type Client } from '@libsql/client';
-import { requireAdminAuth, checkRateLimit } from './_utils.js';
+import { requireAdminAuth, checkRateLimit, applyCors } from './_utils.js';
 
 let db: Client;
 function getDb() {
@@ -12,12 +12,6 @@ function getDb() {
   }
   return db;
 }
-
-const CORS_HEADERS: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
 
 async function validateTwitchUser(req: VercelRequest): Promise<{ userId: string; login: string } | null> {
   const authHeader = req.headers['authorization'];
@@ -57,9 +51,7 @@ async function ensureTable() {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  for (const [key, value] of Object.entries(CORS_HEADERS)) {
-    res.setHeader(key, value);
-  }
+  applyCors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   await ensureTable();

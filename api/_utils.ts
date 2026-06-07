@@ -1,5 +1,17 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
+export const CORS_HEADERS: Record<string, string> = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+export function applyCors(res: VercelResponse): void {
+  for (const [key, value] of Object.entries(CORS_HEADERS)) {
+    res.setHeader(key, value);
+  }
+}
+
 /**
  * Vérifie que l'utilisateur est un admin via son token Twitch.
  *
