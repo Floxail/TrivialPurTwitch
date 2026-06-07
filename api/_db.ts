@@ -57,32 +57,34 @@ export async function runMigrations(): Promise<void> {
     },
   ], 'write');
 
-  await client.execute(`CREATE INDEX IF NOT EXISTS idx_history_twitch ON question_history(twitch_id)`).catch(() => {});
-  await client.execute(`CREATE INDEX IF NOT EXISTS idx_history_box ON question_history(twitch_id, box_name)`).catch(() => {});
+  // ALTER TABLE en parallèle — idempotents, erreurs ignorées (colonne existe déjà)
+  await Promise.all([
+    client.execute(`CREATE INDEX IF NOT EXISTS idx_history_twitch ON question_history(twitch_id)`).catch(() => {}),
+    client.execute(`CREATE INDEX IF NOT EXISTS idx_history_box ON question_history(twitch_id, box_name)`).catch(() => {}),
 
-  // ALTER TABLE — chaque colonne séparée car échoue si elle existe déjà
-  await client.execute('ALTER TABLE questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {});
-  await client.execute('ALTER TABLE questions ADD COLUMN created_by TEXT').catch(() => {});
-  await client.execute('ALTER TABLE questions ADD COLUMN created_by_id TEXT').catch(() => {});
-  await client.execute("ALTER TABLE questions ADD COLUMN created_at TEXT DEFAULT (datetime('now'))").catch(() => {});
-  await client.execute('ALTER TABLE questions ADD COLUMN image_url TEXT').catch(() => {});
-  await client.execute('ALTER TABLE questions ADD COLUMN answer_image_url TEXT').catch(() => {});
+    client.execute('ALTER TABLE questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {}),
+    client.execute('ALTER TABLE questions ADD COLUMN created_by TEXT').catch(() => {}),
+    client.execute('ALTER TABLE questions ADD COLUMN created_by_id TEXT').catch(() => {}),
+    client.execute("ALTER TABLE questions ADD COLUMN created_at TEXT DEFAULT (datetime('now'))").catch(() => {}),
+    client.execute('ALTER TABLE questions ADD COLUMN image_url TEXT').catch(() => {}),
+    client.execute('ALTER TABLE questions ADD COLUMN answer_image_url TEXT').catch(() => {}),
 
-  await client.execute('ALTER TABLE scores ADD COLUMN channel_name TEXT').catch(() => {});
-  await client.execute('ALTER TABLE scores ADD COLUMN channel_id TEXT').catch(() => {});
+    client.execute('ALTER TABLE scores ADD COLUMN channel_name TEXT').catch(() => {}),
+    client.execute('ALTER TABLE scores ADD COLUMN channel_id TEXT').catch(() => {}),
 
-  await client.execute('ALTER TABLE boxes ADD COLUMN ordered INTEGER DEFAULT 0').catch(() => {});
-  await client.execute('ALTER TABLE boxes ADD COLUMN created_by TEXT').catch(() => {});
-  await client.execute('ALTER TABLE boxes ADD COLUMN created_by_id TEXT').catch(() => {});
-  await client.execute('ALTER TABLE boxes ADD COLUMN description TEXT').catch(() => {});
-  await client.execute('ALTER TABLE boxes ADD COLUMN hidden INTEGER DEFAULT 0').catch(() => {});
-  await client.execute('ALTER TABLE boxes ADD COLUMN parent_box TEXT').catch(() => {});
+    client.execute('ALTER TABLE boxes ADD COLUMN ordered INTEGER DEFAULT 0').catch(() => {}),
+    client.execute('ALTER TABLE boxes ADD COLUMN created_by TEXT').catch(() => {}),
+    client.execute('ALTER TABLE boxes ADD COLUMN created_by_id TEXT').catch(() => {}),
+    client.execute('ALTER TABLE boxes ADD COLUMN description TEXT').catch(() => {}),
+    client.execute('ALTER TABLE boxes ADD COLUMN hidden INTEGER DEFAULT 0').catch(() => {}),
+    client.execute('ALTER TABLE boxes ADD COLUMN parent_box TEXT').catch(() => {}),
 
-  await client.execute('ALTER TABLE pending_questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {});
-  await client.execute('ALTER TABLE pending_questions ADD COLUMN image_url TEXT').catch(() => {});
-  await client.execute('ALTER TABLE pending_questions ADD COLUMN answer_image_url TEXT').catch(() => {});
+    client.execute('ALTER TABLE pending_questions ADD COLUMN qcm_correct_indexes TEXT').catch(() => {}),
+    client.execute('ALTER TABLE pending_questions ADD COLUMN image_url TEXT').catch(() => {}),
+    client.execute('ALTER TABLE pending_questions ADD COLUMN answer_image_url TEXT').catch(() => {}),
+  ]);
 
-  // Backfill created_at depuis pending_questions pour questions approuvées
+  // Backfill created_at — après les ALTER TABLE (dépendance)
   await client.execute(`
     UPDATE questions SET created_at = (
       SELECT pq.created_at FROM pending_questions pq WHERE pq.id = questions.id
