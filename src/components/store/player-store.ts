@@ -39,7 +39,8 @@ export type Player = {
   nick: string;
   score: number;
   rank: number;
-  currentStreak: number; // <--- MODIF : Ajout du suivi de la série
+  currentStreak: number;
+  previousStreak: number;
   stats: PlayerStats;
   avatar?: string;
 }
@@ -116,6 +117,7 @@ export const usePlayerStore = create<PlayersState & Actions>()(
               score: 0,
               stats: { ...EMPTY_PLAYER_STATS },
               currentStreak: 0,
+              previousStreak: 0,
             };
           }
         }
@@ -145,7 +147,7 @@ export const usePlayerStore = create<PlayersState & Actions>()(
         set((state) => {
           const updated = {
             ...state.players,
-            [nick]: { tid, rank: -1, score: 0, nick, currentStreak: 0, stats: { ...EMPTY_PLAYER_STATS } },
+            [nick]: { tid, rank: -1, score: 0, nick, currentStreak: 0, previousStreak: 0, stats: { ...EMPTY_PLAYER_STATS } },
           };
 
           if (avatarFetchTimeout === undefined) {
@@ -163,9 +165,15 @@ export const usePlayerStore = create<PlayersState & Actions>()(
     addPoints: (nick: string, points: number) => {
       set((state) => {
         if (!state.players[nick]) return state;
+        const player = state.players[nick];
         const updated = {
           ...state.players,
-          [nick]: { ...state.players[nick], score: state.players[nick].score + points },
+          [nick]: {
+            ...player,
+            score: player.score + points,
+            currentStreak: points > 0 ? (player.previousStreak || 0) + 1 : 0,
+            previousStreak: 0,
+          },
         };
         return { players: recomputeRanks(updated) };
       });
@@ -181,8 +189,8 @@ export const usePlayerStore = create<PlayersState & Actions>()(
         for (const nick of Object.keys(state.players)) {
           const p = state.players[nick];
           updated[nick] = winnerNicks.has(nick)
-            ? { ...p, stats: { ...p.stats } }
-            : { ...p, currentStreak: 0, stats: { ...p.stats } };
+            ? { ...p, previousStreak: 0, stats: { ...p.stats } }
+            : { ...p, previousStreak: p.currentStreak, currentStreak: 0, stats: { ...p.stats } };
         }
 
         // 3. Traiter gagnants (sur copies)

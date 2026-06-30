@@ -512,7 +512,7 @@ const Quiz = () => {
 			const answers = finalAnswerers.map((answerer, index) => {
 				const isCombo = previousAnswerers.includes(answerer.nick);
 				const elapsed = answerer.answeredAt ? answerer.answeredAt - questionStartTime : 0;
-				return new Answer(answerer.nick, index === 0, isCombo, elapsed);
+				return new Answer(answerer.nick, answerer.isFirst, isCombo, elapsed);
 			});
 
 			// Enregistrer les points
