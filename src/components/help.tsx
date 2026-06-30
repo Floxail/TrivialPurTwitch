@@ -112,7 +112,7 @@ const Help = ({ show, onClose }: any) => {
   <p className="text-muted small">
     Vous pouvez enrichir la base de données commune pour que vos questions apparaissent en jeu (chez vous et chez les autres streamers).</p><ul><li>
       <strong>Accès :</strong> Cliquez sur le bouton <strong>"Contribuer"</strong> dans le menu global.</li>
-    <li><strong>Format :</strong> Indiquez une question claire, la bonne réponse, et trois mauvaises réponses crédibles pour le mode QCM.</li>
+    <li><strong>Format :</strong> Question libre : Indiquez une question claire, la bonne réponse ; si c'est un QCM Indiquer la ou les bonne reponse + des Mauvaise</li>
     <li><strong>Validation :</strong> Une fois envoyée, votre question est placée en file d'attente. Elle sera relue par un modérateur avant d'être injectée dans la base de données.</li>
   </ul>
 </div>

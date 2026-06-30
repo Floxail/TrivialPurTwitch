@@ -1,81 +1,80 @@
 # TrivialPurTwitch
 
-Une application web de **Quiz Trivial Pursuit** pour streamers Twitch, écrite en React et hébergée sur Vercel.
+Application web **Quiz Trivial Pursuit** pour streamers Twitch — React, hébergée sur Vercel.
 
-**Application disponible sur :** [trivialpurtwitch.vercel.app](https://trivialpurtwitch.vercel.app)
+**→ [trivial.floxail.fr](https://trivial.floxail.fr)**
 
 ---
 
 ## Description
 
-TrivialPurTwitch permet aux streamers d'animer des quiz de type Trivial Pursuit directement depuis leur navigateur. Les spectateurs répondent en direct dans le **chat Twitch**. Les questions sont organisées en boîtes thématiques et synchronisées automatiquement depuis GitHub.
+TrivialPurTwitch permet aux streamers d'animer des quiz en direct. Les spectateurs répondent dans le **chat Twitch**. Les questions sont organisées en boîtes thématiques et synchronisées automatiquement depuis une base Turso partagée.
+
+Architecture : 1 seule instance Vercel + 1 seule Turso DB — tous les streamers partagent la même base de questions.
 
 ---
 
 ## Fonctionnalités
 
 ### Jeu
-- **Mode Quiz** — Questions texte libre ou QCM (2 à 6 options)
-- **QCM multi-réponses** — Plusieurs réponses correctes possibles (`A,C` / `AC`)
-- **Timer configurable** — 15 à 60 secondes par question
-- **Tolérance aux fautes** — Détection intelligente des réponses
-- **Leaderboard** — Classement session en temps réel + scores persistants all-time
+- **Mode Quiz** — texte libre ou QCM (2 à 6 options)
+- **QCM multi-réponses** — plusieurs bonnes réponses (`A,C` / `AC`)
+- **Timer configurable** — 10 à 60 secondes par question
+- **Timer illimité** — révélation manuelle via bouton RÉVÉLER
+- **Tolérance orthographique** — Sorensen-Dice + sous-chaînes (désactivable)
+- **Images** — image pendant la question et/ou à la révélation (URLs externes)
 
-### Questions
-- **Synchronisation Turso DB** — Questions officielles mises à jour automatiquement (toutes les heures)
-- **Questions locales** — Créez vos propres questions, jamais supprimées par la sync
-- **Ajout en masse** — Format texte `Q:/R:/ALT:` + QCM `A:/B:/C:/D:` avec support multi-réponses
-- **Import/Export JSON** — Sauvegarde et restauration complète
-- **Gestion par boîtes** — Organisez vos questions par thème
-- **Mode ordonné** — Jouez les questions d'une boîte dans l'ordre d'insertion (↓ dans l'UI)
+### Scoring
+- **Base** : +1 point par bonne réponse
+- **First** : +2 si premier à répondre (fenêtre de clémence configurable)
+- **Solo** : +1 si seul à avoir trouvé
+- **Combo** : +1/+2/+3 selon la série en cours (max +3)
+- **Pénalité** : -1 par mauvaise réponse (appliquée à la révélation, pas en direct)
 
-### Communauté
-- **Proposition de questions** — Les viewers connectés peuvent soumettre des questions via `/contribute`
-- **Modération admin** — Dashboard dédié pour approuver/rejeter les questions proposées
-- **Signalement** — Bouton drapeau pour signaler une question incorrecte après révélation
+### Questions & Boîtes
+- **Sync automatique** — toutes les 2 minutes depuis Turso DB (silencieux)
+- **Questions locales** — créées localement, jamais supprimées par la sync
+- **Boîtes thématiques** — Master Box + sous-boîtes, mode ordonné (↓)
+- **Tirage intelligent** — RNG crypto-grade, anti-répétition sur 500 questions, échantillonnage stratifié multi-boîtes
+- **Ajout en masse** — format `Q:/R:/ALT:/A:/B:...` (texte libre + QCM mixés)
+- **Import/Export JSON**
 
-### Interface
-- **Effet MDR fisheye** — Animation loupe au survol des boîtes sur l'accueil
-- **Style terminal Lumon** — Interface inspirée de la série Severance
-- **Changelog intégré** — Historique des versions dans l'application
-
----
-
-## Comment jouer (côté spectateurs)
-
-Les spectateurs répondent directement dans le **chat Twitch** :
-
-| Type de question | Format de réponse |
-|---|---|
-| Texte libre | Taper la réponse directement |
-| QCM réponse unique | `A`, `B`, `C`... ou `1`, `2`, `3`... |
-| QCM multi-réponses | `A,C` / `AC` / `A C` / `1,3` |
-
-Pour les QCM multi-réponses, il faut donner **toutes** les bonnes réponses et **aucune** mauvaise.
+### Communauté & Admin
+- **Proposition de questions** — `/contribute` (connectés Twitch)
+- **Modération** — `/system-mod-portal` (admin) — approuver / modifier / rejeter
+- **Signalement** — bouton drapeau après révélation (4 raisons prédéfinies)
+- **Stats** — `/stats` global + `/stats/:username` par joueur (partageable)
 
 ---
 
-## Format des questions (ajout en masse)
+## Comment jouer (spectateurs)
 
-### Texte libre
+Répondre directement dans le **chat Twitch** :
+
+| Type | Format |
+|------|--------|
+| Texte libre | Taper la réponse |
+| QCM unique | `A` `B` `C`... ou `1` `2` `3`... |
+| QCM multi | `A,C` / `AC` / `A C` / `1,3` |
+
+Multi-réponses : toutes les bonnes réponses requises, aucune mauvaise.
+
+---
+
+## Format d'import en masse
+
 ```
 Q: Qui a peint la Joconde ?
 R: Léonard de Vinci
 ALT: De Vinci, Leonard de Vinci
-```
 
-### QCM réponse unique
-```
 Q: Quelle est la capitale de la France ?
 A: Lyon
 B: Paris
 C: Marseille
 D: Bordeaux
 R: B
-```
 
-### QCM réponses multiples
-```
 Q: Lesquels sont des langages de programmation ?
 A: Python
 B: Cobra
@@ -84,66 +83,35 @@ D: Espresso
 R: A,C
 ```
 
+Séparer chaque question par une ligne vide. Types libres et QCM peuvent être mélangés.
+
 ---
 
-## Déploiement (votre propre instance)
+## Déploiement
 
 ### Prérequis
 - Compte [Vercel](https://vercel.com)
-- Base de données [Turso](https://turso.tech) (scores, questions serveur, modération)
-- Application Twitch sur [dev.twitch.tv](https://dev.twitch.tv/console/apps)
+- Base [Turso](https://turso.tech)
+- App Twitch sur [dev.twitch.tv](https://dev.twitch.tv/console/apps) — Redirect URI : `https://votre-domaine/callback`
 
 ### Variables d'environnement Vercel
 
 ```env
-REACT_APP_TWITCH_CLIENT_ID=   # Client ID de votre app Twitch (public)
-TURSO_DATABASE_URL=            # URL de votre base Turso
-TURSO_AUTH_TOKEN=              # Token d'authentification Turso
-ADMIN_TWITCH_IDS=              # IDs Twitch des admins (séparés par virgules)
+REACT_APP_TWITCH_CLIENT_ID=   # Client ID app Twitch (public)
+TURSO_DATABASE_URL=            # URL Turso
+TURSO_AUTH_TOKEN=              # Token Turso
+ADMIN_TWITCH_IDS=              # IDs Twitch admins (virgules)
 ```
-
-### Application Twitch
-
-Créez une application sur [dev.twitch.tv](https://dev.twitch.tv/console/apps/) :
-- **Redirect URI :** `https://votre-domaine.vercel.app/callback`
-- **Category :** Website Integration
 
 ### Commandes
 
 ```bash
-yarn install      # Installer les dépendances
-yarn start        # Développement (port 3000)
-yarn build        # Build production
+yarn install
+yarn start    # dev port 3000
+yarn build    # prod
 ```
 
-Le déploiement sur Vercel est **automatique** à chaque push sur la branche principale.
-
----
-
-## Architecture
-
-```
-src/
-├── components/
-│   ├── store/          # Zustand stores (questions, game, player, auth, settings)
-│   ├── quiz.tsx        # Interface de jeu principale
-│   ├── leaderboard.tsx # Classement session + all-time
-│   ├── contribution-page.tsx  # Soumission de questions (communauté)
-│   ├── admin-dashboard.tsx    # Modération des questions proposées
-│   └── ...
-├── services/
-│   ├── github-data-service.ts # Sync questions depuis Turso DB (+ fallback build local)
-│   ├── api-scores-service.ts  # Scores persistants
-│   ├── api-reports-service.ts # Signalement de questions
-│   └── ...
-api/
-├── questions.ts        # CRUD questions
-├── scores.ts           # Scores persistants (Turso)
-├── reports.ts          # Signalements de questions
-├── submit-question.ts  # Soumission communauté
-└── admin/
-    └── questions-review.ts  # Modération admin
-```
+Push sur `master` → déploiement Vercel automatique.
 
 ---
 
@@ -151,42 +119,25 @@ api/
 
 | | |
 |---|---|
-| **Frontend** | React 18 + TypeScript |
+| **Frontend** | React 18 + TypeScript (CRA) |
 | **State** | Zustand + persist middleware |
 | **UI** | React-Bootstrap + SCSS + Framer Motion |
-| **Hébergement** | Vercel (frontend + serverless functions) |
+| **Hébergement** | Vercel (SPA + Serverless Functions) |
 | **Base de données** | Turso (LibSQL) |
 | **Chat Twitch** | tmi.js |
 | **Auth** | OAuth PKCE (Twitch) |
 
 ---
 
-## Catégories
-
-| # | Catégorie | Couleur |
-|---|-----------|---------|
-| 0 | Géographie | Bleu |
-| 1 | Divertissement | Rose |
-| 2 | Histoire | Jaune |
-| 3 | Arts & Littérature | Marron |
-| 4 | Sciences & Nature | Vert |
-| 5 | Sports & Loisirs | Orange |
-
----
-
 ## Crédits
 
-Projet basé sur [BlindTesTwitch](https://github.com/s-vivien/BlindTesTwitch) par **neumann__**.
-
----
+Inspiré de [BlindTesTwitch](https://github.com/s-vivien/BlindTesTwitch) par **neumann__**.
 
 ## Licence
 
 GPL-3.0
 
----
-
 ## Support
 
 - **Discord :** floxail
-- **GitHub Issues :** [Créer une issue](https://github.com/Floxail/TrivialPurTwitch/issues)
+- **Issues :** [github.com/Floxail/TrivialPurTwitch/issues](https://github.com/Floxail/TrivialPurTwitch/issues)

@@ -148,6 +148,12 @@ const QuestionManager = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 50;
 
+  // Recherche globale
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Tab actif (contrôlé)
+  const [activeTab, setActiveTab] = useState('boxes');
+
   // Édition boîte
   const [editingBoxName, setEditingBoxName] = useState<string | null>(null);
 
@@ -322,6 +328,13 @@ const QuestionManager = () => {
     return boxesWithStats;
   }, [boxesWithStats, filterBoxType, masterBoxNames]);
 
+  // Boîtes filtrées par recherche (sur la liste filtrée par type)
+  const searchFilteredBoxes = useMemo(() => {
+    if (!searchQuery.trim()) return filteredBoxesByType;
+    const q = searchQuery.toLowerCase();
+    return filteredBoxesByType.filter(b => b.name.toLowerCase().includes(q));
+  }, [filteredBoxesByType, searchQuery]);
+
   // La boîte sélectionnée est-elle ordonnée ?
   const selectedBoxIsOrdered = useMemo(() => {
     if (!selectedBox) return false;
@@ -340,6 +353,15 @@ const QuestionManager = () => {
 
     if (filterType !== 'all') {
       result = result.filter(q => (q.questionType || QuestionType.FREE_TEXT) === filterType);
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(question =>
+        question.question.toLowerCase().includes(q) ||
+        question.answer.toLowerCase().includes(q) ||
+        (question.boxName || '').toLowerCase().includes(q)
+      );
     }
 
     // Si la boîte est ordonnée, trier par createdAt / ID
@@ -367,7 +389,7 @@ const QuestionManager = () => {
   }, [storeQuestions, selectedBox, filterType, selectedBoxIsOrdered]);
 
   // Reset pagination quand les filtres changent
-  useEffect(() => { setCurrentPage(1); }, [selectedBox, filterType]);
+  useEffect(() => { setCurrentPage(1); }, [selectedBox, filterType, searchQuery]);
 
   // Questions paginées
   const totalPages = Math.ceil(filteredQuestions.length / PAGE_SIZE);
@@ -974,7 +996,32 @@ const QuestionManager = () => {
         </Alert>
       </div>
 
-      <Tabs defaultActiveKey="boxes" className="mb-3">
+      {/* Barre de recherche globale */}
+      <div className="mb-3 position-relative">
+        <FontAwesomeIcon
+          icon={['fas', 'search']}
+          style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#888', pointerEvents: 'none' }}
+        />
+        <Form.Control
+          type="text"
+          placeholder="Rechercher une boîte ou une question..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ paddingLeft: '36px' }}
+        />
+        {searchQuery && (
+          <Button
+            variant="link"
+            size="sm"
+            onClick={() => setSearchQuery('')}
+            style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', color: '#888', padding: 0 }}
+          >
+            <FontAwesomeIcon icon={['fas', 'times']} />
+          </Button>
+        )}
+      </div>
+
+      <Tabs activeKey={activeTab} onSelect={(k) => k && setActiveTab(k)} className="mb-3">
         <Tab eventKey="boxes" title="📦 Boîtes">
           <div className="mb-3 d-flex justify-content-end gap-2">
             <Form.Select
@@ -1001,11 +1048,12 @@ const QuestionManager = () => {
             </Form.Select>
           </div>
 
-          {filteredBoxesByType.length === 0 ? (
+          {searchFilteredBoxes.length === 0 ? (
             <div className="text-center p-5">
               <FontAwesomeIcon icon={['fas', 'box']} size="3x" color="var(--alt-text-color)" />
               <p className="mt-3 text-muted">
-                {filterBoxType === 'master' ? 'Aucune Master Box trouvée.' :
+                {searchQuery ? `Aucune boîte pour "${searchQuery}".` :
+                 filterBoxType === 'master' ? 'Aucune Master Box trouvée.' :
                  filterBoxType === 'sub' ? 'Aucune sous-boîte trouvée.' :
                  filterBoxType === 'unique' ? 'Aucune boîte indépendante trouvée.' :
                  'Aucune boîte. Créez votre première boîte et importez des questions.'}
@@ -1013,7 +1061,7 @@ const QuestionManager = () => {
             </div>
           ) : (
             <div className="row">
-              {(selectedBox ? filteredBoxesByType.filter(b => b.name === selectedBox) : filteredBoxesByType).map(box => {
+              {(selectedBox ? searchFilteredBoxes.filter(b => b.name === selectedBox) : searchFilteredBoxes).map(box => {
                 // Compter les types de questions
                 const boxQuestions = getBoxQuestions(box.name);
                 const qcmCount = boxQuestions.filter(q => q.questionType === QuestionType.QCM).length;
@@ -1029,7 +1077,13 @@ const QuestionManager = () => {
                           <FontAwesomeIcon icon={['fas', box.parentBox ? 'folder-open' : (isMasterBox ? 'layer-group' : 'box')]} className="me-2" />
                           {box.ordered && <span title="Mode ordonné" style={{ fontSize: '0.7em', marginRight: '4px' }}>↓</span>}
                           {box.hidden && <FontAwesomeIcon icon={['fas', 'eye-slash']} className="me-1" title="Masquée pour le public" style={{ fontSize: '0.7em', opacity: 0.6 }} />}
-                          {box.name}
+                          <span
+                            style={{ cursor: 'pointer', textDecoration: 'underline dotted', textUnderlineOffset: '3px' }}
+                            title="Voir les questions de cette boîte"
+                            onClick={() => { setSelectedBox(box.name); setActiveTab('questions'); }}
+                          >
+                            {box.name}
+                          </span>
                           {box.parentBox && (
                             <small className="text-muted ms-2" style={{ fontSize: '0.6em', fontWeight: 'normal' }}>
                               ↳ {box.parentBox}
