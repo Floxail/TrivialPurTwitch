@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 
+
 # testing
 /coverage
 
@@ -35,4 +36,9 @@ MIGRATION-VERCEL.md
 TrivialPurTwitch.code-workspace
 scripts/attribute-creators.ts
 scripts/fix-missing-boxes.ts
-scripts/remove-clean-bonus.sh
+scripts/remove-clean-bonus.sh.agents
+
+# AI / agent tooling
+.agents/
+graphify-out/
+skills-lock.json
