@@ -13,7 +13,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // ==================== POST /api/scores ====================
     // Enregistre les scores d'une session de quiz terminée
     if (req.method === 'POST') {
-      if (!(await requireAnyTwitchAuth(req))?.userId) {
+      const user = await requireAnyTwitchAuth(req);
+      if (!user?.userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
@@ -21,6 +22,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (!players || !Array.isArray(players) || players.length === 0) {
         return res.status(400).json({ error: 'players[] requis (tableau non vide)' });
+      }
+
+      // channelId doit correspondre à l'utilisateur authentifié — évite qu'un compte
+      // Twitch quelconque soumette des scores forgés sur le channel d'un autre streamer.
+      if (channelId && channelId !== user.userId) {
+        return res.status(403).json({ error: 'channelId ne correspond pas à l\'utilisateur authentifié' });
       }
 
       if (!sessionId) {

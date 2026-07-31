@@ -126,13 +126,14 @@ function checkMatch(answer: string, prop: string, propNoArticles: string, strict
     }
   }
 
-  // Pour les réponses plus longues
+  // Pour les réponses plus longues : réponse courte tapée, contenue dans la bonne
+  // réponse (ex: "de vinci" pour "leonard de vinci"). Le sens inverse (texte tapé
+  // contenant la bonne réponse) a été retiré : il validait n'importe quel texte
+  // contenant le mot-réponse, y compris la question elle-même retapée. Les variantes
+  // connues passent par ALT:, le reste par le score Sorensen-Dice ci-dessous.
   if (minLength >= 5) {
     const requiredLength = Math.ceil(answerNoArticles.length * 0.8);
     if (propNoArticles.length >= requiredLength && answerNoArticles.includes(propNoArticles)) {
-      return true;
-    }
-    if (answerNoArticles.length >= requiredLength && propNoArticles.includes(answerNoArticles)) {
       return true;
     }
   }

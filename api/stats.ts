@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { applyCors } from './_utils.js';
+import { applyCors, requireAnyTwitchAuth } from './_utils.js';
 import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -264,6 +264,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // ==================== POST /api/stats?action=record_questions ====================
     // Enregistre les stats de questions jouées (appelé en fin de quiz)
     if (req.method === 'POST' && action === 'record_questions') {
+      const user = await requireAnyTwitchAuth(req);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
       const { questions } = req.body;
       // questions: [{ questionId, correct: boolean, answerTimeMs: number }]
 
