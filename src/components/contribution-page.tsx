@@ -157,6 +157,16 @@ const ContributionPage: React.FC = () => {
   const [newBoxDescription, setNewBoxDescription] = useState('');
   const [newBoxParent, setNewBoxParent] = useState('');
 
+  // Une boîte sélectionnée peut sortir de la liste sans qu'on y touche : une
+  // sous-boîte créée ailleurs la transforme en boîte mère, ou une sync la
+  // supprime. Le select retombe alors sur « L'admin choisira » alors que l'état
+  // garde l'ancien nom, qui part quand même à la soumission. On purge.
+  useEffect(() => {
+    const valid = new Set(childlessBoxes.map(b => b.name));
+    if (boxName && !valid.has(boxName)) setBoxName('');
+    if (bulkBox && !valid.has(bulkBox)) setBulkBox('');
+  }, [childlessBoxes, boxName, bulkBox]);
+
   useEffect(() => {
     setSubtitle('Proposer des questions');
   }, [setSubtitle]);
@@ -188,6 +198,9 @@ const ContributionPage: React.FC = () => {
       return;
     }
     await addBox(name, newBoxOrdered || undefined, newBoxDescription.trim() || undefined, newBoxParent || undefined);
+    // On vient de la créer : on la sélectionne dans les deux onglets.
+    setBoxName(name);
+    setBulkBox(name);
     setNewBoxName('');
     setNewBoxOrdered(false);
     setNewBoxDescription('');

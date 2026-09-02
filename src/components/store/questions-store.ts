@@ -230,7 +230,7 @@ type QuestionsActions = {
   removeBox: (boxName: string) => Promise<void>;
   renameBox: (oldName: string, newName: string) => Promise<void>;
   updateBox: (boxName: string, updates: { newName?: string; ordered?: boolean; description?: string; hidden?: boolean; parentBox?: string | null }) => Promise<void>;
-  rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>) => TrivialBox[];
+  rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>, keepLocalBoxes?: boolean) => TrivialBox[];
 
   // Récupération des questions
   getQuestionsByBox: (boxName: string) => Question[];
@@ -391,9 +391,19 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
       // ========== GESTION DES BOÎTES ==========
 
-      rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>): TrivialBox[] => {
+      // keepLocalBoxes : on repart des boîtes déjà en mémoire au lieu de les
+      // redéduire des seules questions. Sans ça, une boîte vidée par un bulk
+      // move/delete et une master (0 question par nature) disparaîtraient, avec
+      // leurs métadonnées (parentBox, description, hidden, createdBy), jusqu'à
+      // la prochaine sync. syncFromDB passe false : la DB y fait autorité sur la
+      // liste des boîtes, y compris pour en supprimer une.
+      rebuildBoxes: (questions: Question[], dbOrderedMap?: Map<string, boolean>, keepLocalBoxes = true): TrivialBox[] => {
         const existingBoxes = get().boxes;
         const boxMap = new Map<string, Set<number>>();
+
+        if (keepLocalBoxes) {
+          existingBoxes.forEach((b) => boxMap.set(b.name, new Set()));
+        }
 
         questions.forEach((q) => {
           if (!boxMap.has(q.boxName)) {
@@ -406,13 +416,15 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
 
         const boxes: TrivialBox[] = [];
         boxMap.forEach((cardSet, boxName) => {
+          const existing = existingBoxes.find(b => b.name === boxName);
           const cardNumbers = Array.from(cardSet).sort((a, b) => a - b);
           const totalQuestions = questions.filter((q) => q.boxName === boxName).length;
           // Priorité : DB > état local (fallback si pas de sync)
           const ordered = dbOrderedMap?.has(boxName)
             ? dbOrderedMap.get(boxName)
-            : existingBoxes.find(b => b.name === boxName)?.ordered;
+            : existing?.ordered;
           boxes.push({
+            ...(keepLocalBoxes ? existing : undefined),
             name: boxName,
             cardNumbers,
             totalQuestions,
@@ -715,7 +727,7 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           // Sauvegarder les IDs BD actuels pour la prochaine sync
           const currentDBIds = dbData.questions.map((q: any) => q.id);
 
-          const enrichedBoxes: TrivialBox[] = get().rebuildBoxes(mergedQuestions, dbOrderedMap).map(box => ({
+          const enrichedBoxes: TrivialBox[] = get().rebuildBoxes(mergedQuestions, dbOrderedMap, false).map(box => ({
             ...box,
             createdBy: dbBoxMetaMap.get(box.name)?.createdBy ?? box.createdBy ?? null,
             description: dbBoxMetaMap.get(box.name)?.description ?? box.description ?? null,
@@ -818,7 +830,8 @@ export const useQuestionsStore = create<QuestionsData & QuestionsActions>()(
           // Restaurer les données du quiz
           if (backupData.quiz) {
             const questions = backupData.quiz.questions || [];
-            const boxes = get().rebuildBoxes(questions);
+            // Restauration = remplacement : on ne garde pas les boîtes locales.
+            const boxes = get().rebuildBoxes(questions, undefined, false);
 
             // Envoyer à l'API
             try {
