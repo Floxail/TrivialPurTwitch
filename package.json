@@ -42,6 +42,7 @@
     "start:https": "host=127.0.0.1 https=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:api": "node --test \"api/**/*.test.ts\"",
     "eject": "react-scripts eject",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build"

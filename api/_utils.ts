@@ -97,6 +97,101 @@ export async function requireAnyTwitchAuth(req: VercelRequest): Promise<{ userId
   }
 }
 
+// ==================== Validation des scores ====================
+
+/**
+ * Ligne de score normalisée, prête à insérer dans la table `scores`.
+ */
+export type NormalizedScorePlayer = {
+  tid: string;
+  nick: string;
+  score: number;
+  answers: number;
+  firsts: number;
+  combos: number;
+  fastest: number;
+};
+
+const MAX_PLAYERS_PER_SESSION = 1000;
+const MAX_NICK_LENGTH = 64;
+/** Plafond commun à score et aux stats : toutes ces colonnes sont sommées
+ *  dans le leaderboard global, donc toutes doivent être bornées. */
+const MAX_STAT_VALUE = 100_000;
+
+function normalizeStat(value: unknown, field: string): number | { error: string } {
+  if (value === undefined || value === null) return 0;
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return { error: `${field} doit être un nombre fini` };
+  }
+  if (value < 0) return { error: `${field} ne peut pas être négatif` };
+  if (value > MAX_STAT_VALUE) return { error: `${field} dépasse le plafond autorisé` };
+  return value;
+}
+
+/**
+ * Valide et normalise le tableau `players` reçu du client.
+ *
+ * Les nicks viennent du chat Twitch : le serveur ne peut pas les authentifier.
+ * Il peut en revanche borner ce qui finit dans les agrégats du leaderboard,
+ * pour qu'un compte authentifié ne puisse pas y injecter de valeurs absurdes.
+ */
+export function validateScorePlayers(
+  raw: unknown,
+): { error: string } | { players: NormalizedScorePlayer[] } {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return { error: 'players[] requis (tableau non vide)' };
+  }
+  if (raw.length > MAX_PLAYERS_PER_SESSION) {
+    return { error: `players[] limité à ${MAX_PLAYERS_PER_SESSION} entrées` };
+  }
+
+  const players: NormalizedScorePlayer[] = [];
+
+  for (const entry of raw) {
+    if (typeof entry !== 'object' || entry === null) {
+      return { error: 'chaque joueur doit être un objet' };
+    }
+
+    const { tid, nick, score, stats } = entry as Record<string, unknown>;
+
+    if (typeof nick !== 'string' || nick.trim().length === 0) {
+      return { error: 'nick requis (chaîne non vide)' };
+    }
+    if (nick.trim().length > MAX_NICK_LENGTH) {
+      return { error: `nick limité à ${MAX_NICK_LENGTH} caractères` };
+    }
+
+    const normalizedScore = normalizeStat(score, 'score');
+    if (typeof normalizedScore !== 'number') return normalizedScore;
+
+    const rawStats = (typeof stats === 'object' && stats !== null ? stats : {}) as Record<string, unknown>;
+
+    // fastestAnswer vaut Infinity tant qu'aucune réponse n'a été donnée.
+    const rawFastest = rawStats.fastestAnswer === Infinity ? 0 : rawStats.fastestAnswer;
+
+    const answers = normalizeStat(rawStats.answers, 'answers');
+    if (typeof answers !== 'number') return answers;
+    const firsts = normalizeStat(rawStats.firsts, 'firsts');
+    if (typeof firsts !== 'number') return firsts;
+    const combos = normalizeStat(rawStats.combos, 'combos');
+    if (typeof combos !== 'number') return combos;
+    const fastest = normalizeStat(rawFastest, 'fastestAnswer');
+    if (typeof fastest !== 'number') return fastest;
+
+    players.push({
+      tid: typeof tid === 'string' ? tid : '',
+      nick: nick.trim(),
+      score: normalizedScore,
+      answers,
+      firsts,
+      combos,
+      fastest,
+    });
+  }
+
+  return { players };
+}
+
 // ==================== Rate Limiting simple en mémoire ====================
 
 /**

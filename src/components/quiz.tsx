@@ -74,7 +74,6 @@ const Quiz = () => {
 	const getPlayersFromNick = usePlayerStore((state) => state.getPlayers);
 
 	const twitchNick = useAuthStore((state) => state.twitchNick);
-	const twitchUserId = useAuthStore((state) => state.twitchUserId);
 	const getTwitchToken = useAuthStore((state) => state.getTwitchOAuthToken);
 	// Toutes les boîtes visibles (non cachées) — source de vérité
 	const allVisibleBoxes = useMemo(() => allBoxes.filter(b => !b.hidden), [allBoxes]);
@@ -783,7 +782,7 @@ const Quiz = () => {
 		const currentQuiz = useGameStore.getState().activeQuiz;
 		const boxName = currentQuiz?.boxName;
 		if (currentQuiz) recordQuestionStats(currentQuiz);
-		usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName, twitchNick || undefined, twitchUserId || undefined);
+		usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName);
 
 		setPodiumDisplayed(true);
 		usePlayerStore.getState().clear();
@@ -815,7 +814,7 @@ const Quiz = () => {
 			// C'est fini — sync scores vers l'API avant de fermer
 			const boxName = currentQuiz.boxName;
 			recordQuestionStats(currentQuiz);
-			usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName, twitchNick || undefined, twitchUserId || undefined);
+			usePlayerStore.getState().syncScoresToAPI(sessionIdRef.current, boxName);
 
 			endQuiz();
 			setPodiumDisplayed(true);

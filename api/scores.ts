@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAnyTwitchAuth, applyCors } from './_utils.js';
+import { requireAnyTwitchAuth, applyCors, validateScorePlayers } from './_utils.js';
 import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -18,19 +18,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
-      const { players, sessionId, boxName, channelName, channelId } = req.body;
+      const { players, sessionId, boxName } = req.body;
 
-      if (!players || !Array.isArray(players) || players.length === 0) {
-        return res.status(400).json({ error: 'players[] requis (tableau non vide)' });
+      // Le channel est dérivé du token validé, jamais lu du body : un compte Twitch
+      // ne peut donc pas soumettre de scores sur le channel d'un autre streamer,
+      // ni contourner le contrôle en omettant simplement le champ.
+      const channelId = user.userId;
+      // `login` peut manquer selon le type de token Twitch — on garde le fallback null
+      // qui existait avant, sinon le bind libsql rejette la requête (500).
+      const channelName = user.login || null;
+
+      const validation = validateScorePlayers(players);
+      if ('error' in validation) {
+        return res.status(400).json({ error: validation.error });
       }
 
-      // channelId doit correspondre à l'utilisateur authentifié — évite qu'un compte
-      // Twitch quelconque soumette des scores forgés sur le channel d'un autre streamer.
-      if (channelId && channelId !== user.userId) {
-        return res.status(403).json({ error: 'channelId ne correspond pas à l\'utilisateur authentifié' });
-      }
-
-      if (!sessionId) {
+      if (!sessionId || typeof sessionId !== 'string') {
         return res.status(400).json({ error: 'sessionId requis' });
       }
 
@@ -40,23 +43,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const BATCH_SIZE = 100;
       let inserted = 0;
 
-      for (let i = 0; i < players.length; i += BATCH_SIZE) {
-        const batch = players.slice(i, i + BATCH_SIZE);
-        const statements = batch.map((p: any) => ({
+      for (let i = 0; i < validation.players.length; i += BATCH_SIZE) {
+        const batch = validation.players.slice(i, i + BATCH_SIZE);
+        const statements = batch.map((p) => ({
           sql: `INSERT INTO scores (twitch_id, nick, score, answers, firsts, combos, fastest, session_id, box_name, channel_name, channel_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           args: [
-            p.tid || '',
+            p.tid,
             p.nick,
-            p.score || 0,
-            p.stats?.answers || 0,
-            p.stats?.firsts || 0,
-            p.stats?.combos || 0,
-            p.stats?.fastestAnswer === Infinity ? 0 : (p.stats?.fastestAnswer || 0),
+            p.score,
+            p.answers,
+            p.firsts,
+            p.combos,
+            p.fastest,
             sessionId,
-            boxName || null,
-            channelName || null,
-            channelId || null,
+            typeof boxName === 'string' ? boxName : null,
+            channelName,
+            channelId,
           ],
         }));
 

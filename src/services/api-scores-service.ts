@@ -46,6 +46,9 @@ export type SessionSummary = {
 /**
  * Enregistre les scores d'une session de quiz terminée.
  * Appelé en fin de quiz avec tous les joueurs ayant participé.
+ *
+ * Le channel (id + nom) n'est pas envoyé : le serveur le dérive du token Twitch
+ * validé, pour qu'un compte ne puisse pas enregistrer sur le channel d'un autre.
  */
 export async function apiRecordScores(
   players: Array<{
@@ -55,14 +58,12 @@ export async function apiRecordScores(
     stats: { answers: number; firsts: number; combos: number; fastestAnswer: number };
   }>,
   sessionId: string,
-  boxName?: string,
-  channelName?: string,
-  channelId?: string
+  boxName?: string
 ): Promise<{ inserted: number }> {
   const res = await fetch('/api/scores', {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ players, sessionId, boxName, channelName, channelId }),
+    body: JSON.stringify({ players, sessionId, boxName }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
