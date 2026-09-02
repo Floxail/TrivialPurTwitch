@@ -192,6 +192,121 @@ export function validateScorePlayers(
   return { players };
 }
 
+// ==================== Identité joueur ====================
+
+/**
+ * Clé d'identité d'un joueur dans la table `scores`.
+ *
+ * `twitch_id` quand il est présent (fourni par le tag IRC `user-id`, donc
+ * autoritatif), sinon le nick normalisé en minuscules pour les lignes héritées
+ * écrites avant que l'id soit collecté.
+ *
+ * Grouper sur cette clé plutôt que sur `nick` évite qu'un même compte se
+ * dédouble entre deux casses ou qu'un renommage Twitch coupe l'historique en
+ * deux. Une ligne héritée n'est jamais fusionnée avec une ligne identifiée :
+ * rien ne prouve qu'elles appartiennent au même compte.
+ */
+export const PLAYER_KEY_EXPR = "COALESCE(NULLIF(twitch_id, ''), LOWER(nick))";
+
+/** CTE qui expose `player_key` sur chaque ligne de `scores`. */
+const KEYED_SCORES_CTE = `WITH keyed AS (
+    SELECT scores.rowid AS row_id, scores.*, ${PLAYER_KEY_EXPR} AS player_key FROM scores
+  )`;
+
+/**
+ * Nick à afficher pour un `player_key` : celui de la ligne la plus récente.
+ * Le départage par `rowid` est nécessaire car un batch de fin de quiz écrit
+ * toutes ses lignes avec le même `created_at`.
+ */
+const CURRENT_NICK_SUBQUERY = `(
+    SELECT k2.nick FROM keyed k2
+    WHERE k2.player_key = k.player_key
+    ORDER BY k2.created_at DESC, k2.row_id DESC
+    LIMIT 1
+  )`;
+
+const PLAYER_AGGREGATES = `SUM(score) as total_score,
+    SUM(answers) as total_answers,
+    SUM(firsts) as total_firsts,
+    SUM(combos) as total_combos,
+    MIN(CASE WHEN fastest > 0 THEN fastest ELSE NULL END) as best_fastest,
+    COUNT(DISTINCT session_id) as sessions`;
+
+/** Classement all-time. Paramètre : limite. */
+export const LEADERBOARD_SQL = `${KEYED_SCORES_CTE}
+  SELECT
+    k.player_key,
+    ${CURRENT_NICK_SUBQUERY} as nick,
+    MAX(k.twitch_id) as twitch_id,
+    ${PLAYER_AGGREGATES}
+  FROM keyed k
+  GROUP BY k.player_key
+  ORDER BY total_score DESC
+  LIMIT ?`;
+
+/** Résout un nick (insensible à la casse) vers son `player_key`. Paramètre : nick. */
+export const PLAYER_KEY_BY_NICK_SQL = `SELECT ${PLAYER_KEY_EXPR} AS player_key
+  FROM scores
+  WHERE LOWER(nick) = LOWER(?)
+  ORDER BY created_at DESC, rowid DESC
+  LIMIT 1`;
+
+/** Stats d'un joueur par boîte. Paramètre : player_key. */
+export const PLAYER_BY_BOX_SQL = `SELECT
+    box_name,
+    COUNT(*) as games,
+    SUM(score) as total_score,
+    SUM(answers) as total_answers,
+    AVG(score) as avg_score
+  FROM scores
+  WHERE ${PLAYER_KEY_EXPR} = ? AND box_name IS NOT NULL
+  GROUP BY box_name
+  ORDER BY total_score DESC`;
+
+/** Chaînes sur lesquelles un joueur a joué. Paramètre : player_key. */
+export const PLAYER_STREAMS_SQL = `SELECT
+    channel_name,
+    MAX(channel_id) as channel_id,
+    COUNT(DISTINCT session_id) as sessions,
+    SUM(score) as total_score,
+    MIN(created_at) as first_played,
+    MAX(created_at) as last_played
+  FROM scores
+  WHERE ${PLAYER_KEY_EXPR} = ? AND channel_name IS NOT NULL AND channel_name != ''
+  GROUP BY channel_name
+  ORDER BY sessions DESC`;
+
+/** Meilleure session d'un joueur. Paramètre : player_key. */
+export const PLAYER_BEST_SESSION_SQL = `SELECT
+    session_id, box_name, score, answers, firsts, combos, fastest, channel_name, created_at
+  FROM scores
+  WHERE ${PLAYER_KEY_EXPR} = ?
+  ORDER BY score DESC
+  LIMIT 1`;
+
+/** Historique des sessions d'un joueur. Paramètres : player_key, limite. */
+export const PLAYER_HISTORY_SQL = `SELECT
+    session_id, box_name, score, answers, firsts, combos, fastest, channel_name, created_at
+  FROM scores
+  WHERE ${PLAYER_KEY_EXPR} = ?
+  ORDER BY created_at DESC, rowid DESC
+  LIMIT ?`;
+
+/** Totaux d'un joueur. Paramètre : player_key. */
+export const PLAYER_TOTALS_SQL = `${KEYED_SCORES_CTE}
+  SELECT
+    k.player_key,
+    ${CURRENT_NICK_SUBQUERY} as nick,
+    MAX(k.twitch_id) as twitch_id,
+    ${PLAYER_AGGREGATES},
+    MAX(score) as best_score,
+    AVG(score) as avg_score,
+    MIN(created_at) as first_game,
+    MAX(created_at) as last_game
+  FROM keyed k
+  WHERE k.player_key = ?
+  GROUP BY k.player_key`;
+
 // ==================== Rate Limiting simple en mémoire ====================
 
 /**

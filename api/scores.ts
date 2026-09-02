@@ -1,5 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAnyTwitchAuth, applyCors, validateScorePlayers } from './_utils.js';
+import {
+  requireAnyTwitchAuth,
+  applyCors,
+  validateScorePlayers,
+  LEADERBOARD_SQL,
+  PLAYER_KEY_BY_NICK_SQL,
+  PLAYER_TOTALS_SQL,
+  PLAYER_HISTORY_SQL,
+} from './_utils.js';
 import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -77,22 +85,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // GET /api/scores?action=leaderboard → classement all-time
       if (action === 'leaderboard') {
-        const result = await getDb().execute({
-          sql: `SELECT
-                  nick,
-                  twitch_id,
-                  SUM(score) as total_score,
-                  SUM(answers) as total_answers,
-                  SUM(firsts) as total_firsts,
-                  SUM(combos) as total_combos,
-                  MIN(CASE WHEN fastest > 0 THEN fastest ELSE NULL END) as best_fastest,
-                  COUNT(DISTINCT session_id) as sessions
-                FROM scores
-                GROUP BY nick
-                ORDER BY total_score DESC
-                LIMIT ?`,
-          args: [limit],
-        });
+        const result = await getDb().execute({ sql: LEADERBOARD_SQL, args: [limit] });
 
         const leaderboard = result.rows.map((row) => ({
           nick: row.nick,
@@ -110,21 +103,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // GET /api/scores?action=player&nick=xxx → stats d'un joueur
       if (action === 'player' && nick) {
-        const result = await getDb().execute({
-          sql: `SELECT
-                  nick,
-                  twitch_id,
-                  SUM(score) as total_score,
-                  SUM(answers) as total_answers,
-                  SUM(firsts) as total_firsts,
-                  SUM(combos) as total_combos,
-                  MIN(CASE WHEN fastest > 0 THEN fastest ELSE NULL END) as best_fastest,
-                  COUNT(DISTINCT session_id) as sessions
-                FROM scores
-                WHERE nick = ?
-                GROUP BY nick`,
+        // Le nick de l'URL n'est qu'un point d'entrée : on le résout vers la clé
+        // d'identité du compte, pour que la casse et les renommages ne coupent
+        // pas l'historique en deux.
+        const keyLookup = await getDb().execute({
+          sql: PLAYER_KEY_BY_NICK_SQL,
           args: [nick as string],
         });
+        if (keyLookup.rows.length === 0) {
+          return res.status(404).json({ error: 'Joueur non trouvé' });
+        }
+        const playerKey = keyLookup.rows[0].player_key as string;
+
+        const result = await getDb().execute({ sql: PLAYER_TOTALS_SQL, args: [playerKey] });
 
         if (result.rows.length === 0) {
           return res.status(404).json({ error: 'Joueur non trouvé' });
@@ -144,12 +135,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         // Historique des sessions
         const history = await getDb().execute({
-          sql: `SELECT session_id, box_name, score, answers, firsts, combos, fastest, channel_name, created_at
-                FROM scores
-                WHERE nick = ?
-                ORDER BY created_at DESC
-                LIMIT ?`,
-          args: [nick as string, limit],
+          sql: PLAYER_HISTORY_SQL,
+          args: [playerKey, limit],
         });
 
         return res.json({

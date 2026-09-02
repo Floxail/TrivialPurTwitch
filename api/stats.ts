@@ -1,5 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { applyCors, requireAnyTwitchAuth } from './_utils.js';
+import {
+  applyCors,
+  requireAnyTwitchAuth,
+  PLAYER_KEY_EXPR,
+  PLAYER_KEY_BY_NICK_SQL,
+  PLAYER_TOTALS_SQL,
+  PLAYER_BY_BOX_SQL,
+  PLAYER_STREAMS_SQL,
+  PLAYER_BEST_SESSION_SQL,
+} from './_utils.js';
 import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -22,7 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           FROM scores
         `),
         // Total joueurs uniques
-        getDb().execute(`SELECT COUNT(DISTINCT nick) as total_players FROM scores`),
+        getDb().execute(`SELECT COUNT(DISTINCT ${PLAYER_KEY_EXPR}) as total_players FROM scores`),
         // Total questions en DB
         getDb().execute(`SELECT COUNT(*) as total_questions FROM questions`),
         // Chaînes qui ont lancé des quiz (avec channel_name)
@@ -31,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             channel_name,
             MAX(channel_id) as channel_id,
             COUNT(DISTINCT session_id) as quiz_count,
-            COUNT(DISTINCT nick) as player_count,
+            COUNT(DISTINCT ${PLAYER_KEY_EXPR}) as player_count,
             MIN(created_at) as first_quiz,
             MAX(created_at) as last_quiz
           FROM scores
@@ -119,72 +128,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const nick = req.query.nick as string;
       if (!nick) return res.status(400).json({ error: 'nick requis' });
 
-      // Recherche case-insensitive : trouver le nick exact en DB
-      const nickLookup = await getDb().execute({
-        sql: `SELECT nick FROM scores WHERE LOWER(nick) = LOWER(?) LIMIT 1`,
-        args: [nick],
-      });
-      const resolvedNick = nickLookup.rows.length > 0 ? nickLookup.rows[0].nick as string : nick;
+      // Le nick de l'URL n'est qu'un point d'entrée : on le résout vers la clé
+      // d'identité du compte (twitch_id, ou nick normalisé pour les lignes
+      // héritées), pour que la casse et les renommages ne coupent pas l'historique.
+      const keyLookup = await getDb().execute({ sql: PLAYER_KEY_BY_NICK_SQL, args: [nick] });
+      if (keyLookup.rows.length === 0) {
+        return res.status(404).json({ error: 'Joueur non trouvé' });
+      }
+      const playerKey = keyLookup.rows[0].player_key as string;
 
       const [statsResult, categoryResult, streamsResult, bestSessionResult, questionsSubmittedResult, questionsAddedResult, boxesCreatedResult] = await Promise.all([
         // Stats agrégées
-        getDb().execute({
-          sql: `SELECT
-                  nick,
-                  twitch_id,
-                  SUM(score) as total_score,
-                  SUM(answers) as total_answers,
-                  SUM(firsts) as total_firsts,
-                  SUM(combos) as total_combos,
-                  MIN(CASE WHEN fastest > 0 THEN fastest ELSE NULL END) as best_fastest,
-                  MAX(score) as best_score,
-                  AVG(score) as avg_score,
-                  COUNT(DISTINCT session_id) as sessions,
-                  MIN(created_at) as first_game,
-                  MAX(created_at) as last_game
-                FROM scores
-                WHERE nick = ?
-                GROUP BY nick`,
-          args: [resolvedNick],
-        }),
+        getDb().execute({ sql: PLAYER_TOTALS_SQL, args: [playerKey] }),
         // Stats par catégorie (via les sessions + box_name)
-        getDb().execute({
-          sql: `SELECT
-                  box_name,
-                  COUNT(*) as games,
-                  SUM(score) as total_score,
-                  SUM(answers) as total_answers,
-                  AVG(score) as avg_score
-                FROM scores
-                WHERE nick = ? AND box_name IS NOT NULL
-                GROUP BY box_name
-                ORDER BY total_score DESC`,
-          args: [resolvedNick],
-        }),
+        getDb().execute({ sql: PLAYER_BY_BOX_SQL, args: [playerKey] }),
         // Streams où le joueur a participé
-        getDb().execute({
-          sql: `SELECT
-                  channel_name,
-                  channel_id,
-                  COUNT(DISTINCT session_id) as sessions,
-                  SUM(score) as total_score,
-                  MIN(created_at) as first_played,
-                  MAX(created_at) as last_played
-                FROM scores
-                WHERE nick = ? AND channel_name IS NOT NULL AND channel_name != ''
-                GROUP BY channel_name
-                ORDER BY sessions DESC`,
-          args: [resolvedNick],
-        }),
+        getDb().execute({ sql: PLAYER_STREAMS_SQL, args: [playerKey] }),
         // Meilleure session
-        getDb().execute({
-          sql: `SELECT session_id, box_name, score, answers, firsts, combos, fastest, channel_name, created_at
-                FROM scores
-                WHERE nick = ?
-                ORDER BY score DESC
-                LIMIT 1`,
-          args: [resolvedNick],
-        }),
+        getDb().execute({ sql: PLAYER_BEST_SESSION_SQL, args: [playerKey] }),
         // Questions soumises (depuis pending_questions — approuvées)
         getDb().execute({
           sql: `SELECT COUNT(*) as count FROM pending_questions WHERE LOWER(submitted_by) = LOWER(?) AND status = 'approved'`,
