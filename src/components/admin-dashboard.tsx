@@ -10,6 +10,7 @@ import {
 } from 'services/api-admin-service';
 import { Question, useQuestionsStore } from './store/questions-store';
 import { useGlobalStore } from './store/global-store';
+import { DEFAULT_BOX_NAME } from '../helpers';
 import {
   apiGetReports,
   apiResolveReport,
@@ -92,17 +93,20 @@ const AdminDashboard = () => {
       await doApprove(q.id, q.boxName);
     } else {
       setApproveModal(q);
-      setApproveBox(boxes.length > 0 ? boxes[0].name : '');
+      // Pas de boîte proposée : on présélectionne le bac par défaut, jamais la
+      // première boîte de la liste (qui n'a rien à voir avec la question).
+      setApproveBox(DEFAULT_BOX_NAME);
     }
   };
 
-  const doApprove = async (id: string, boxName: string) => {
+  const doApprove = async (id: string, boxName?: string) => {
     setProcessingIds(prev => new Set(prev).add(id));
     try {
-      await apiApproveQuestion(id, boxName);
+      const result = await apiApproveQuestion(id, boxName);
       setPendingQuestions(prev => prev.filter(q => q.id !== id));
       useQuestionsStore.getState().syncFromDB(true).catch(() => {});
-      showSuccess(`Question approuvée → ${boxName}`);
+      // Le serveur renvoie la boîte réellement retenue — on affiche celle-là.
+      showSuccess(`Question approuvée → ${result.boxName}`);
     } catch (err: any) {
       setError(err.message || 'Erreur lors de l\'approbation');
     } finally {
@@ -156,10 +160,10 @@ const AdminDashboard = () => {
   // ==================== Tout approuver ====================
   const handleApproveAll = async () => {
     if (!window.confirm(`Approuver les ${pendingQuestions.length} questions en attente ?`)) return;
-    const defaultBox = boxes.length > 0 ? boxes[0].name : 'Propositions';
-
+    // On ne substitue rien ici : sans boîte, le serveur applique son bac par
+    // défaut. Inventer une valeur cliente était la cause du rangement erroné.
     for (const q of pendingQuestions) {
-      await doApprove(q.id, q.boxName || defaultBox);
+      await doApprove(q.id, q.boxName || undefined);
     }
   };
 
@@ -527,7 +531,8 @@ const AdminDashboard = () => {
             <Form.Group>
               <Form.Label>Boîte de destination</Form.Label>
               <Form.Select value={approveBox} onChange={(e) => setApproveBox(e.target.value)}>
-                {boxes.map(box => (
+                <option value={DEFAULT_BOX_NAME}>{DEFAULT_BOX_NAME}</option>
+                {boxes.filter(box => box.name !== DEFAULT_BOX_NAME).map(box => (
                   <option key={box.name} value={box.name}>{box.name}</option>
                 ))}
                 <option value="Propositions">Propositions (nouvelle)</option>

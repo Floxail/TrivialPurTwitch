@@ -1,3 +1,12 @@
+/**
+ * Bac des questions sans boîte assignée.
+ *
+ * Doit rester aligné avec DEFAULT_BOX_NAME dans api/_utils.ts : c'est le
+ * serveur qui tranche la boîte de destination, cette constante ne sert qu'à
+ * proposer le bon choix dans l'UI.
+ */
+export const DEFAULT_BOX_NAME = 'Sans boîte';
+
 export const getAppHomeURL = () => {
   return new URL(window.location.href).origin + process.env.PUBLIC_URL;
 };

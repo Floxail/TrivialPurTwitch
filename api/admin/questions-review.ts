@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAdminAuth, checkRateLimit, applyCors } from '../_utils.js';
+import { requireAdminAuth, checkRateLimit, applyCors, resolveTargetBox } from '../_utils.js';
 import { getDb } from '../_db.js';
 
 function rowToPendingQuestion(row: any) {
@@ -80,7 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       const q = pending.rows[0];
-      const targetBox = boxName || q.box_name || 'Propositions';
+      const targetBox = resolveTargetBox(boxName, q.box_name);
 
       // Insérer dans la table principale (avec created_at original pour préserver l'ordre de soumission)
       // + garantit que la row boxes existe pour la boîte cible (sinon édition de meta perdue)

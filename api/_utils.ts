@@ -192,6 +192,33 @@ export function validateScorePlayers(
   return { players };
 }
 
+// ==================== Boîte de destination ====================
+
+/**
+ * Bac des questions sans boîte assignée.
+ *
+ * Déjà le nom utilisé par l'ajout direct (contribution-page) et par l'import
+ * JSON. La modération doit atterrir au même endroit : sans ça, une question
+ * approuvée sans boîte choisie finit dans une boîte arbitraire.
+ */
+export const DEFAULT_BOX_NAME = 'Sans boîte';
+
+/**
+ * Décide dans quelle boîte atterrit une question approuvée.
+ *
+ * Priorité : le choix explicite du modérateur, puis la boîte proposée par le
+ * contributeur, puis le bac par défaut. C'est le seul endroit qui tranche —
+ * le client n'invente pas de valeur de repli.
+ */
+export function resolveTargetBox(requested: unknown, pendingBoxName: unknown): string {
+  const clean = (value: unknown): string | null => {
+    if (typeof value !== 'string') return null;
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : null;
+  };
+  return clean(requested) ?? clean(pendingBoxName) ?? DEFAULT_BOX_NAME;
+}
+
 // ==================== Identité joueur ====================
 
 /**
