@@ -78,19 +78,20 @@ const Quiz = () => {
 	// Boîtes de niveau racine (sans parent)
 	const topLevelBoxes = useMemo(() => allVisibleBoxes.filter(b => !b.parentBox), [allVisibleBoxes]);
 
-	// Nouvelle palette restreinte (variations de Bleu, Violet, Rose) pour les Master Boxes
+	// Palette Master : variations de bleu clair uniquement (DA Lumon atténuée,
+	// pas de néon saturé). Les boîtes simples restent en blanc terminal.
 	const MASTER_THEME_PALETTE = useMemo(() => [
-		{ color: '#b366ff', rgb: '179,102,255' },    // Violet Lumon
-		{ color: '#ff3366', rgb: '255,51,102' },     // Rose Néon
-		{ color: '#33ccff', rgb: '51,204,255' },     // Bleu Ciel
-		{ color: '#9d4edd', rgb: '157,78,221' },     // Deep Purple
-		{ color: '#ff66b2', rgb: '255,102,178' },    // Pink
-		{ color: '#4cc9f0', rgb: '76,201,240' },     // Bright Blue
-		{ color: '#7209b7', rgb: '114,9,183' },      // Indigo profond
+		{ color: '#8ecdf5', rgb: '142,205,245' },    // Bleu ciel clair
+		{ color: '#6fb8e8', rgb: '111,184,232' },    // Azur
+		{ color: '#a5dcf0', rgb: '165,220,240' },    // Glacier
+		{ color: '#5fa8d3', rgb: '95,168,211' },     // Bleu acier
+		{ color: '#9db8e8', rgb: '157,184,232' },    // Bleu ardoise clair
+		{ color: '#79c9e0', rgb: '121,201,224' },    // Bleu lagon
+		{ color: '#b8d4f0', rgb: '184,212,240' },    // Bleu pâle
 	], []);
 
-	// Couleur standard pour les boîtes indépendantes (Le vrai Cyan Lumon du site)
-	const DEFAULT_LUMON_THEME = { color: '#00e5ff', rgb: '0,229,255' };
+	// Couleur standard pour les boîtes indépendantes : blanc terminal
+	const DEFAULT_LUMON_THEME = { color: '#e6f1f5', rgb: '230,241,245' };
 
 	// Map : nom de boîte → couleur du thème
 	const boxThemeMap = useMemo(() => {
