@@ -44,7 +44,7 @@ export const TerminalTabs: React.FC<TerminalTabsProps> = ({
                 }
               `}
               style={{
-                textShadow: isActive ? '0 0 10px rgba(0, 240, 255, 0.3)' : undefined,
+                textShadow: isActive ? '0 0 6px rgba(0, 240, 255, 0.15)' : undefined,
               }}
             >
               {tab.icon && <span className="flex-shrink-0">{tab.icon}</span>}
@@ -64,7 +64,7 @@ export const TerminalTabs: React.FC<TerminalTabsProps> = ({
                 <motion.div
                   layoutId="activeTab"
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-lumon-cyan"
-                  style={{ boxShadow: '0 0 10px rgba(0, 240, 255, 0.5)' }}
+                  style={{ boxShadow: '0 0 6px rgba(0, 240, 255, 0.25)' }}
                 />
               )}
             </button>

@@ -115,7 +115,7 @@ const QuestionTimer = ({ boxName, timeLeft, questionTimeLimit, unlimitedTimer, c
 						lineHeight: 1,
 						color: timerColor,
 						transition: 'color 0.5s ease',
-						textShadow: `0 0 12px ${timerColor}, 0 0 24px ${timerColor}40`,
+						textShadow: `0 0 7px ${timerColor}80, 0 0 14px ${timerColor}20`,
 					}}>
 						{unlimitedTimer ? '∞' : timeLeft}
 					</div>

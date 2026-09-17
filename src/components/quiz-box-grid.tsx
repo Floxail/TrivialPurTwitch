@@ -9,17 +9,8 @@ type Props = {
 	setSelectedBoxNames: React.Dispatch<React.SetStateAction<null | string[]>>;
 };
 
-// Palette Master : violets / roses / magenta uniquement (pas de bleu, pour éviter
-// la confusion avec les boîtes indépendantes en cyan).
-const MASTER_THEME_PALETTE = [
-	{ color: '#b366ff', rgb: '179,102,255' },    // Violet Lumon
-	{ color: '#ff3366', rgb: '255,51,102' },     // Rose Néon
-	{ color: '#9d4edd', rgb: '157,78,221' },     // Deep Purple
-	{ color: '#ff66b2', rgb: '255,102,178' },    // Pink
-	{ color: '#7209b7', rgb: '114,9,183' },      // Indigo profond
-	{ color: '#e040fb', rgb: '224,64,251' },     // Magenta vif
-	{ color: '#c71585', rgb: '199,21,133' },     // Rose framboise
-];
+// Master Boxes : blanc terminal unique (les boîtes indépendantes restent en cyan).
+const MASTER_THEME = { color: '#e6f1f5', rgb: '230,241,245' };
 
 // Couleur standard pour les boîtes indépendantes (le vrai Cyan Lumon du site)
 const DEFAULT_LUMON_THEME = { color: '#00e5ff', rgb: '0,229,255' };
@@ -53,22 +44,19 @@ const QuizBoxGrid = ({ boxes, selectedBoxNames, setSelectedBoxNames }: Props) =>
 	// Map : nom de boîte → couleur du thème
 	const boxThemeMap = useMemo(() => {
 		const map = new Map<string, { color: string; rgb: string }>();
-		let masterIndex = 0; // compteur spécifique aux Master Boxes
 
 		topLevelBoxes.forEach((b) => {
 			const isMaster = masterSubBoxMap.has(b.name);
 
 			if (isMaster) {
-				// Master Box : couleur de la palette, puis incrément
-				const theme = MASTER_THEME_PALETTE[masterIndex % MASTER_THEME_PALETTE.length];
-				map.set(b.name, theme);
+				// Master Box : blanc terminal
+				map.set(b.name, MASTER_THEME);
 
 				// Ses sous-boîtes héritent de la même couleur
 				const subs = masterSubBoxMap.get(b.name);
 				if (subs) {
-					subs.forEach(sub => map.set(sub.name, theme));
+					subs.forEach(sub => map.set(sub.name, MASTER_THEME));
 				}
-				masterIndex++;
 			} else {
 				// Boîte classique sans sous-boîtes : Cyan Lumon par défaut
 				map.set(b.name, DEFAULT_LUMON_THEME);

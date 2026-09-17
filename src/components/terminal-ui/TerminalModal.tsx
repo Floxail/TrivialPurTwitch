@@ -82,9 +82,8 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({
             `}
             style={{
               boxShadow: `
-                0 0 30px rgba(0, 240, 255, 0.15),
-                0 0 60px rgba(0, 240, 255, 0.08),
-                inset 0 0 30px rgba(0, 240, 255, 0.02)
+                0 0 18px rgba(0, 240, 255, 0.075),
+                inset 0 0 18px rgba(0, 240, 255, 0.01)
               `,
             }}
             onClick={(e) => e.stopPropagation()}
