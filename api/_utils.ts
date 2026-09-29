@@ -29,59 +29,50 @@ export function applyCors(res: VercelResponse): void {
  *   // admin.userId et admin.login sont disponibles
  */
 export async function requireAdminAuth(req: VercelRequest): Promise<{ userId: string; login: string } | null> {
-  const authHeader = req.headers['authorization'];
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null;
-  }
-
-  const token = authHeader.substring(7);
-
   const adminIds = process.env.ADMIN_TWITCH_IDS;
   if (!adminIds) {
     console.error('ADMIN_TWITCH_IDS non configurée dans les variables d\'environnement');
     return null;
   }
 
-  try {
-    // Valider le token auprès de Twitch
-    const response = await fetch('https://id.twitch.tv/oauth2/validate', {
-      headers: { 'Authorization': `OAuth ${token}` },
-    });
+  const user = await requireAnyTwitchAuth(req);
+  if (!user) return null;
 
-    if (!response.ok) {
-      return null;
-    }
-
-    const data: any = await response.json();
-    const userId = data.user_id as string;
-    const login = data.login as string;
-
-    if (!userId) {
-      return null;
-    }
-
-    // Vérifier que l'ID est dans la liste des admins
-    const allowedIds = adminIds.split(',').map((id: string) => id.trim());
-    if (!allowedIds.includes(userId)) {
-      console.warn(`Tentative d'accès admin refusée pour user_id=${userId} (${login})`);
-      return null;
-    }
-
-    return { userId, login };
-  } catch (err) {
-    console.error('Erreur validation token Twitch:', err);
+  // Vérifier que l'ID est dans la liste des admins
+  const allowedIds = adminIds.split(',').map((id: string) => id.trim());
+  if (!allowedIds.includes(user.userId)) {
+    console.warn(`Tentative d'accès admin refusée pour user_id=${user.userId} (${user.login})`);
     return null;
   }
+
+  return user;
 }
 
 /**
- * Accepte n'importe quel token Twitch valide (pas forcément admin).
+ * Vérifie que la réponse de `/oauth2/validate` correspond à un token émis
+ * pour NOTRE app Twitch. Sans ce contrôle, un token obtenu par n'importe
+ * quelle autre app (bot, overlay…) qu'un admin a autorisée ouvrirait l'API.
+ */
+export function isTokenForApp(data: unknown, expectedClientId: string | undefined): data is { user_id: string; login: string } {
+  if (!expectedClientId) return false;
+  if (typeof data !== 'object' || data === null) return false;
+  const { client_id, user_id } = data as Record<string, unknown>;
+  return client_id === expectedClientId && typeof user_id === 'string' && user_id.length > 0;
+}
+
+/**
+ * Accepte n'importe quel token Twitch valide (pas forcément admin), émis pour cette app.
  * Utilisé pour les endpoints accessibles à tous les streamers connectés (ex: scores).
  */
 export async function requireAnyTwitchAuth(req: VercelRequest): Promise<{ userId: string; login: string } | null> {
   const authHeader = req.headers['authorization'];
   if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+
+  const clientId = process.env.TWITCH_CLIENT_ID || process.env.REACT_APP_TWITCH_CLIENT_ID;
+  if (!clientId) {
+    console.error('TWITCH_CLIENT_ID non configurée dans les variables d\'environnement');
+    return null;
+  }
 
   const token = authHeader.substring(7);
   try {
@@ -89,10 +80,11 @@ export async function requireAnyTwitchAuth(req: VercelRequest): Promise<{ userId
       headers: { 'Authorization': `OAuth ${token}` },
     });
     if (!response.ok) return null;
-    const data: any = await response.json();
-    if (!data.user_id) return null;
+    const data: unknown = await response.json();
+    if (!isTokenForApp(data, clientId)) return null;
     return { userId: data.user_id, login: data.login };
-  } catch {
+  } catch (err) {
+    console.error('Erreur validation token Twitch:', err);
     return null;
   }
 }
@@ -190,6 +182,128 @@ export function validateScorePlayers(
   }
 
   return { players };
+}
+
+// ==================== Bornes des entrées utilisateur ====================
+
+/** Longueurs max des champs texte écrits en base par des non-admins. */
+export const LIMITS = {
+  id: 200,
+  boxName: 100,
+  description: 500,
+  question: 1000,
+  answer: 300,
+  option: 300,
+  url: 2048,
+  alternativeAnswers: 30,
+  historyIds: 500, // = HISTORY_MAX de history.ts : au-delà, purgé de toute façon
+};
+
+/** Chaîne optionnelle bornée : absent/vide → null, sinon la chaîne, ou false si invalide. */
+export function optionalString(value: unknown, max: number): string | null | false {
+  if (value === undefined || value === null || value === '') return null;
+  if (typeof value !== 'string' || value.length > max) return false;
+  return value;
+}
+
+/** URL d'image : https uniquement (même règle que `img-src` de la CSP, sans data:). */
+export function optionalImageUrl(value: unknown): string | null | false {
+  const str = optionalString(value, LIMITS.url);
+  if (!str) return str;
+  try {
+    return new URL(str).protocol === 'https:' ? str : false;
+  } catch {
+    return false;
+  }
+}
+
+function isStringArray(value: unknown, maxItems: number, maxLength: number): value is string[] {
+  return Array.isArray(value)
+    && value.length <= maxItems
+    && value.every((v) => typeof v === 'string' && v.length <= maxLength);
+}
+
+export type NormalizedSubmission = {
+  question: string;
+  answer: string;
+  alternativeAnswers: string[] | null;
+  category: number;
+  boxName: string | null;
+  questionType: 'qcm' | 'free_text';
+  qcmOptions: string[] | null;
+  qcmCorrectIndex: number | null;
+  qcmCorrectIndexes: number[] | null;
+  imageUrl: string | null;
+  answerImageUrl: string | null;
+};
+
+/** Valide une question soumise par la communauté (`/api/submit-question`). */
+export function validateSubmission(body: unknown): { error: string } | { submission: NormalizedSubmission } {
+  if (typeof body !== 'object' || body === null) return { error: 'Corps de requête invalide' };
+  const b = body as Record<string, unknown>;
+
+  if (typeof b.question !== 'string' || !b.question.trim()) return { error: 'Le champ "question" est requis' };
+  if (b.question.length > LIMITS.question) return { error: `Question limitée à ${LIMITS.question} caractères` };
+  if (typeof b.answer !== 'string' || !b.answer.trim()) return { error: 'Le champ "answer" est requis' };
+  if (b.answer.length > LIMITS.answer) return { error: `Réponse limitée à ${LIMITS.answer} caractères` };
+
+  const questionType = b.questionType ?? 'free_text';
+  if (questionType !== 'qcm' && questionType !== 'free_text') return { error: 'questionType invalide' };
+
+  let alternativeAnswers: string[] | null = null;
+  if (b.alternativeAnswers !== undefined && b.alternativeAnswers !== null) {
+    if (!isStringArray(b.alternativeAnswers, LIMITS.alternativeAnswers, LIMITS.answer)) {
+      return { error: 'alternativeAnswers invalide' };
+    }
+    alternativeAnswers = b.alternativeAnswers;
+  }
+
+  const category = b.category ?? 0;
+  if (typeof category !== 'number' || !Number.isInteger(category) || category < 0 || category > 100) {
+    return { error: 'category invalide' };
+  }
+
+  const boxName = optionalString(b.boxName, LIMITS.boxName);
+  if (boxName === false) return { error: `Nom de boîte limité à ${LIMITS.boxName} caractères` };
+
+  const imageUrl = optionalImageUrl(b.imageUrl);
+  const answerImageUrl = optionalImageUrl(b.answerImageUrl);
+  if (imageUrl === false || answerImageUrl === false) return { error: 'URL d\'image invalide (https uniquement)' };
+
+  let qcmOptions: string[] | null = null;
+  let qcmCorrectIndex: number | null = null;
+  let qcmCorrectIndexes: number[] | null = null;
+  if (questionType === 'qcm') {
+    if (!isStringArray(b.qcmOptions, 6, LIMITS.option) || b.qcmOptions.length < 2) {
+      return { error: 'QCM : 2 à 6 options requises' };
+    }
+    qcmOptions = b.qcmOptions;
+    const inRange = (i: unknown): i is number => Number.isInteger(i) && (i as number) >= 0 && (i as number) < qcmOptions!.length;
+    if (!inRange(b.qcmCorrectIndex)) return { error: 'QCM : index de la bonne réponse invalide' };
+    qcmCorrectIndex = b.qcmCorrectIndex;
+    if (b.qcmCorrectIndexes !== undefined && b.qcmCorrectIndexes !== null) {
+      if (!Array.isArray(b.qcmCorrectIndexes) || b.qcmCorrectIndexes.length === 0 || !b.qcmCorrectIndexes.every(inRange)) {
+        return { error: 'QCM : index des bonnes réponses invalides' };
+      }
+      qcmCorrectIndexes = b.qcmCorrectIndexes;
+    }
+  }
+
+  return {
+    submission: {
+      question: b.question.trim(),
+      answer: b.answer.trim(),
+      alternativeAnswers,
+      category,
+      boxName,
+      questionType,
+      qcmOptions,
+      qcmCorrectIndex,
+      qcmCorrectIndexes,
+      imageUrl,
+      answerImageUrl,
+    },
+  };
 }
 
 // ==================== Boîte de destination ====================

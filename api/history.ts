@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAnyTwitchAuth, applyCors } from './_utils.js';
+import { requireAnyTwitchAuth, applyCors, LIMITS, optionalString } from './_utils.js';
 import { getDb, runMigrations } from './_db.js';
 
 const HISTORY_MAX = 500;
@@ -35,12 +35,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!Array.isArray(questionIds) || questionIds.length === 0) {
         return res.status(400).json({ error: 'questionIds requis (array)' });
       }
+      if (questionIds.length > LIMITS.historyIds
+        || !questionIds.every((qid: unknown) => typeof qid === 'string' && qid.length <= LIMITS.id)) {
+        return res.status(400).json({ error: `questionIds : ${LIMITS.historyIds} ids max, chaînes courtes` });
+      }
+      const box = optionalString(boxName, LIMITS.boxName);
+      if (box === false) return res.status(400).json({ error: 'boxName invalide' });
 
       const now = new Date().toISOString();
       const statements = questionIds.map((qid: string) => ({
         sql: `INSERT OR REPLACE INTO question_history (twitch_id, box_name, question_id, played_at)
               VALUES (?, ?, ?, ?)`,
-        args: [user.userId, boxName || null, qid, now],
+        args: [user.userId, box, qid, now],
       }));
 
       const purgeStatement = {
@@ -77,8 +83,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(405).json({ error: 'Method not allowed' });
-  } catch (err: any) {
+  } catch (err) {
     console.error('History error:', err);
-    return res.status(500).json({ error: err.message || 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }

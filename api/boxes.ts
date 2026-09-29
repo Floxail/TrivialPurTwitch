@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAdminAuth, requireAnyTwitchAuth, applyCors } from './_utils.js';
+import { requireAdminAuth, requireAnyTwitchAuth, applyCors, checkRateLimit, optionalString, LIMITS } from './_utils.js';
 import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -28,6 +28,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // ==================== POST (créer une boîte — tout utilisateur Twitch connecté) ====================
     if (req.method === 'POST') {
+      if (checkRateLimit(req, res, 10, 60_000)) return;
+
       const user = await requireAnyTwitchAuth(req);
       if (!user) {
         return res.status(401).json({ error: 'Unauthorized — connexion Twitch requise' });
@@ -38,10 +40,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!name || typeof name !== 'string' || name.trim().length === 0) {
         return res.status(400).json({ error: 'Le nom de la boîte est requis' });
       }
+      if (name.trim().length > LIMITS.boxName) {
+        return res.status(400).json({ error: `Nom de boîte limité à ${LIMITS.boxName} caractères` });
+      }
+      const desc = optionalString(description, LIMITS.description);
+      const parent = optionalString(parentBox, LIMITS.boxName);
+      if (desc === false || parent === false) {
+        return res.status(400).json({ error: 'description ou parentBox invalide' });
+      }
 
       await getDb().execute({
         sql: 'INSERT OR IGNORE INTO boxes (name, card_numbers, ordered, created_by, created_by_id, description, parent_box) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        args: [name.trim(), '[]', ordered ? 1 : 0, user.login, user.userId, description || null, parentBox || null],
+        args: [name.trim(), '[]', ordered ? 1 : 0, user.login, user.userId, desc, parent],
       });
 
       return res.status(201).json({ success: true, name: name.trim() });

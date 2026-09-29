@@ -106,8 +106,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             q.qcm_options ?? null,
             q.qcm_correct_index ?? null,
             q.qcm_correct_indexes ?? null,
-            q.imageUrl ?? null,
-            q.answerImageUrl ?? null,
+            q.image_url ?? null,
+            q.answer_image_url ?? null,
             q.submitted_by ?? null,
             q.submitted_by_id ?? null,
             q.created_at ?? null,
@@ -200,8 +200,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(405).json({ error: 'Method not allowed' });
-  } catch (err: any) {
+  } catch (err) {
     console.error('Admin questions-review error:', err);
-    return res.status(500).json({ error: err.message || 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }

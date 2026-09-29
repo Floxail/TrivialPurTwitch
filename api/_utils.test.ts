@@ -2,7 +2,7 @@
 // (Node 24 strippe les types nativement — aucune dépendance de test à installer)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { validateScorePlayers } from './_utils.ts';
+import { validateScorePlayers, isTokenForApp, validateSubmission } from './_utils.ts';
 
 const okPlayer = {
   tid: '123',
@@ -106,4 +106,61 @@ test('convertit fastestAnswer Infinity en 0', () => {
 test('trim le nick', () => {
   const [player] = expectPlayers([{ ...okPlayer, nick: '  viewer1  ' }]);
   assert.equal(player.nick, 'viewer1');
+});
+
+// ==================== isTokenForApp ====================
+
+test('isTokenForApp : accepte un token de notre app', () => {
+  assert.ok(isTokenForApp({ client_id: 'ours', user_id: '42', login: 'x' }, 'ours'));
+});
+
+test('isTokenForApp : rejette un token émis pour une autre app', () => {
+  assert.ok(!isTokenForApp({ client_id: 'other', user_id: '42', login: 'x' }, 'ours'));
+});
+
+test('isTokenForApp : fail-closed sans client id configuré', () => {
+  assert.ok(!isTokenForApp({ client_id: 'ours', user_id: '42' }, undefined));
+  assert.ok(!isTokenForApp({ client_id: undefined, user_id: '42' }, undefined));
+});
+
+test('isTokenForApp : rejette un token sans user_id (app token)', () => {
+  assert.ok(!isTokenForApp({ client_id: 'ours' }, 'ours'));
+});
+
+// ==================== validateSubmission ====================
+
+const okSubmission = { question: 'Capitale ?', answer: 'Paris' };
+
+test('validateSubmission : question texte libre minimale', () => {
+  const r = validateSubmission(okSubmission);
+  assert.ok('submission' in r);
+  assert.equal(r.submission.questionType, 'free_text');
+  assert.equal(r.submission.boxName, null);
+});
+
+test('validateSubmission : rejette les champs trop longs', () => {
+  assert.ok('error' in validateSubmission({ ...okSubmission, question: 'x'.repeat(1001) }));
+  assert.ok('error' in validateSubmission({ ...okSubmission, answer: 'x'.repeat(301) }));
+  assert.ok('error' in validateSubmission({ ...okSubmission, boxName: 'x'.repeat(101) }));
+  assert.ok('error' in validateSubmission({ ...okSubmission, alternativeAnswers: Array(31).fill('a') }));
+});
+
+test('validateSubmission : images https uniquement', () => {
+  assert.ok('submission' in validateSubmission({ ...okSubmission, imageUrl: 'https://i.imgur.com/a.png' }));
+  assert.ok('error' in validateSubmission({ ...okSubmission, imageUrl: 'javascript:alert(1)' }));
+  assert.ok('error' in validateSubmission({ ...okSubmission, answerImageUrl: 'http://x.fr/a.png' }));
+  assert.ok('error' in validateSubmission({ ...okSubmission, imageUrl: 'pas une url' }));
+});
+
+test('validateSubmission : QCM valide et index hors bornes', () => {
+  const qcm = { ...okSubmission, questionType: 'qcm', qcmOptions: ['Lyon', 'Paris'], qcmCorrectIndex: 1 };
+  assert.ok('submission' in validateSubmission(qcm));
+  assert.ok('submission' in validateSubmission({ ...qcm, qcmCorrectIndexes: [0, 1] }));
+  assert.ok('error' in validateSubmission({ ...qcm, qcmCorrectIndex: 2 }));
+  assert.ok('error' in validateSubmission({ ...qcm, qcmCorrectIndexes: [5] }));
+  assert.ok('error' in validateSubmission({ ...qcm, qcmOptions: ['seule'] }));
+});
+
+test('validateSubmission : questionType inconnu rejeté', () => {
+  assert.ok('error' in validateSubmission({ ...okSubmission, questionType: 'autre' }));
 });

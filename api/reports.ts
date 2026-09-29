@@ -1,11 +1,20 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAdminAuth, requireAnyTwitchAuth, checkRateLimit, applyCors } from './_utils.js';
+import { requireAdminAuth, requireAnyTwitchAuth, checkRateLimit, applyCors, LIMITS } from './_utils.js';
 import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   applyCors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
 
+  try {
+    return await handleReports(req, res);
+  } catch (err) {
+    console.error('Reports API error:', err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+async function handleReports(req: VercelRequest, res: VercelResponse) {
   await runMigrations();
   const database = getDb();
 
@@ -23,6 +32,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!questionId || !questionText || !reason) {
       return res.status(400).json({ error: 'questionId, questionText et reason sont requis' });
+    }
+    if (typeof questionId !== 'string' || questionId.length > LIMITS.id
+      || typeof questionText !== 'string' || questionText.length > LIMITS.question) {
+      return res.status(400).json({ error: 'questionId ou questionText invalide' });
     }
 
     const validReasons = [

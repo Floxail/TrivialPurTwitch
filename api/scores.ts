@@ -2,6 +2,9 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import {
   requireAnyTwitchAuth,
   applyCors,
+  checkRateLimit,
+  optionalString,
+  LIMITS,
   validateScorePlayers,
   LEADERBOARD_SQL,
   PLAYER_KEY_BY_NICK_SQL,
@@ -21,6 +24,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // ==================== POST /api/scores ====================
     // Enregistre les scores d'une session de quiz terminée
     if (req.method === 'POST') {
+      // Une fin de quiz = 1 POST. 10/min laisse de la marge sans permettre le spam du leaderboard.
+      if (checkRateLimit(req, res, 10, 60_000)) return;
+
       const user = await requireAnyTwitchAuth(req);
       if (!user?.userId) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -41,9 +47,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: validation.error });
       }
 
-      if (!sessionId || typeof sessionId !== 'string') {
+      if (!sessionId || typeof sessionId !== 'string' || sessionId.length > LIMITS.id) {
         return res.status(400).json({ error: 'sessionId requis' });
       }
+      const box = optionalString(boxName, LIMITS.boxName);
+      if (box === false) return res.status(400).json({ error: 'boxName invalide' });
 
       await runMigrations();
 
@@ -65,7 +73,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             p.combos,
             p.fastest,
             sessionId,
-            typeof boxName === 'string' ? boxName : null,
+            box,
             channelName,
             channelId,
           ],
@@ -190,8 +198,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(405).json({ error: 'Method not allowed' });
-  } catch (err: any) {
+  } catch (err) {
     console.error('Scores API error:', err);
-    return res.status(500).json({ error: err.message || 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }

@@ -266,8 +266,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(400).json({ error: 'action requise: global | player | record_questions' });
-  } catch (err: any) {
+  } catch (err) {
     console.error('Stats API error:', err);
-    return res.status(500).json({ error: err.message || 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }
