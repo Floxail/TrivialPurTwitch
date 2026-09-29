@@ -28,6 +28,8 @@ type GameActions = {
   startQuiz: (mode: QuizMode, boxName: string, questions: Question[]) => void;
   nextQuestion: () => boolean;
   endQuiz: () => void;
+  /** Abandonne le quiz sans le compter comme terminé (annulation pendant le décompte). */
+  cancelQuiz: () => void;
   recordAnswer: (questionIndex: number, playerNick: string) => void;
 
   // Getters
@@ -101,6 +103,10 @@ export const useGameStore = create<GameData & GameActions>()((set, get) => ({
     });
 
     console.log('✅ Quiz terminé');
+  },
+
+  cancelQuiz: () => {
+    set({ activeQuiz: null });
   },
 
   recordAnswer: (questionIndex: number, playerNick: string) => {

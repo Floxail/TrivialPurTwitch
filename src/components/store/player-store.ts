@@ -17,12 +17,15 @@ export class Answer {
   isFirst: boolean;
   isCombo: boolean;
   timer: number;
+  /** Points de base avant bonus (FIRST, seul, combo). */
+  basePoints: number;
 
-  constructor(nick: string, isFirst: boolean, isCombo: boolean, timer: number) {
+  constructor(nick: string, isFirst: boolean, isCombo: boolean, timer: number, basePoints: number = 1) {
     this.nick = nick;
     this.isFirst = isFirst;
     this.isCombo = isCombo;
     this.timer = timer;
+    this.basePoints = basePoints;
   }
 }
 
@@ -199,7 +202,7 @@ export const usePlayerStore = create<PlayersState & Actions>()(
           if (!player) continue;
 
           player.currentStreak = (player.currentStreak || 0) + 1;
-          let scoreToAdd = 1;
+          let scoreToAdd = answer.basePoints;
 
           if (answer.isFirst) {
             player.stats.firsts++;

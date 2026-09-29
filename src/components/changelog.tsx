@@ -5,6 +5,35 @@ const Changelog = ({ show, onClose }: any) => {
   return (
     <Modal scrollable={true} show={show} centered size="lg" dialogClassName="changelog-modal">
       <Modal.Body>
+        <h3><u>29/09/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Points réduits pour les réponses alternatives</h5>
+        <br />
+        <ul>
+          <li>Nouvelle option dans la configuration du quiz : <b>3 points pour la réponse principale, 1 point pour une réponse alternative (ALT)</b></li>
+          <li>Les bonus FIRST, Seul et Combo s'ajoutent toujours par-dessus</li>
+          <li>En QCM, toute bonne réponse compte comme réponse principale</li>
+          <li>Option valable pour la partie en cours uniquement (décochée à chaque lancement)</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Nouveau popup de lancement</h5>
+        <br />
+        <ul>
+          <li>Popup réorganisé en deux colonnes : <b>Partie</b> (questions, temps) et <b>Règles</b> (réponses, points)</li>
+          <li>Délai d'acceptation et clémence FIRST regroupés dans une section <b>Avancé</b> repliable</li>
+          <li>Les options sont des interrupteurs, avec leur explication au survol</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Décompte avant le quiz</h5>
+        <br />
+        <ul>
+          <li>Le quiz démarre <b>10 secondes</b> après la validation du popup : grand décompte sur l'écran du quiz, puis la question 1 apparaît directement</li>
+          <li>Le chat est prévenu du début du quiz dans 10 secondes</li>
+          <li>Bouton <b>Annuler</b> pendant le décompte</li>
+        </ul>
+        <br />
+        <hr />
+        <br />
         <h3><u>07/04/2026</u></h3>
         <br />
         <h5 className="h5-with-line">Couleurs dynamiques par boîte</h5>

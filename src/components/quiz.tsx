@@ -5,7 +5,7 @@ import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
 import { Answer, Player, usePlayerStore } from './store/player-store';
 import { TwitchMode, useSettingsStore } from './store/settings-store';
-import { QuestionType, useQuestionsStore, mergeServerHistory, countFreshInPool } from './store/questions-store';
+import { Question, QuestionType, useQuestionsStore, mergeServerHistory, countFreshInPool } from './store/questions-store';
 import { QuizMode, useGameStore } from './store/game-store';
 import Podium from './podium';
 import Leaderboard from './leaderboard';
@@ -18,6 +18,8 @@ import QuizConfigModal, { type QuizOverrides } from './quiz-config-modal';
 import QuizQuestionView, { QCM_LABELS } from './quiz-question-view';
 
 const SCORE_CMD_DELAY = 2000;
+/** Décompte entre la validation du popup et la première question. */
+const LAUNCH_COUNTDOWN_S = 10;
 
 const Quiz = () => {
 	const twitchClient = useRef<Client | null>(null);
@@ -51,6 +53,7 @@ const Quiz = () => {
 	const recordAnswer_game = useGameStore(s => s.recordAnswer);
 	const nextQuestion = useGameStore(s => s.nextQuestion);
 	const endQuiz = useGameStore(s => s.endQuiz);
+	const cancelQuiz = useGameStore(s => s.cancelQuiz);
 
 	const setSubtitle = useGlobalStore((state) => state.setSubtitle);
 
@@ -73,6 +76,7 @@ const Quiz = () => {
 	const [penalizeWrong, setPenalizeWrong] = useState(false);
 	const [unlimitedTimer, setUnlimitedTimer] = useState(false);
 	const [strictSpelling, setStrictSpelling] = useState(false);
+	const [altAnswerPoints, setAltAnswerPoints] = useState(false);
 	const questionTimeLimit = activeQuestionTimeLimit;
 	const [timeLeft, setTimeLeft] = useState(questionTimeLimit);
 	// Refs pour lecture dans onProposition (évite closure stale)
@@ -80,6 +84,7 @@ const Quiz = () => {
 	const penalizeWrongRef = useRef(false);
 	const unlimitedTimerRef = useRef(false);
 	const strictSpellingRef = useRef(false);
+	const altAnswerPointsRef = useRef(false);
 	const activeGracePeriodMsRef = useRef(gracePeriodMs_setting);
 	// Track des joueurs ayant déjà été pénalisés ce tour (une seule pénalité par question)
 	const penalizedRef = useRef<Set<string>>(new Set());
@@ -87,11 +92,11 @@ const Quiz = () => {
 	const pendingPenaltiesRef = useRef<{ nick: string; tid: string }[]>([]);
 	const [questionRevealed, setQuestionRevealed] = useState(false);
 	const [podiumDisplayed, setPodiumDisplayed] = useState(false);
-	const lastAnswerersRef = useRef<{ nick: string; isFirst: boolean; answeredAt: number }[]>([]);
+	const lastAnswerersRef = useRef<{ nick: string; isFirst: boolean; answeredAt: number; isAlternative?: boolean }[]>([]);
 
 	// Refs pour éviter les problèmes de closure dans onProposition
 	const questionRevealedRef = useRef(false);
-	const currentAnswerersRef = useRef<{ nick: string; isFirst: boolean; answeredAt: number }[]>([]);
+	const currentAnswerersRef = useRef<{ nick: string; isFirst: boolean; answeredAt: number; isAlternative?: boolean }[]>([]);
 	// Track des tentatives QCM (un viewer ne peut répondre qu'une seule fois en QCM)
 	const qcmAttemptsRef = useRef<Set<string>>(new Set());
 	// Track des mauvaises tentatives en mode libre (pour le bonus "sans essai raté")
@@ -107,6 +112,18 @@ const Quiz = () => {
 	const [modeError, setModeError] = useState<string>('');
 	const [freshStats, setFreshStats] = useState<{ fresh: number; seen: number } | null>(null);
 	const [historySyncing, setHistorySyncing] = useState(false);
+	// Décompte avant lancement : null = aucun lancement en attente
+	const [launchCountdown, setLaunchCountdown] = useState<number | null>(null);
+	const launchIntervalRef = useRef<ReturnType<typeof setInterval>>();
+	const pendingLaunchRef = useRef<(() => void) | null>(null);
+	const isLaunchCountingDown = launchCountdown !== null;
+	// Quitter la page pendant le décompte abandonne le lancement
+	useEffect(() => () => {
+		if (launchIntervalRef.current) {
+			clearInterval(launchIntervalRef.current);
+			useGameStore.getState().cancelQuiz();
+		}
+	}, []);
 	const lastHistorySyncRef = useRef<number>(0);
 
 	// Boîte ordonnée : une seule boîte sélectionnée avec ordered=true
@@ -124,6 +141,7 @@ const Quiz = () => {
 		penalizeWrong,
 		unlimitedTimer,
 		strictSpelling,
+		altAnswerPoints,
 	};
 
 	const handleOverrideChange = useCallback(<K extends keyof QuizOverrides>(key: K, value: QuizOverrides[K]) => {
@@ -135,6 +153,7 @@ const Quiz = () => {
 			case 'penalizeWrong': setPenalizeWrong(value as boolean); break;
 			case 'unlimitedTimer': setUnlimitedTimer(value as boolean); break;
 			case 'strictSpelling': setStrictSpelling(value as boolean); break;
+			case 'altAnswerPoints': setAltAnswerPoints(value as boolean); break;
 		}
 	}, []);
 
@@ -167,6 +186,7 @@ const Quiz = () => {
 	useEffect(() => { penalizeWrongRef.current = penalizeWrong; }, [penalizeWrong]);
 	useEffect(() => { unlimitedTimerRef.current = unlimitedTimer; }, [unlimitedTimer]);
 	useEffect(() => { strictSpellingRef.current = strictSpelling; }, [strictSpelling]);
+	useEffect(() => { altAnswerPointsRef.current = altAnswerPoints; }, [altAnswerPoints]);
 	useEffect(() => { activeGracePeriodMsRef.current = activeGracePeriodMs; }, [activeGracePeriodMs]);
 
 	// Réinitialiser les overrides à l'ouverture du popup (depuis les settings actuels)
@@ -178,6 +198,7 @@ const Quiz = () => {
 			setActiveGracePeriodMs(gracePeriodMs_setting);
 			setOnlyOneAnswer(false);
 			setPenalizeWrong(false);
+			setAltAnswerPoints(false);
 
 			// Sync historique depuis Turso (max une fois par minute)
 			if (Date.now() - lastHistorySyncRef.current > 60_000) {
@@ -229,8 +250,8 @@ const Quiz = () => {
 
 			setSubtitle(`Quiz - Question ${questionNum}/${totalQuestions}`);
 
-			// Démarrer le timer pour chaque question
-			startQuestionTimer();
+			// Démarrer le timer pour chaque question (pas pendant le décompte de lancement)
+			if (!isLaunchCountingDown) startQuestionTimer();
 		} else {
 			setSubtitle('En attente...');
 		}
@@ -239,7 +260,7 @@ const Quiz = () => {
 			stopTimerLoop();
 		};
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [activeQuiz?.currentQuestionIndex]);
+	}, [activeQuiz?.currentQuestionIndex, isLaunchCountingDown]);
 
 	const twitchDisconnection = () => {
 		console.log('Disconnecting from Twitch...');
@@ -360,7 +381,9 @@ const Quiz = () => {
 			const answers = finalAnswerers.map((answerer, index) => {
 				const isCombo = previousAnswerers.includes(answerer.nick);
 				const elapsed = answerer.answeredAt ? answerer.answeredAt - questionStartTime : 0;
-				return new Answer(answerer.nick, answerer.isFirst, isCombo, elapsed);
+				// Option "3/1" : base 3 pour la réponse principale, 1 pour une ALT (bonus inchangés)
+				const basePoints = altAnswerPointsRef.current ? (answerer.isAlternative ? 1 : 3) : 1;
+				return new Answer(answerer.nick, answerer.isFirst, isCombo, elapsed, basePoints);
 			});
 
 			// Enregistrer les points
@@ -455,6 +478,10 @@ const Quiz = () => {
 			if (nick.toLowerCase() !== twitchNick?.toLowerCase()) {
 				return;
 			}
+			// Un lancement est déjà en cours de décompte
+			if (isLaunchCountingDown) {
+				return;
+			}
 
 			const args = message.substring(5).trim().split(' ');
 
@@ -490,7 +517,8 @@ const Quiz = () => {
 		const currentActiveQuiz = activeQuiz_state;
 		const currentActiveQuestion = currentActiveQuiz?.questions[currentActiveQuiz.currentQuestionIndex];
 
-		if (currentActiveQuiz && currentActiveQuestion && !questionRevealedRef.current) {
+		// Pendant le décompte, la question 1 n'est pas encore affichée : on ignore le chat
+		if (currentActiveQuiz && currentActiveQuestion && !questionRevealedRef.current && !isLaunchCountingDown) {
 			// Vérifier si le joueur a déjà répondu correctement
 			if (currentAnswerersRef.current.find((a) => a.nick === nick)) {
 				return;
@@ -513,7 +541,7 @@ const Quiz = () => {
 				const now = Date.now();
 				const firstAnsweredAt = currentAnswerersRef.current.length > 0 ? currentAnswerersRef.current[0].answeredAt : null;
 				const isFirst = firstAnsweredAt === null || (now - firstAnsweredAt) <= activeGracePeriodMsRef.current;
-				const newAnswerer = { nick, isFirst, answeredAt: now };
+				const newAnswerer = { nick, isFirst, answeredAt: now, isAlternative: result.isAlternative };
 				currentAnswerersRef.current = [...currentAnswerersRef.current, newAnswerer];
 			} else if (penalizeWrongRef.current && !penalizedRef.current.has(nick)) {
 				// Pénalité différée : enregistrée maintenant, appliquée à la révélation
@@ -561,24 +589,11 @@ const Quiz = () => {
 			return;
 		}
 
-		// Persiste l'historique en Turso (fire-and-forget, pas bloquant)
-		const pickedIds = questions.map(q => q.id);
+		const quizQuestions = questions;
 		const historyBoxName = selectedBoxNames?.length === 1 ? selectedBoxNames[0] : undefined;
-		recordHistory(pickedIds, historyBoxName).catch(() => {});
 
 		// Sauvegarder le requester avant de fermer le modal
 		const requester = pendingQuizRequester;
-
-		// Générer un ID unique pour cette session de quiz
-		sessionIdRef.current = `quiz_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-
-		// Démarrer le quiz dans le store
-		startQuiz(QuizMode.QUIZ, displayBoxName, questions);
-
-		// Gérer les scores cumulatifs
-		if (!cumulativeScoresInQuizMode) {
-			usePlayerStore.getState().clear();
-		}
 
 		// Fermer le modal et réinitialiser
 		setShowModeSelector(false);
@@ -586,25 +601,67 @@ const Quiz = () => {
 		setQuizQuestionCount(10);
 		setModeError('');
 
-		// Envoyer le message de lancement et la première question dans le chat
-		if (twitchNick && questions) {
-			twitchClient.current?.say(twitchNick, `🎲 Quiz lancé pour ${requester} ! ${displayBoxName} - ${questions.length} questions`);
+		if (twitchNick) {
+			twitchClient.current?.say(twitchNick, `🎲 Quiz lancé pour ${requester} ! ${displayBoxName} - ${quizQuestions.length} questions. Début dans ${LAUNCH_COUNTDOWN_S} secondes !`);
+		}
 
-			// Envoyer la première question après 1 seconde
-			setTimeout(() => {
-				const currentActiveQuiz = useGameStore.getState().activeQuiz;
-				if (currentActiveQuiz && currentActiveQuiz.questions.length > 0) {
-					const firstQuestion = currentActiveQuiz.questions[0];
-					let questionMsg = `❓ Question 1/${currentActiveQuiz.questions.length} : ${firstQuestion.question}`;
+		// Générer un ID unique pour cette session de quiz
+		sessionIdRef.current = `quiz_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
-					// Ajouter les options QCM si applicable
-					if (firstQuestion.questionType === QuestionType.QCM && firstQuestion.qcmOptions) {
-						questionMsg += ` | ${firstQuestion.qcmOptions.map((opt, i) => `${QCM_LABELS[i]} - ${opt}`).join(' | ')}`;
-					}
+		// Le quiz s'affiche tout de suite ; la question 1 reste masquée derrière le
+		// décompte, et son timer ne démarre qu'à 0 (effet sur isLaunchCountingDown).
+		startQuiz(QuizMode.QUIZ, displayBoxName, quizQuestions);
 
-					twitchClient.current?.say(twitchNick, questionMsg);
-				}
-			}, 1000);
+		pendingLaunchRef.current = () => finishLaunch(quizQuestions, historyBoxName);
+		let remaining = LAUNCH_COUNTDOWN_S;
+		setLaunchCountdown(remaining);
+		launchIntervalRef.current = setInterval(() => {
+			remaining -= 1;
+			if (remaining > 0) {
+				setLaunchCountdown(remaining);
+				return;
+			}
+			const finish = pendingLaunchRef.current;
+			clearLaunchCountdown();
+			finish?.();
+		}, 1000);
+	};
+
+	const clearLaunchCountdown = () => {
+		clearInterval(launchIntervalRef.current);
+		launchIntervalRef.current = undefined;
+		pendingLaunchRef.current = null;
+		setLaunchCountdown(null);
+	};
+
+	const handleCancelLaunch = () => {
+		clearLaunchCountdown();
+		cancelQuiz();
+		if (twitchNick) twitchClient.current?.say(twitchNick, '❌ Quiz annulé');
+	};
+
+	// Fin du décompte : ce qui ne doit pas arriver si le lancement est annulé
+	const finishLaunch = (questions: Question[], historyBoxName: string | undefined) => {
+		// Persiste l'historique en Turso (fire-and-forget, pas bloquant).
+		// Seulement ici : un quiz annulé ne marque pas ses questions comme vues.
+		recordHistory(questions.map(q => q.id), historyBoxName).catch(() => {});
+
+		// Gérer les scores cumulatifs
+		if (!cumulativeScoresInQuizMode) {
+			usePlayerStore.getState().clear();
+		}
+
+		// Première question dans le chat, en même temps qu'à l'écran
+		if (twitchNick) {
+			const firstQuestion = questions[0];
+			let questionMsg = `❓ Question 1/${questions.length} : ${firstQuestion.question}`;
+
+			// Ajouter les options QCM si applicable
+			if (firstQuestion.questionType === QuestionType.QCM && firstQuestion.qcmOptions) {
+				questionMsg += ` | ${firstQuestion.qcmOptions.map((opt, i) => `${QCM_LABELS[i]} - ${opt}`).join(' | ')}`;
+			}
+
+			twitchClient.current?.say(twitchNick, questionMsg);
 		}
 	};
 
@@ -843,7 +900,17 @@ const Quiz = () => {
 								</div>
 							)}
 
-							{activeQuiz && currentQuestion && (
+							{activeQuiz && isLaunchCountingDown && (
+								<div className="quiz-launch-countdown" role="timer" aria-live="polite">
+									<div className="quiz-launch-countdown-box">{activeQuiz.boxName} · {activeQuiz.totalQuestions} questions</div>
+									<div className="quiz-launch-countdown-label">Le quiz commence dans</div>
+									<div className="quiz-launch-countdown-value" key={launchCountdown}>{launchCountdown}</div>
+									<button className="terminal-btn" onClick={handleCancelLaunch}>
+										Annuler
+									</button>
+								</div>
+							)}
+							{activeQuiz && currentQuestion && !isLaunchCountingDown && (
 								<div style={{ flex: 1 }}>
 									<QuestionTimer
 										boxName={currentQuestion.boxName}
@@ -873,7 +940,7 @@ const Quiz = () => {
 
 					<div className="col-md-4">
 						<div id="player" className="mb-2 player" style={{ display: 'flex' }}>
-							{activeQuiz && (
+							{activeQuiz && !isLaunchCountingDown && (
 								<>
 									<button
 										className="terminal-btn col-sm"

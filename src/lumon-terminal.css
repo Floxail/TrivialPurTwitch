@@ -817,3 +817,124 @@ a:hover {
   line-height: 1;
   display: inline-block;
 }
+
+/* ==================== Popup de configuration du quiz ==================== */
+.quiz-config-summary {
+  margin-bottom: 1rem;
+  color: var(--lumon-text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.quiz-config-summary strong,
+.quiz-config-summary span {
+  color: var(--lumon-cyan);
+}
+.quiz-config-panel {
+  height: 100%;
+  padding: 0.9rem 1rem;
+  background: rgba(var(--lumon-cyan-rgb), 0.03);
+  border: 1px solid rgba(var(--lumon-cyan-rgb), 0.15);
+}
+.quiz-config-panel-title {
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.4rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--lumon-text);
+  border-bottom: 1px solid rgba(var(--lumon-cyan-rgb), 0.15);
+}
+.quiz-config-group-label {
+  margin: 0.7rem 0 0.3rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lumon-text-dim);
+}
+.quiz-config-panel-title + .quiz-config-group-label {
+  margin-top: 0;
+}
+.quiz-config-range-label {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.quiz-config-range-label span {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  color: var(--lumon-text);
+}
+.quiz-config-toggle {
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+.quiz-config-note {
+  font-size: 0.85rem;
+  color: var(--lumon-cyan);
+}
+.quiz-config-advanced {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(var(--lumon-cyan-rgb), 0.1);
+}
+.quiz-config-advanced summary {
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--lumon-text);
+}
+.quiz-config-advanced summary span {
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--lumon-text-dim);
+}
+/* Décompte avant lancement du quiz */
+.quiz-launch-countdown {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  text-align: center;
+}
+.quiz-launch-countdown-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--lumon-text-dim);
+}
+.quiz-launch-countdown-box {
+  margin-bottom: 1.5rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+  color: var(--lumon-cyan);
+}
+.quiz-launch-countdown-value {
+  margin: 1rem 0 2rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9rem;
+  line-height: 1;
+  color: var(--lumon-cyan);
+  animation: quiz-launch-tick 1s ease-out;
+}
+@keyframes quiz-launch-tick {
+  from { opacity: 0.3; transform: scale(1.25); }
+  to { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quiz-launch-countdown-value { animation: none; }
+}
+
+.quiz-config-footnote {
+  display: block;
+  margin-top: 0.8rem;
+  color: var(--lumon-text-muted);
+}

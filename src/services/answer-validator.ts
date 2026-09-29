@@ -6,7 +6,8 @@ const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 export type ValidationResult =
   | { valid: false }
-  | { valid: true; isCorrect: boolean };
+  // isAlternative : la proposition a été acceptée via une réponse ALT, pas la réponse principale
+  | { valid: true; isCorrect: boolean; isAlternative?: boolean };
 
 /**
  * Vérifie si une proposition de réponse est correcte pour une question donnée.
@@ -87,7 +88,7 @@ function verifyFreeTextAnswer(message: string, question: Question, strict: boole
 
   for (const altAnswer of alternativeAnswers) {
     if (checkMatch(altAnswer, proposition, propositionNoArticles, strict)) {
-      return { valid: true, isCorrect: true };
+      return { valid: true, isCorrect: true, isAlternative: true };
     }
   }
 
