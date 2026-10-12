@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getAppHomeURL } from '../helpers';
 import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
@@ -67,6 +68,9 @@ const Login = () => {
         onClick={twitchLogin}
         icon={twitchIcon}
       />
+      <p className="legal-footer" style={{ textAlign: 'center', borderTop: 'none' }}>
+        <Link to="/cgu">Conditions d'utilisation</Link> · <Link to="/confidentialite">Politique de confidentialité</Link>
+      </p>
     </>
   );
 };

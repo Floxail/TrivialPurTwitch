@@ -1,4 +1,5 @@
 import { apiRecordScores } from 'services/api-scores-service';
+import { pointsForCorrectAnswer } from 'services/scoring';
 import { getUsers } from 'services/twitch-api';
 import { create } from 'zustand';
 
@@ -202,25 +203,16 @@ export const usePlayerStore = create<PlayersState & Actions>()(
           if (!player) continue;
 
           player.currentStreak = (player.currentStreak || 0) + 1;
-          let scoreToAdd = answer.basePoints;
 
-          if (answer.isFirst) {
-            player.stats.firsts++;
-            scoreToAdd += 2;
-          }
-
-          if (answers.length === 1) scoreToAdd += 1;
-
+          if (answer.isFirst) player.stats.firsts++;
           if (player.currentStreak > 1) {
             player.stats.combos++;
             player.stats.maxCombo = Math.max(player.stats.maxCombo || 0, player.currentStreak);
-            const comboBonus = Math.min(player.currentStreak - 1, 3);
-            scoreToAdd += comboBonus;
           }
 
           player.stats.answers++;
           player.stats.fastestAnswer = Math.min(player.stats.fastestAnswer, answer.timer);
-          player.score += scoreToAdd;
+          player.score += pointsForCorrectAnswer(answer.basePoints, answer.isFirst, answers.length === 1, player.currentStreak);
         }
 
         return { players: recomputeRanks(updated) };

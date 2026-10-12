@@ -45,7 +45,8 @@
     "test:api": "node --test \"api/**/*.test.ts\"",
     "eject": "react-scripts eject",
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "lint": "oxlint"
   },
   "eslintConfig": {
     "extends": [
@@ -65,10 +66,12 @@
     ]
   },
   "devDependencies": {
+    "@oxlint/plugins": "1.87.0",
     "@types/node": "^25.3.0",
     "@vercel/node": "^4.0.0",
     "dotenv": "^17.3.1",
     "gh-pages": "^6.3.0",
+    "oxlint": "1.87.0",
     "sass": "^1.58.3",
     "ts-node": "^10.9.2"
   }

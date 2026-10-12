@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { DEFAULT_FIRST_GRACE_MS } from '../../services/scoring';
 
 const themeNames = ['dark', 'light'];
 
@@ -37,7 +38,7 @@ const initialState: SettingsData & ExtraSettingsData = {
   acceptanceDelay: 5,
   questionTimeLimit: 30,
   scoreCommandMode: TwitchMode.Channel,
-  gracePeriodMs: 700,
+  gracePeriodMs: DEFAULT_FIRST_GRACE_MS,
   theme: 0,
 };
 

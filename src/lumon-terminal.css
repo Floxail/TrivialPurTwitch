@@ -938,3 +938,38 @@ a:hover {
   margin-top: 0.8rem;
   color: var(--lumon-text-muted);
 }
+
+/* ==================== Pages CGU / confidentialité ==================== */
+.legal-page {
+  max-width: 760px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  line-height: 1.6;
+  color: var(--lumon-text);
+}
+.legal-page h2 {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.1em;
+  color: var(--lumon-cyan);
+}
+.legal-page h3 {
+  margin-top: 1.8rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lumon-text);
+}
+.legal-page a {
+  color: var(--lumon-cyan);
+}
+.legal-updated,
+.legal-footer {
+  font-size: 0.85rem;
+  color: var(--lumon-text-dim);
+}
+.legal-footer {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(var(--lumon-cyan-rgb), 0.15);
+}

@@ -1,5 +1,5 @@
-import { cleanValueLight, removeArticles, sorensenDiceScore } from 'helpers';
-import { Question, QuestionType } from 'components/store/questions-store';
+import { cleanValueLight, removeArticles, sorensenDiceScore } from '../helpers';
+import { Question, QuestionType } from '../types/question';
 
 // Labels pour les options QCM
 const QCM_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];

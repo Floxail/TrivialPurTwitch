@@ -8,6 +8,7 @@ import { useGameStore } from 'components/store/game-store';
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Login from './components/login';
+import { isPublicPath, rememberReturnPath } from './helpers';
 import LoginCallback from './components/login-callback';
 import './icons';
 import Quiz from './components/quiz';
@@ -19,6 +20,8 @@ const Settings = lazy(() => import('./components/settings'));
 const QuestionManager = lazy(() => import('./components/question-manager-v2'));
 const QuestionManagerTerminal = lazy(() => import('./components/question-manager-terminal'));
 const AdminDashboard = lazy(() => import('./components/admin-dashboard'));
+const Terms = lazy(() => import('./components/legal').then(m => ({ default: m.Terms })));
+const Privacy = lazy(() => import('./components/legal').then(m => ({ default: m.Privacy })));
 const ContributionPage = lazy(() => import('./components/contribution-page'));
 const Convertisseur = lazy(() => import('./components/convertisseur'));
 const Stats = lazy(() => import('./components/stats'));
@@ -91,7 +94,11 @@ function App() {
 	}, []);
 
 	useEffect(() => {
+		// CGU et confidentialité : lisibles par tous, sans redirection
+		if (isPublicPath(location.pathname)) return;
 		if (!isLoggedIn()) {
+			// Page demandée (ex. lien /proposer du bot Discord) : rouverte après la connexion
+			rememberReturnPath(location.pathname + location.search);
 			setView(<Login />);
 	 		navigate('/');
 		} else if (!isInitialized()) {
@@ -203,6 +210,8 @@ function App() {
 						<Route path="/settings" element={<Settings />} />
 						<Route path="/stats" element={<Stats />} />
 						<Route path="/stats/:username" element={<Stats />} />
+						<Route path="/cgu" element={<Terms />} />
+						<Route path="/confidentialite" element={<Privacy />} />
 					</Routes>
 				</Suspense>
 			</div>

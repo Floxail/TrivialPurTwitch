@@ -19,6 +19,39 @@ export const getHashParam = (name: string) => {
   return getParam(name, window.location.hash);
 };
 
+/** Pages lisibles sans connexion : Discord exige que les CGU et la politique de confidentialité soient publiques. */
+const PUBLIC_PATHS = new Set(['/cgu', '/confidentialite']);
+
+export function isPublicPath(path: string): boolean {
+  return PUBLIC_PATHS.has(path);
+}
+
+const RETURN_PATH_KEY = 'login_return_path';
+
+/**
+ * Chemin interne vers lequel revenir après la connexion, ou null.
+ * Seuls les chemins du site sont acceptés : « //hôte », « /\hôte » ou une URL complète
+ * feraient sortir du site (redirection ouverte).
+ */
+export function safeReturnPath(path: string | null): string | null {
+  if (!path || !path.startsWith('/') || path.startsWith('//') || path.startsWith('/\\')) return null;
+  if (path === '/' || path.startsWith('/callback')) return null;
+  return path;
+}
+
+/** À appeler quand un visiteur non connecté est renvoyé vers la page de connexion. */
+export function rememberReturnPath(path: string): void {
+  const safe = safeReturnPath(path);
+  if (safe) sessionStorage.setItem(RETURN_PATH_KEY, safe);
+}
+
+/** Page à rouvrir après la connexion (une seule fois), « / » par défaut. */
+export function takeReturnPath(): string {
+  const path = safeReturnPath(sessionStorage.getItem(RETURN_PATH_KEY));
+  sessionStorage.removeItem(RETURN_PATH_KEY);
+  return path ?? '/';
+}
+
 const getParam = (name: string, value: string) => {
   name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
   var regex = new RegExp('[\\?&#]' + name + '=([^&#]*)'),

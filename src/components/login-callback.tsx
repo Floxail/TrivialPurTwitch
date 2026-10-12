@@ -1,4 +1,4 @@
-import { getHashParam, getQueryParam } from 'helpers';
+import { getHashParam, getQueryParam, takeReturnPath } from 'helpers';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from './store/auth-store';
@@ -37,6 +37,9 @@ const LoginCallback = () => {
         // Store token with obfuscation (handled by auth-store)
         // Twitch implicit flow tokens expire in ~4 hours
         setTwitchOAuthToken(accessToken, 4 * 60 * 60);
+        // Retour sur la page demandée avant la connexion (chemin interne validé)
+        navigate(takeReturnPath());
+        return;
       }
 
       navigate('/');

@@ -114,6 +114,11 @@ function parseBulkQuestions(text: string): { questions: ParsedBulkQuestion[]; er
 // ContributionPage - Accessible à TOUS les utilisateurs
 // ============================================================
 
+/** Onglet ouvert à l'arrivée : `?mode=bulk` (lien de la commande Discord /proposer) ouvre la soumission en masse. */
+export function tabFromSearch(search: string): 'single' | 'bulk' {
+  return new URLSearchParams(search).get('mode') === 'bulk' ? 'bulk' : 'single';
+}
+
 const ContributionPage: React.FC = () => {
   const setSubtitle = useGlobalStore((state) => state.setSubtitle);
   const isAdmin = useAuthStore((state) => state.isAdmin);
@@ -128,7 +133,7 @@ const ContributionPage: React.FC = () => {
     return boxes.filter(b => !parentsWithChildren.has(b.name));
   }, [boxes]);
 
-  const [tab, setTab] = useState<'single' | 'bulk'>('single');
+  const [tab, setTab] = useState<'single' | 'bulk'>(() => tabFromSearch(window.location.search));
 
   // Notifications
   const [success, setSuccess] = useState('');

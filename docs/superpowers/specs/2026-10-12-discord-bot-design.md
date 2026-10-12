@@ -1,7 +1,7 @@
 # Bot Discord TrivialPurTwitch — Design
 
 Date : 2026-10-12
-Statut : en revue
+Statut : implémenté (branche feat/discord-bot), révisé le 2026-10-13
 
 ## 1. Objectif
 
@@ -26,6 +26,7 @@ Rendre les quiz TrivialPurTwitch jouables directement dans Discord, via un bot a
 | `/stop` | `ManageGuild` | Arrête la partie du salon. Les scores déjà gagnés sont enregistrés. |
 | `/classement` | tous | Top 10 du serveur : points, bonnes réponses, nombre de FIRST. |
 | `/boites` | tous | Liste des boîtes visibles avec leur nombre de questions. |
+| `/proposer` | tous | Réponse privée : lien vers `https://trivial.floxail.fr/contribute?mode=bulk` (onglet de soumission en masse, connexion Twitch requise) et rappel du format `Q:` / `R:` / `ALT:`. |
 
 Restreindre une commande se fait nativement : chaque admin peut l'ouvrir à des rôles ou à tous via *Réglages du serveur → Intégrations*. Le bot n'a pas de système de configuration.
 
@@ -33,12 +34,13 @@ Les commandes sont globales. Un script les enregistre ; il accepte une option `-
 
 ## 4. Configuration d'une partie
 
-`/quiz` répond par un message **éphémère** (visible par le lanceur seul) :
+`/quiz` répond par un message **éphémère** (visible par le lanceur seul), en deux écrans. Révisé le 2026-10-13 après la recette : les pages étaient peu intuitives et les sous-boîtes manquaient.
 
-- **Menu multi-sélection** : boîtes visibles (`hidden = 0`) de premier niveau (`parent_box` nul). Libellé = nom de la boîte, description = « N questions », avec « (ordonnée) » si c'est le cas. Pour une boîte parente, N inclut ses sous-boîtes.
-- **Pagination** : 25 boîtes par page (limite Discord), boutons ◀ ▶. La sélection est conservée d'une page à l'autre.
-- **Résumé** sous le menu : boîtes sélectionnées et total de questions disponibles.
-- **Boutons** : « ▶ Lancer » (désactivé tant que rien n'est sélectionné) et « Annuler ».
+- **Écran 1, boîtes principales, sans pages** : les boîtes visibles de premier niveau sont réparties dans plusieurs menus multi-sélection affichés en même temps, découpés par ordre alphabétique en parts égales de 25 au plus (38 boîtes → 2 menus « Boîtes A → K », « Boîtes L → Z »). Description d'une option : « N questions · k sous-boîtes · ordonnée ». Boutons : « Lancer » (désactivé tant que rien n'est choisi), « Sous-boîtes… » (seulement si une boîte choisie en a), « Annuler ».
+- **Écran 2, sous-boîtes (facultatif)** : un menu par boîte choisie qui a des sous-boîtes, avec « Toute la boîte » (par défaut) et chaque sous-boîte avec son nombre de questions. Boutons : « Retour », « Lancer », « Annuler ».
+- **Limites Discord** (5 rangées par message, 25 options par menu) : 100 boîtes principales au plus sur l'écran 1, 4 boîtes à préciser au plus sur l'écran 2, 24 sous-boîtes par boîte. Au-delà de 100 boîtes principales, passer à une recherche par autocomplétion.
+- **Résumé** : boîtes choisies (avec le nombre de sous-boîtes retenues) et total de questions disponibles.
+- **Chargement** : le menu lit un résumé (métadonnées des boîtes et nombre de questions par boîte, ≈ 100 ms, cache 60 s). Les questions ne sont lues qu'au clic sur « Lancer », pour les boîtes et sous-boîtes retenues.
 - **Expiration** après 5 min sans lancement : le message est remplacé par « Configuration expirée ».
 
 **Tirage** (`quiz-picker`, §6) :
@@ -56,19 +58,19 @@ Les commandes sont globales. Un script les enregistre ; il accepte une option `-
 
 Une seule partie par salon à la fois. Si une partie tourne déjà, `/quiz` répond en privé « Un quiz est déjà en cours ici (/stop pour l'arrêter) ».
 
-1. **Annonce** (message public) : « 🎲 Quiz lancé par X · boîtes · N questions · début <t:T:R> ». Le décompte dure 10 s. L'horodatage relatif `<t:…:R>` est affiché et mis à jour par les clients Discord : le bot ne modifie pas son message chaque seconde.
+1. **Annonce** (message public) : « Quiz lancé par X · boîtes · N questions · début <t:T:R> ». Le décompte dure 10 s. L'horodatage relatif `<t:…:R>` est affiché et mis à jour par les clients Discord : le bot ne modifie pas son message chaque seconde.
 2. **Question** : un nouveau message avec un embed.
-   - Contenu : « ❓ Question i/N · boîte », l'énoncé, `imageUrl` en image si elle existe, « ⏱ fin <t:…:R> ».
+   - Contenu : « Question i/N · boîte », l'énoncé, `imageUrl` en image si elle existe, « Fin <t:…:R> ».
    - **QCM** : un bouton par option (A à F). Une seule tentative par joueur.
-   - **Texte libre** : un bouton « ✏️ Répondre » ouvre un modal avec un champ texte (300 caractères max). Plusieurs essais sont permis jusqu'à la bonne réponse.
-   - **Retour** toujours éphémère : « ✅ Bonne réponse ! » ou « ❌ Raté ». Après une bonne réponse, une nouvelle tentative reçoit « Tu as déjà trouvé ».
-   - **Compteur** « 👥 K joueurs ont trouvé » : modifié au plus une fois toutes les 3 s, et seulement s'il a changé.
+   - **Texte libre** : un bouton « Répondre » ouvre un modal avec un champ texte (300 caractères max). Plusieurs essais sont permis jusqu'à la bonne réponse.
+   - **Retour** toujours éphémère : « Bonne réponse ! » ou « Faux ». Après une bonne réponse, une nouvelle tentative reçoit « Tu as déjà trouvé ».
+   - **Compteur** « K joueurs ont trouvé » : modifié au plus une fois toutes les 3 s, et seulement s'il a changé.
 3. **Révélation** à la fin du temps, jamais avant.
    - Le message de la question est modifié : boutons désactivés, bonne réponse (et options correctes en QCM), `answerImageUrl` si elle existe.
    - Liste de ceux qui ont trouvé, avec les points gagnés et leurs bonus.
    - `allowedMentions: { parse: [] }` : aucun joueur n'est notifié.
 4. **Enchaînement** automatique vers la question suivante, 5 s après la révélation.
-5. **Fin** : message de podium (top 3 avec médailles, puis le reste de la partie). Les scores sont écrits dans `discord_scores` (§7).
+5. **Fin** : message de podium (top 3 mis en avant, puis le reste de la partie). Les scores sont écrits dans `discord_scores` (§7).
 
 **Points** : `scoring` partagé (§6). Base 1, FIRST +2, seul à trouver +1, combo de +1 à +3. Un joueur est FIRST s'il répond correctement au plus 700 ms après la première bonne réponse. Ce délai de clémence est le même que la valeur par défaut du site.
 
@@ -167,7 +169,6 @@ Pas de sharding : Discord ne l'impose qu'à partir de 2 500 serveurs.
 
 - Réglages persistants par serveur (temps et nombre de questions par défaut, salon dédié).
 - Options de partie du site : orthographe stricte, −1 par mauvaise réponse, 3 pts / 1 pt ALT, une seule réponse par personne.
-- Choix d'une sous-boîte seule dans le menu.
 - Classement global inter-serveurs.
 - Liaison de comptes Discord ↔ Twitch (`/link`).
 - Persistance des parties en cours et de l'historique anti-répétition (perdus au redémarrage du bot).

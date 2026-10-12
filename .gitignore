@@ -42,3 +42,7 @@ scripts/remove-clean-bonus.sh.agents
 .agents/
 graphify-out/
 skills-lock.json
+
+# Bot Discord
+bot/node_modules
+bot/.env
