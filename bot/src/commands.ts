@@ -7,7 +7,7 @@ export const PROPOSE_MESSAGE = [
   'Propose tes questions sur le site, elles seront relues avant d\'être ajoutées :',
   'https://trivial.floxail.fr/contribute?mode=bulk',
   '',
-  'Connexion avec ton compte Twitch requise. Format, une question par bloc :',
+  'Connexion avec ton compte Twitch, Discord ou Google requise. Format, une question par bloc :',
   '```',
   'Q: Qui a peint la Joconde ?',
   'R: Léonard de Vinci',

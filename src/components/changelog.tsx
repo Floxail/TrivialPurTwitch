@@ -5,6 +5,23 @@ const Changelog = ({ show, onClose }: any) => {
   return (
     <Modal scrollable={true} show={show} centered size="lg" dialogClassName="changelog-modal">
       <Modal.Body>
+        <h3><u>13/10/2026</u></h3>
+        <br />
+        <h5 className="h5-with-line">Connexion avec Discord ou Google</h5>
+        <br />
+        <ul>
+          <li>Connexion possible avec <b>Discord</b> ou <b>Google</b> pour proposer des questions, créer des boîtes et voir les stats</li>
+          <li>Twitch reste nécessaire pour animer un quiz</li>
+          <li>Paramètres : <b>Comptes liés</b> pour regrouper Twitch, Discord et Google sous une seule identité</li>
+          <li>Stats : bloc <b>Mes parties Discord</b> avec tes résultats du bot, tous serveurs confondus</li>
+        </ul>
+        <br />
+        <h5 className="h5-with-line">Session Twitch plus fiable</h5>
+        <br />
+        <ul>
+          <li>Le quiz ne se coupe plus du chat après quelques heures sur la page : le jeton est renouvelé automatiquement avant le lancement</li>
+        </ul>
+        <br />
         <h3><u>29/09/2026</u></h3>
         <br />
         <h5 className="h5-with-line">Points réduits pour les réponses alternatives</h5>

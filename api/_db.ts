@@ -1,4 +1,5 @@
 import { createClient, type Client } from '@libsql/client';
+import { ACCOUNT_LINKS_SQL } from './_accounts.js';
 
 let db: Client | undefined;
 
@@ -55,6 +56,7 @@ export async function runMigrations(): Promise<void> {
       )`,
       args: [],
     },
+    ...ACCOUNT_LINKS_SQL.map(sql => ({ sql, args: [] })),
   ], 'write');
 
   // ALTER TABLE en parallèle — idempotents, erreurs ignorées (colonne existe déjà)

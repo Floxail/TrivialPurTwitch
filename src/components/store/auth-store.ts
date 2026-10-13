@@ -103,7 +103,21 @@ export type AuthData = {
   twitchAvatar?: string,
   twitchUserId?: string,            // Twitch user ID (pour vérification admin)
   isAdmin?: boolean,                // true si l'utilisateur est dans ADMIN_TWITCH_IDS
+  account?: Account,                // identité serveur (Twitch ou session Discord/Google), jamais persistée
 }
+
+export type AccountProvider = 'twitch' | 'discord' | 'google';
+export type LinkedAccount = { providerId: string; provider: AccountProvider; name: string };
+/** Identité renvoyée par /api/auth/me (Twitch ou session Discord/Google). Jamais persistée : vient du serveur. */
+export type Account = {
+  userId: string;
+  login: string;
+  provider: AccountProvider;
+  providerId: string;
+  avatar: string | null;
+  isAdmin: boolean;
+  links: LinkedAccount[];
+};
 
 type Actions = {
   clear: () => void;
@@ -115,6 +129,9 @@ type Actions = {
   isLoggedIn: () => boolean;
   isTokenExpired: () => boolean;
   checkIsAdmin: () => Promise<void>;  // Vérifie le rôle admin via l'API
+  loadAccount: () => Promise<void>;
+  logout: () => Promise<void>;
+  hasTwitch: () => boolean;
 }
 
 export const useAuthStore = create<AuthData & Actions>()(
@@ -126,6 +143,7 @@ export const useAuthStore = create<AuthData & Actions>()(
           tokenExpiresAt: undefined,
           twitchUserId: undefined,
           isAdmin: undefined,
+          account: undefined,
         });
         // Explicitly clear localStorage
         localStorage.removeItem('auth_data');
@@ -175,6 +193,11 @@ export const useAuthStore = create<AuthData & Actions>()(
               setDefaultAuth(token);
               response.json().then(body => {
                 const userId = body['user_id'] as string;
+                // Durée de vie réelle donnée par Twitch (0 = pas d'expiration)
+                const expiresIn = Number(body['expires_in']);
+                if (Number.isFinite(expiresIn)) {
+                  set({ tokenExpiresAt: expiresIn > 0 ? Date.now() + expiresIn * 1000 : undefined });
+                }
                 getUsers([userId]).then(response => {
                   set(() => ({
                     twitchNick: body['login'],
@@ -213,16 +236,36 @@ export const useAuthStore = create<AuthData & Actions>()(
           // Erreur réseau : on ne change pas le statut
         }
       },
+      loadAccount: async () => {
+        const headers = new Headers();
+        const token = get().getTwitchOAuthToken();
+        if (token) headers.set('Authorization', `Bearer ${token}`);
+        try {
+          const res = await fetch('/api/auth/me', { headers });
+          // 401 = plus de session ; 429/5xx = incident passager, on garde l'état connu
+          if (res.ok) set({ account: await res.json() });
+          else if (res.status === 401) set({ account: undefined });
+        } catch {
+          // Erreur réseau : on garde l'état connu
+        }
+      },
+      logout: async () => {
+        // Cookie HttpOnly : seul le serveur peut l'effacer. On attend sa réponse, sinon un /me
+        // lancé juste après (changement de page) repartirait avec l'ancien cookie.
+        await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+        get().clear();
+      },
+      hasTwitch: (): boolean => get().twitchOauthToken !== undefined,
       isLoggedIn: (): boolean => {
         const current = get();
-        return current.twitchOauthToken !== undefined;
+        return current.twitchOauthToken !== undefined || current.account !== undefined;
       },
     }),
     {
       name: 'auth_data',
       partialize: (state) =>
         Object.fromEntries(
-          Object.entries(state).filter(([key]) => !['twitchNick'].includes(key)),
+          Object.entries(state).filter(([key]) => !['twitchNick', 'account'].includes(key)),
         ),
     },
   ),

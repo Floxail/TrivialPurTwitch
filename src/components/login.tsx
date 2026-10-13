@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getAppHomeURL } from '../helpers';
+import { startProviderLogin, startTwitchLogin } from '../helpers';
 import { useAuthStore } from './store/auth-store';
 import { useGlobalStore } from './store/global-store';
 
@@ -15,23 +15,13 @@ const Login = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const twitchLogin = async () => {
-    // Store state for CSRF protection
-    const state = crypto.randomUUID();
-    sessionStorage.setItem('oauth_state', state);
-
-    // Implicit Flow - supported by Twitch for client-side apps
-    // Note: Authorization Code Flow with PKCE requires a backend with client_secret
-    window.location.href = 'https://id.twitch.tv/oauth2/authorize' +
-      '?client_id=' + process.env.REACT_APP_TWITCH_CLIENT_ID +
-      '&redirect_uri=' + encodeURIComponent(getAppHomeURL() + '/callback') +
-      '&scope=chat:read+chat:edit+whispers:edit' +
-      '&force_verify=false' +
-      '&response_type=token' +  // Implicit Flow (client-side)
-      '&state=' + state;
-  };
+  const twitchLogin = async () => startTwitchLogin();
 
   const twitchIcon = <FontAwesomeIcon icon={['fab', 'twitch']} color="#6441A4" />;
+  const discordIcon = <FontAwesomeIcon icon={['fab', 'discord']} color="#5865F2" />;
+  const googleIcon = <FontAwesomeIcon icon={['fab', 'google']} color="#EA4335" />;
+  // Seules les valeurs connues sont affichées : le paramètre vient de l'URL
+  const failedProvider = ['discord', 'google'].find(p => p === new URLSearchParams(window.location.search).get('login_error'));
 
   type LoginButtonProps = {
     loggedIn: boolean;
@@ -60,14 +50,17 @@ const Login = () => {
     <>
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
         <h2 className="text-glow-cyan" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: '0.15em' }}>QUIZTWITCH</h2>
-        <p style={{ color: 'var(--lumon-text-dim)', fontFamily: "'Share Tech Mono', monospace", marginTop: '1rem' }}>Connectez-vous avec Twitch pour commencer</p>
+        <p style={{ color: 'var(--lumon-text-dim)', fontFamily: "'Share Tech Mono', monospace", marginTop: '1rem' }}>Connecte-toi pour commencer</p>
       </div>
-      <LoginButton
-        loggedIn={isLoggedIn()}
-        appName="Twitch"
-        onClick={twitchLogin}
-        icon={twitchIcon}
-      />
+      {failedProvider && (
+        <p className="text-glow-danger" style={{ textAlign: 'center' }}>Connexion {failedProvider} impossible. Réessaie.</p>
+      )}
+      <LoginButton loggedIn={isLoggedIn()} appName="Twitch" onClick={twitchLogin} icon={twitchIcon} />
+      <p style={{ textAlign: 'center', color: 'var(--lumon-text-dim)', fontSize: '0.8rem', margin: '0 0 1rem' }}>
+        Twitch est requis pour animer un quiz.
+      </p>
+      <LoginButton loggedIn={false} appName="Discord" onClick={async () => startProviderLogin('discord')} icon={discordIcon} />
+      <LoginButton loggedIn={false} appName="Google" onClick={async () => startProviderLogin('google')} icon={googleIcon} />
       <p className="legal-footer" style={{ textAlign: 'center', borderTop: 'none' }}>
         <Link to="/cgu">Conditions d'utilisation</Link> · <Link to="/confidentialite">Politique de confidentialité</Link>
       </p>

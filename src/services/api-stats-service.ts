@@ -1,3 +1,5 @@
+import { useAuthStore } from 'components/store/auth-store';
+
 // ==================== Types ====================
 
 export type GlobalStats = {
@@ -96,5 +98,17 @@ export async function apiGetPlayerFullStats(nick: string): Promise<PlayerFullSta
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || `Erreur ${res.status}`);
   }
+  return res.json();
+}
+
+export type DiscordTotals = { score: number; games: number; answers: number; firsts: number; bestCombo: number; fastest: number | null };
+
+/** Totaux du bot Discord du compte connecté (ou de son Discord lié), tous serveurs confondus. */
+export async function apiGetMyDiscordStats(): Promise<DiscordTotals> {
+  const headers = new Headers();
+  const token = useAuthStore.getState().getTwitchOAuthToken();
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+  const res = await fetch('/api/stats?action=my_discord', { headers });
+  if (!res.ok) throw new Error(`Erreur ${res.status}`);
   return res.json();
 }

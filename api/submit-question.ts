@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { checkRateLimit, applyCors, requireAnyTwitchAuth, validateSubmission } from './_utils.js';
+import { checkRateLimit, applyCors, validateSubmission } from './_utils.js';
+import { requireUser } from './_auth.js';
 import { getDb, runMigrations } from './_db.js';
 
 
@@ -20,13 +21,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // L'utilisateur doit être connecté via Twitch
-  const user = await requireAnyTwitchAuth(req);
-  if (!user) {
-    return res.status(401).json({ error: 'Token Twitch invalide ou expiré' });
-  }
-
   try {
+    // Twitch, Discord ou Google (lit account_links, donc dans le try)
+    const user = await requireUser(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Connexion requise' });
+    }
+
     const validation = validateSubmission(req.body);
     if ('error' in validation) {
       return res.status(400).json({ error: validation.error });

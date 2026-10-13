@@ -11,11 +11,13 @@ import { useSettingsStore } from './store/settings-store';
 const GlobalMenu = () => {
   const navigate = useNavigate();
   const twitchAvatar = useAuthStore((state) => state.twitchAvatar);
+  const accountAvatar = useAuthStore((state) => state.account?.avatar);
+  const avatar = twitchAvatar ?? accountAvatar ?? '/favicon.png';
   const isAdmin = useAuthStore((state) => state.isAdmin);
 
 
   const resetSettings = useSettingsStore(s => s.reset);
-  const clearAuth = useAuthStore(s => s.clear);
+  const logout = useAuthStore(s => s.logout);
   const clearPlayers = usePlayerStore((state) => state.clear);
 
   const [helpDisplayed, setHelpDisplayed] = useState(false);
@@ -33,9 +35,9 @@ const GlobalMenu = () => {
     setChangelogDisplayed(true);
   };
 
-  const onLogoutClick = () => {
+  const onLogoutClick = async () => {
     clearPlayers();
-    clearAuth();
+    await logout();
     resetSettings();
     navigate('/');
   };
@@ -47,7 +49,7 @@ const GlobalMenu = () => {
         onClick(e);
       }} style={{ fontSize: 'large', backgroundColor: 'var(--lumon-surface, #111820)', border: '1px solid rgba(0, 112, 128, 0.3)', borderRadius: '0', display: 'inline-flex', alignItems: 'center', cursor: 'pointer', padding: '2px' }}>
         <FontAwesomeIcon icon={['fas', 'bars']} style={{ margin: '0 0.5rem 0 0.75rem', verticalAlign: 'middle', color: 'var(--lumon-cyan)' }} />
-        <img src={twitchAvatar} style={{ height: '35px', width: '35px', borderRadius: '0', objectFit: 'cover', border: '1px solid rgba(0, 240, 255, 0.2)' }} alt="Avatar" />
+        <img src={avatar} style={{ height: '35px', width: '35px', borderRadius: '0', objectFit: 'cover', border: '1px solid rgba(0, 240, 255, 0.2)' }} alt="Avatar" />
       </div>
     ),
   );

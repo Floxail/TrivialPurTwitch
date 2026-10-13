@@ -64,7 +64,7 @@ export function isTokenForApp(data: unknown, expectedClientId: string | undefine
  * Accepte n'importe quel token Twitch valide (pas forcément admin), émis pour cette app.
  * Utilisé pour les endpoints accessibles à tous les streamers connectés (ex: scores).
  */
-export async function requireAnyTwitchAuth(req: VercelRequest): Promise<{ userId: string; login: string } | null> {
+export async function requireAnyTwitchAuth(req: Pick<VercelRequest, 'headers'>): Promise<{ userId: string; login: string } | null> {
   const authHeader = req.headers['authorization'];
   if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
 
@@ -432,6 +432,15 @@ export const PLAYER_HISTORY_SQL = `SELECT
   WHERE ${PLAYER_KEY_EXPR} = ?
   ORDER BY created_at DESC, rowid DESC
   LIMIT ?`;
+
+/**
+ * Propositions approuvées d'un joueur : par identifiant (un pseudo Discord ou Google
+ * identique au pseudo Twitch ne fusionne pas les compteurs), et par pseudo pour les
+ * anciennes lignes sans identifiant. Args : [playerKey, nick].
+ */
+export const APPROVED_SUBMISSIONS_SQL = `SELECT COUNT(*) AS count FROM pending_questions
+  WHERE status = 'approved'
+    AND (submitted_by_id = ? OR (submitted_by_id IS NULL AND LOWER(submitted_by) = LOWER(?)))`;
 
 /** Totaux d'un joueur. Paramètre : player_key. */
 export const PLAYER_TOTALS_SQL = `${KEYED_SCORES_CTE}

@@ -16,6 +16,7 @@ import QuestionTimer, { TIMER_CIRCUMFERENCE } from './quiz-question-timer';
 import QuizBoxGrid from './quiz-box-grid';
 import QuizConfigModal, { type QuizOverrides } from './quiz-config-modal';
 import QuizQuestionView, { QCM_LABELS } from './quiz-question-view';
+import { startTwitchLogin, tokenNeedsRefresh } from 'helpers';
 
 const SCORE_CMD_DELAY = 2000;
 /** Décompte entre la validation du popup et la première question. */
@@ -554,8 +555,20 @@ const Quiz = () => {
 
 	twitchCallbackRef.current = onProposition;
 
+	/**
+	 * Jeton absent ou proche de l'expiration : aller-retour Twitch (sans clic si l'app
+	 * est déjà autorisée) avant de lancer, sinon le chat décroche en plein quiz.
+	 */
+	const twitchSessionIsFresh = () => {
+		const auth = useAuthStore.getState();
+		if (auth.getTwitchOAuthToken() && !tokenNeedsRefresh(auth.tokenExpiresAt, Date.now())) return true;
+		startTwitchLogin(window.location.pathname);
+		return false;
+	};
+
 	// Lancer le quiz
 	const handleStartQuiz = () => {
+		if (!twitchSessionIsFresh()) return;
 		let questions: ReturnType<typeof generateRandomQuiz>;
 		let displayBoxName: string;
 
@@ -802,6 +815,7 @@ const Quiz = () => {
 											className="terminal-btn"
 											style={{ fontSize: '0.9rem', padding: '0.7rem 1.5rem' }}
 											onClick={() => {
+												if (!twitchSessionIsFresh()) return;
 												setPendingQuizRequester(twitchNick || 'Streamer');
 												setShowModeSelector(true);
 											}}

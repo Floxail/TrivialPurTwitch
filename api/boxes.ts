@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAdminAuth, requireAnyTwitchAuth, applyCors, checkRateLimit, optionalString, LIMITS } from './_utils.js';
+import { requireAdminAuth, applyCors, checkRateLimit, optionalString, LIMITS } from './_utils.js';
+import { requireUser } from './_auth.js';
 import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -26,13 +27,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ boxes });
     }
 
-    // ==================== POST (créer une boîte — tout utilisateur Twitch connecté) ====================
+    // ==================== POST (créer une boîte — tout utilisateur connecté) ====================
     if (req.method === 'POST') {
       if (checkRateLimit(req, res, 10, 60_000)) return;
 
-      const user = await requireAnyTwitchAuth(req);
+      const user = await requireUser(req);
       if (!user) {
-        return res.status(401).json({ error: 'Unauthorized — connexion Twitch requise' });
+        return res.status(401).json({ error: 'Connexion requise' });
       }
 
       const { name, ordered, description, parentBox } = req.body;

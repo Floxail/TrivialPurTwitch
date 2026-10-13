@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAdminAuth, requireAnyTwitchAuth, checkRateLimit, applyCors, LIMITS } from './_utils.js';
+import { requireAdminAuth, checkRateLimit, applyCors, LIMITS } from './_utils.js';
+import { requireUser } from './_auth.js';
 import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -22,9 +23,9 @@ async function handleReports(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'POST') {
     if (checkRateLimit(req, res, 5, 60_000)) return;
 
-    const user = await requireAnyTwitchAuth(req);
+    const user = await requireUser(req);
     if (!user) {
-      return res.status(401).json({ error: 'Token Twitch invalide' });
+      return res.status(401).json({ error: 'Connexion requise' });
     }
 
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});

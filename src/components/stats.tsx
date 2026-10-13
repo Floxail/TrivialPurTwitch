@@ -6,6 +6,8 @@ import { useAuthStore } from './store/auth-store';
 import {
   apiGetGlobalStats,
   apiGetPlayerFullStats,
+  apiGetMyDiscordStats,
+  type DiscordTotals,
   type GlobalStats,
   type PlayerFullStats,
 } from '../services/api-stats-service';
@@ -344,6 +346,20 @@ const Stats = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const account = useAuthStore((state) => state.account);
+  const loadAccount = useAuthStore((state) => state.loadAccount);
+  const [discordTotals, setDiscordTotals] = useState<DiscordTotals | null>(null);
+  const hasDiscord = account?.provider === 'discord' || (account?.links ?? []).some(l => l.provider === 'discord');
+
+  // Un streamer Twitch n'a pas forcément chargé son compte (liaisons) : on le demande ici
+  useEffect(() => {
+    if (!account) loadAccount();
+  }, [account, loadAccount]);
+
+  useEffect(() => {
+    if (hasDiscord) apiGetMyDiscordStats().then(setDiscordTotals).catch(() => setDiscordTotals(null));
+  }, [hasDiscord]);
+
   useEffect(() => {
     setSubtitle('Statistiques');
   }, [setSubtitle]);
@@ -409,6 +425,19 @@ const Stats = () => {
           <FontAwesomeIcon icon={['fas', 'arrow-left']} className="me-1" /> Retour
         </button>
       </div>
+
+      {discordTotals && (
+        <div className="terminal-panel" style={{ marginBottom: '1rem', padding: '1rem' }}>
+          <h6 style={{ color: '#5865F2', fontFamily: "'Orbitron', sans-serif", fontSize: '0.8rem', marginBottom: '0.75rem' }}>
+            MES PARTIES DISCORD
+          </h6>
+          <p style={{ margin: 0 }}>
+            {discordTotals.score} points · {discordTotals.games} parties · {discordTotals.answers} bonnes réponses ·{' '}
+            {discordTotals.firsts} FIRST · meilleur combo {discordTotals.bestCombo}
+            {discordTotals.fastest !== null && <> · plus rapide {(discordTotals.fastest / 1000).toFixed(2)} s</>}
+          </p>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="d-flex gap-2 mb-3 flex-wrap align-items-center">

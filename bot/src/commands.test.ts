@@ -12,4 +12,5 @@ test('/proposer renvoie vers l\'onglet de soumission en masse du site', () => {
   assert.match(PROPOSE_MESSAGE, /https:\/\/trivial\.floxail\.fr\/contribute\?mode=bulk/);
   assert.match(PROPOSE_MESSAGE, /Q:/);
   assert.match(PROPOSE_MESSAGE, /Twitch/);
+  assert.match(PROPOSE_MESSAGE, /Twitch, Discord ou Google/);
 });

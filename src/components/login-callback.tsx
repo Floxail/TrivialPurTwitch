@@ -35,8 +35,9 @@ const LoginCallback = () => {
 
       if (accessToken) {
         // Store token with obfuscation (handled by auth-store)
-        // Twitch implicit flow tokens expire in ~4 hours
+        // Estimation prudente, remplacée aussitôt par la durée réelle renvoyée par /validate
         setTwitchOAuthToken(accessToken, 4 * 60 * 60);
+        useAuthStore.getState().validateTwitchOAuthToken();
         // Retour sur la page demandée avant la connexion (chemin interne validé)
         navigate(takeReturnPath());
         return;

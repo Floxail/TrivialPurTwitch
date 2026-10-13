@@ -8,7 +8,10 @@ import {
   PLAYER_BY_BOX_SQL,
   PLAYER_STREAMS_SQL,
   PLAYER_BEST_SESSION_SQL,
+  APPROVED_SUBMISSIONS_SQL,
 } from './_utils.js';
+import { requireUser } from './_auth.js';
+import { discordIdInGroup, discordTotals } from './_accounts.js';
 import { getDb, runMigrations } from './_db.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -147,10 +150,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // Meilleure session
         getDb().execute({ sql: PLAYER_BEST_SESSION_SQL, args: [playerKey] }),
         // Questions soumises (depuis pending_questions — approuvées)
-        getDb().execute({
-          sql: `SELECT COUNT(*) as count FROM pending_questions WHERE LOWER(submitted_by) = LOWER(?) AND status = 'approved'`,
-          args: [nick],
-        }),
+        getDb().execute({ sql: APPROVED_SUBMISSIONS_SQL, args: [playerKey, nick] }),
         // Questions ajoutées directement (admin)
         getDb().execute({
           sql: `SELECT box_name, COUNT(*) as count FROM questions WHERE LOWER(created_by) = LOWER(?) GROUP BY box_name ORDER BY count DESC`,
@@ -220,6 +220,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           lastPlayed: r.last_played,
         })),
       });
+    }
+
+    // ==================== GET /api/stats?action=my_discord ====================
+    // Totaux du bot Discord, tous serveurs confondus, visibles par le seul titulaire.
+    if (req.method === 'GET' && action === 'my_discord') {
+      const user = await requireUser(req);
+      if (!user) return res.status(401).json({ error: 'Connexion requise' });
+      const discordId = await discordIdInGroup(getDb(), user.userId, user.providerId);
+      if (!discordId) return res.status(403).json({ error: 'Aucun compte Discord lié' });
+      return res.status(200).json(await discordTotals(getDb(), discordId));
     }
 
     // ==================== POST /api/stats?action=record_questions ====================

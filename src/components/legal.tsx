@@ -35,15 +35,16 @@ export const Terms = () => (
 
     <h3>Comptes</h3>
     <p>
-      La connexion au site se fait avec un compte Twitch ; le bot utilise ton compte Discord. Les conditions de Twitch et de
-      Discord s'appliquent en plus des présentes.
+      La connexion au site se fait avec un compte Twitch, Discord ou Google (Twitch est nécessaire pour animer un quiz) ;
+      le bot utilise ton compte Discord. Tu peux lier ces comptes entre eux dans les paramètres. Les conditions de Twitch,
+      Discord et Google s'appliquent en plus des présentes.
     </p>
 
     <h3>Propositions de questions</h3>
     <ul>
       <li>Les questions proposées sont relues avant publication et peuvent être refusées, modifiées ou retirées.</li>
       <li>Interdits : contenus illégaux, haineux, discriminatoires, sexuels explicites, harcèlement, données personnelles d'autrui, contenus dont tu n'as pas les droits.</li>
-      <li>En proposant une question, tu autorises son utilisation gratuite sur le site et le bot. Ton pseudo Twitch peut être affiché comme auteur.</li>
+      <li>En proposant une question, tu autorises son utilisation gratuite sur le site et le bot. Ton pseudo (Twitch, Discord ou Google) peut être affiché comme auteur.</li>
     </ul>
 
     <h3>Bonne conduite</h3>
@@ -76,14 +77,23 @@ export const Privacy = () => (
     <ul>
       <li>Aucune vente ni location de données, aucune publicité, aucun profilage.</li>
       <li>Le bot Discord ne lit pas les messages des salons : il n'utilise que les commandes, boutons et fenêtres de réponse.</li>
-      <li>Le site ne stocke pas ton token Twitch sur ses serveurs.</li>
+      <li>Le site ne stocke pas ton token Twitch ni tes jetons Discord ou Google sur ses serveurs.</li>
     </ul>
 
     <h3>Données traitées</h3>
     <ul>
       <li>
-        <strong>Connexion au site (Twitch)</strong> : pseudo, identifiant et avatar Twitch. Le token de connexion reste dans ton
-        navigateur (stockage local) et expire au bout de 4 heures ; nos serveurs ne font que le vérifier auprès de Twitch.
+        <strong>Connexion au site avec Twitch</strong> : pseudo, identifiant et avatar Twitch. Le token de connexion reste dans ton
+        navigateur (stockage local) jusqu'à son expiration fixée par Twitch ; nos serveurs ne font que le vérifier auprès de Twitch.
+      </li>
+      <li>
+        <strong>Connexion au site avec Discord ou Google</strong> : identifiant, pseudo (ou nom) et avatar du compte. Aucune
+        adresse e-mail n'est demandée. Un cookie de session strictement nécessaire (30 jours, inaccessible aux scripts) garde
+        la connexion ouverte ; il est effacé à la déconnexion.
+      </li>
+      <li>
+        <strong>Comptes liés</strong> : si tu lies tes comptes, leur correspondance est enregistrée pour regrouper tes propositions
+        et statistiques sous une seule identité. Tu peux les délier à tout moment dans les paramètres.
       </li>
       <li>
         <strong>Parties sur Twitch</strong> : pendant un quiz, le navigateur du streamer lit le chat de sa chaîne. Les pseudos et
@@ -91,8 +101,8 @@ export const Privacy = () => (
         classements et statistiques.
       </li>
       <li>
-        <strong>Propositions et signalements</strong> : contenu proposé ou signalé, avec le pseudo et l'identifiant Twitch de
-        son auteur. Pour les streamers, la liste des questions déjà jouées (500 au plus) est conservée pour éviter les répétitions.
+        <strong>Propositions et signalements</strong> : contenu proposé ou signalé, avec le pseudo et l'identifiant du compte
+        de son auteur. Pour les streamers, la liste des questions déjà jouées (500 au plus) est conservée pour éviter les répétitions.
       </li>
       <li>
         <strong>Bot Discord</strong> : identifiant et pseudo Discord des joueurs, identifiants du serveur et du salon, scores
@@ -126,7 +136,7 @@ export const Privacy = () => (
     <p>
       Hébergement du site et de son API : Vercel Inc. (États-Unis). Base de données : Turso (ChiselStrike Inc.). Le bot Discord
       tourne sur un serveur géré par l'éditeur. Les transferts hors de l'Union européenne s'appuient sur les garanties prévues
-      par ces prestataires (clauses contractuelles types ou Data Privacy Framework). Twitch et Discord traitent aussi tes
+      par ces prestataires (clauses contractuelles types ou Data Privacy Framework). Twitch, Discord et Google traitent aussi tes
       données selon leurs propres politiques.
     </p>
 

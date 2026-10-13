@@ -12,6 +12,7 @@ import { isPublicPath, rememberReturnPath } from './helpers';
 import LoginCallback from './components/login-callback';
 import './icons';
 import Quiz from './components/quiz';
+import TwitchRequired from './components/twitch-required';
 import Welcome, { shouldShowWelcome } from './components/welcome';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -39,6 +40,9 @@ function App() {
 	const isInitialized = useSettingsStore(s => s.isInitialized);
 	const isLoggedIn = useAuthStore(s => s.isLoggedIn);
 	const isAdmin = useAuthStore(s => s.isAdmin);
+	const account = useAuthStore(s => s.account);
+	const hasTwitch = useAuthStore(s => s.twitchOauthToken !== undefined);
+	const loadAccount = useAuthStore(s => s.loadAccount);
 	const validateTwitchOAuthToken = useAuthStore(s => s.validateTwitchOAuthToken);
 	const subtitle = useGlobalStore(s => s.subtitle);
 	const migrateFromV1 = useQuestionsStore(s => s.migrateFromV1);
@@ -56,6 +60,9 @@ function App() {
 
 	useEffect(() => {
 		validateTwitchOAuthToken();
+		// Twitch demande une validation par heure ; met aussi à jour l'expiration réelle
+		const hourly = setInterval(validateTwitchOAuthToken, 60 * 60 * 1000);
+		return () => clearInterval(hourly);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -96,17 +103,28 @@ function App() {
 	useEffect(() => {
 		// CGU et confidentialité : lisibles par tous, sans redirection
 		if (isPublicPath(location.pathname)) return;
-		if (!isLoggedIn()) {
-			// Page demandée (ex. lien /proposer du bot Discord) : rouverte après la connexion
-			rememberReturnPath(location.pathname + location.search);
-			setView(<Login />);
-	 		navigate('/');
-		} else if (!isInitialized()) {
-			navigate('/settings');
-		} else if (location.pathname === '/') {
-			setView(<Quiz />);
-			navigate('/quiz');
-		}
+		let cancelled = false;
+		// Avec Twitch, on décide tout de suite ; sinon on demande au serveur s'il y a une session Discord/Google
+		const ready = useAuthStore.getState().hasTwitch() ? Promise.resolve() : loadAccount();
+		ready.then(() => {
+			if (cancelled) return;
+			const auth = useAuthStore.getState();
+			if (!auth.isLoggedIn()) {
+				// Page demandée (ex. lien /proposer du bot Discord) : rouverte après la connexion
+				rememberReturnPath(location.pathname + location.search);
+				setView(<Login />);
+				navigate('/');
+			} else if (!auth.hasTwitch()) {
+				// Compte Discord/Google : pas de réglages de chaîne, accueil sur Contribuer
+				if (location.pathname === '/') navigate('/contribute');
+			} else if (!isInitialized()) {
+				navigate('/settings');
+			} else if (location.pathname === '/') {
+				setView(<Quiz />);
+				navigate('/quiz');
+			}
+		});
+		return () => { cancelled = true; };
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [navigate]);
 
@@ -137,7 +155,8 @@ function App() {
 		navigate('/quiz');
 	};
 
-	const loggedIn = isLoggedIn();
+	// account : lu pour re-rendre l'en-tête quand la session Discord/Google arrive
+	const loggedIn = isLoggedIn() || account !== undefined;
 	return (
 		<>
 			{/* CRT Scanline overlay - Lumon Industries terminal effect */}
@@ -200,7 +219,7 @@ function App() {
 				<Suspense fallback={<RouteFallback />}>
 					<Routes>
 						<Route path="/" element={view} />
-						<Route path="/quiz" element={<Quiz />} />
+						<Route path="/quiz" element={hasTwitch ? <Quiz /> : <TwitchRequired />} />
 						<Route path="/questions" element={isAdmin ? <QuestionManager /> : <Quiz />} />
 						<Route path="/questions-terminal" element={isAdmin ? <QuestionManagerTerminal /> : <Quiz />} />
 						<Route path="/convertisseur" element={<Convertisseur />} />

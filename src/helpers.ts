@@ -35,6 +35,8 @@ const RETURN_PATH_KEY = 'login_return_path';
  */
 export function safeReturnPath(path: string | null): string | null {
   if (!path || !path.startsWith('/') || path.startsWith('//') || path.startsWith('/\\')) return null;
+  // Le navigateur retire tabulations et sauts de ligne d'une URL : « /\t/hôte » deviendrait « //hôte »
+  if (Array.from(path).some(char => char <= ' ' || char === '\\')) return null;
   if (path === '/' || path.startsWith('/callback')) return null;
   return path;
 }
@@ -50,6 +52,51 @@ export function takeReturnPath(): string {
   const path = safeReturnPath(sessionStorage.getItem(RETURN_PATH_KEY));
   sessionStorage.removeItem(RETURN_PATH_KEY);
   return path ?? '/';
+}
+
+/** Marge avant expiration : un quiz lancé maintenant ne doit pas perdre le chat en cours de route. */
+const TOKEN_REFRESH_MARGIN_MS = 30 * 60 * 1000;
+
+export function tokenNeedsRefresh(expiresAt: number | undefined, now: number): boolean {
+  return expiresAt !== undefined && expiresAt - now < TOKEN_REFRESH_MARGIN_MS;
+}
+
+/**
+ * Redirige vers Twitch pour obtenir un jeton, puis revient sur `returnPath`.
+ * Si l'utilisateur a déjà autorisé l'app et est connecté à Twitch, Twitch renvoie
+ * directement sans rien demander (force_verify=false) : simple aller-retour.
+ */
+export function startTwitchLogin(returnPath?: string): void {
+  if (returnPath) rememberReturnPath(returnPath);
+  const state = crypto.randomUUID();
+  sessionStorage.setItem('oauth_state', state);
+  // Implicit Flow : le flux avec code exige un client_secret côté serveur
+  window.location.href = 'https://id.twitch.tv/oauth2/authorize' +
+    '?client_id=' + process.env.REACT_APP_TWITCH_CLIENT_ID +
+    '&redirect_uri=' + encodeURIComponent(getAppHomeURL() + '/callback') +
+    '&scope=chat:read+chat:edit+whispers:edit' +
+    '&force_verify=false' +
+    '&response_type=token' +
+    '&state=' + state;
+}
+
+export type LoginProvider = 'discord' | 'google';
+
+/** Clé posée avant de se connecter à Twitch pour le lier au compte Discord/Google en cours. */
+export const LINK_TWITCH_KEY = 'link_twitch_pending';
+
+/** Connexion Discord/Google : l'échange OAuth se fait côté serveur (`api/auth/[action].ts`). */
+export function providerLoginUrl(provider: LoginProvider, returnPath: string | null, link = false): string {
+  const params = new URLSearchParams();
+  const safe = safeReturnPath(returnPath);
+  if (safe) params.set('return', safe);
+  if (link) params.set('link', '1');
+  const query = params.toString();
+  return `/api/auth/${provider}${query ? `?${query}` : ''}`;
+}
+
+export function startProviderLogin(provider: LoginProvider): void {
+  window.location.href = providerLoginUrl(provider, takeReturnPath());
 }
 
 const getParam = (name: string, value: string) => {
