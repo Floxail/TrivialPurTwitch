@@ -1,6 +1,7 @@
 {
   "buildCommand": "CI=false PUBLIC_URL=/ INLINE_RUNTIME_CHUNK=false yarn build",
   "rewrites": [
+    { "source": "/api/auth/:action", "destination": "/api/auth?action=:action" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],

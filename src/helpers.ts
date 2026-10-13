@@ -85,7 +85,7 @@ export type LoginProvider = 'discord' | 'google';
 /** Clé posée avant de se connecter à Twitch pour le lier au compte Discord/Google en cours. */
 export const LINK_TWITCH_KEY = 'link_twitch_pending';
 
-/** Connexion Discord/Google : l'échange OAuth se fait côté serveur (`api/auth/[action].ts`). */
+/** Connexion Discord/Google : l'échange OAuth se fait côté serveur (`api/auth.ts`). */
 export function providerLoginUrl(provider: LoginProvider, returnPath: string | null, link = false): string {
   const params = new URLSearchParams();
   const safe = safeReturnPath(returnPath);
