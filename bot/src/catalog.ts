@@ -80,6 +80,17 @@ export function applyMenuSelection(selected: Set<number>, menuIndexes: number[],
   return new Set([...[...selected].filter(index => !inMenu.has(index)), ...chosen]);
 }
 
+/**
+ * Valeurs du menu des sous-boîtes -> sous-boîtes retenues ([] = toute la boîte).
+ * « Toute la boîte » (`*`) reste cochée quand on ajoute une sous-boîte : elle ne compte
+ * que si l'utilisateur vient de la cocher (wholeBefore = false).
+ */
+export function subBoxSelection(wholeBefore: boolean, values: string[]): string[] {
+  const subs = values.filter(value => value !== '*');
+  if (values.includes('*') && !wholeBefore) return [];
+  return subs;
+}
+
 /** Boîte limitée aux sous-boîtes choisies. Aucune sous-boîte choisie = la boîte entière. */
 export function narrowRoot(root: RootBox, chosenSubBoxes: string[]): RootBox {
   if (chosenSubBoxes.length === 0) return root;

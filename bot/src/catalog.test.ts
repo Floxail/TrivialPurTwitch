@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { QuestionType, type Question } from '../../src/types/question';
-import { applyMenuSelection, boxListText, listRootBoxes, narrowRoot, pickQuestions, splitIntoMenus, type Catalog } from './catalog';
+import { applyMenuSelection, boxListText, listRootBoxes, narrowRoot, pickQuestions, splitIntoMenus, subBoxSelection, type Catalog } from './catalog';
 
 const q = (id: string, boxName: string, createdAt?: string): Question =>
   ({ id, question: `Q${id}`, answer: 'r', boxName, questionType: QuestionType.FREE_TEXT, createdAt });
@@ -62,6 +62,16 @@ test('splitIntoMenus : 38 boîtes = 2 menus équilibrés, contigus, 25 max', () 
 test('applyMenuSelection : remplace le menu touché, garde les autres', () => {
   const next = applyMenuSelection(new Set([2, 30]), [0, 1, 2, 3, 4, 5, 6, 7], [5, 7]);
   assert.deepEqual([...next].sort((a, b) => a - b), [5, 7, 30]);
+});
+
+test('subBoxSelection : cocher une sous-boîte quand « Toute la boîte » était cochée garde la sous-boîte', () => {
+  assert.deepEqual(subBoxSelection(true, ['*', '2']), ['2']);
+});
+
+test('subBoxSelection : recocher « Toute la boîte » efface les sous-boîtes', () => {
+  assert.deepEqual(subBoxSelection(false, ['*', '2']), []);
+  assert.deepEqual(subBoxSelection(false, ['*']), []);
+  assert.deepEqual(subBoxSelection(false, ['0', '2']), ['0', '2']);
 });
 
 test('narrowRoot : seulement les sous-boîtes choisies', () => {

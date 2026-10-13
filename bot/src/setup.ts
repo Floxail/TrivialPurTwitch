@@ -3,7 +3,7 @@ import {
   StringSelectMenuBuilder, StringSelectMenuOptionBuilder,
   type ButtonInteraction, type ChatInputCommandInteraction, type StringSelectMenuInteraction,
 } from 'discord.js';
-import { MENU_SIZE, applyMenuSelection, listRootBoxes, narrowRoot, pickQuestions, splitIntoMenus, type RootBox } from './catalog';
+import { MENU_SIZE, applyMenuSelection, listRootBoxes, narrowRoot, pickQuestions, splitIntoMenus, subBoxSelection, type RootBox } from './catalog';
 import { DEFAULT_QUESTION_COUNT, DEFAULT_SECONDS } from './commands';
 import { loadCatalog, loadQuestions } from './db';
 import { displayName, isGameRunning, startGame } from './game';
@@ -249,9 +249,9 @@ export async function handleSetupComponent(interaction: StringSelectMenuInteract
     }
   } else if (interaction.isStringSelectMenu() && action === 'sub') {
     const rootIndex = Number(target);
-    const values = interaction.values;
-    if (values.includes(ALL_SUB_BOXES)) session.subChoices.delete(rootIndex);
-    else session.subChoices.set(rootIndex, values.map(v => session.roots[rootIndex].subBoxes[Number(v)].name));
+    const subs = subBoxSelection(!session.subChoices.has(rootIndex), interaction.values);
+    if (subs.length === 0) session.subChoices.delete(rootIndex);
+    else session.subChoices.set(rootIndex, subs.map(v => session.roots[rootIndex].subBoxes[Number(v)].name));
   } else if (action === 'to-sub') {
     session.step = 'sub-boxes';
   } else if (action === 'to-boxes') {
