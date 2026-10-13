@@ -36,7 +36,7 @@ const Login = () => {
         id={props.appName + 'LoginButton'}
         disabled={props.loggedIn}
         className={`terminal-btn ${props.loggedIn ? 'terminal-btn-success' : ''}`}
-        style={{ display: 'block', margin: '5px auto', width: '20rem', fontSize: '0.9rem', padding: '0.75rem 1.5rem' }}
+        style={{ display: 'block', width: '100%', fontSize: '0.9rem', padding: '0.75rem 1.5rem' }}
         onClick={() => props.onClick()}
       >
         {!props.loggedIn && <>Log in {props.appName}</>}
@@ -55,12 +55,28 @@ const Login = () => {
       {failedProvider && (
         <p className="text-glow-danger" style={{ textAlign: 'center' }}>Connexion {failedProvider} impossible. Réessaie.</p>
       )}
-      <LoginButton loggedIn={isLoggedIn()} appName="Twitch" onClick={twitchLogin} icon={twitchIcon} />
-      <p style={{ textAlign: 'center', color: 'var(--lumon-text-dim)', fontSize: '0.8rem', margin: '0 0 1rem' }}>
-        Twitch est requis pour animer un quiz.
-      </p>
-      <LoginButton loggedIn={false} appName="Discord" onClick={async () => startProviderLogin('discord')} icon={discordIcon} />
-      <LoginButton loggedIn={false} appName="Google" onClick={async () => startProviderLogin('google')} icon={googleIcon} />
+      {/* Bloc unique de 20rem : Twitch en pleine largeur, Discord et Google se partagent la même largeur dessous */}
+      <div style={{ width: '20rem', maxWidth: 'calc(100% - 32px)', margin: '0 auto' }}>
+        <LoginButton loggedIn={isLoggedIn()} appName="Twitch" onClick={twitchLogin} icon={twitchIcon} />
+        <div aria-hidden="true" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1rem 0', color: 'var(--lumon-text-dim)', fontFamily: "'Share Tech Mono', monospace", fontSize: '0.75rem', letterSpacing: '0.15em' }}>
+          <span style={{ flex: 1, borderTop: '1px solid var(--lumon-cyan-dim)' }} />
+          OU
+          <span style={{ flex: 1, borderTop: '1px solid var(--lumon-cyan-dim)' }} />
+        </div>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button id="discordLoginButton" className="terminal-btn" aria-label="Log in Discord" title="Discord"
+            style={{ flex: 1, padding: '0.75rem', fontSize: '1.2rem' }} onClick={() => startProviderLogin('discord')}>
+            {discordIcon}
+          </button>
+          <button id="googleLoginButton" className="terminal-btn" aria-label="Log in Google" title="Google"
+            style={{ flex: 1, padding: '0.75rem', fontSize: '1.2rem' }} onClick={() => startProviderLogin('google')}>
+            {googleIcon}
+          </button>
+        </div>
+        <p style={{ textAlign: 'center', color: 'var(--lumon-text-dim)', fontSize: '0.8rem', margin: '1rem 0' }}>
+          Twitch est requis pour animer un quiz.
+        </p>
+      </div>
       <p className="legal-footer" style={{ textAlign: 'center', borderTop: 'none' }}>
         <Link to="/cgu">Conditions d'utilisation</Link> · <Link to="/confidentialite">Politique de confidentialité</Link>
       </p>
