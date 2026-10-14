@@ -6,7 +6,7 @@ import { useSettingsStore } from 'components/store/settings-store';
 import { useQuestionsStore } from 'components/store/questions-store';
 import { useGameStore } from 'components/store/game-store';
 import { useEffect, useState, lazy, Suspense } from 'react';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Login from './components/login';
 import { isPublicPath, rememberReturnPath } from './helpers';
 import LoginCallback from './components/login-callback';
@@ -220,8 +220,8 @@ function App() {
 					<Routes>
 						<Route path="/" element={view} />
 						<Route path="/quiz" element={hasTwitch ? <Quiz /> : <TwitchRequired />} />
-						<Route path="/questions" element={isAdmin ? <QuestionManager /> : <Quiz />} />
-						<Route path="/questions-terminal" element={isAdmin ? <QuestionManagerTerminal /> : <Quiz />} />
+						<Route path="/questions" element={isAdmin ? <QuestionManager /> : <Navigate to="/quiz" replace />} />
+						<Route path="/questions-terminal" element={isAdmin ? <QuestionManagerTerminal /> : <Navigate to="/quiz" replace />} />
 						<Route path="/convertisseur" element={<Convertisseur />} />
 						<Route path="/contribute" element={<ContributionPage />} />
 						<Route path="/system-mod-portal" element={<AdminDashboard />} />
