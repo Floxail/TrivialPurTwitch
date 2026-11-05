@@ -49,7 +49,8 @@ const Login = () => {
   return (
     <>
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h2 className="text-glow-cyan" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: '0.15em' }}>QUIZTWITCH</h2>
+        {/* h1 : seul titre principal de la page d'accueil vue par les moteurs (rendu JS) */}
+        <h1 className="text-glow-cyan" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: '0.15em', fontSize: '2rem' }}>QUIZTWITCH</h1>
         <p style={{ color: 'var(--lumon-text-dim)', fontFamily: "'Share Tech Mono', monospace", marginTop: '1rem' }}>Connecte-toi pour commencer</p>
       </div>
       {failedProvider && (
@@ -77,6 +78,11 @@ const Login = () => {
           Twitch est requis pour animer un quiz.
         </p>
       </div>
+      <p style={{ textAlign: 'center', color: 'var(--lumon-text-dim)', fontSize: '0.85rem', maxWidth: '36rem', margin: '2rem auto 0', padding: '0 16px' }}>
+        Quiz de culture générale gratuit et personnalisable : tes viewers répondent directement dans le chat Twitch,
+        sans appli ni code PIN. Plus de 5 000 questions, bot Discord inclus.{' '}
+        <a href="/alternative-kahoot-twitch">Une alternative à Kahoot pour Twitch</a>.
+      </p>
       <p className="legal-footer" style={{ textAlign: 'center', borderTop: 'none' }}>
         <Link to="/cgu">Conditions d'utilisation</Link> · <Link to="/confidentialite">Politique de confidentialité</Link>
       </p>
