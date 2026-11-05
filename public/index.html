@@ -9,7 +9,7 @@
   <!-- SEO -->
   <title>TrivialPurTwitch — Quiz de culture générale gratuit pour Twitch et Discord</title>
   <meta name="description" content="Quiz de culture générale gratuit, jouable dans le chat Twitch et sur Discord. Plus de 5 000 questions, et crée tes propres quiz en quelques minutes." />
-  <meta name="keywords" content="quiz culture générale, quiz twitch, quiz discord, bot quiz discord, créer un quiz, quiz gratuit, trivia" />
+  <meta name="keywords" content="quiz twitch, quiz personnalisé twitch, alternative kahoot twitch, kahoot twitch, quiz chat twitch, quiz culture générale, quiz discord, bot quiz discord, créer un quiz, quiz gratuit, trivia stream" />
   <link rel="canonical" href="https://trivial.floxail.fr/" />
 
   <!-- Open Graph (Discord, Facebook, WhatsApp) -->
@@ -55,6 +55,34 @@
     }
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Existe-t-il un Kahoot pour Twitch ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui : TrivialPurTwitch est une alternative gratuite à Kahoot pensée pour Twitch. Les viewers répondent directement dans le chat du stream, sans application, sans code PIN et sans compte. Les points, combos et le classement s'affichent en direct." }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment faire un quiz personnalisé sur Twitch ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Sur https://trivial.floxail.fr, connecte-toi, crée ta boîte de questions (QCM ou réponse libre, avec images) ou importe-les en masse, puis lance le quiz : il lit le chat Twitch et compte les points automatiquement." }
+      },
+      {
+        "@type": "Question",
+        "name": "TrivialPurTwitch est-il gratuit ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui, entièrement gratuit, sans installation : tout se passe dans le navigateur. Plus de 5 000 questions de culture générale sont incluses." }
+      },
+      {
+        "@type": "Question",
+        "name": "Peut-on jouer sur Discord ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui, un bot Discord TrivialPurTwitch permet de lancer les mêmes quiz sur un serveur Discord, avec un classement par serveur." }
+      }
+    ]
+  }
+  </script>
 
   <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
 
@@ -65,11 +93,21 @@
 
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)" aria-hidden="true">
-    <h1>TrivialPurTwitch — Quiz de culture générale gratuit pour Twitch et Discord</h1>
-    <p>Quiz de culture générale gratuit, jouable dans le chat Twitch et sur Discord. Plus de 5 000 questions : cinéma, musique, science, histoire, jeux vidéo et bien d'autres. Scores en direct, classements, combos.</p>
-    <p>Crée tes propres quiz en quelques minutes et propose tes questions à la communauté. Sur Twitch, les viewers répondent dans le chat ; sur Discord, le bot TrivialPurTwitch fait jouer ton serveur.</p>
+  <!-- Contenu lisible sans JS (Google, crawlers IA). React le remplace au montage. -->
+  <div id="root">
+    <main style="max-width:760px;margin:0 auto;padding:32px 16px;font-family:system-ui,sans-serif;color:#ddd;background:#000">
+      <h1>TrivialPurTwitch — quiz personnalisé gratuit pour Twitch et Discord</h1>
+      <p>TrivialPurTwitch est un quiz de culture générale gratuit que les streamers lancent sur leur live Twitch : les viewers répondent directement dans le chat, les points sont comptés automatiquement et le classement s'affiche en direct. C'est une alternative à Kahoot pensée pour Twitch : pas d'application, pas de code PIN, pas de compte pour les viewers.</p>
+      <h2>Fonctionnalités</h2>
+      <ul>
+        <li>Plus de 5 000 questions : cinéma, musique, science, histoire, géographie, jeux vidéo…</li>
+        <li>Quiz personnalisés : crée tes propres boîtes de questions (QCM jusqu'à 6 choix ou réponse libre, images) ou importe-les en masse.</li>
+        <li>Réponses dans le chat Twitch, tolérance aux fautes de frappe, bonus de rapidité et combos.</li>
+        <li>Classement, podium et statistiques par joueur.</li>
+        <li>Bot Discord pour jouer aux mêmes quiz sur un serveur Discord.</li>
+      </ul>
+      <p><a href="/quiz">Lancer un quiz</a> · <a href="/alternative-kahoot-twitch">Alternative à Kahoot pour Twitch</a> · <a href="/contribute">Proposer des questions</a> · <a href="/stats">Classements</a></p>
+    </main>
   </div>
 </body>
 
